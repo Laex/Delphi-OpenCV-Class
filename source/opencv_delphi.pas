@@ -26,6 +26,7 @@ Type
     class operator assign(var Dest: CppString; const [ref] Src: CppString);
     class operator Implicit(const p: pAnsiChar): CppString;
     class operator Implicit(const s: String): CppString;
+    class operator Implicit(const s: CppString): String;
   end;
 
   // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@$$QEAV01@@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &&)
@@ -113,7 +114,8 @@ procedure Destructor_String(Obj: pCppString); overload; external opencv_delphi_d
 
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@AEBV12@@Z
 // class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-procedure assign_String(Obj: pCppString; a: pCppString); overload; external opencv_delphi_dll name '?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@AEBV12@@Z'
+procedure assign_String(Obj: pCppString; a: pCppString) { : pCppString }; overload;
+  external opencv_delphi_dll name '?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@AEBV12@@Z'
 {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
 
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@AEBV12@_K_K@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned __int64,unsigned __int64)
@@ -132,7 +134,12 @@ procedure assign_String(Obj: pCppString; pac: pAnsiChar); overload; external ope
 // ?back@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAAEBDXZ	char const & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::back(void)
 // ?begin@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA?AV?$_String_iterator@V?$_String_val@U?$_Simple_types@D@std@@@std@@@2@XZ	class std::_String_iterator<class std::_String_val<struct std::_Simple_types<char> > > std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::begin(void)
 // ?begin@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA?AV?$_String_const_iterator@V?$_String_val@U?$_Simple_types@D@std@@@std@@@2@XZ	class std::_String_const_iterator<class std::_String_val<struct std::_Simple_types<char> > > std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::begin(void)
-// ?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAPEBDXZ	char const * std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::c_str(void)
+
+// ?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAPEBDXZ
+// char const * std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::c_str(void)
+function CppString_c_str(Obj: pCppString { ; r: pAnsiChar } ): pAnsiChar; external opencv_delphi_dll name '?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAPEBDXZ'
+{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+
 // ?capacity@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ	unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::capacity(void)
 // ?cbegin@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA?AV?$_String_const_iterator@V?$_String_val@U?$_Simple_types@D@std@@@std@@@2@XZ	class std::_String_const_iterator<class std::_String_val<struct std::_Simple_types<char> > > std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::cbegin(void)
 // ?cend@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA?AV?$_String_const_iterator@V?$_String_val@U?$_Simple_types@D@std@@@std@@@2@XZ	class std::_String_const_iterator<class std::_String_val<struct std::_Simple_types<char> > > std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::cend(void)
@@ -240,7 +247,7 @@ end;
 class operator CppString.assign(var Dest: CppString; const [ref] Src: CppString);
 begin
   Finalize(Dest);
-  assign_String(pCppString(@Src), pCppString(@Dest));
+  assign_String(pCppString(@Dest), pCppString(@Src));
 end;
 
 procedure CppString.erase(const _Off: UInt64);
@@ -261,6 +268,14 @@ end;
 class operator CppString.Implicit(const p: pAnsiChar): CppString;
 begin
   Result.assign(p);
+end;
+
+class operator CppString.Implicit(const s: CppString): String;
+Var
+  r: pAnsiChar;
+begin
+  r := CppString_c_str(@s);
+  Result := string(r);
 end;
 
 class operator CppString.Initialize(out Dest: CppString);

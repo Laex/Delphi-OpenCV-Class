@@ -161,7 +161,9 @@ Type
     // bool operator == (const MatSize& sz) const CV_NOEXCEPT;
     // bool operator != (const MatSize& sz) const CV_NOEXCEPT;
   private
+{$HINTS OFF}
     p: pInt; // pInt; // int* p;
+{$HINTS ON}
   end;
 
   TMatStep = record
@@ -662,7 +664,7 @@ type
   // CV_EXPORTS void swap(Mat& a, Mat& b);
   // ?swap@cv@@YAXAEAVMat@1@0@Z
   // void cv::swap(class cv::Mat &,class cv::Mat &)
-procedure swap(Var a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEAVMat@1@0@Z' {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure swap(Var a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEAVMat@1@0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // CV_EXPORTS void swap( UMat& a, UMat& b );
 
@@ -689,7 +691,7 @@ procedure swap(Var a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEA
 *)
 // CV_EXPORTS_W int borderInterpolate(int p, int len, int borderType);
 // ?borderInterpolate@cv@@YAHHHH@Z
-function borderInterpolate(p, Len, borderType: Int): Int; external opencv_world_dll name '?borderInterpolate@cv@@YAHHHH@Z' {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+function borderInterpolate(p, Len, borderType: Int): Int; external opencv_world_dll name '?borderInterpolate@cv@@YAHHHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @example samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp
   An example using copyMakeBorder function.
@@ -746,7 +748,7 @@ function borderInterpolate(p, Len, borderType: Int): Int; external opencv_world_
 // ?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z
 // void cv::copyMakeBorder(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,int,int,class cv::Scalar_<double> const &)
 procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: Int; const Scalar: TScalar); overload;
-  external opencv_world_dll name '?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z' {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+  external opencv_world_dll name '?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: Int); {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
 (* * @brief Calculates the weighted sum of two arrays.
@@ -776,7 +778,7 @@ procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bot
 // ?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z
 // void cv::addWeighted(class cv::_InputArray const &,double,class cv::_InputArray const &,double,double,class cv::_OutputArray const &,int)
 procedure addWeighted(src1: TInputArray; alpha: double; src2: TInputArray; beta, gamma: double; dst: TOutputArray; dtype: Int = -1);
-  external opencv_world_dll { name '?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z' } index 3519 {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+  external opencv_world_dll { name '?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z' } index 3519 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 // ---------------------- end core.hpp ----------------------
@@ -854,7 +856,7 @@ Type
   // ?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
   // class cv::Mat cv::imread(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
 function imread(const filename: CppString; flag: ImreadModes = IMREAD_COLOR): TMat;
-  external opencv_world_dll name '?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z' {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+  external opencv_world_dll name '?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Destroys the specified window.
   The function destroyWindow destroys the window with the given name.
@@ -896,7 +898,7 @@ function imread(const filename: CppString; flag: ImreadModes = IMREAD_COLOR): TM
 // CV_EXPORTS_W int waitKey(int delay = 0);
 // ?waitKey@cv@@YAHH@Z
 // int cv::waitKey(int)
-function waitKey(delay: Int = 0): Int; external opencv_world_dll name '?waitKey@cv@@YAHH@Z' {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+function waitKey(delay: Int = 0): Int; external opencv_world_dll name '?waitKey@cv@@YAHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Polls for a pressed key.
 
@@ -953,7 +955,7 @@ function waitKey(delay: Int = 0): Int; external opencv_world_dll name '?waitKey@
 // ?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@@Z
 // void cv::imshow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &)
 procedure imshow(const winname: CppString; Mat: TInputArray); overload; external opencv_world_dll index 5268
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ---------------------- end imgcodecs.hpp ----------------------
 
@@ -1001,7 +1003,46 @@ Type
   // ?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
   // void cv::namedWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
 procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTOSIZE); overload; external opencv_world_dll index 5721
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+//
+(* * @brief Creates a trackbar and attaches it to the specified window.
+
+  The function createTrackbar creates a trackbar (a slider or range control) with the specified name
+  and range, assigns a variable value to be a position synchronized with the trackbar and specifies
+  the callback function onChange to be called on the trackbar position change. The created trackbar is
+  displayed in the specified window winname.
+
+  @note
+
+  [__Qt Backend Only__] winname can be empty if the trackbar should be attached to the
+  control panel.
+
+  Clicking the label of each trackbar enables editing the trackbar values manually.
+
+  @param trackbarname Name of the created trackbar.
+  @param winname Name of the window that will be used as a parent of the created trackbar.
+  @param value Optional pointer to an integer variable whose value reflects the position of the
+  slider. Upon creation, the slider position is defined by this variable.
+  @param count Maximal position of the slider. The minimal position is always 0.
+  @param onChange Pointer to the function to be called every time the slider changes position. This
+  function should be prototyped as void Foo(int,void\ * );
+  , where the first parameter is the trackbar position and the second parameter is the user data(see the next parameter).If the callback is the NULL Pointer, no callbacks are called,
+  but only value is updated.@param userdata user data that is passed as is to the callback.It can be used to handle trackbar events without using global variables.
+*)
+// CV_EXPORTS int createTrackbar(const String& trackbarname, const String& winname,
+// int* value, int count,
+// TrackbarCallback onChange = 0,
+// void* userdata = 0);
+// 4302
+// ?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z
+// int cv::createTrackbar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int *,int,void (*)(int,void *),void *)
+Type
+  TTrackbarCallback = procedure(pos: Int; userdata: Pointer);
+function createTrackbar(const trackbarname: CppString; const winname: CppString; value: pInt; count: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
+  external opencv_world_dll index 4302
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 
 // ---------------------- end highgui.hpp ----------------------
 
@@ -1024,6 +1065,273 @@ type
     FONT_HERSHEY_SCRIPT_SIMPLEX = 6, // !< hand-writing style font
     FONT_HERSHEY_SCRIPT_COMPLEX = 7, // !< more complex variant of FONT_HERSHEY_SCRIPT_SIMPLEX
     FONT_ITALIC = 16                 // !< flag for italic font
+    );
+
+  ColorConversionCodes = (           //
+    COLOR_BGR2BGRA = 0,              // !< add alpha channel to RGB or BGR image
+    COLOR_RGB2RGBA = COLOR_BGR2BGRA, //
+    //
+    COLOR_BGRA2BGR = 1,              // !< remove alpha channel from RGB or BGR image
+    COLOR_RGBA2RGB = COLOR_BGRA2BGR, //
+    //
+    COLOR_BGR2RGBA = 2,              // !< convert between RGB and BGR color spaces (with or without alpha channel)
+    COLOR_RGB2BGRA = COLOR_BGR2RGBA, //
+    //
+    COLOR_RGBA2BGR = 3,              //
+    COLOR_BGRA2RGB = COLOR_RGBA2BGR, //
+    //
+    COLOR_BGR2RGB = 4,             //
+    COLOR_RGB2BGR = COLOR_BGR2RGB, //
+    //
+    COLOR_BGRA2RGBA = 5,               //
+    COLOR_RGBA2BGRA = COLOR_BGRA2RGBA, //
+    //
+    COLOR_BGR2GRAY = 6,                // !< convert between RGB/BGR and grayscale, @ref color_convert_rgb_gray "color conversions"
+    COLOR_RGB2GRAY = 7,                //
+    COLOR_GRAY2BGR = 8,                //
+    COLOR_GRAY2RGB = COLOR_GRAY2BGR,   //
+    COLOR_GRAY2BGRA = 9,               //
+    COLOR_GRAY2RGBA = COLOR_GRAY2BGRA, //
+    COLOR_BGRA2GRAY = 10,              //
+    COLOR_RGBA2GRAY = 11,              //
+    //
+    COLOR_BGR2BGR565 = 12,  // !< convert between RGB/BGR and BGR565 (16-bit images)
+    COLOR_RGB2BGR565 = 13,  //
+    COLOR_BGR5652BGR = 14,  //
+    COLOR_BGR5652RGB = 15,  //
+    COLOR_BGRA2BGR565 = 16, //
+    COLOR_RGBA2BGR565 = 17, //
+    COLOR_BGR5652BGRA = 18, //
+    COLOR_BGR5652RGBA = 19, //
+    //
+    COLOR_GRAY2BGR565 = 20, // !< convert between grayscale to BGR565 (16-bit images)
+    COLOR_BGR5652GRAY = 21, //
+    //
+    COLOR_BGR2BGR555 = 22,  // !< convert between RGB/BGR and BGR555 (16-bit images)
+    COLOR_RGB2BGR555 = 23,  //
+    COLOR_BGR5552BGR = 24,  //
+    COLOR_BGR5552RGB = 25,  //
+    COLOR_BGRA2BGR555 = 26, //
+    COLOR_RGBA2BGR555 = 27, //
+    COLOR_BGR5552BGRA = 28, //
+    COLOR_BGR5552RGBA = 29, //
+    //
+    COLOR_GRAY2BGR555 = 30, // !< convert between grayscale and BGR555 (16-bit images)
+    COLOR_BGR5552GRAY = 31, //
+    //
+    COLOR_BGR2XYZ = 32, // !< convert RGB/BGR to CIE XYZ, @ref color_convert_rgb_xyz "color conversions"
+    COLOR_RGB2XYZ = 33, //
+    COLOR_XYZ2BGR = 34, //
+    COLOR_XYZ2RGB = 35, //
+    //
+    COLOR_BGR2YCrCb = 36, // !< convert RGB/BGR to luma-chroma (aka YCC), @ref color_convert_rgb_ycrcb "color conversions"
+    COLOR_RGB2YCrCb = 37, //
+    COLOR_YCrCb2BGR = 38, //
+    COLOR_YCrCb2RGB = 39, //
+    //
+    COLOR_BGR2HSV = 40, // !< convert RGB/BGR to HSV (hue saturation value) with H range 0..180 if 8 bit image, @ref color_convert_rgb_hsv "color conversions"
+    COLOR_RGB2HSV = 41, //
+    //
+    COLOR_BGR2Lab = 44, // !< convert RGB/BGR to CIE Lab, @ref color_convert_rgb_lab "color conversions"
+    COLOR_RGB2Lab = 45, //
+    //
+    COLOR_BGR2Luv = 50, // !< convert RGB/BGR to CIE Luv, @ref color_convert_rgb_luv "color conversions"
+    COLOR_RGB2Luv = 51, //
+    COLOR_BGR2HLS = 52, // !< convert RGB/BGR to HLS (hue lightness saturation) with H range 0..180 if 8 bit image, @ref color_convert_rgb_hls "color conversions"
+    COLOR_RGB2HLS = 53, //
+    //
+    COLOR_HSV2BGR = 54, // !< backward conversions HSV to RGB/BGR with H range 0..180 if 8 bit image
+    COLOR_HSV2RGB = 55, //
+    //
+    COLOR_Lab2BGR = 56, //
+    COLOR_Lab2RGB = 57, //
+    COLOR_Luv2BGR = 58, //
+    COLOR_Luv2RGB = 59, //
+    COLOR_HLS2BGR = 60, // !< backward conversions HLS to RGB/BGR with H range 0..180 if 8 bit image
+    COLOR_HLS2RGB = 61, //
+    //
+    COLOR_BGR2HSV_FULL = 66, // !< convert RGB/BGR to HSV (hue saturation value) with H range 0..255 if 8 bit image, @ref color_convert_rgb_hsv "color conversions"
+    COLOR_RGB2HSV_FULL = 67, //
+    COLOR_BGR2HLS_FULL = 68, // !< convert RGB/BGR to HLS (hue lightness saturation) with H range 0..255 if 8 bit image, @ref color_convert_rgb_hls "color conversions"
+    COLOR_RGB2HLS_FULL = 69, //
+
+    COLOR_HSV2BGR_FULL = 70, // !< backward conversions HSV to RGB/BGR with H range 0..255 if 8 bit image
+    COLOR_HSV2RGB_FULL = 71, //
+    COLOR_HLS2BGR_FULL = 72, // !< backward conversions HLS to RGB/BGR with H range 0..255 if 8 bit image
+    COLOR_HLS2RGB_FULL = 73, //
+    //
+    COLOR_LBGR2Lab = 74, //
+    COLOR_LRGB2Lab = 75, //
+    COLOR_LBGR2Luv = 76, //
+    COLOR_LRGB2Luv = 77, //
+    //
+    COLOR_Lab2LBGR = 78, //
+    COLOR_Lab2LRGB = 79, //
+    COLOR_Luv2LBGR = 80, //
+    COLOR_Luv2LRGB = 81, //
+    //
+    COLOR_BGR2YUV = 82, // !< convert between RGB/BGR and YUV
+    COLOR_RGB2YUV = 83, //
+    COLOR_YUV2BGR = 84, //
+    COLOR_YUV2RGB = 85, //
+    //
+    // ! YUV 4:2:0 family to RGB
+    COLOR_YUV2RGB_NV12 = 90,                 //
+    COLOR_YUV2BGR_NV12 = 91,                 //
+    COLOR_YUV2RGB_NV21 = 92,                 //
+    COLOR_YUV2BGR_NV21 = 93,                 //
+    COLOR_YUV420sp2RGB = COLOR_YUV2RGB_NV21, //
+    COLOR_YUV420sp2BGR = COLOR_YUV2BGR_NV21, //
+
+    COLOR_YUV2RGBA_NV12 = 94,                  //
+    COLOR_YUV2BGRA_NV12 = 95,                  //
+    COLOR_YUV2RGBA_NV21 = 96,                  //
+    COLOR_YUV2BGRA_NV21 = 97,                  //
+    COLOR_YUV420sp2RGBA = COLOR_YUV2RGBA_NV21, //
+    COLOR_YUV420sp2BGRA = COLOR_YUV2BGRA_NV21, //
+    //
+    COLOR_YUV2RGB_YV12 = 98,                 //
+    COLOR_YUV2BGR_YV12 = 99,                 //
+    COLOR_YUV2RGB_IYUV = 100,                //
+    COLOR_YUV2BGR_IYUV = 101,                //
+    COLOR_YUV2RGB_I420 = COLOR_YUV2RGB_IYUV, //
+    COLOR_YUV2BGR_I420 = COLOR_YUV2BGR_IYUV, //
+    COLOR_YUV420p2RGB = COLOR_YUV2RGB_YV12,  //
+    COLOR_YUV420p2BGR = COLOR_YUV2BGR_YV12,  //
+    //
+    COLOR_YUV2RGBA_YV12 = 102,                 //
+    COLOR_YUV2BGRA_YV12 = 103,                 //
+    COLOR_YUV2RGBA_IYUV = 104,                 //
+    COLOR_YUV2BGRA_IYUV = 105,                 //
+    COLOR_YUV2RGBA_I420 = COLOR_YUV2RGBA_IYUV, //
+    COLOR_YUV2BGRA_I420 = COLOR_YUV2BGRA_IYUV, //
+    COLOR_YUV420p2RGBA = COLOR_YUV2RGBA_YV12,  //
+    COLOR_YUV420p2BGRA = COLOR_YUV2BGRA_YV12,  //
+    //
+    COLOR_YUV2GRAY_420 = 106,                 //
+    COLOR_YUV2GRAY_NV21 = COLOR_YUV2GRAY_420, //
+    COLOR_YUV2GRAY_NV12 = COLOR_YUV2GRAY_420, //
+    COLOR_YUV2GRAY_YV12 = COLOR_YUV2GRAY_420, //
+    COLOR_YUV2GRAY_IYUV = COLOR_YUV2GRAY_420, //
+    COLOR_YUV2GRAY_I420 = COLOR_YUV2GRAY_420, //
+    COLOR_YUV420sp2GRAY = COLOR_YUV2GRAY_420, //
+    COLOR_YUV420p2GRAY = COLOR_YUV2GRAY_420,  //
+    //
+    // ! YUV 4:2:2 family to RGB
+    COLOR_YUV2RGB_UYVY = 107, //
+    COLOR_YUV2BGR_UYVY = 108, //
+    // COLOR_YUV2RGB_VYUY = 109,
+    // COLOR_YUV2BGR_VYUY = 110,
+    COLOR_YUV2RGB_Y422 = COLOR_YUV2RGB_UYVY, //
+    COLOR_YUV2BGR_Y422 = COLOR_YUV2BGR_UYVY, //
+    COLOR_YUV2RGB_UYNV = COLOR_YUV2RGB_UYVY, //
+    COLOR_YUV2BGR_UYNV = COLOR_YUV2BGR_UYVY, //
+    //
+    COLOR_YUV2RGBA_UYVY = 111, //
+    COLOR_YUV2BGRA_UYVY = 112, //
+    // COLOR_YUV2RGBA_VYUY = 113,
+    // COLOR_YUV2BGRA_VYUY = 114,
+    COLOR_YUV2RGBA_Y422 = COLOR_YUV2RGBA_UYVY, //
+    COLOR_YUV2BGRA_Y422 = COLOR_YUV2BGRA_UYVY, //
+    COLOR_YUV2RGBA_UYNV = COLOR_YUV2RGBA_UYVY, //
+    COLOR_YUV2BGRA_UYNV = COLOR_YUV2BGRA_UYVY, //
+    //
+    COLOR_YUV2RGB_YUY2 = 115,                //
+    COLOR_YUV2BGR_YUY2 = 116,                //
+    COLOR_YUV2RGB_YVYU = 117,                //
+    COLOR_YUV2BGR_YVYU = 118,                //
+    COLOR_YUV2RGB_YUYV = COLOR_YUV2RGB_YUY2, //
+    COLOR_YUV2BGR_YUYV = COLOR_YUV2BGR_YUY2, //
+    COLOR_YUV2RGB_YUNV = COLOR_YUV2RGB_YUY2, //
+    COLOR_YUV2BGR_YUNV = COLOR_YUV2BGR_YUY2, //
+    //
+    COLOR_YUV2RGBA_YUY2 = 119,                 //
+    COLOR_YUV2BGRA_YUY2 = 120,                 //
+    COLOR_YUV2RGBA_YVYU = 121,                 //
+    COLOR_YUV2BGRA_YVYU = 122,                 //
+    COLOR_YUV2RGBA_YUYV = COLOR_YUV2RGBA_YUY2, //
+    COLOR_YUV2BGRA_YUYV = COLOR_YUV2BGRA_YUY2, //
+    COLOR_YUV2RGBA_YUNV = COLOR_YUV2RGBA_YUY2, //
+    COLOR_YUV2BGRA_YUNV = COLOR_YUV2BGRA_YUY2, //
+    //
+    COLOR_YUV2GRAY_UYVY = 123, //
+    COLOR_YUV2GRAY_YUY2 = 124, //
+    // CV_YUV2GRAY_VYUY    = CV_YUV2GRAY_UYVY,
+    COLOR_YUV2GRAY_Y422 = COLOR_YUV2GRAY_UYVY, //
+    COLOR_YUV2GRAY_UYNV = COLOR_YUV2GRAY_UYVY, //
+    COLOR_YUV2GRAY_YVYU = COLOR_YUV2GRAY_YUY2, //
+    COLOR_YUV2GRAY_YUYV = COLOR_YUV2GRAY_YUY2, //
+    COLOR_YUV2GRAY_YUNV = COLOR_YUV2GRAY_YUY2, //
+    //
+    // ! alpha premultiplication
+    COLOR_RGBA2mRGBA = 125, //
+    COLOR_mRGBA2RGBA = 126, //
+    //
+    // ! RGB to YUV 4:2:0 family
+    COLOR_RGB2YUV_I420 = 127,                //
+    COLOR_BGR2YUV_I420 = 128,                //
+    COLOR_RGB2YUV_IYUV = COLOR_RGB2YUV_I420, //
+    COLOR_BGR2YUV_IYUV = COLOR_BGR2YUV_I420, //
+    //
+    COLOR_RGBA2YUV_I420 = 129,                 //
+    COLOR_BGRA2YUV_I420 = 130,                 //
+    COLOR_RGBA2YUV_IYUV = COLOR_RGBA2YUV_I420, //
+    COLOR_BGRA2YUV_IYUV = COLOR_BGRA2YUV_I420, //
+    COLOR_RGB2YUV_YV12 = 131,                  //
+    COLOR_BGR2YUV_YV12 = 132,                  //
+    COLOR_RGBA2YUV_YV12 = 133,                 //
+    COLOR_BGRA2YUV_YV12 = 134,                 //
+    //
+    // ! Demosaicing
+    COLOR_BayerBG2BGR = 46, //
+    COLOR_BayerGB2BGR = 47, //
+    COLOR_BayerRG2BGR = 48, //
+    COLOR_BayerGR2BGR = 49, //
+    //
+    COLOR_BayerBG2RGB = COLOR_BayerRG2BGR, //
+    COLOR_BayerGB2RGB = COLOR_BayerGR2BGR, //
+    COLOR_BayerRG2RGB = COLOR_BayerBG2BGR, //
+    COLOR_BayerGR2RGB = COLOR_BayerGB2BGR, //
+    //
+    COLOR_BayerBG2GRAY = 86, //
+    COLOR_BayerGB2GRAY = 87, //
+    COLOR_BayerRG2GRAY = 88, //
+    COLOR_BayerGR2GRAY = 89, //
+    //
+    // ! Demosaicing using Variable Number of Gradients
+    COLOR_BayerBG2BGR_VNG = 62, //
+    COLOR_BayerGB2BGR_VNG = 63, //
+    COLOR_BayerRG2BGR_VNG = 64, //
+    COLOR_BayerGR2BGR_VNG = 65, //
+    //
+    COLOR_BayerBG2RGB_VNG = COLOR_BayerRG2BGR_VNG, //
+    COLOR_BayerGB2RGB_VNG = COLOR_BayerGR2BGR_VNG, //
+    COLOR_BayerRG2RGB_VNG = COLOR_BayerBG2BGR_VNG, //
+    COLOR_BayerGR2RGB_VNG = COLOR_BayerGB2BGR_VNG, //
+    //
+    // ! Edge-Aware Demosaicing
+    COLOR_BayerBG2BGR_EA = 135, //
+    COLOR_BayerGB2BGR_EA = 136, //
+    COLOR_BayerRG2BGR_EA = 137, //
+    COLOR_BayerGR2BGR_EA = 138, //
+    //
+    COLOR_BayerBG2RGB_EA = COLOR_BayerRG2BGR_EA, //
+    COLOR_BayerGB2RGB_EA = COLOR_BayerGR2BGR_EA, //
+    COLOR_BayerRG2RGB_EA = COLOR_BayerBG2BGR_EA, //
+    COLOR_BayerGR2RGB_EA = COLOR_BayerGB2BGR_EA, //
+    //
+    // ! Demosaicing with alpha channel
+    COLOR_BayerBG2BGRA = 139, //
+    COLOR_BayerGB2BGRA = 140, //
+    COLOR_BayerRG2BGRA = 141, //
+    COLOR_BayerGR2BGRA = 142, //
+    //
+    COLOR_BayerBG2RGBA = COLOR_BayerRG2BGRA, //
+    COLOR_BayerGB2RGBA = COLOR_BayerGR2BGRA, //
+    COLOR_BayerRG2RGBA = COLOR_BayerBG2BGRA, //
+    COLOR_BayerGR2RGBA = COLOR_BayerGB2BGRA, //
+    //
+    COLOR_COLORCVT_MAX = 143 //
     );
 
   (* * @brief Draws a text string.
@@ -1050,11 +1358,15 @@ type
   // 5972
   // ?putText@cv@@YAXAEBV_InputOutputArray@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z
   // void cv::putText(class cv::_InputOutputArray const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::Point_<int>,int,double,class cv::Scalar_<double>,int,int,bool)
-procedure _putText(img: TInputOutputArray; const text: CppString; org: UInt64; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
-  bottomLeftOrigin: Bool = false); external opencv_world_dll index 5972
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
-procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
-  bottomLeftOrigin: Bool = false); {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure _putText(img: TInputOutputArray;
+
+  const text: CppString; org: UInt64; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: Bool = false);
+  external opencv_world_dll index 5972
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure putText(img: TInputOutputArray;
+
+  const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: Bool = false);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 //
 (* * @brief Blurs an image using the normalized box filter.
 
@@ -1082,7 +1394,7 @@ procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fo
 // void cv::blur(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,class cv::Point_<int>,int)
 
 procedure _blur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; anchor: UInt64 { TPoint  = Point(-1, -1) }; borderType: Int { = BORDER_DEFAULT } ); external opencv_world_dll index 3649
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize; anchor: TPoint; borderType: BorderTypes = BORDER_DEFAULT); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
@@ -1113,7 +1425,7 @@ procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize; anchor: TPoint
 // ?GaussianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z
 // void cv::GaussianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,double,double,int)
 procedure _GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; sigmaX: double; sigmaY: double { = 0 }; borderType: Int { = BORDER_DEFAULT }
-  ); external opencv_world_dll index 3370 {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+  ); external opencv_world_dll index 3370 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX: double; sigmaY: double = 0; borderType: BorderTypes = BORDER_DEFAULT); {$IFDEF USE_INLINE}inline;
 {$ENDIF}
 //
@@ -1151,8 +1463,8 @@ procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX
 // 3615
 // ?bilateralFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNNH@Z
 // void cv::bilateralFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,int)
-procedure bilateralFilter(Src: TInputArray; dst: TOutputArray; d: Int; sigmaColor, sigmaSpace: double; borderType: BorderTypes = BORDER_DEFAULT);
-external opencv_world_dll index 3615 {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure bilateralFilter(Src: TInputArray; dst: TOutputArray; d: Int; sigmaColor, sigmaSpace: double; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll index 3615
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Blurs an image using the median filter.
 
@@ -1173,11 +1485,95 @@ external opencv_world_dll index 3615 {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
 // ?medianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
 // void cv::medianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,int)
 procedure medianBlur(Src: TInputArray; dst: TOutputArray; ksize: Int); external opencv_world_dll index 5628
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * @brief Applies a fixed-level threshold to each array element.
 
+  The function applies fixed-level thresholding to a multiple-channel array. The function is typically
+  used to get a bi-level (binary) image out of a grayscale image ( #compare could be also used for
+  this purpose) or for removing a noise, that is, filtering out pixels with too small or too large
+  values. There are several types of thresholding supported by the function. They are determined by
+  type parameter.
+
+  Also, the special values #THRESH_OTSU or #THRESH_TRIANGLE may be combined with one of the
+  above values. In these cases, the function determines the optimal threshold value using the Otsu's
+  or Triangle algorithm and uses it instead of the specified thresh.
+
+  @note Currently, the Otsu's and Triangle methods are implemented only for 8-bit single-channel images.
+
+  @param src input array (multiple-channel, 8-bit or 32-bit floating point).
+  @param dst output array of the same size  and type and the same number of channels as src.
+  @param thresh threshold value.
+  @param maxval maximum value to use with the #THRESH_BINARY and #THRESH_BINARY_INV thresholding
+  types.
+  @param type thresholding type (see #ThresholdTypes).
+  @return the computed threshold value if Otsu's or Triangle methods used.
+
+  @sa  adaptiveThreshold, findContours, compare, min, max
+*)
+// CV_EXPORTS_W double threshold( InputArray src, OutputArray dst,
+// double thresh, double maxval, int type );
+// 6609
+// ?threshold@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@NNH@Z
+// double cv::threshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int)
+function threshold(Src: TInputArray; dst: TOutputArray; thresh, maxval: double; &type: Int): double; external opencv_world_dll index 6609 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * @brief Converts an image from one color space to another.
+
+  The function converts an input image from one color space to another. In case of a transformation
+  to-from RGB color space, the order of the channels should be specified explicitly (RGB or BGR). Note
+  that the default color format in OpenCV is often referred to as RGB but it is actually BGR (the
+  bytes are reversed). So the first byte in a standard (24-bit) color image will be an 8-bit Blue
+  component, the second byte will be Green, and the third byte will be Red. The fourth, fifth, and
+  sixth bytes would then be the second pixel (Blue, then Green, then Red), and so on.
+
+  The conventional ranges for R, G, and B channel values are:
+  -   0 to 255 for CV_8U images
+  -   0 to 65535 for CV_16U images
+  -   0 to 1 for CV_32F images
+
+  In case of linear transformations, the range does not matter. But in case of a non-linear
+  transformation, an input RGB image should be normalized to the proper value range to get the correct
+  results, for example, for RGB \f$\rightarrow\f$ L\*u\*v\* transformation. For example, if you have a
+  32-bit floating-point image directly converted from an 8-bit image without any scaling, then it will
+  have the 0..255 value range instead of 0..1 assumed by the function. So, before calling #cvtColor ,
+  you need first to scale the image down:
+  @code
+  img *= 1./255;
+  cvtColor(img, img, COLOR_BGR2Luv);
+  @endcode
+  If you use #cvtColor with 8-bit images, the conversion will have some information lost. For many
+  applications, this will not be noticeable but it is recommended to use 32-bit images in applications
+  that need the full range of colors or that convert an image before an operation and then convert
+  back.
+
+  If conversion adds the alpha channel, its value will set to the maximum of corresponding channel
+  range: 255 for CV_8U, 65535 for CV_16U, 1 for CV_32F.
+
+  @param src input image: 8-bit unsigned, 16-bit unsigned ( CV_16UC... ), or single-precision
+  floating-point.
+  @param dst output image of the same size and depth as src.
+  @param code color space conversion code (see #ColorConversionCodes).
+  @param dstCn number of channels in the destination image; if the parameter is 0, the number of the
+  channels is derived automatically from src and code.
+
+  @see @ref imgproc_color_conversions
+*)
+// CV_EXPORTS_W void cvtColor( InputArray src, OutputArray dst, int code, int dstCn = 0 );
+// 4338
+// ?cvtColor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z
+// void cv::cvtColor(class cv::_InputArray const &,class cv::_OutputArray const &,int,int)
+procedure _cvtColor(Src: TInputArray; dst: TOutputArray; code: Int; dstCn: Int = 0); external opencv_world_dll index 4338 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure cvtColor(Src: TInputArray; dst: TOutputArray; code: ColorConversionCodes; dstCn: Int = 0);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 // ---------------------- end imgproc.hpp ----------------------
 
 implementation
+
+procedure cvtColor(Src: TInputArray; dst: TOutputArray; code: ColorConversionCodes; dstCn: Int = 0);
+begin
+  _cvtColor(Src, dst, Int(code), dstCn);
+end;
 
 procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX: double; sigmaY: double; borderType: BorderTypes);
 begin
@@ -1194,13 +1590,18 @@ begin
   _blur(Src, dst, UInt64(ksize), UInt64(anchor), Int(borderType));
 end;
 
-procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
-  bottomLeftOrigin: Bool = false);
+procedure putText(img: TInputOutputArray;
+
+  const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: Bool = false);
 begin
   _putText(img, text, UInt64(org), fontFace, fontScale, color, thickness, lineType, bottomLeftOrigin);
 end;
 
-procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: Int); overload;
+procedure copyMakeBorder(
+
+  const Src: TInputArray;
+
+  Var dst: TOutputArray; top, bottom, left, right, borderType: Int); overload;
 Var
   Scalar: TScalar;
 begin
@@ -1249,7 +1650,9 @@ begin
   Result := OpenCV.Import.step1(@Self, i);
 end;
 
-class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
+class operator TMat.assign(var Dest: TMat;
+
+  const [ref] Src: TMat);
 begin
   Finalize(Dest);
   OpenCV.Import.clone(@Src, @Dest);
@@ -1305,14 +1708,18 @@ begin
   Result := OpenCV.Import.type(@Self);
 end;
 
-class function TMat.zeros(const size: TSize; &type: Int): TMatExpr;
+class function TMat.zeros(
+
+  const size: TSize; &type: Int): TMatExpr;
 begin
   OpenCV.Import.zeros(@Result, UInt64(size), &type);
 end;
 
 { TInputArray }
 
-class operator TInputArray.Implicit(const m: TMat): TInputArray;
+class operator TInputArray.Implicit(
+
+  const m: TMat): TInputArray;
 begin
   Result.InputArray(m);
 end;
@@ -1322,7 +1729,9 @@ begin
   Result := OpenCV.Import.getObj(@Self);
 end;
 
-class operator TInputArray.Implicit(const IA: TInputArray): TMat;
+class operator TInputArray.Implicit(
+
+  const IA: TInputArray): TMat;
 begin
   Assert(IA.isMat);
   Result := pMat(IA.getObj)^.clone;
@@ -1333,12 +1742,16 @@ begin
   Constructor_InputArray(@Dest);
 end;
 
-class operator TInputArray.Finalize(var Dest: TInputArray);
+class operator TInputArray.Finalize(
+
+  var Dest: TInputArray);
 begin
   Destructor_InputArray(@Dest);
 end;
 
-procedure TInputArray.InputArray(const m: TMat);
+procedure TInputArray.InputArray(
+
+  const m: TMat);
 begin
   Constructor_InputArray(@Self, @m);
 end;
@@ -1355,40 +1768,54 @@ begin
   Constructor_OutputArray(@Dest);
 end;
 
-class operator TOutputArray.Finalize(var Dest: TOutputArray);
+class operator TOutputArray.Finalize(
+
+  var Dest: TOutputArray);
 begin
   Destructor_OutputArray(@Dest);
 end;
 
-class operator TOutputArray.Implicit(const m: TMat): TOutputArray;
+class operator TOutputArray.Implicit(
+
+  const m: TMat): TOutputArray;
 begin
   Result.OutputArray(m);
 end;
 
-class operator TOutputArray.Implicit(const OA: TOutputArray): TMat;
+class operator TOutputArray.Implicit(
+
+  const OA: TOutputArray): TMat;
 begin
   Assert(OA.InputArray.isMat);
   Result := pMat(OA.InputArray.getObj)^;
 end;
 
-procedure TOutputArray.OutputArray(const m: TMat);
+procedure TOutputArray.OutputArray(
+
+  const m: TMat);
 begin
   Constructor_OutputArray(@Self, @m);
 end;
 
 { TScalar }
 
-class function TScalar.create(const v0, v1, v2, v3: double): TScalar;
+class function TScalar.create(
+
+  const v0, v1, v2, v3: double): TScalar;
 begin
   constructor_Scalar(@Result, v0, v1, v2, v3);
 end;
 
-class function TScalar.create(const v0: double): TScalar;
+class function TScalar.create(
+
+  const v0: double): TScalar;
 begin
   constructor_Scalar(@Result, v0);
 end;
 
-class operator TScalar.Implicit(const v0: double): TScalar;
+class operator TScalar.Implicit(
+
+  const v0: double): TScalar;
 begin
   Result := TScalar.create(v0);
 end;
@@ -1398,27 +1825,35 @@ begin
   constructor_Scalar(@Dest);
 end;
 
-function Scalar(const v0, v1, v2, v3: double): TScalar;
+function Scalar(
+
+  const v0, v1, v2, v3: double): TScalar;
 begin
   Result := TScalar.create(v0, v1, v2, v3);
 end;
 
 { TSize_<T> }
 
-class function TSize_<T>.size(const _width, _height: T): TSize_<T>;
+class function TSize_<T>.size(
+
+  const _width, _height: T): TSize_<T>;
 begin
   Result.width := _width;
   Result.height := _height;
 end;
 
-function size(const _width, _height: Int): TSize;
+function size(
+
+  const _width, _height: Int): TSize;
 begin
   Result := TSize.size(_width, _height);
 end;
 
 { TMatExpr }
 
-class operator TMatExpr.Finalize(var Dest: TMatExpr);
+class operator TMatExpr.Finalize(
+
+  var Dest: TMatExpr);
 begin
   Destructor_MatExpr(@Dest);
 end;
@@ -1435,7 +1870,9 @@ end;
 
 { TMatSize }
 
-class operator TMatSize.Implicit(const m: TMatSize): TSize;
+class operator TMatSize.Implicit(
+
+  const m: TMatSize): TSize;
 begin
   MatSize_MatSizeToSize(@m, @Result);
 end;
@@ -1451,18 +1888,24 @@ end;
 
 { TInputOutputArray }
 
-class operator TInputOutputArray.Finalize(var Dest: TInputOutputArray);
+class operator TInputOutputArray.Finalize(
+
+  var Dest: TInputOutputArray);
 begin
   Destructor_InputOutputArray(@Dest);
 end;
 
-class operator TInputOutputArray.Implicit(const IOA: TInputOutputArray): TMat;
+class operator TInputOutputArray.Implicit(
+
+  const IOA: TInputOutputArray): TMat;
 begin
   Assert(IOA.OutputArray.InputArray.isMat);
   Result := pMat(IOA.OutputArray.InputArray.getObj)^;
 end;
 
-class operator TInputOutputArray.Implicit(const m: TMat): TInputOutputArray;
+class operator TInputOutputArray.Implicit(
+
+  const m: TMat): TInputOutputArray;
 begin
   Result.InputOutputArray(m);
 end;
@@ -1472,7 +1915,9 @@ begin
   Constructor_InputOutputArray(@Dest);
 end;
 
-procedure TInputOutputArray.InputOutputArray(const m: TMat);
+procedure TInputOutputArray.InputOutputArray(
+
+  const m: TMat);
 begin
   Constructor_InputOutputArray(@Self, @m);
 end;
@@ -1485,7 +1930,9 @@ begin
   Result.y := _y;
 end;
 
-function Point(const _x, _y: Int): TPoint;
+function Point(
+
+  const _x, _y: Int): TPoint;
 begin
   Result := TPoint.Point(_x, _y);
 end;

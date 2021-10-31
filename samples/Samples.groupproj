@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{E39AD7A1-1351-4E0B-BB4F-658A5154197C}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="cpp\tutorial_code\core\AddingImages\AddingImages.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="cpp\tutorial_code\ImgProc\Smoothing\Smoothing.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="cpp\tutorial_code\ImgProc\Threshold\Thresholdp.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="AddingImages">
+        <MSBuild Projects="cpp\tutorial_code\core\AddingImages\AddingImages.dproj"/>
+    </Target>
+    <Target Name="AddingImages:Clean">
+        <MSBuild Projects="cpp\tutorial_code\core\AddingImages\AddingImages.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AddingImages:Make">
+        <MSBuild Projects="cpp\tutorial_code\core\AddingImages\AddingImages.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Smoothing">
+        <MSBuild Projects="cpp\tutorial_code\ImgProc\Smoothing\Smoothing.dproj"/>
+    </Target>
+    <Target Name="Smoothing:Clean">
+        <MSBuild Projects="cpp\tutorial_code\ImgProc\Smoothing\Smoothing.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Smoothing:Make">
+        <MSBuild Projects="cpp\tutorial_code\ImgProc\Smoothing\Smoothing.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Thresholdp">
+        <MSBuild Projects="cpp\tutorial_code\ImgProc\Threshold\Thresholdp.dproj"/>
+    </Target>
+    <Target Name="Thresholdp:Clean">
+        <MSBuild Projects="cpp\tutorial_code\ImgProc\Threshold\Thresholdp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Thresholdp:Make">
+        <MSBuild Projects="cpp\tutorial_code\ImgProc\Threshold\Thresholdp.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="AddingImages;Smoothing;Thresholdp"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
