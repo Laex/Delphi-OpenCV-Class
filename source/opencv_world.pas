@@ -26,11 +26,29 @@ const
   CV_64F = 6;
   CV_16F = 7;
 
+  // ---------------------- Start base.hpp ----------------------
+type
+  // ! Various border types, image boundaries are denoted with `|`
+  // ! @see borderInterpolate, copyMakeBorder
+  BorderTypes = (           //
+    BORDER_CONSTANT = 0,    // !< `iiiiii|abcdefgh|iiiiiii`  with some specified `i`
+    BORDER_REPLICATE = 1,   // !< `aaaaaa|abcdefgh|hhhhhhh`
+    BORDER_REFLECT = 2,     // !< `fedcba|abcdefgh|hgfedcb`
+    BORDER_WRAP = 3,        // !< `cdefgh|abcdefgh|abcdefg`
+    BORDER_REFLECT_101 = 4, // !< `gfedcb|abcdefgh|gfedcba`
+    BORDER_TRANSPARENT = 5, // !< `uvwxyz|abcdefgh|ijklmno`
+
+    BORDER_REFLECT101 = BORDER_REFLECT_101, // !< same as BORDER_REFLECT_101
+    BORDER_DEFAULT = BORDER_REFLECT_101,    // !< same as BORDER_REFLECT_101
+    BORDER_ISOLATED = 16                    // !< do not look outside of ROI
+    );
+  // ---------------------- End base.hpp ----------------------
+
   // ---------------------- cvdef.h ----------------------
 const
-  (* ***************************************************************************************\
-    *                                  Matrix type (Mat)                                     *
-    \*************************************************************************************** *)
+  (* ************************************************************************************** *)
+  (* Matrix type (Mat) *)
+  (* ************************************************************************************** *)
 
   CV_MAT_CN_MASK = ((CV_CN_MAX - 1) shl CV_CN_SHIFT);
   // CV_MAT_CN(flags)       = ((((flags) & CV_MAT_CN_MASK) >> CV_CN_SHIFT) + 1);
@@ -48,17 +66,102 @@ const
 
 Type
 
+  // ---------------------- types.hpp ----------------------
+  TSize_<T> = record
+  public
+    // //! default constructor
+    // Size_();
+    class function size(const _width, _height: T): TSize_<T>; static; // Size_(_Tp _width, _Tp _height);
+    // #if OPENCV_ABI_COMPATIBILITY < 500
+    // Size_(const Size_& sz) = default;
+    // Size_(Size_&& sz) CV_NOEXCEPT = default;
+    // #endif
+    // Size_(const Point_<_Tp>& pt);
+    //
+    // #if OPENCV_ABI_COMPATIBILITY < 500
+    // Size_& operator = (const Size_& sz) = default;
+    // Size_& operator = (Size_&& sz) CV_NOEXCEPT = default;
+    // #endif
+    // //! the area (width*height)
+    // _Tp area() const;
+    // //! aspect ratio (width/height)
+    // double aspectRatio() const;
+    // //! true if empty
+    // bool empty() const;
+    //
+    // //! conversion of another data type.
+    // template<typename _Tp2> operator Size_<_Tp2>() const;
+  public
+    width: T;  // _Tp width;  // !< the width
+    height: T; // _Tp height; // !< the height
+  end;
+
+  TSize2i = TSize_<Int>;
+  TSize = TSize2i;
+
+function size(const _width, _height: Int): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+type
+  TPoint_<T> = record
+  public
+    // ! default constructor
+    // Point_();
+    class function Point(_x, _y: T): TPoint_<T>; static; // Point_(_Tp _x, _Tp _y);
+    // #if (defined(__GNUC__) && __GNUC__ < 5)  // GCC 4.x bug. Details: https://github.com/opencv/opencv/pull/20837
+    // Point_(const Point_& pt);
+    // Point_(Point_&& pt) CV_NOEXCEPT = default;
+    // #elif OPENCV_ABI_COMPATIBILITY < 500
+    // Point_(const Point_& pt) = default;
+    // Point_(Point_&& pt) CV_NOEXCEPT = default;
+    // #endif
+    // Point_(const Size_<_Tp>& sz);
+    // Point_(const Vec<_Tp, 2>& v);
+    //
+    // #if (defined(__GNUC__) && __GNUC__ < 5)  // GCC 4.x bug. Details: https://github.com/opencv/opencv/pull/20837
+    // Point_& operator = (const Point_& pt);
+    // Point_& operator = (Point_&& pt) CV_NOEXCEPT = default;
+    // #elif OPENCV_ABI_COMPATIBILITY < 500
+    // Point_& operator = (const Point_& pt) = default;
+    // Point_& operator = (Point_&& pt) CV_NOEXCEPT = default;
+    // #endif
+    // ! conversion to another data type
+    // template<typename _Tp2> operator Point_<_Tp2>() const;
+
+    // ! conversion to the old-style C structures
+    // operator Vec<_Tp, 2>() const;
+
+    // ! dot product
+    // _Tp dot(const Point_& pt) const;
+    // ! dot product computed in double-precision arithmetics
+    // double ddot(const Point_& pt) const;
+    // ! cross-product
+    // double cross(const Point_& pt) const;
+    // ! checks whether the point is inside the specified rectangle
+    // bool inside(const Rect_<_Tp>& r) const;
+  public
+    x: T; // !< x coordinate of the point
+    y: T; // !< y coordinate of the point
+  end;
+
+  TPoint2i = TPoint_<Int>;
+  TPoint = TPoint2i;
+
+function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+// ---------------------- mat.hpp ----------------------
+Type
   TMatSize = record
+  public
     // explicit MatSize(int* _p) CV_NOEXCEPT;
     // int dims() const CV_NOEXCEPT;
-    // Size operator()() const;
+    class operator Implicit(const m: TMatSize): TSize; // Size operator()() const;
     // const int& operator[](int i) const;
     // int& operator[](int i);
     // operator const int*() const CV_NOEXCEPT;  // TODO OpenCV 4.0: drop this
     // bool operator == (const MatSize& sz) const CV_NOEXCEPT;
     // bool operator != (const MatSize& sz) const CV_NOEXCEPT;
-    // int* p;
-    p: pInt;
+  private
+    p: pInt; // pInt; // int* p;
   end;
 
   TMatStep = record
@@ -70,6 +173,50 @@ Type
     // MatStep& operator = (size_t s);
     p: psize_t;                    // size_t* p;
     buf: array [0 .. 1] of size_t; // size_t buf[2];
+  end;
+
+  // pMatOp = ^TMatOp;
+  pMatOp = Pointer;
+
+  pMatExpr = ^TMatExpr;
+
+  TMatExpr = record
+  public
+    class operator Initialize(out Dest: TMatExpr); // MatExpr();
+    // explicit MatExpr(const Mat& m);
+    //
+    // MatExpr(const MatOp* _op, int _flags, const Mat& _a = Mat(), const Mat& _b = Mat(),
+    // const Mat& _c = Mat(), double _alpha = 1, double _beta = 1, const Scalar& _s = Scalar());
+    //
+    // operator Mat() const;
+    //
+    function size: TSize; {$IFDEF USE_INLINE}inline; {$ENDIF} // Size size() const;
+    // int type() const;
+    //
+    // MatExpr row(int y) const;
+    // MatExpr col(int x) const;
+    // MatExpr diag(int d = 0) const;
+    // MatExpr operator()( const Range& rowRange, const Range& colRange ) const;
+    // MatExpr operator()( const Rect& roi ) const;
+    //
+    // MatExpr t() const;
+    // MatExpr inv(int method = DECOMP_LU) const;
+    // MatExpr mul(const MatExpr& e, double scale=1) const;
+    // MatExpr mul(const Mat& m, double scale=1) const;
+    //
+    // Mat cross(const Mat& m) const;
+    // double dot(const Mat& m) const;
+    //
+    // void swap(MatExpr& b);
+    //
+    class operator Finalize(var Dest: TMatExpr);
+  public
+    op: pMatOp; // const MatOp* op;
+    flags: Int; // int flags;
+    //
+    a, b, c: TCVMat;     // Mat a, b, c;
+    alpha, beta: double; // double alpha, beta;
+    s: TCVScalar;        // Scalar s;
   end;
 
   pMat = ^TMat;
@@ -98,10 +245,10 @@ Type
 
     // default destructor
     class operator Finalize(var Dest: TMat); // ~Mat();
-    class operator Assign(var Dest: TMat; const [ref] Src: TMat);
+    class operator assign(var Dest: TMat; const [ref] Src: TMat);
 
     // Mat& operator = (const Mat& m);
-    // Mat& operator = (const MatExpr& expr);
+    class operator Implicit(const m: TMatExpr): TMat; // Mat& operator = (const MatExpr& expr);
     // UMat getUMat(AccessFlag accessFlags, UMatUsageFlags usageFlags = USAGE_DEFAULT) const;
     // Mat row(int y) const;
     // Mat col(int x) const;
@@ -128,7 +275,7 @@ Type
     // Mat cross(InputArray m) const;
     // double dot(InputArray m) const;
     // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
-    // CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
+    class function zeros(const size: TSize; &type: Int): TMatExpr; static; // CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
     // CV_NODISCARD_STD static MatExpr zeros(int ndims, const int* sz, int type);
     // CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
     // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
@@ -192,68 +339,80 @@ Type
     TYPE_MASK  = $00000FFF;
     DEPTH_MASK = 7;
   public
+    // CVMat: TCVMat;
     flags: Int; // int flags;
-    // //! the matrix dimensionality, >= 2
+    // ! the matrix dimensionality, >= 2
     dims: Int; // int dims;
-    // //! the number of rows and columns or (-1, -1) when the matrix has more than 2 dimensions
+    // ! the number of rows and columns or (-1, -1) when the matrix has more than 2 dimensions
     rows, cols: Int; // int rows, cols;
-    // //! pointer to the data
+    // ! pointer to the data
     data: pUChar; // uchar* data;
-
-    // //! helper fields used in locateROI and adjustROI
+    //
+    // ! helper fields used in locateROI and adjustROI
     datastart: pUChar; // const uchar* datastart;
     dataend: pUChar;   // const uchar* dataend;
     datalimit: pUChar; // const uchar* datalimit;
-
-    // //! custom allocator
+    //
+    // ! custom allocator
     allocator: pMatAllocator; // MatAllocator* allocator;
-    // //! and the standard allocator
+    // ! and the standard allocator
     // static MatAllocator* getStdAllocator();
     // static MatAllocator* getDefaultAllocator();
     // static void setDefaultAllocator(MatAllocator* allocator);
-
-    // //! internal use method: updates the continuity flag
+    //
+    // ! internal use method: updates the continuity flag
     // void updateContinuityFlag();
-
-    // //! interaction with UMat
+    //
+    // ! interaction with UMat
     u: pUMatData; // UMatData* u;
-
+    //
     size: TMatSize; // MatSize size;
     step: TMatStep; // MatStep step;
   end;
 
-  // Mat = TMat;
-
-  TSize_<T> = record
-    // //! default constructor
-    // Size_();
-    // Size_(_Tp _width, _Tp _height);
-    // #if OPENCV_ABI_COMPATIBILITY < 500
-    // Size_(const Size_& sz) = default;
-    // Size_(Size_&& sz) CV_NOEXCEPT = default;
-    // #endif
-    // Size_(const Point_<_Tp>& pt);
-    //
-    // #if OPENCV_ABI_COMPATIBILITY < 500
-    // Size_& operator = (const Size_& sz) = default;
-    // Size_& operator = (Size_&& sz) CV_NOEXCEPT = default;
-    // #endif
-    // //! the area (width*height)
-    // _Tp area() const;
-    // //! aspect ratio (width/height)
-    // double aspectRatio() const;
-    // //! true if empty
-    // bool empty() const;
-    //
-    // //! conversion of another data type.
-    // template<typename _Tp2> operator Size_<_Tp2>() const;
-
-    width: T;  // _Tp width;  // !< the width
-    height: T; // _Tp height; // !< the height
-  end;
-
-  Size2i = TSize_<Int>;
-  size = Size2i;
+  // TMatOp_vfptr = array [0 .. 25] of Pointer;
+  // pMatOp_vfptr = ^TMatOp_vfptr;
+  // TMatOp = record
+  // private
+  // _vfptr: pMatOp_vfptr;
+  // public
+  // // MatOp();
+  // // virtual ~MatOp();
+  // //
+  // // 1 virtual bool elementWise(const MatExpr& expr) const;
+  // procedure assign(const expr: TMatExpr; Var m: TMat; &type: Int = -1); {$IFDEF USE_INLINE}inline; {$ENDIF}// 2 virtual void assign(const MatExpr& expr, Mat& m, int type=-1) const = 0;
+  // // 3 virtual void roi(const MatExpr& expr, const Range& rowRange,
+  // // const Range& colRange, MatExpr& res) const;
+  // // 4 virtual void diag(const MatExpr& expr, int d, MatExpr& res) const;
+  // // 5 virtual void augAssignAdd(const MatExpr& expr, Mat& m) const;
+  // // 6 virtual void augAssignSubtract(const MatExpr& expr, Mat& m) const;
+  // // 7 virtual void augAssignMultiply(const MatExpr& expr, Mat& m) const;
+  // // 8 virtual void augAssignDivide(const MatExpr& expr, Mat& m) const;
+  // // 9 virtual void augAssignAnd(const MatExpr& expr, Mat& m) const;
+  // // 10 virtual void augAssignOr(const MatExpr& expr, Mat& m) const;
+  // // 11 virtual void augAssignXor(const MatExpr& expr, Mat& m) const;
+  // //
+  // // 12 virtual void add(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res) const;
+  // // 13 virtual void add(const MatExpr& expr1, const Scalar& s, MatExpr& res) const;
+  // //
+  // // 14 virtual void subtract(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res) const;
+  // // 15 virtual void subtract(const Scalar& s, const MatExpr& expr, MatExpr& res) const;
+  // //
+  // // 16 virtual void multiply(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res, double scale=1) const;
+  // // 17 virtual void multiply(const MatExpr& expr1, double s, MatExpr& res) const;
+  // //
+  // // 18 virtual void divide(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res, double scale=1) const;
+  // // 19 virtual void divide(double s, const MatExpr& expr, MatExpr& res) const;
+  // //
+  // // 20 virtual void abs(const MatExpr& expr, MatExpr& res) const;
+  // //
+  // // 21 virtual void transpose(const MatExpr& expr, MatExpr& res) const;
+  // // 22 virtual void matmul(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res) const;
+  // // 23 virtual void invert(const MatExpr& expr, int method, MatExpr& res) const;
+  // //
+  // // 24 virtual Size size(const MatExpr& expr) const;
+  // // 25 virtual int type(const MatExpr& expr) const;
+  // end;
 
   TScalar = record
   private
@@ -262,7 +421,7 @@ Type
 {$HINTS ON}
   public
     class operator Initialize(out Dest: TScalar); // Scalar_();
-    class function create(const v0, v1, v2, v3: double): TScalar; overload; static; // Scalar_(_Tp v0, _Tp v1, _Tp v2=0, _Tp v3=0);
+    class function create(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; overload; static; // Scalar_(_Tp v0, _Tp v1, _Tp v2=0, _Tp v3=0);
     class function create(const v0: double): TScalar; overload; static; // Scalar_(_Tp v0);
     // Scalar_(const Scalar_& s);
     // Scalar_(Scalar_&& s) CV_NOEXCEPT;
@@ -280,6 +439,9 @@ Type
     class operator Implicit(const v0: double): TScalar;
   end;
 
+function Scalar(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+type
   pInputArray = ^TInputArray;
 
   TInputArray = record
@@ -297,7 +459,7 @@ Type
       STD_VECTOR_VECTOR = 4 shl KIND_SHIFT, //
       STD_VECTOR_MAT = 5 shl KIND_SHIFT,    //
 {$IF OPENCV_ABI_COMPATIBILITY < 500}
-      EXPR = 6 shl KIND_SHIFT, // !< removed: https://github.com/opencv/opencv/pull/17046
+      expr = 6 shl KIND_SHIFT, // !< removed: https://github.com/opencv/opencv/pull/17046
 {$IFEND}
       OPENGL_BUFFER = 7 shl KIND_SHIFT,            //
       CUDA_HOST_MEM = 8 shl KIND_SHIFT,            //
@@ -374,7 +536,7 @@ Type
 {$HINTS OFF}
     flags: Int;   // int flags;
     obj: Pointer; // void* obj;
-    sz: size;     // Size sz;
+    sz: TSize;    // Size sz;
 {$HINTS ON}
   end;
 
@@ -410,6 +572,7 @@ Type
     // _OutputArray(std::vector<std::vector<bool> >&) = delete;  // not supported
     // _OutputArray(UMat& m);
     // _OutputArray(std::vector<UMat>& vec);
+    class operator Finalize(var Dest: TOutputArray); // destructor
 
     // bool fixedSize() const;
     // bool fixedType() const;
@@ -436,10 +599,62 @@ Type
     //
     // void move(UMat& u) const;
     // void move(Mat& m) const;
-    class operator Finalize(var Dest: TOutputArray); // ~_InputArray();
 
     class operator Implicit(const m: TMat): TOutputArray;
     class operator Implicit(const OA: TOutputArray): TMat;
+  end;
+
+  TInputOutputArray = record
+  private
+{$HINTS OFF}
+    OutputArray: TOutputArray;
+{$HINTS ON}
+  public
+    class operator Initialize(out Dest: TInputOutputArray); // _InputOutputArray();
+    // _InputOutputArray(int _flags, void* _obj);
+    procedure InputOutputArray(const m: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}// _InputOutputArray(Mat& m);
+    // _InputOutputArray(std::vector<Mat>& vec);
+    // _InputOutputArray(cuda::GpuMat& d_mat);
+    // _InputOutputArray(ogl::Buffer& buf);
+    // _InputOutputArray(cuda::HostMem& cuda_mem);
+    // template<typename _Tp> _InputOutputArray(cudev::GpuMat_<_Tp>& m);
+    // template<typename _Tp> _InputOutputArray(std::vector<_Tp>& vec);
+    // _InputOutputArray(std::vector<bool>& vec) = delete;  // not supported
+    // template<typename _Tp> _InputOutputArray(std::vector<std::vector<_Tp> >& vec);
+    // template<typename _Tp> _InputOutputArray(std::vector<Mat_<_Tp> >& vec);
+    // template<typename _Tp> _InputOutputArray(Mat_<_Tp>& m);
+    // template<typename _Tp> _InputOutputArray(_Tp* vec, int n);
+    // template<typename _Tp, int m, int n> _InputOutputArray(Matx<_Tp, m, n>& matx);
+    // _InputOutputArray(UMat& m);
+    // _InputOutputArray(std::vector<UMat>& vec);
+    class operator Finalize(var Dest: TInputOutputArray); // destructor
+    //
+    // _InputOutputArray(const Mat& m);
+    // _InputOutputArray(const std::vector<Mat>& vec);
+    // _InputOutputArray(const cuda::GpuMat& d_mat);
+    // _InputOutputArray(const std::vector<cuda::GpuMat>& d_mat);
+    // _InputOutputArray(const ogl::Buffer& buf);
+    // _InputOutputArray(const cuda::HostMem& cuda_mem);
+    // template<typename _Tp> _InputOutputArray(const cudev::GpuMat_<_Tp>& m);
+    // template<typename _Tp> _InputOutputArray(const std::vector<_Tp>& vec);
+    // template<typename _Tp> _InputOutputArray(const std::vector<std::vector<_Tp> >& vec);
+    // template<typename _Tp> _InputOutputArray(const std::vector<Mat_<_Tp> >& vec);
+    // template<typename _Tp> _InputOutputArray(const Mat_<_Tp>& m);
+    // template<typename _Tp> _InputOutputArray(const _Tp* vec, int n);
+    // template<typename _Tp, int m, int n> _InputOutputArray(const Matx<_Tp, m, n>& matx);
+    // _InputOutputArray(const UMat& m);
+    // _InputOutputArray(const std::vector<UMat>& vec);
+    //
+    // template<typename _Tp, std::size_t _Nm> _InputOutputArray(std::array<_Tp, _Nm>& arr);
+    // template<typename _Tp, std::size_t _Nm> _InputOutputArray(const std::array<_Tp, _Nm>& arr);
+    // template<std::size_t _Nm> _InputOutputArray(std::array<Mat, _Nm>& arr);
+    // template<std::size_t _Nm> _InputOutputArray(const std::array<Mat, _Nm>& arr);
+    //
+    // template<typename _Tp> static _InputOutputArray rawInOut(std::vector<_Tp>& vec);
+    // template<typename _Tp, std::size_t _Nm> _InputOutputArray rawInOut(std::array<_Tp, _Nm>& arr);
+
+    class operator Implicit(const m: TMat): TInputOutputArray;
+    class operator Implicit(const IOA: TInputOutputArray): TMat;
   end;
 
   // ---------------------- core.hpp ----------------------
@@ -742,7 +957,248 @@ procedure imshow(const winname: CppString; Mat: TInputArray); overload; external
 
 // ---------------------- end imgcodecs.hpp ----------------------
 
+// ---------------------- highgui.hpp ----------------------
+Type
+  WindowFlags = (                //
+    WINDOW_NORMAL = $00000000,   // !< the user can resize the window (no constraint) / also use to switch a fullscreen window to a normal size.
+    WINDOW_AUTOSIZE = $00000001, // !< the user cannot resize the window, the size is constrainted by the image displayed.
+    WINDOW_OPENGL = $00001000,   // !< window with opengl support.
+
+    WINDOW_FULLSCREEN = 1,           // !< change the window to fullscreen.
+    WINDOW_FREERATIO = $00000100,    // !< the image expends as much as it can (no ratio constraint).
+    WINDOW_KEEPRATIO = $00000000,    // !< the ratio of the image is respected.
+    WINDOW_GUI_EXPANDED = $00000000, // !< status bar and tool bar
+    WINDOW_GUI_NORMAL = $00000010    // !< old fashious way
+    );
+
+  (* * @brief Creates a window.
+
+    The function namedWindow creates a window that can be used as a placeholder for images and
+    trackbars. Created windows are referred to by their names.
+
+    If a window with the same name already exists, the function does nothing.
+
+    You can call cv::destroyWindow or cv::destroyAllWindows to close the window and de-allocate any associated
+    memory usage. For a simple program, you do not really have to call these functions because all the
+    resources and windows of the application are closed automatically by the operating system upon exit.
+
+    @note
+
+    Qt backend supports additional flags:
+    -   **WINDOW_NORMAL or WINDOW_AUTOSIZE:** WINDOW_NORMAL enables you to resize the
+    window, whereas WINDOW_AUTOSIZE adjusts automatically the window size to fit the
+    displayed image (see imshow ), and you cannot change the window size manually.
+    -   **WINDOW_FREERATIO or WINDOW_KEEPRATIO:** WINDOW_FREERATIO adjusts the image
+    with no respect to its ratio, whereas WINDOW_KEEPRATIO keeps the image ratio.
+    -   **WINDOW_GUI_NORMAL or WINDOW_GUI_EXPANDED:** WINDOW_GUI_NORMAL is the old way to draw the window
+    without statusbar and toolbar, whereas WINDOW_GUI_EXPANDED is a new enhanced GUI.
+    By default, flags == WINDOW_AUTOSIZE | WINDOW_KEEPRATIO | WINDOW_GUI_EXPANDED
+
+    @param winname Name of the window in the window caption that may be used as a window identifier.
+    @param flags Flags of the window. The supported flags are: (cv::WindowFlags)
+  *)
+  // CV_EXPORTS_W void namedWindow(const String& winname, int flags = WINDOW_AUTOSIZE);
+  // ?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
+  // void cv::namedWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTOSIZE); overload; external opencv_world_dll index 5721
+{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+
+// ---------------------- end highgui.hpp ----------------------
+
+// ---------------------- start imgproc.hpp ----------------------
+type
+  LineTypes = (  //
+    FILLED = -1, //
+    LINE_4 = 4,  // !< 4-connected line
+    LINE_8 = 8,  // !< 8-connected line
+    LINE_AA = 16 // !< antialiased line
+    );
+
+  HersheyFonts = (                   //
+    FONT_HERSHEY_SIMPLEX = 0,        // !< normal size sans-serif font
+    FONT_HERSHEY_PLAIN = 1,          // !< small size sans-serif font
+    FONT_HERSHEY_DUPLEX = 2,         // !< normal size sans-serif font (more complex than FONT_HERSHEY_SIMPLEX)
+    FONT_HERSHEY_COMPLEX = 3,        // !< normal size serif font
+    FONT_HERSHEY_TRIPLEX = 4,        // !< normal size serif font (more complex than FONT_HERSHEY_COMPLEX)
+    FONT_HERSHEY_COMPLEX_SMALL = 5,  // !< smaller version of FONT_HERSHEY_COMPLEX
+    FONT_HERSHEY_SCRIPT_SIMPLEX = 6, // !< hand-writing style font
+    FONT_HERSHEY_SCRIPT_COMPLEX = 7, // !< more complex variant of FONT_HERSHEY_SCRIPT_SIMPLEX
+    FONT_ITALIC = 16                 // !< flag for italic font
+    );
+
+  (* * @brief Draws a text string.
+
+    The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered
+    using the specified font are replaced by question marks. See #getTextSize for a text rendering code
+    example.
+
+    @param img Image.
+    @param text Text string to be drawn.
+    @param org Bottom-left corner of the text string in the image.
+    @param fontFace Font type, see #HersheyFonts.
+    @param fontScale Font scale factor that is multiplied by the font-specific base size.
+    @param color Text color.
+    @param thickness Thickness of the lines used to draw a text.
+    @param lineType Line type. See #LineTypes
+    @param bottomLeftOrigin When true, the image data origin is at the bottom-left corner. Otherwise,
+    it is at the top-left corner.
+  *)
+  // CV_EXPORTS_W void putText( InputOutputArray img, const String& text, Point org,
+  // int fontFace, double fontScale, Scalar color,
+  // int thickness = 1, int lineType = LINE_8,
+  // bool bottomLeftOrigin = false );
+  // 5972
+  // ?putText@cv@@YAXAEBV_InputOutputArray@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z
+  // void cv::putText(class cv::_InputOutputArray const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::Point_<int>,int,double,class cv::Scalar_<double>,int,int,bool)
+procedure _putText(img: TInputOutputArray; const text: CppString; org: UInt64; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
+  bottomLeftOrigin: Bool = false); external opencv_world_dll index 5972
+{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
+  bottomLeftOrigin: Bool = false); {$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @brief Blurs an image using the normalized box filter.
+
+  The function smooths an image using the kernel:
+
+  \f[\texttt{K} =  \frac{1}{\texttt{ksize.width*ksize.height}} \begin{bmatrix} 1 & 1 & 1 &  \cdots & 1 & 1  \\ 1 & 1 & 1 &  \cdots & 1 & 1  \\ \hdotsfor{6} \\ 1 & 1 & 1 &  \cdots & 1 & 1  \\ \end{bmatrix}\f]
+
+  The call `blur(src, dst, ksize, anchor, borderType)` is equivalent to `boxFilter(src, dst, src.type(), ksize,
+  anchor, true, borderType)`.
+
+  @param src input image; it can have any number of channels, which are processed independently, but
+  the depth should be CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
+  @param dst output image of the same size and type as src.
+  @param ksize blurring kernel size.
+  @param anchor anchor point; default value Point(-1,-1) means that the anchor is at the kernel
+  center.
+  @param borderType border mode used to extrapolate pixels outside of the image, see #BorderTypes. #BORDER_WRAP is not supported.
+  @sa  boxFilter, bilateralFilter, GaussianBlur, medianBlur
+*)
+// CV_EXPORTS_W void blur( InputArray src, OutputArray dst,
+// Size ksize, Point anchor = Point(-1,-1),
+// int borderType = BORDER_DEFAULT );
+// 3649
+// ?blur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@V?$Point_@H@1@H@Z
+// void cv::blur(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,class cv::Point_<int>,int)
+
+procedure _blur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; anchor: UInt64 { TPoint  = Point(-1, -1) }; borderType: Int { = BORDER_DEFAULT } ); external opencv_world_dll index 3649
+{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize; anchor: TPoint; borderType: BorderTypes = BORDER_DEFAULT); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @brief Blurs an image using a Gaussian filter.
+
+  The function convolves the source image with the specified Gaussian kernel. In-place filtering is
+  supported.
+
+  @param src input image; the image can have any number of channels, which are processed
+  independently, but the depth should be CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
+  @param dst output image of the same size and type as src.
+  @param ksize Gaussian kernel size. ksize.width and ksize.height can differ but they both must be
+  positive and odd. Or, they can be zero's and then they are computed from sigma.
+  @param sigmaX Gaussian kernel standard deviation in X direction.
+  @param sigmaY Gaussian kernel standard deviation in Y direction; if sigmaY is zero, it is set to be
+  equal to sigmaX, if both sigmas are zeros, they are computed from ksize.width and ksize.height,
+  respectively (see #getGaussianKernel for details); to fully control the result regardless of
+  possible future modifications of all this semantics, it is recommended to specify all of ksize,
+  sigmaX, and sigmaY.
+  @param borderType pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not supported.
+
+  @sa  sepFilter2D, filter2D, blur, boxFilter, bilateralFilter, medianBlur
+*)
+// CV_EXPORTS_W void GaussianBlur( InputArray src, OutputArray dst, Size ksize,
+// double sigmaX, double sigmaY = 0,
+// int borderType = BORDER_DEFAULT );
+// 3370
+// ?GaussianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z
+// void cv::GaussianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,double,double,int)
+procedure _GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; sigmaX: double; sigmaY: double { = 0 }; borderType: Int { = BORDER_DEFAULT }
+  ); external opencv_world_dll index 3370 {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX: double; sigmaY: double = 0; borderType: BorderTypes = BORDER_DEFAULT); {$IFDEF USE_INLINE}inline;
+{$ENDIF}
+//
+(* * @brief Applies the bilateral filter to an image.
+
+  The function applies bilateral filtering to the input image, as described in
+  http://www.dai.ed.ac.uk/CVonline/LOCAL_COPIES/MANDUCHI1/Bilateral_Filtering.html
+  bilateralFilter can reduce unwanted noise very well while keeping edges fairly sharp. However, it is
+  very slow compared to most filters.
+
+  _Sigma values_: For simplicity, you can set the 2 sigma values to be the same. If they are small (\<
+  10), the filter will not have much effect, whereas if they are large (\> 150), they will have a very
+  strong effect, making the image look "cartoonish".
+
+  _Filter size_: Large filters (d \> 5) are very slow, so it is recommended to use d=5 for real-time
+  applications, and perhaps d=9 for offline applications that need heavy noise filtering.
+
+  This filter does not work inplace.
+  @param src Source 8-bit or floating-point, 1-channel or 3-channel image.
+  @param dst Destination image of the same size and type as src .
+  @param d Diameter of each pixel neighborhood that is used during filtering. If it is non-positive,
+  it is computed from sigmaSpace.
+  @param sigmaColor Filter sigma in the color space. A larger value of the parameter means that
+  farther colors within the pixel neighborhood (see sigmaSpace) will be mixed together, resulting
+  in larger areas of semi-equal color.
+  @param sigmaSpace Filter sigma in the coordinate space. A larger value of the parameter means that
+  farther pixels will influence each other as long as their colors are close enough (see sigmaColor
+  ). When d\>0, it specifies the neighborhood size regardless of sigmaSpace. Otherwise, d is
+  proportional to sigmaSpace.
+  @param borderType border mode used to extrapolate pixels outside of the image, see #BorderTypes
+*)
+// CV_EXPORTS_W void bilateralFilter( InputArray src, OutputArray dst, int d,
+// double sigmaColor, double sigmaSpace,
+// int borderType = BORDER_DEFAULT );
+// 3615
+// ?bilateralFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNNH@Z
+// void cv::bilateralFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,int)
+procedure bilateralFilter(Src: TInputArray; dst: TOutputArray; d: Int; sigmaColor, sigmaSpace: double; borderType: BorderTypes = BORDER_DEFAULT);
+external opencv_world_dll index 3615 {$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+//
+(* * @brief Blurs an image using the median filter.
+
+  The function smoothes an image using the median filter with the \f$\texttt{ksize} \times
+  \texttt{ksize}\f$ aperture. Each channel of a multi-channel image is processed independently.
+  In-place operation is supported.
+
+  @note The median filter uses #BORDER_REPLICATE internally to cope with border pixels, see #BorderTypes
+
+  @param src input 1-, 3-, or 4-channel image; when ksize is 3 or 5, the image depth should be
+  CV_8U, CV_16U, or CV_32F, for larger aperture sizes, it can only be CV_8U.
+  @param dst destination array of the same size and type as src.
+  @param ksize aperture linear size; it must be odd and greater than 1, for example: 3, 5, 7 ...
+  @sa  bilateralFilter, blur, boxFilter, GaussianBlur
+*)
+// CV_EXPORTS_W void medianBlur( InputArray src, OutputArray dst, int ksize );
+// 5628
+// ?medianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
+// void cv::medianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,int)
+procedure medianBlur(Src: TInputArray; dst: TOutputArray; ksize: Int); external opencv_world_dll index 5628
+{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+
+// ---------------------- end imgproc.hpp ----------------------
+
 implementation
+
+procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX: double; sigmaY: double; borderType: BorderTypes);
+begin
+  _GaussianBlur(Src, dst, UInt64(ksize), sigmaX, sigmaY, Int(borderType));
+end;
+
+procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize);
+begin
+  blur(Src, dst, ksize, Point(-1, -1), BORDER_DEFAULT);
+end;
+
+procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize; anchor: TPoint; borderType: BorderTypes);
+begin
+  _blur(Src, dst, UInt64(ksize), UInt64(anchor), Int(borderType));
+end;
+
+procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
+  bottomLeftOrigin: Bool = false);
+begin
+  _putText(img, text, UInt64(org), fontFace, fontScale, color, thickness, lineType, bottomLeftOrigin);
+end;
 
 procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: Int); overload;
 Var
@@ -752,6 +1208,11 @@ begin
 end;
 
 { TMat }
+
+class operator TMat.Implicit(const m: TMatExpr): TMat;
+begin
+  Mat_Operator_Assign(@Result, @m);
+end;
 
 class operator TMat.Initialize(out Dest: TMat);
 begin
@@ -788,7 +1249,7 @@ begin
   Result := OpenCV.Import.step1(@Self, i);
 end;
 
-class operator TMat.Assign(var Dest: TMat; const [ref] Src: TMat);
+class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
 begin
   Finalize(Dest);
   OpenCV.Import.clone(@Src, @Dest);
@@ -842,6 +1303,11 @@ end;
 function TMat.&type: Int;
 begin
   Result := OpenCV.Import.type(@Self);
+end;
+
+class function TMat.zeros(const size: TSize; &type: Int): TMatExpr;
+begin
+  OpenCV.Import.zeros(@Result, UInt64(size), &type);
 end;
 
 { TInputArray }
@@ -902,7 +1368,7 @@ end;
 class operator TOutputArray.Implicit(const OA: TOutputArray): TMat;
 begin
   Assert(OA.InputArray.isMat);
-  Result := pMat(OA.InputArray.getObj)^ { .clone };
+  Result := pMat(OA.InputArray.getObj)^;
 end;
 
 procedure TOutputArray.OutputArray(const m: TMat);
@@ -930,6 +1396,98 @@ end;
 class operator TScalar.Initialize(out Dest: TScalar);
 begin
   constructor_Scalar(@Dest);
+end;
+
+function Scalar(const v0, v1, v2, v3: double): TScalar;
+begin
+  Result := TScalar.create(v0, v1, v2, v3);
+end;
+
+{ TSize_<T> }
+
+class function TSize_<T>.size(const _width, _height: T): TSize_<T>;
+begin
+  Result.width := _width;
+  Result.height := _height;
+end;
+
+function size(const _width, _height: Int): TSize;
+begin
+  Result := TSize.size(_width, _height);
+end;
+
+{ TMatExpr }
+
+class operator TMatExpr.Finalize(var Dest: TMatExpr);
+begin
+  Destructor_MatExpr(@Dest);
+end;
+
+class operator TMatExpr.Initialize(out Dest: TMatExpr);
+begin
+  constructor_MatExpr(@Dest);
+end;
+
+function TMatExpr.size: TSize;
+begin
+  Result := TSize(MatExpr_size(@Self)^);
+end;
+
+{ TMatSize }
+
+class operator TMatSize.Implicit(const m: TMatSize): TSize;
+begin
+  MatSize_MatSizeToSize(@m, @Result);
+end;
+
+// { TMatOp }
+//
+// procedure TMatOp.assign(const expr: TMatExpr; Var m: TMat; &type: Int);
+// Type
+// TAssignProc = procedure(const expr: pMatExpr; Var m: TMat; &type: Int);
+// begin
+// TAssignProc(expr.op^._vfptr[2])(@expr, m, &type);
+// end;
+
+{ TInputOutputArray }
+
+class operator TInputOutputArray.Finalize(var Dest: TInputOutputArray);
+begin
+  Destructor_InputOutputArray(@Dest);
+end;
+
+class operator TInputOutputArray.Implicit(const IOA: TInputOutputArray): TMat;
+begin
+  Assert(IOA.OutputArray.InputArray.isMat);
+  Result := pMat(IOA.OutputArray.InputArray.getObj)^;
+end;
+
+class operator TInputOutputArray.Implicit(const m: TMat): TInputOutputArray;
+begin
+  Result.InputOutputArray(m);
+end;
+
+class operator TInputOutputArray.Initialize(out Dest: TInputOutputArray);
+begin
+  Constructor_InputOutputArray(@Dest);
+end;
+
+procedure TInputOutputArray.InputOutputArray(const m: TMat);
+begin
+  Constructor_InputOutputArray(@Self, @m);
+end;
+
+{ TPoint_<T> }
+
+class function TPoint_<T>.Point(_x, _y: T): TPoint_<T>;
+begin
+  Result.x := _x;
+  Result.y := _y;
+end;
+
+function Point(const _x, _y: Int): TPoint;
+begin
+  Result := TPoint.Point(_x, _y);
 end;
 
 end.

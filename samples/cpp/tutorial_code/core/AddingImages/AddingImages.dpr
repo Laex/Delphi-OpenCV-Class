@@ -5,10 +5,9 @@ program AddingImages;
 
 uses
   System.SysUtils,
-  CVResource in '..\..\..\..\CVResource.pas',
-  OpenCV.Import in '..\..\..\..\..\source\OpenCV.Import.pas',
-  opencv_delphi in '..\..\..\..\..\source\opencv_delphi.pas',
-  opencv_world in '..\..\..\..\..\source\opencv_world.pas';
+  CVResource,
+  opencv_delphi,
+  opencv_world;
 
 const
   EXIT_FAILURE = 1;
