@@ -10,6 +10,7 @@ Uses
 
 const
   INT_MAX = MaxInt;
+  DBL_MAX = 1.7976931348623158E+308; // max value
 
   // ---------------------- Interface.h ----------------------
 const
@@ -25,6 +26,18 @@ const
   CV_32F = 5;
   CV_64F = 6;
   CV_16F = 7;
+
+  CV_MAT_DEPTH_MASK = (CV_DEPTH_MAX - 1);
+function CV_MAT_DEPTH(flags: int): int; {$IFDEF USE_INLINE}inline; {$ENDIF}     // #define CV_MAT_DEPTH(flags)     ((flags) & CV_MAT_DEPTH_MASK)
+function CV_MAKETYPE(depth, cn: int): int; {$IFDEF USE_INLINE}inline; {$ENDIF}  // #define CV_MAKETYPE(depth,cn) (CV_MAT_DEPTH(depth) + (((cn)-1) << CV_CN_SHIFT))
+// #define CV_MAKE_TYPE CV_MAKETYPE
+
+Var
+  CV_8UC1: int;
+  CV_8UC2: int;
+  CV_8UC3: int;
+  CV_8UC4: int;
+  // CV_8UC(n) CV_MAKETYPE(CV_8U,(n))
 
   // ---------------------- Start base.hpp ----------------------
 type
@@ -96,10 +109,10 @@ Type
     height: T; // _Tp height; // !< the height
   end;
 
-  TSize2i = TSize_<Int>;
+  TSize2i = TSize_<int>;
   TSize = TSize2i;
 
-function size(const _width, _height: Int): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function size(const _width, _height: int): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 type
   TPoint_<T> = record
@@ -143,10 +156,10 @@ type
     y: T; // !< y coordinate of the point
   end;
 
-  TPoint2i = TPoint_<Int>;
+  TPoint2i = TPoint_<int>;
   TPoint = TPoint2i;
 
-function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function Point(const _x, _y: int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 // ---------------------- mat.hpp ----------------------
 Type
@@ -214,7 +227,7 @@ Type
     class operator Finalize(var Dest: TMatExpr);
   public
     op: pMatOp; // const MatOp* op;
-    flags: Int; // int flags;
+    flags: int; // int flags;
     //
     a, b, c: TCVMat;     // Mat a, b, c;
     alpha, beta: double; // double alpha, beta;
@@ -258,7 +271,7 @@ Type
     // Mat rowRange(const Range& r) const;
     // Mat colRange(int startcol, int endcol) const;
     // Mat colRange(const Range& r) const;
-    function diag(d: Int = 0): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat diag(int d=0) const;
+    function diag(d: int = 0): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat diag(int d=0) const;
     // CV_NODISCARD_STD static Mat diag(const Mat& d);
     // procedure clone(R: pCVMatPointer); // CV_NODISCARD_STD Mat clone() const;
     function clone: TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -277,14 +290,14 @@ Type
     // Mat cross(InputArray m) const;
     // double dot(InputArray m) const;
     // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
-    class function zeros(const size: TSize; &type: Int): TMatExpr; static; // CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
+    class function zeros(const size: TSize; &type: int): TMatExpr; static; // CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
     // CV_NODISCARD_STD static MatExpr zeros(int ndims, const int* sz, int type);
-    // CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
+    class function ones(rows: int; cols: int; &type: int): TMatExpr; overload; static; // CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
     // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
-    // CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
+    class function ones(ndims: int; const sz: pInt; &type: int): TMat; overload; static; // CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
     // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
     // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
-    procedure create(rows, cols, &type: Int); {$IFDEF USE_INLINE}inline; {$ENDIF} // void create(int rows, int cols, int type);
+    procedure create(rows, cols, &type: int); {$IFDEF USE_INLINE}inline; {$ENDIF} // void create(int rows, int cols, int type);
     // void create(Size size, int type);
     // void create(int ndims, const int* sizes, int type);
     // void create(const std::vector<int>& sizes, int type);
@@ -313,14 +326,14 @@ Type
     function isSubmatrix: Bool; {$IFDEF USE_INLINE}inline; {$ENDIF}         // bool isSubmatrix() const;
     function elemSize: size_t; {$IFDEF USE_INLINE}inline; {$ENDIF}          // size_t elemSize() const;
     function elemSize1: size_t; {$IFDEF USE_INLINE}inline; {$ENDIF}         // size_t elemSize1() const;
-    function &type: Int; {$IFDEF USE_INLINE}inline; {$ENDIF}                // int type() const;
-    function depth: Int; {$IFDEF USE_INLINE}inline; {$ENDIF}                // int depth() const;
-    function channels: Int; {$IFDEF USE_INLINE}inline; {$ENDIF}             // int channels() const;
-    function step1(i: Int = 0): size_t; {$IFDEF USE_INLINE}inline; {$ENDIF} // size_t step1(int i=0) const;
+    function &type: int; {$IFDEF USE_INLINE}inline; {$ENDIF}                // int type() const;
+    function depth: int; {$IFDEF USE_INLINE}inline; {$ENDIF}                // int depth() const;
+    function channels: int; {$IFDEF USE_INLINE}inline; {$ENDIF}             // int channels() const;
+    function step1(i: int = 0): size_t; {$IFDEF USE_INLINE}inline; {$ENDIF} // size_t step1(int i=0) const;
     function empty: Bool; {$IFDEF USE_INLINE}inline; {$ENDIF}               // bool empty() const;
     function total: size_t; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}   // size_t total() const;
-    function total(startDim: Int; endDim: Int = INT_MAX): size_t; overload; {$IFDEF USE_INLINE}inline; {$ENDIF} // size_t total(int startDim, int endDim=INT_MAX) const;
-    function checkVector(elemChannels: Int; depth: Int = -1; requireContinuous: Bool = true): Int; // int checkVector(int elemChannels, int depth=-1, bool requireContinuous=true) const;
+    function total(startDim: int; endDim: int = INT_MAX): size_t; overload; {$IFDEF USE_INLINE}inline; {$ENDIF} // size_t total(int startDim, int endDim=INT_MAX) const;
+    function checkVector(elemChannels: int; depth: int = -1; requireContinuous: Bool = true): int; // int checkVector(int elemChannels, int depth=-1, bool requireContinuous=true) const;
     // uchar* ptr(int i0=0);
     // const uchar* ptr(int i0=0) const;
     // uchar* ptr(int row, int col);
@@ -331,6 +344,7 @@ Type
     // const uchar* ptr(const int* idx) const;
     // Mat(Mat&& m);
     // Mat& operator = (Mat&& m);
+    class operator LogicalNot(const m: TMat): TMatExpr;
   public const
     MAGIC_VAL       = $42FF0000;
     AUTO_STEP       = 0;
@@ -342,11 +356,11 @@ Type
     DEPTH_MASK = 7;
   public
     // CVMat: TCVMat;
-    flags: Int; // int flags;
+    flags: int; // int flags;
     // ! the matrix dimensionality, >= 2
-    dims: Int; // int dims;
+    dims: int; // int dims;
     // ! the number of rows and columns or (-1, -1) when the matrix has more than 2 dimensions
-    rows, cols: Int; // int rows, cols;
+    rows, cols: int; // int rows, cols;
     // ! pointer to the data
     data: pUChar; // uchar* data;
     //
@@ -431,7 +445,7 @@ Type
     // Scalar_& operator=(Scalar_&& s) CV_NOEXCEPT;
     // Scalar_(const Vec<_Tp2, cn>& v);
     // //! returns a scalar with all elements set to v0
-    // static Scalar_<_Tp> all(_Tp v0);
+    class function all(const v0: double): TScalar; static; // static Scalar_<_Tp> all(_Tp v0);
     // //! per-element product
     // Scalar_<_Tp> mul(const Scalar_<_Tp>& a, double scale=1 ) const;
     // //! returns (v0, -v1, -v2, -v3)
@@ -477,7 +491,7 @@ type
   public
     class operator Initialize(out Dest: TInputArray); // _InputArray();
     // _InputArray(int _flags, void* _obj);
-    procedure InputArray(const m: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF} // _InputArray(const Mat& m);
+    class function InputArray(const m: TMat): TInputArray; static; // _InputArray(const Mat& m);
     // _InputArray(const MatExpr& expr);
     // _InputArray(const std::vector<Mat>& vec);
     // _InputArray(const std::vector<bool>& vec);
@@ -532,11 +546,11 @@ type
     class operator Finalize(var Dest: TInputArray); // ~_InputArray();
 
     class operator Implicit(const m: TMat): TInputArray;
+    class operator Implicit(const m: TMatExpr): TInputArray;
     class operator Implicit(const IA: TInputArray): TMat;
-
   private
 {$HINTS OFF}
-    flags: Int;   // int flags;
+    flags: int;   // int flags;
     obj: Pointer; // void* obj;
     sz: TSize;    // Size sz;
 {$HINTS ON}
@@ -564,7 +578,7 @@ type
   public
     class operator Initialize(out Dest: TOutputArray); // _OutputArray();
     // _OutputArray(int _flags, void* _obj);
-    procedure OutputArray(const m: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF} // _OutputArray(Mat& m);
+    class function OutputArray(const m: TMat): TOutputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // _OutputArray(Mat& m);
     // _OutputArray(std::vector<Mat>& vec);
     // _OutputArray(cuda::GpuMat& d_mat);
     // _OutputArray(std::vector<cuda::GpuMat>& d_mat);
@@ -604,6 +618,12 @@ type
 
     class operator Implicit(const m: TMat): TOutputArray;
     class operator Implicit(const OA: TOutputArray): TMat;
+  end;
+
+  TMatHelper = record helper for TMat
+  public
+    procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
+    procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
   end;
 
   TInputOutputArray = record
@@ -655,15 +675,18 @@ type
     // template<typename _Tp> static _InputOutputArray rawInOut(std::vector<_Tp>& vec);
     // template<typename _Tp, std::size_t _Nm> _InputOutputArray rawInOut(std::array<_Tp, _Nm>& arr);
 
+    class function noArray: TInputOutputArray; static;
     class operator Implicit(const m: TMat): TInputOutputArray;
     class operator Implicit(const IOA: TInputOutputArray): TMat;
+    class operator Implicit(const IOA: TInputOutputArray): TInputArray;
   end;
 
-  // ---------------------- core.hpp ----------------------
-  (* * @brief Swaps two matrices *)
-  // CV_EXPORTS void swap(Mat& a, Mat& b);
-  // ?swap@cv@@YAXAEAVMat@1@0@Z
-  // void cv::swap(class cv::Mat &,class cv::Mat &)
+function noArray(): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+// ---------------------- core.hpp ----------------------
+(* * @brief Swaps two matrices *)
+// CV_EXPORTS void swap(Mat& a, Mat& b);
+// ?swap@cv@@YAXAEAVMat@1@0@Z
+// void cv::swap(class cv::Mat &,class cv::Mat &)
 procedure swap(Var a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEAVMat@1@0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // CV_EXPORTS void swap( UMat& a, UMat& b );
@@ -691,7 +714,7 @@ procedure swap(Var a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEA
 *)
 // CV_EXPORTS_W int borderInterpolate(int p, int len, int borderType);
 // ?borderInterpolate@cv@@YAHHHH@Z
-function borderInterpolate(p, Len, borderType: Int): Int; external opencv_world_dll name '?borderInterpolate@cv@@YAHHHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function borderInterpolate(p, Len, borderType: int): int; external opencv_world_dll name '?borderInterpolate@cv@@YAHHHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @example samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp
   An example using copyMakeBorder function.
@@ -747,9 +770,9 @@ function borderInterpolate(p, Len, borderType: Int): Int; external opencv_world_
 // int borderType, const Scalar& value = Scalar() );
 // ?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z
 // void cv::copyMakeBorder(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,int,int,class cv::Scalar_<double> const &)
-procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: Int; const Scalar: TScalar); overload;
+procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: int; const Scalar: TScalar); overload;
   external opencv_world_dll name '?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: Int); {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
+procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: int); {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
 (* * @brief Calculates the weighted sum of two arrays.
 
@@ -777,8 +800,31 @@ procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bot
 // double beta, double gamma, OutputArray dst, int dtype = -1);
 // ?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z
 // void cv::addWeighted(class cv::_InputArray const &,double,class cv::_InputArray const &,double,double,class cv::_OutputArray const &,int)
-procedure addWeighted(src1: TInputArray; alpha: double; src2: TInputArray; beta, gamma: double; dst: TOutputArray; dtype: Int = -1);
-  external opencv_world_dll { name '?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z' } index 3519 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure addWeighted(src1: TInputArray; alpha: double; src2: TInputArray; beta, gamma: double; dst: TOutputArray; dtype: int = -1); external opencv_world_dll index 3519
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * @brief  Inverts every bit of an array.
+
+  The function cv::bitwise_not calculates per-element bit-wise inversion of the input
+  array:
+  \f[\texttt{dst} (I) =  \neg \texttt{src} (I)\f]
+  In case of a floating-point input array, its machine-specific bit
+  representation (usually IEEE754-compliant) is used for the operation. In
+  case of multi-channel arrays, each channel is processed independently.
+  @param src input array.
+  @param dst output array that has the same size and type as the input
+  array.
+  @param mask optional operation mask, 8-bit single channel array, that
+  specifies elements of the output array to be changed.
+*)
+// CV_EXPORTS_W void bitwise_not(InputArray src, OutputArray dst,
+// InputArray mask = noArray());
+// 3629
+// ?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z
+// void cv::bitwise_not(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
+procedure _bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() } ); external opencv_world_dll index 3629 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
+procedure bitwise_not(Src: TInputArray; dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
 
 // ---------------------- end core.hpp ----------------------
@@ -898,7 +944,7 @@ function imread(const filename: CppString; flag: ImreadModes = IMREAD_COLOR): TM
 // CV_EXPORTS_W int waitKey(int delay = 0);
 // ?waitKey@cv@@YAHH@Z
 // int cv::waitKey(int)
-function waitKey(delay: Int = 0): Int; external opencv_world_dll name '?waitKey@cv@@YAHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function waitKey(delay: int = 0): int; external opencv_world_dll name '?waitKey@cv@@YAHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Polls for a pressed key.
 
@@ -1038,11 +1084,31 @@ procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTO
 // ?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z
 // int cv::createTrackbar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int *,int,void (*)(int,void *),void *)
 Type
-  TTrackbarCallback = procedure(pos: Int; userdata: Pointer);
-function createTrackbar(const trackbarname: CppString; const winname: CppString; value: pInt; count: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
-  external opencv_world_dll index 4302
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  TTrackbarCallback = procedure(pos: int; userdata: Pointer);
+function createTrackbar(const trackbarname: CppString; const winname: CppString; value: pInt; count: int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): int;
+  external opencv_world_dll index 4302{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
+(* * @brief Moves the window to the specified position
+
+  @param winname Name of the window.
+  @param x The new x-coordinate of the window.
+  @param y The new y-coordinate of the window.
+*)
+// CV_EXPORTS_W void moveWindow(const String& winname, int x, int y);
+// 5691
+// ?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z
+// void cv::moveWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,int)
+procedure moveWindow(const winname: CppString; x, y: int); external opencv_world_dll index 5691{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief Destroys the specified window.
+  The function destroyWindow destroys the window with the given name.
+  @param winname Name of the window to be destroyed.
+*)
+// CV_EXPORTS_W void destroyWindow(const String& winname);
+// 4411
+// ?destroyWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+// void cv::destroyWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
+procedure destroyWindow(const winname: CppString); external opencv_world_dll index 4411{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ---------------------- end highgui.hpp ----------------------
 
@@ -1334,6 +1400,40 @@ type
     COLOR_COLORCVT_MAX = 143 //
     );
 
+  // ! type of the threshold operation
+  // ! ![threshold types](pics/threshold.png)
+  ThresholdTypes = (       //
+    THRESH_BINARY = 0,     // !< \f[\texttt{dst} (x,y) =  \fork{\texttt{maxval}}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{0}{otherwise}\f]
+    THRESH_BINARY_INV = 1, // !< \f[\texttt{dst} (x,y) =  \fork{0}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{\texttt{maxval}}{otherwise}\f]
+    THRESH_TRUNC = 2,      // !< \f[\texttt{dst} (x,y) =  \fork{\texttt{threshold}}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{\texttt{src}(x,y)}{otherwise}\f]
+    THRESH_TOZERO = 3,     // !< \f[\texttt{dst} (x,y) =  \fork{\texttt{src}(x,y)}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{0}{otherwise}\f]
+    THRESH_TOZERO_INV = 4, // !< \f[\texttt{dst} (x,y) =  \fork{0}{if \(\texttt{src}(x,y) > \texttt{thresh}\)}{\texttt{src}(x,y)}{otherwise}\f]
+    THRESH_MASK = 7,       //
+    THRESH_OTSU = 8,       // !< flag, use Otsu algorithm to choose the optimal threshold value
+    THRESH_TRIANGLE = 16   // !< flag, use Triangle algorithm to choose the optimal threshold value
+    );
+
+  // ! adaptive threshold algorithm
+  // ! @see adaptiveThreshold
+  AdaptiveThresholdTypes = ( //
+    (* * the threshold value \f$T(x,y)\f$ is a mean of the \f$\texttt{blockSize} \times
+      \texttt{blockSize}\f$ neighborhood of \f$(x, y)\f$ minus C *)
+    ADAPTIVE_THRESH_MEAN_C = 0,
+    (* * the threshold value \f$T(x, y)\f$ is a weighted sum (cross-correlation with a Gaussian
+      window) of the \f$\texttt{blockSize} \times \texttt{blockSize}\f$ neighborhood of \f$(x, y)\f$
+      minus C . The default sigma (standard deviation) is used for the specified blockSize . See
+      #getGaussianKernel *)
+    ADAPTIVE_THRESH_GAUSSIAN_C = 1);
+
+  // ! shape of the structuring element
+  MorphShapes = (    //
+    MORPH_RECT = 0,  // !< a rectangular structuring element:  \f[E_{ij}=1\f]
+    MORPH_CROSS = 1, // !< a cross-shaped structuring element:
+    // !< \f[E_{ij} = \begin{cases} 1 & \texttt{if } {i=\texttt{anchor.y } {or } {j=\texttt{anchor.x}}} \\0 & \texttt{otherwise} \end{cases}\f]
+    MORPH_ELLIPSE = 2 // !< an elliptic structuring element, that is, a filled ellipse inscribed
+    // !< into the rectangle Rect(0, 0, esize.width, 0.esize.height)
+    );
+
   (* * @brief Draws a text string.
 
     The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered
@@ -1360,12 +1460,12 @@ type
   // void cv::putText(class cv::_InputOutputArray const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::Point_<int>,int,double,class cv::Scalar_<double>,int,int,bool)
 procedure _putText(img: TInputOutputArray;
 
-  const text: CppString; org: UInt64; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: Bool = false);
+  const text: CppString; org: UInt64; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: Bool = false);
   external opencv_world_dll index 5972
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure putText(img: TInputOutputArray;
 
-  const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: Bool = false);
+  const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: Bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
 (* * @brief Blurs an image using the normalized box filter.
@@ -1393,7 +1493,7 @@ procedure putText(img: TInputOutputArray;
 // ?blur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@V?$Point_@H@1@H@Z
 // void cv::blur(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,class cv::Point_<int>,int)
 
-procedure _blur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; anchor: UInt64 { TPoint  = Point(-1, -1) }; borderType: Int { = BORDER_DEFAULT } ); external opencv_world_dll index 3649
+procedure _blur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; anchor: UInt64 { TPoint  = Point(-1, -1) }; borderType: int { = BORDER_DEFAULT } ); external opencv_world_dll index 3649
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize; anchor: TPoint; borderType: BorderTypes = BORDER_DEFAULT); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1424,7 +1524,7 @@ procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize; anchor: TPoint
 // 3370
 // ?GaussianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z
 // void cv::GaussianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,double,double,int)
-procedure _GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; sigmaX: double; sigmaY: double { = 0 }; borderType: Int { = BORDER_DEFAULT }
+procedure _GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; sigmaX: double; sigmaY: double { = 0 }; borderType: int { = BORDER_DEFAULT }
   ); external opencv_world_dll index 3370 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX: double; sigmaY: double = 0; borderType: BorderTypes = BORDER_DEFAULT); {$IFDEF USE_INLINE}inline;
 {$ENDIF}
@@ -1463,7 +1563,7 @@ procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX
 // 3615
 // ?bilateralFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNNH@Z
 // void cv::bilateralFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,int)
-procedure bilateralFilter(Src: TInputArray; dst: TOutputArray; d: Int; sigmaColor, sigmaSpace: double; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll index 3615
+procedure bilateralFilter(Src: TInputArray; dst: TOutputArray; d: int; sigmaColor, sigmaSpace: double; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll index 3615
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Blurs an image using the median filter.
@@ -1484,7 +1584,7 @@ procedure bilateralFilter(Src: TInputArray; dst: TOutputArray; d: Int; sigmaColo
 // 5628
 // ?medianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
 // void cv::medianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,int)
-procedure medianBlur(Src: TInputArray; dst: TOutputArray; ksize: Int); external opencv_world_dll index 5628
+procedure medianBlur(Src: TInputArray; dst: TOutputArray; ksize: int); external opencv_world_dll index 5628
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Applies a fixed-level threshold to each array element.
@@ -1516,7 +1616,43 @@ procedure medianBlur(Src: TInputArray; dst: TOutputArray; ksize: Int); external 
 // 6609
 // ?threshold@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@NNH@Z
 // double cv::threshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int)
-function threshold(Src: TInputArray; dst: TOutputArray; thresh, maxval: double; &type: Int): double; external opencv_world_dll index 6609 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function threshold(Src: TInputArray; dst: TOutputArray; thresh, maxval: double; &type: int): double; external opencv_world_dll index 6609 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * @brief Applies an adaptive threshold to an array.
+
+  The function transforms a grayscale image to a binary image according to the formulae:
+  -   **THRESH_BINARY**
+  \f[dst(x,y) =  \fork{\texttt{maxValue}}{if \(src(x,y) > T(x,y)\)}{0}{otherwise}\f]
+  -   **THRESH_BINARY_INV**
+  \f[dst(x,y) =  \fork{0}{if \(src(x,y) > T(x,y)\)}{\texttt{maxValue}}{otherwise}\f]
+  where \f$T(x,y)\f$ is a threshold calculated individually for each pixel (see adaptiveMethod parameter).
+
+  The function can process the image in-place.
+
+  @param src Source 8-bit single-channel image.
+  @param dst Destination image of the same size and the same type as src.
+  @param maxValue Non-zero value assigned to the pixels for which the condition is satisfied
+  @param adaptiveMethod Adaptive thresholding algorithm to use, see #AdaptiveThresholdTypes.
+  The #BORDER_REPLICATE | #BORDER_ISOLATED is used to process boundaries.
+  @param thresholdType Thresholding type that must be either #THRESH_BINARY or #THRESH_BINARY_INV,
+  see #ThresholdTypes.
+  @param blockSize Size of a pixel neighborhood that is used to calculate a threshold value for the
+  pixel: 3, 5, 7, and so on.
+  @param C Constant subtracted from the mean or weighted mean (see the details below). Normally, it
+  is positive but may be zero or negative as well.
+
+  @sa  threshold, blur, GaussianBlur
+*)
+// CV_EXPORTS_W void adaptiveThreshold( InputArray src, OutputArray dst,
+// double maxValue, int adaptiveMethod,
+// int thresholdType, int blockSize, double C );
+// 3475
+// ?adaptiveThreshold@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NHHHN@Z
+// void cv::adaptiveThreshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,int,int,int,double)
+procedure _adaptiveThreshold(Src: TInputArray; dst: TOutputArray; maxValue: double; adaptiveMethod: int; thresholdType: int; blockSize: int; c: double); external opencv_world_dll index 3475
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure adaptiveThreshold(Src: TInputArray; dst: TOutputArray; maxValue: double; adaptiveMethod: AdaptiveThresholdTypes; thresholdType: ThresholdTypes; blockSize: int; c: double);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 //
 (* * @brief Converts an image from one color space to another.
 
@@ -1563,21 +1699,204 @@ function threshold(Src: TInputArray; dst: TOutputArray; thresh, maxval: double; 
 // 4338
 // ?cvtColor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z
 // void cv::cvtColor(class cv::_InputArray const &,class cv::_OutputArray const &,int,int)
-procedure _cvtColor(Src: TInputArray; dst: TOutputArray; code: Int; dstCn: Int = 0); external opencv_world_dll index 4338 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure cvtColor(Src: TInputArray; dst: TOutputArray; code: ColorConversionCodes; dstCn: Int = 0);
+procedure _cvtColor(Src: TInputArray; dst: TOutputArray; code: int; dstCn: int = 0); external opencv_world_dll index 4338 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure cvtColor(Src: TInputArray; dst: TOutputArray; code: ColorConversionCodes; dstCn: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+// ! returns "magic" border value for erosion and dilation. It is automatically transformed to Scalar::all(-DBL_MAX) for dilation.
+function morphologyDefaultBorderValue(): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF} { return Scalar::all(DBL_MAX); }
+//
+(* * @brief Returns a structuring element of the specified size and shape for morphological operations.
+
+  The function constructs and returns the structuring element that can be further passed to #erode,
+  #dilate or #morphologyEx. But you can also construct an arbitrary binary mask yourself and use it as
+  the structuring element.
+
+  @param shape Element shape that could be one of #MorphShapes
+  @param ksize Size of the structuring element.
+  @param anchor Anchor position within the element. The default value \f$(-1, -1)\f$ means that the
+  anchor is at the center. Note that only the shape of a cross-shaped element depends on the anchor
+  position. In other cases the anchor just regulates how much the result of the morphological
+  operation is shifted.
+*)
+// CV_EXPORTS_W Mat getStructuringElement(int shape, Size ksize, Point anchor = Point(-1,-1));
+// 5125
+// ?getStructuringElement@cv@@YA?AVMat@1@HV?$Size_@H@1@V?$Point_@H@1@@Z
+// class cv::Mat cv::getStructuringElement(int,class cv::Size_<int>,class cv::Point_<int>)
+function _getStructuringElement(shape: int; ksize: UInt64; anchor: UInt64): TMat; external opencv_world_dll index 5125 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function getStructuringElement(shape: MorphShapes; ksize: TSize): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function getStructuringElement(shape: MorphShapes; ksize: TSize; anchor: TPoint): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @brief Erodes an image by using a specific structuring element.
+
+  The function erodes the source image using the specified structuring element that determines the
+  shape of a pixel neighborhood over which the minimum is taken:
+
+  \f[\texttt{dst} (x,y) =  \min _{(x',y'):  \, \texttt{element} (x',y') \ne0 } \texttt{src} (x+x',y+y')\f]
+
+  The function supports the in-place mode. Erosion can be applied several ( iterations ) times. In
+  case of multi-channel images, each channel is processed independently.
+
+  @param src input image; the number of channels can be arbitrary, but the depth should be one of
+  CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
+  @param dst output image of the same size and type as src.
+  @param kernel structuring element used for erosion; if `element=Mat()`, a `3 x 3` rectangular
+  structuring element is used. Kernel can be created using #getStructuringElement.
+  @param anchor position of the anchor within the element; default value (-1, -1) means that the
+  anchor is at the element center.
+  @param iterations number of times erosion is applied.
+  @param borderType pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not supported.
+  @param borderValue border value in case of a constant border
+  @sa  dilate, morphologyEx, getStructuringElement
+*)
+// CV_EXPORTS_W void erode( InputArray src, OutputArray dst, InputArray kernel,
+// Point anchor = Point(-1,-1), int iterations = 1,
+// int borderType = BORDER_CONSTANT,
+// const Scalar& borderValue = morphologyDefaultBorderValue() );
+// 4631
+// ?erode@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
+// void cv::erode(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,class cv::Point_<int>,int,int,class cv::Scalar_<double> const &)
+procedure _erode(Src: TInputArray; dst: TOutputArray; kernel: TInputArray; anchor: UInt64 { Point = Point(-1,-1) }; iterations: int { = 1 }; borderType: int { = BORDER_CONSTANT };
+  const borderValue: TScalar { = morphologyDefaultBorderValue() } ); external opencv_world_dll index 4631 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: int { = 1 };
+  const borderType: BorderTypes { = BORDER_CONSTANT }; const borderValue: TScalar { = morphologyDefaultBorderValue() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: int { = 1 };
+  const borderType: BorderTypes { = BORDER_CONSTANT } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: int { = 1 } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @brief Dilates an image by using a specific structuring element.
+
+  The function dilates the source image using the specified structuring element that determines the
+  shape of a pixel neighborhood over which the maximum is taken:
+  \f[\texttt{dst} (x,y) =  \max _{(x',y'):  \, \texttt{element} (x',y') \ne0 } \texttt{src} (x+x',y+y')\f]
+
+  The function supports the in-place mode. Dilation can be applied several ( iterations ) times. In
+  case of multi-channel images, each channel is processed independently.
+
+  @param src input image; the number of channels can be arbitrary, but the depth should be one of
+  CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
+  @param dst output image of the same size and type as src.
+  @param kernel structuring element used for dilation; if elemenat=Mat(), a 3 x 3 rectangular
+  structuring element is used. Kernel can be created using #getStructuringElement
+  @param anchor position of the anchor within the element; default value (-1, -1) means that the
+  anchor is at the element center.
+  @param iterations number of times dilation is applied.
+  @param borderType pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not suported.
+  @param borderValue border value in case of a constant border
+  @sa  erode, morphologyEx, getStructuringElement
+*)
+// CV_EXPORTS_W void dilate( InputArray src, OutputArray dst, InputArray kernel,
+// Point anchor = Point(-1,-1), int iterations = 1,
+// int borderType = BORDER_CONSTANT,
+// const Scalar& borderValue = morphologyDefaultBorderValue());
+// 4492
+// ?dilate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
+// void cv::dilate(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,class cv::Point_<int>,int,int,class cv::Scalar_<double> const &)
+procedure _dilate(Src: TInputArray; dst: TOutputArray; kernel: TInputArray; anchor: UInt64 { Point= Point(-1,-1) }; iterations: int { = 1 }; borderType: int { = BORDER_CONSTANT };
+  const borderValue: TScalar { = morphologyDefaultBorderValue() } ); external opencv_world_dll index 4492 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: int { = 1 };
+  const borderType: BorderTypes { = BORDER_CONSTANT }; const borderValue: TScalar { = morphologyDefaultBorderValue() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: int { = 1 };
+  const borderType: BorderTypes { = BORDER_CONSTANT } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: int { = 1 } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 // ---------------------- end imgproc.hpp ----------------------
 
 implementation
 
-procedure cvtColor(Src: TInputArray; dst: TOutputArray; code: ColorConversionCodes; dstCn: Int = 0);
+function noArray(): TInputOutputArray;
 begin
-  _cvtColor(Src, dst, Int(code), dstCn);
+  Result := TInputOutputArray.noArray;
+end;
+
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: int { = 1 };
+  const borderType: BorderTypes { = BORDER_CONSTANT }; const borderValue: TScalar { = morphologyDefaultBorderValue() } );
+begin
+  _dilate(Src, dst, kernel, UInt64(anchor), iterations, int(borderType), borderValue);
+end;
+
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: int { = 1 };
+  const borderType: BorderTypes { = BORDER_CONSTANT } );
+begin
+  dilate(Src, dst, kernel, anchor, iterations, borderType, morphologyDefaultBorderValue());
+end;
+
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: int { = 1 } );
+begin
+  dilate(Src, dst, kernel, anchor, iterations, BORDER_CONSTANT);
+end;
+
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) } );
+begin
+  dilate(Src, dst, kernel, anchor, 1);
+end;
+
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray);
+begin
+  dilate(Src, dst, kernel, Point(-1, -1));
+end;
+
+function morphologyDefaultBorderValue(): TScalar;
+begin
+  Result := TScalar.all(DBL_MAX);
+end;
+
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint; const iterations: int; const borderType: BorderTypes;
+  const borderValue: TScalar { = morphologyDefaultBorderValue() } );
+begin
+  _erode(Src, dst, kernel, UInt64(anchor), iterations, int(borderType), borderValue);
+end;
+
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint; const iterations: int; const borderType: BorderTypes { = BORDER_CONSTANT } );
+begin
+  erode(Src, dst, kernel, anchor, iterations, borderType, morphologyDefaultBorderValue());
+end;
+
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint; const iterations: int { = 1 } );
+begin
+  erode(Src, dst, kernel, anchor, iterations, BORDER_CONSTANT);
+end;
+
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) } );
+begin
+  erode(Src, dst, kernel, anchor, 1);
+end;
+
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray);
+begin
+  erode(Src, dst, kernel, Point(-1, -1));
+end;
+
+function getStructuringElement(shape: MorphShapes; ksize: TSize): TMat;
+begin
+  Result := getStructuringElement(shape, ksize, Point(-1, -1));
+end;
+
+function getStructuringElement(shape: MorphShapes; ksize: TSize; anchor: TPoint): TMat;
+begin
+  Result := _getStructuringElement(int(shape), UInt64(ksize), UInt64(anchor));
+end;
+
+procedure adaptiveThreshold(Src: TInputArray; dst: TOutputArray; maxValue: double; adaptiveMethod: AdaptiveThresholdTypes; thresholdType: ThresholdTypes; blockSize: int; c: double);
+begin
+  _adaptiveThreshold(Src, dst, maxValue, int(adaptiveMethod), int(thresholdType), blockSize, c);
+end;
+
+procedure cvtColor(Src: TInputArray; dst: TOutputArray; code: ColorConversionCodes; dstCn: int = 0);
+begin
+  _cvtColor(Src, dst, int(code), dstCn);
 end;
 
 procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX: double; sigmaY: double; borderType: BorderTypes);
 begin
-  _GaussianBlur(Src, dst, UInt64(ksize), sigmaX, sigmaY, Int(borderType));
+  _GaussianBlur(Src, dst, UInt64(ksize), sigmaX, sigmaY, int(borderType));
 end;
 
 procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize);
@@ -1587,25 +1906,31 @@ end;
 
 procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize; anchor: TPoint; borderType: BorderTypes);
 begin
-  _blur(Src, dst, UInt64(ksize), UInt64(anchor), Int(borderType));
+  _blur(Src, dst, UInt64(ksize), UInt64(anchor), int(borderType));
 end;
 
 procedure putText(img: TInputOutputArray;
 
-  const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: Bool = false);
+  const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: Bool = false);
 begin
   _putText(img, text, UInt64(org), fontFace, fontScale, color, thickness, lineType, bottomLeftOrigin);
 end;
 
-procedure copyMakeBorder(
-
-  const Src: TInputArray;
-
-  Var dst: TOutputArray; top, bottom, left, right, borderType: Int); overload;
+procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: int); overload;
 Var
   Scalar: TScalar;
 begin
   copyMakeBorder(Src, dst, top, bottom, left, right, borderType, Scalar);
+end;
+
+procedure bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() } );
+begin
+  _bitwise_not(Src, dst, mask);
+end;
+
+procedure bitwise_not(Src: TInputArray; dst: TOutputArray);
+begin
+  _bitwise_not(Src, dst, noArray());
 end;
 
 { TMat }
@@ -1630,7 +1955,7 @@ begin
   OpenCV.Import.clone(@Self, @Result);
 end;
 
-function TMat.diag(d: Int): TMat;
+function TMat.diag(d: int): TMat;
 begin
   OpenCV.Import.diag(@Self, @Result, d);
 end;
@@ -1645,35 +1970,48 @@ begin
   Result := OpenCV.Import.isSubmatrix(@Self);
 end;
 
-function TMat.step1(i: Int): size_t;
+class operator TMat.LogicalNot(const m: TMat): TMatExpr;
+begin
+  MatExpr_LogicalNot_Mat(@Result, @m);
+end;
+
+class function TMat.ones(rows, cols, &type: int): TMatExpr;
+begin
+  OpenCV.Import.ones(@Result, rows, cols, &type);
+end;
+
+class function TMat.ones(ndims: int; const sz: pInt; &type: int): TMat;
+begin
+  OpenCV.Import.ones(@Result, ndims, sz, &type);
+end;
+
+function TMat.step1(i: int): size_t;
 begin
   Result := OpenCV.Import.step1(@Self, i);
 end;
 
-class operator TMat.assign(var Dest: TMat;
-
-  const [ref] Src: TMat);
+class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
 begin
   Finalize(Dest);
   OpenCV.Import.clone(@Src, @Dest);
 end;
 
-function TMat.channels: Int;
+function TMat.channels: int;
 begin
   Result := OpenCV.Import.channels(@Self);
 end;
 
-function TMat.checkVector(elemChannels, depth: Int; requireContinuous: Bool): Int;
+function TMat.checkVector(elemChannels, depth: int; requireContinuous: Bool): int;
 begin
   Result := OpenCV.Import.checkVector(@Self, elemChannels, depth, requireContinuous);
 end;
 
-procedure TMat.create(rows, cols, &type: Int);
+procedure TMat.create(rows, cols, &type: int);
 begin
   OpenCV.Import.constructor_Mat(@Self, rows, cols, &type);
 end;
 
-function TMat.depth: Int;
+function TMat.depth: int;
 begin
   Result := OpenCV.Import.depth(@Self);
 end;
@@ -1693,7 +2031,7 @@ begin
   Result := OpenCV.Import.empty(@Self);
 end;
 
-function TMat.total(startDim, endDim: Int): size_t;
+function TMat.total(startDim, endDim: int): size_t;
 begin
   Result := OpenCV.Import.total(@Self, startDim, endDim);
 end;
@@ -1703,25 +2041,23 @@ begin
   Result := OpenCV.Import.total(@Self);
 end;
 
-function TMat.&type: Int;
+function TMat.&type: int;
 begin
   Result := OpenCV.Import.type(@Self);
 end;
 
 class function TMat.zeros(
 
-  const size: TSize; &type: Int): TMatExpr;
+  const size: TSize; &type: int): TMatExpr;
 begin
   OpenCV.Import.zeros(@Result, UInt64(size), &type);
 end;
 
 { TInputArray }
 
-class operator TInputArray.Implicit(
-
-  const m: TMat): TInputArray;
+class operator TInputArray.Implicit(const m: TMat): TInputArray;
 begin
-  Result.InputArray(m);
+  Result := TInputArray.InputArray(m);
 end;
 
 function TInputArray.getObj: Pointer;
@@ -1729,12 +2065,15 @@ begin
   Result := OpenCV.Import.getObj(@Self);
 end;
 
-class operator TInputArray.Implicit(
-
-  const IA: TInputArray): TMat;
+class operator TInputArray.Implicit(const IA: TInputArray): TMat;
 begin
   Assert(IA.isMat);
   Result := pMat(IA.getObj)^.clone;
+end;
+
+class operator TInputArray.Implicit(const m: TMatExpr): TInputArray;
+begin
+  Constructor_InputArray(@Result, @m);
 end;
 
 class operator TInputArray.Initialize(out Dest: TInputArray);
@@ -1742,18 +2081,14 @@ begin
   Constructor_InputArray(@Dest);
 end;
 
-class operator TInputArray.Finalize(
-
-  var Dest: TInputArray);
+class function TInputArray.InputArray(const m: TMat): TInputArray;
 begin
-  Destructor_InputArray(@Dest);
+  Constructor_InputArray(@Result, TCVMatPointer(@m));
 end;
 
-procedure TInputArray.InputArray(
-
-  const m: TMat);
+class operator TInputArray.Finalize(var Dest: TInputArray);
 begin
-  Constructor_InputArray(@Self, @m);
+  Destructor_InputArray(@Dest);
 end;
 
 function TInputArray.isMat: Bool;
@@ -1768,54 +2103,45 @@ begin
   Constructor_OutputArray(@Dest);
 end;
 
-class operator TOutputArray.Finalize(
+class function TOutputArray.OutputArray(const m: TMat): TOutputArray;
+begin
+  Constructor_OutputArray(@Result, @m);
+end;
 
-  var Dest: TOutputArray);
+class operator TOutputArray.Finalize(var Dest: TOutputArray);
 begin
   Destructor_OutputArray(@Dest);
 end;
 
-class operator TOutputArray.Implicit(
-
-  const m: TMat): TOutputArray;
+class operator TOutputArray.Implicit(const m: TMat): TOutputArray;
 begin
-  Result.OutputArray(m);
+  Result := TOutputArray.OutputArray(m);
 end;
 
-class operator TOutputArray.Implicit(
-
-  const OA: TOutputArray): TMat;
+class operator TOutputArray.Implicit(const OA: TOutputArray): TMat;
 begin
   Assert(OA.InputArray.isMat);
   Result := pMat(OA.InputArray.getObj)^;
 end;
 
-procedure TOutputArray.OutputArray(
-
-  const m: TMat);
-begin
-  Constructor_OutputArray(@Self, @m);
-end;
-
 { TScalar }
 
-class function TScalar.create(
-
-  const v0, v1, v2, v3: double): TScalar;
+class function TScalar.create(const v0, v1, v2, v3: double): TScalar;
 begin
   constructor_Scalar(@Result, v0, v1, v2, v3);
 end;
 
-class function TScalar.create(
+class function TScalar.all(const v0: double): TScalar;
+begin
+  Result := TScalar.create(v0, v0, v0, v0);
+end;
 
-  const v0: double): TScalar;
+class function TScalar.create(const v0: double): TScalar;
 begin
   constructor_Scalar(@Result, v0);
 end;
 
-class operator TScalar.Implicit(
-
-  const v0: double): TScalar;
+class operator TScalar.Implicit(const v0: double): TScalar;
 begin
   Result := TScalar.create(v0);
 end;
@@ -1825,9 +2151,7 @@ begin
   constructor_Scalar(@Dest);
 end;
 
-function Scalar(
-
-  const v0, v1, v2, v3: double): TScalar;
+function Scalar(const v0, v1, v2, v3: double): TScalar;
 begin
   Result := TScalar.create(v0, v1, v2, v3);
 end;
@@ -1842,9 +2166,7 @@ begin
   Result.height := _height;
 end;
 
-function size(
-
-  const _width, _height: Int): TSize;
+function size(const _width, _height: int): TSize;
 begin
   Result := TSize.size(_width, _height);
 end;
@@ -1870,9 +2192,7 @@ end;
 
 { TMatSize }
 
-class operator TMatSize.Implicit(
-
-  const m: TMatSize): TSize;
+class operator TMatSize.Implicit(const m: TMatSize): TSize;
 begin
   MatSize_MatSizeToSize(@m, @Result);
 end;
@@ -1888,24 +2208,18 @@ end;
 
 { TInputOutputArray }
 
-class operator TInputOutputArray.Finalize(
-
-  var Dest: TInputOutputArray);
+class operator TInputOutputArray.Finalize(var Dest: TInputOutputArray);
 begin
   Destructor_InputOutputArray(@Dest);
 end;
 
-class operator TInputOutputArray.Implicit(
-
-  const IOA: TInputOutputArray): TMat;
+class operator TInputOutputArray.Implicit(const IOA: TInputOutputArray): TMat;
 begin
   Assert(IOA.OutputArray.InputArray.isMat);
   Result := pMat(IOA.OutputArray.InputArray.getObj)^;
 end;
 
-class operator TInputOutputArray.Implicit(
-
-  const m: TMat): TInputOutputArray;
+class operator TInputOutputArray.Implicit(const m: TMat): TInputOutputArray;
 begin
   Result.InputOutputArray(m);
 end;
@@ -1915,11 +2229,19 @@ begin
   Constructor_InputOutputArray(@Dest);
 end;
 
-procedure TInputOutputArray.InputOutputArray(
-
-  const m: TMat);
+procedure TInputOutputArray.InputOutputArray(const m: TMat);
 begin
   Constructor_InputOutputArray(@Self, @m);
+end;
+
+class function TInputOutputArray.noArray: TInputOutputArray;
+begin
+  InputOutputArray_noArray(@Result);
+end;
+
+class operator TInputOutputArray.Implicit(const IOA: TInputOutputArray): TInputArray;
+begin
+  Result := IOA.OutputArray.InputArray;
 end;
 
 { TPoint_<T> }
@@ -1930,11 +2252,38 @@ begin
   Result.y := _y;
 end;
 
-function Point(
-
-  const _x, _y: Int): TPoint;
+function Point(const _x, _y: int): TPoint;
 begin
   Result := TPoint.Point(_x, _y);
 end;
+
+function CV_MAT_DEPTH(flags: int): int;
+begin
+  Result := flags and CV_MAT_DEPTH_MASK;
+end;
+
+function CV_MAKETYPE(depth, cn: int): int;
+begin
+  Result := (CV_MAT_DEPTH(depth) + (((cn) - 1) shl CV_CN_SHIFT));
+end;
+
+{ TMatHelper }
+
+procedure TMatHelper.copyTo(m: TOutputArray);
+begin
+  OpenCV.Import.copyTo(@Self, @m);
+end;
+
+procedure TMatHelper.copyTo(m: TOutputArray; mask: TInputArray);
+begin
+  OpenCV.Import.copyTo(@Self, @m, @mask);
+end;
+
+initialization
+
+CV_8UC1 := CV_MAKETYPE(CV_8U, 1);
+CV_8UC2 := CV_MAKETYPE(CV_8U, 2);
+CV_8UC3 := CV_MAKETYPE(CV_8U, 3);
+CV_8UC4 := CV_MAKETYPE(CV_8U, 4);
 
 end.

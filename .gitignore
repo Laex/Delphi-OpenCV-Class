@@ -69,6 +69,7 @@ modules/
 
 # Resource from OpenCV
 resource/*.jpg
+resource/*.png
 
 # opencv_delphi
 x64/
