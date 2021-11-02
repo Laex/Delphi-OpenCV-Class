@@ -12,6 +12,12 @@
         <Projects Include="cpp\tutorial_code\ImgProc\Threshold\Thresholdp.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="cpp\tutorial_code\ImgProc\morph_lines_detection\morph_lines_detection.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="cpp\tutorial_code\objectDetection\objectDetection.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +53,32 @@
     <Target Name="Thresholdp:Make">
         <MSBuild Projects="cpp\tutorial_code\ImgProc\Threshold\Thresholdp.dproj" Targets="Make"/>
     </Target>
+    <Target Name="morph_lines_detection">
+        <MSBuild Projects="cpp\tutorial_code\ImgProc\morph_lines_detection\morph_lines_detection.dproj"/>
+    </Target>
+    <Target Name="morph_lines_detection:Clean">
+        <MSBuild Projects="cpp\tutorial_code\ImgProc\morph_lines_detection\morph_lines_detection.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="morph_lines_detection:Make">
+        <MSBuild Projects="cpp\tutorial_code\ImgProc\morph_lines_detection\morph_lines_detection.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="objectDetection">
+        <MSBuild Projects="cpp\tutorial_code\objectDetection\objectDetection.dproj"/>
+    </Target>
+    <Target Name="objectDetection:Clean">
+        <MSBuild Projects="cpp\tutorial_code\objectDetection\objectDetection.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="objectDetection:Make">
+        <MSBuild Projects="cpp\tutorial_code\objectDetection\objectDetection.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="AddingImages;Smoothing;Thresholdp"/>
+        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean"/>
+        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make"/>
+        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

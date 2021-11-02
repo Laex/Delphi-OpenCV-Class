@@ -48,14 +48,14 @@ begin
     if ParamCount > 0 then
       filename := ParamStr(1)
     else
-      filename := CVResourcePath + 'lena.jpg';
+      filename := OpenCVData + 'lena.jpg';
 
     src := imread(filename, IMREAD_COLOR);
     if (src.empty()) then
     begin
       WriteLn(' Error opening image');
       WriteLn(' Usage:');
-      WriteLn(' ', ExtractFileName(ParamStr(0)), ' [image_name-- default ' + CVResourcePath + 'lena.jpg]');
+      WriteLn(' ', ExtractFileName(ParamStr(0)), ' [image_name-- default ' + OpenCVData + 'lena.jpg]');
       Halt(EXIT_FAILURE);
     end;
 

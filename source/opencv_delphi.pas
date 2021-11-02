@@ -1,33 +1,34 @@
 unit opencv_delphi;
 
-{$I opencv_delphi.inc}
-
 interface
 
-Uses
-  OpenCV.Import;
+{$I opencv_delphi.inc}
 
-Type
-  pCppString = ^CppString;
+{$REGION 'CvStdString'}
 
-  CppString = record
-  private
-{$HINTS OFF}
+type
+  CvStdString = record
+  private{$HINTS OFF}
     Dummy: array [0 .. 39] of byte;
 {$HINTS ON}
   public
-    class operator Initialize(out Dest: CppString);
-    class operator Finalize(var Dest: CppString);
+    class operator Initialize(out Dest: CvStdString);
+    class operator Finalize(var Dest: CvStdString);
 
     function length: UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function size: UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure erase(const _Off: UInt64 = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure assign(const p: pAnsiChar); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator assign(var Dest: CppString; const [ref] Src: CppString);
-    class operator Implicit(const p: pAnsiChar): CppString;
-    class operator Implicit(const s: String): CppString;
-    class operator Implicit(const s: CppString): String;
+    class operator assign(var Dest: CvStdString; const [ref] Src: CvStdString);
+    class operator Implicit(const p: pAnsiChar): CvStdString;
+    class operator Implicit(const s: string): CvStdString;
+    class operator Implicit(const s: CvStdString): string;
   end;
+
+  CppString = CvStdString;
+
+  pCppString = ^CvStdString;
+  pCvStdString = ^CvStdString;
 
   // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@$$QEAV01@@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &&)
   // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@$$QEAV01@AEBV?$allocator@D@1@@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &&,class std::allocator<char> const &)
@@ -39,8 +40,8 @@ Type
 
   // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@QEBD@Z
   // std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(char const * const)
-procedure Constructor_String(Obj: pCppString; pac: pAnsiChar); overload; external opencv_delphi_dll name '??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@QEBD@Z'
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure Constructor_CppString(Obj: pCppString; pac: pAnsiChar); overload; external opencv_delphi_dll name '??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@QEBD@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@QEBDAEBV?$allocator@D@1@@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(char const * const,class std::allocator<char> const &)
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@QEBD_K@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(char const * const,unsigned __int64)
@@ -49,16 +50,16 @@ procedure Constructor_String(Obj: pCppString; pac: pAnsiChar); overload; externa
 
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ
 // std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(void)
-procedure Constructor_String(Obj: pCppString); overload; external opencv_delphi_dll name '??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ'
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure Constructor_CppString(Obj: pCppString); overload; external opencv_delphi_dll name '??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@_KD@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(unsigned __int64,char)
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@_KDAEBV?$allocator@D@1@@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(unsigned __int64,char,class std::allocator<char> const &)
 
 // ??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ
 // std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::~basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(void)
-procedure Destructor_String(Obj: pCppString); overload; external opencv_delphi_dll name '??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ'
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure Destructor_CppString(Obj: pCppString); overload; external opencv_delphi_dll name '??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ??4?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV01@$$QEAV01@@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::operator=(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &&)
 // ??4?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV01@AEBV01@@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::operator=(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
@@ -114,16 +115,16 @@ procedure Destructor_String(Obj: pCppString); overload; external opencv_delphi_d
 
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@AEBV12@@Z
 // class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-procedure assign_String(Obj: pCppString; a: pCppString) { : pCppString }; overload;
+procedure assign_CppString(Obj: pCppString; a: pCppString) { : pCppString }; overload;
   external opencv_delphi_dll name '?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@AEBV12@@Z'
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@AEBV12@_K_K@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned __int64,unsigned __int64)
 
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@QEBD@Z
 // class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(char const * const)
-procedure assign_String(Obj: pCppString; pac: pAnsiChar); overload; external opencv_delphi_dll name '?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@QEBD@Z'
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure assign_CppString(Obj: pCppString; pac: pAnsiChar); overload; external opencv_delphi_dll name '?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@QEBD@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@QEBD_K@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(char const * const,unsigned __int64)
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@V?$initializer_list@D@2@@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(class std::initializer_list<char>)
@@ -137,8 +138,8 @@ procedure assign_String(Obj: pCppString; pac: pAnsiChar); overload; external ope
 
 // ?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAPEBDXZ
 // char const * std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::c_str(void)
-function CppString_c_str(Obj: pCppString { ; r: pAnsiChar } ): pAnsiChar; external opencv_delphi_dll name '?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAPEBDXZ'
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+function c_str_CppString(Obj: pCppString { ; r: pAnsiChar } ): pAnsiChar; external opencv_delphi_dll name '?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAPEBDXZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?capacity@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ	unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::capacity(void)
 // ?cbegin@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA?AV?$_String_const_iterator@V?$_String_val@U?$_Simple_types@D@std@@@std@@@2@XZ	class std::_String_const_iterator<class std::_String_val<struct std::_Simple_types<char> > > std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::cbegin(void)
@@ -162,8 +163,8 @@ function CppString_c_str(Obj: pCppString { ; r: pAnsiChar } ): pAnsiChar; extern
 
 // ?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@_K@Z
 // class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::erase(unsigned __int64)
-procedure erase_String(Obj: pCppString; _Off: UInt64 = 0); overload; external opencv_delphi_dll name '?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@_K@Z'
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+procedure erase_CppString(Obj: pCppString; _Off: UInt64 = 0); overload; external opencv_delphi_dll name '?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@_K@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@_K_K@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::erase(unsigned __int64,unsigned __int64)
 // ?find@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KAEBV12@_K@Z	unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::find(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned __int64)
@@ -200,8 +201,8 @@ procedure erase_String(Obj: pCppString; _Off: UInt64 = 0); overload; external op
 
 // ?length@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ
 // unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::length(void)
-function length_String(Obj: pCppString): UInt64; overload; external opencv_delphi_dll name '?length@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ'
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+function length_CppString(Obj: pCppString): UInt64; overload; external opencv_delphi_dll name '?length@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ	unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::max_size(void)
 // ?pop_back@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAXXZ	void std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::pop_back(void)
@@ -230,67 +231,216 @@ function length_String(Obj: pCppString): UInt64; overload; external opencv_delph
 
 // ?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ
 // unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::size(void)
-function size_String(Obj: pCppString): UInt64; overload; external opencv_delphi_dll name '?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ'
-{$IFDEF DELAYED_LOAD_DLL}delayed{$ENDIF};
+function size_CppString(Obj: pCppString): UInt64; overload; external opencv_delphi_dll name '?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?substr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA?AV12@_K0@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::substr(unsigned __int64,unsigned __int64)
 // ?swap@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAXAEAV12@@Z	void std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::swap(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &)
+{$ENDREGION}
+//
+{$REGION 'std::vector<Rect>'}
+
+type
+  StdVectorRect = record
+  private
+  {$HINTS OFF}
+    Dummy: array [0 .. 31] of byte;
+{$HINTS ON}
+  public
+    class operator Initialize(out Dest: StdVectorRect);
+    class operator Finalize(var Dest: StdVectorRect);
+
+    function size: int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+  pStdVectorRect = ^StdVectorRect;
+  //
+  // ??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@$$QEAV01@@Z	public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > && __ptr64) __ptr64
+  // ??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@$$QEAV01@AEBV?$allocator@V?$Rect_@H@cv@@@1@@Z	public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > && __ptr64,class std::allocator<class cv::Rect_<int> > const & __ptr64) __ptr64
+  // ??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@AEBV01@@Z	public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > const & __ptr64) __ptr64
+  // ??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@AEBV01@AEBV?$allocator@V?$Rect_@H@cv@@@1@@Z	public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > const & __ptr64,class std::allocator<class cv::Rect_<int> > const & __ptr64) __ptr64
+  // ??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@AEBV?$allocator@V?$Rect_@H@cv@@@1@@Z	public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(class std::allocator<class cv::Rect_<int> > const & __ptr64) __ptr64
+  // ??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@V?$initializer_list@V?$Rect_@H@cv@@@1@AEBV?$allocator@V?$Rect_@H@cv@@@1@@Z	public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(class std::initializer_list<class cv::Rect_<int> >,class std::allocator<class cv::Rect_<int> > const & __ptr64) __ptr64
+  // ??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@XZ
+  // public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(void) __ptr64
+procedure Constructor_StdVectorRect(Obj: pStdVectorRect); external opencv_delphi_dll name '??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@XZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// ??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@_KAEBV?$Rect_@H@cv@@AEBV?$allocator@V?$Rect_@H@cv@@@1@@Z	public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(unsigned __int64,class cv::Rect_<int> const & __ptr64,class std::allocator<class cv::Rect_<int> > const & __ptr64) __ptr64
+// ??0?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@_KAEBV?$allocator@V?$Rect_@H@cv@@@1@@Z	public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(unsigned __int64,class std::allocator<class cv::Rect_<int> > const & __ptr64) __ptr64
+// ??1?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@XZ
+// public: __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::~vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >(void) __ptr64
+procedure Destructor_StdVectorRect(Obj: pStdVectorRect); external opencv_delphi_dll name '??1?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA@XZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// ??4?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV01@$$QEAV01@@Z	public: class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::operator=(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > && __ptr64) __ptr64
+// ??4?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV01@AEBV01@@Z	public: class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::operator=(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > const & __ptr64) __ptr64
+// ??4?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV01@V?$initializer_list@V?$Rect_@H@cv@@@1@@Z	public: class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::operator=(class std::initializer_list<class cv::Rect_<int> >) __ptr64
+// ??A?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV?$Rect_@H@cv@@_K@Z
+// public: class cv::Rect_<int> & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::operator[](unsigned __int64) __ptr64
+function operator_get_StdVectorRect(Obj: pStdVectorRect; i: UInt64): pStdVectorRect;
+  external opencv_delphi_dll name '??A?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV?$Rect_@H@cv@@_K@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// ??A?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBAAEBV?$Rect_@H@cv@@_K@Z	public: class cv::Rect_<int> const & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::operator[](unsigned __int64)const __ptr64
+// ?_Buy_nonzero@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAX_K@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Buy_nonzero(unsigned __int64) __ptr64
+// ?_Buy_raw@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAX_K@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Buy_raw(unsigned __int64) __ptr64
+// ?_Calculate_growth@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEBA_K_K@Z	private: unsigned __int64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Calculate_growth(unsigned __int64)const __ptr64
+// ?_Change_array@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXQEAV?$Rect_@H@cv@@_K1@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Change_array(class cv::Rect_<int> * __ptr64 const,unsigned __int64,unsigned __int64) __ptr64
+// ?_Clear_and_reserve_geometric@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAX_K@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Clear_and_reserve_geometric(unsigned __int64) __ptr64
+// ?_Copy_assign@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXAEBV12@U?$integral_constant@_N$00@2@@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Copy_assign(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > const & __ptr64,struct std::integral_constant<bool,1>) __ptr64
+// ?_Copy_assign@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXAEBV12@U?$integral_constant@_N$0A@@2@@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Copy_assign(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > const & __ptr64,struct std::integral_constant<bool,0>) __ptr64
+// ?_Destroy@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXPEAV?$Rect_@H@cv@@0@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Destroy(class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64) __ptr64
+// ?_Getal@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAAEAV?$allocator@V?$Rect_@H@cv@@@2@XZ	private: class std::allocator<class cv::Rect_<int> > & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Getal(void) __ptr64
+// ?_Getal@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEBAAEBV?$allocator@V?$Rect_@H@cv@@@2@XZ	private: class std::allocator<class cv::Rect_<int> > const & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Getal(void)const __ptr64
+// ?_Make_iterator@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@QEAV?$Rect_@H@cv@@@Z	private: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Make_iterator(class cv::Rect_<int> * __ptr64 const) __ptr64
+// ?_Make_iterator_offset@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@_K@Z	private: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Make_iterator_offset(unsigned __int64) __ptr64
+// ?_Move_assign@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXAEAV12@U?$integral_constant@_N$00@2@@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Move_assign(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,struct std::integral_constant<bool,1>) __ptr64
+// ?_Move_assign@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXAEAV12@U?$integral_constant@_N$0A@@2@@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Move_assign(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,struct std::integral_constant<bool,0>) __ptr64
+// ?_Move_assign@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXAEAV12@U_Equal_allocators@2@@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Move_assign(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,struct std::_Equal_allocators) __ptr64
+// ?_Move_construct@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXAEAV12@U?$integral_constant@_N$00@2@@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Move_construct(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,struct std::integral_constant<bool,1>) __ptr64
+// ?_Move_construct@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXAEAV12@U?$integral_constant@_N$0A@@2@@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Move_construct(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,struct std::integral_constant<bool,0>) __ptr64
+// ?_Orphan_range@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEBAXPEAV?$Rect_@H@cv@@0@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Orphan_range(class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64)const __ptr64
+// ?_Reallocate_exactly@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAX_K@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Reallocate_exactly(unsigned __int64) __ptr64
+// ?_Tidy@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXXZ	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Tidy(void) __ptr64
+// ?_Ufill@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAPEAV?$Rect_@H@cv@@PEAV34@_KAEBV34@@Z	private: class cv::Rect_<int> * __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Ufill(class cv::Rect_<int> * __ptr64,unsigned __int64,class cv::Rect_<int> const & __ptr64) __ptr64
+// ?_Ufill@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAPEAV?$Rect_@H@cv@@PEAV34@_KU_Value_init_tag@2@@Z	private: class cv::Rect_<int> * __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Ufill(class cv::Rect_<int> * __ptr64,unsigned __int64,struct std::_Value_init_tag) __ptr64
+// ?_Umove@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAPEAV?$Rect_@H@cv@@PEAV34@00@Z	private: class cv::Rect_<int> * __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Umove(class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64) __ptr64
+// ?_Umove_if_noexcept1@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXPEAV?$Rect_@H@cv@@00U?$integral_constant@_N$00@2@@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Umove_if_noexcept1(class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64,struct std::integral_constant<bool,1>) __ptr64
+// ?_Umove_if_noexcept1@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXPEAV?$Rect_@H@cv@@00U?$integral_constant@_N$0A@@2@@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Umove_if_noexcept1(class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64,struct std::integral_constant<bool,0>) __ptr64
+// ?_Umove_if_noexcept@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAXPEAV?$Rect_@H@cv@@00@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Umove_if_noexcept(class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64,class cv::Rect_<int> * __ptr64) __ptr64
+// ?_Unchecked_begin@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAPEAV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> * __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Unchecked_begin(void) __ptr64
+// ?_Unchecked_begin@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBAPEBV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> const * __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Unchecked_begin(void)const __ptr64
+// ?_Unchecked_end@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAPEAV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> * __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Unchecked_end(void) __ptr64
+// ?_Unchecked_end@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBAPEBV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> const * __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Unchecked_end(void)const __ptr64
+// ?_Xlength@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@CAXXZ	private: static void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Xlength(void)
+// ?_Xrange@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@CAXXZ	private: static void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Xrange(void)
+// ?__autoclassinit2@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAX_K@Z	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::__autoclassinit2(unsigned __int64) __ptr64
+// ?assign@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAXV?$initializer_list@V?$Rect_@H@cv@@@2@@Z	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::assign(class std::initializer_list<class cv::Rect_<int> >) __ptr64
+// ?assign@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAX_KAEBV?$Rect_@H@cv@@@Z	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::assign(unsigned __int64,class cv::Rect_<int> const & __ptr64) __ptr64
+// ?at@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV?$Rect_@H@cv@@_K@Z	public: class cv::Rect_<int> & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::at(unsigned __int64) __ptr64
+// ?at@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBAAEBV?$Rect_@H@cv@@_K@Z	public: class cv::Rect_<int> const & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::at(unsigned __int64)const __ptr64
+// ?back@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::back(void) __ptr64
+// ?back@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBAAEBV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> const & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::back(void)const __ptr64
+// ?begin@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@XZ	public: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::begin(void) __ptr64
+// ?begin@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA?AV?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@XZ	public: class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::begin(void)const __ptr64
+// ?capacity@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA_KXZ	public: unsigned __int64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::capacity(void)const __ptr64
+// ?cbegin@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA?AV?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@XZ	public: class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::cbegin(void)const __ptr64
+// ?cend@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA?AV?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@XZ	public: class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::cend(void)const __ptr64
+// ?clear@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAXXZ	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::clear(void) __ptr64
+// ?crbegin@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA?AV?$reverse_iterator@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@std@@@2@XZ	public: class std::reverse_iterator<class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::crbegin(void)const __ptr64
+// ?crend@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA?AV?$reverse_iterator@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@std@@@2@XZ	public: class std::reverse_iterator<class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::crend(void)const __ptr64
+// ?data@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAPEAV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> * __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::data(void) __ptr64
+// ?data@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBAPEBV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> const * __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::data(void)const __ptr64
+// ?empty@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA_NXZ	public: bool __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::empty(void)const __ptr64
+// ?end@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@XZ	public: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::end(void) __ptr64
+// ?end@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA?AV?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@XZ	public: class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::end(void)const __ptr64
+// ?erase@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@0@Z	public: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::erase(class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > >,class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > >) __ptr64
+// ?erase@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@@Z	public: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::erase(class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > >) __ptr64
+// ?front@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::front(void) __ptr64
+// ?front@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBAAEBV?$Rect_@H@cv@@XZ	public: class cv::Rect_<int> const & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::front(void)const __ptr64
+// ?get_allocator@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA?AV?$allocator@V?$Rect_@H@cv@@@2@XZ	public: class std::allocator<class cv::Rect_<int> > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::get_allocator(void)const __ptr64
+// ?insert@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@$$QEAV?$Rect_@H@cv@@@Z	public: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::insert(class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > >,class cv::Rect_<int> && __ptr64) __ptr64
+// ?insert@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@AEBV?$Rect_@H@cv@@@Z	public: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::insert(class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > >,class cv::Rect_<int> const & __ptr64) __ptr64
+// ?insert@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@V?$initializer_list@V?$Rect_@H@cv@@@2@@Z	public: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::insert(class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > >,class std::initializer_list<class cv::Rect_<int> >) __ptr64
+// ?insert@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@2@_KAEBV?$Rect_@H@cv@@@Z	public: class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::insert(class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > >,unsigned __int64,class cv::Rect_<int> const & __ptr64) __ptr64
+// ?max_size@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA_KXZ	public: unsigned __int64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::max_size(void)const __ptr64
+// ?pop_back@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAXXZ	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::pop_back(void) __ptr64
+// ?push_back@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAX$$QEAV?$Rect_@H@cv@@@Z	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::push_back(class cv::Rect_<int> && __ptr64) __ptr64
+// ?push_back@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAXAEBV?$Rect_@H@cv@@@Z	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::push_back(class cv::Rect_<int> const & __ptr64) __ptr64
+// ?rbegin@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@std@@@2@XZ	public: class std::reverse_iterator<class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::rbegin(void) __ptr64
+// ?rbegin@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA?AV?$reverse_iterator@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@std@@@2@XZ	public: class std::reverse_iterator<class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::rbegin(void)const __ptr64
+// ?rend@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAA?AV?$reverse_iterator@V?$_Vector_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@std@@@2@XZ	public: class std::reverse_iterator<class std::_Vector_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::rend(void) __ptr64
+// ?rend@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA?AV?$reverse_iterator@V?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$Rect_@H@cv@@@std@@@std@@@std@@@2@XZ	public: class std::reverse_iterator<class std::_Vector_const_iterator<class std::_Vector_val<struct std::_Simple_types<class cv::Rect_<int> > > > > __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::rend(void)const __ptr64
+// ?reserve@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAX_K@Z	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::reserve(unsigned __int64) __ptr64
+// ?resize@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAX_K@Z	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::resize(unsigned __int64) __ptr64
+// ?resize@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAX_KAEBV?$Rect_@H@cv@@@Z	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::resize(unsigned __int64,class cv::Rect_<int> const & __ptr64) __ptr64
+// ?shrink_to_fit@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAXXZ	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::shrink_to_fit(void) __ptr64
+
+// 224
+// ?size@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA_KXZ
+// public: unsigned __int64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::size(void)const __ptr64
+function size__StdVectorRect(Obj: pStdVectorRect): int64; external opencv_delphi_dll name '?size@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBA_KXZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+// ?swap@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAXAEAV12@@Z	public: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::swap(class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64) __ptr64
+
+{$ENDREGION}
 
 implementation
 
+{$REGION 'CvStdString'}
 { CppString }
 
-procedure CppString.assign(const p: pAnsiChar);
+procedure CvStdString.assign(const p: pAnsiChar);
 begin
-  assign_String(@Self, p);
+  assign_CppString(@Self, p);
 end;
 
-class operator CppString.assign(var Dest: CppString; const [ref] Src: CppString);
+class operator CvStdString.assign(var Dest: CvStdString; const [ref] Src: CvStdString);
 begin
   Finalize(Dest);
-  assign_String(pCppString(@Dest), pCppString(@Src));
+  assign_CppString(pCppString(@Dest), pCppString(@Src));
 end;
 
-procedure CppString.erase(const _Off: UInt64);
+procedure CvStdString.erase(const _Off: UInt64);
 begin
-  erase_String(@Self, _Off);
+  erase_CppString(@Self, _Off);
 end;
 
-class operator CppString.Finalize(var Dest: CppString);
+class operator CvStdString.Finalize(var Dest: CvStdString);
 begin
-  Destructor_String(@Dest);
+  Destructor_CppString(@Dest);
 end;
 
-class operator CppString.Implicit(const s: String): CppString;
+class operator CvStdString.Implicit(const s: string): CvStdString;
 begin
   Result.assign(pAnsiChar(AnsiString(s)));
 end;
 
-class operator CppString.Implicit(const p: pAnsiChar): CppString;
+class operator CvStdString.Implicit(const p: pAnsiChar): CvStdString;
 begin
   Result.assign(p);
 end;
 
-class operator CppString.Implicit(const s: CppString): String;
-Var
+class operator CvStdString.Implicit(const s: CvStdString): string;
+var
   r: pAnsiChar;
 begin
-  r := CppString_c_str(@s);
+  r := c_str_CppString(@s);
   Result := string(r);
 end;
 
-class operator CppString.Initialize(out Dest: CppString);
+class operator CvStdString.Initialize(out Dest: CvStdString);
 begin
-  Constructor_String(@Dest);
+  Constructor_CppString(@Dest);
 end;
 
-function CppString.length: UInt64;
+function CvStdString.length: UInt64;
 begin
-  Result := length_String(@Self);
+  Result := length_CppString(@Self);
 end;
 
-function CppString.size: UInt64;
+function CvStdString.size: UInt64;
 begin
-  Result := size_String(@Self);
+  Result := size_CppString(@Self);
 end;
+
+{$ENDREGION}
+//
+{$REGION 'std::vector<Rect>'}
+{ StdVectorRect }
+
+class operator StdVectorRect.Finalize(var Dest: StdVectorRect);
+begin
+  Destructor_StdVectorRect(@Dest);
+end;
+
+class operator StdVectorRect.Initialize(out Dest: StdVectorRect);
+begin
+  Constructor_StdVectorRect(@Dest);
+end;
+
+function StdVectorRect.size: int64;
+begin
+  Result := size__StdVectorRect(@Self);
+end;
+
+{$ENDREGION}
 
 end.

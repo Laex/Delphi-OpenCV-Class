@@ -48,7 +48,7 @@ begin
 
     // ! [load]
     Var
-      imageName: CppString := CVResourcePath + 'stuff.jpg'; // by default
+      imageName: CppString := OpenCVData + 'stuff.jpg'; // by default
 
     if (ParamCount > 0) then
       imageName := ParamStr(1);

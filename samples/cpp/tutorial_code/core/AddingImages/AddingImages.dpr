@@ -32,8 +32,8 @@ begin
 
     // ![load]
     /// Read images ( both have to be of the same size and type )
-    src1 := imread(CVResourcePath + 'LinuxLogo.jpg');
-    src2 := imread(CVResourcePath + 'WindowsLogo.jpg');
+    src1 := imread(OpenCVData + 'LinuxLogo.jpg');
+    src2 := imread(OpenCVData + 'WindowsLogo.jpg');
     // ![load]
 
     if (src1.empty()) then

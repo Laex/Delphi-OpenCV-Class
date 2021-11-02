@@ -10,3 +10,4 @@
 using namespace cv;
 
 class BODY_API ExportString : public String {};
+class BODY_API ExportVectorRect : public std::vector<Rect> {};

@@ -33,7 +33,7 @@ begin
     if ParamCount > 0 then
       fn := ParamStr(1)
     else
-      fn := CVResourcePath + 'notes.png';
+      fn := OpenCVData + 'notes.png';
 
     var
       src: TMat := imread(fn, IMREAD_COLOR);

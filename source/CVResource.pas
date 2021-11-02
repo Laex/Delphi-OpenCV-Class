@@ -3,7 +3,9 @@ unit CVResource;
 interface
 
 const
-   CVResourcePath = '..\resource\';
+  OpenCVRootPath = 'C:\OpenCV\opencv\';
+  OpenCVData     = OpenCVRootPath + 'sources\samples\data\';
+  OprnCVHaar     = OpenCVRootPath + 'sources\data\haarcascades\';
 
 implementation
 

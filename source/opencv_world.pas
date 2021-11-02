@@ -1,18 +1,20 @@
 unit opencv_world;
 
-{$I opencv_delphi.inc}
-
 interface
 
 Uses
-  OpenCV.Import,
   opencv_delphi;
+
+{$I opencv_delphi.inc}
+{$REGION 'CV const'}
 
 const
   INT_MAX = MaxInt;
   DBL_MAX = 1.7976931348623158E+308; // max value
+{$ENDREGION 'CV const'}
+  //
+{$REGION 'Interface.h'}
 
-  // ---------------------- Interface.h ----------------------
 const
   CV_CN_MAX    = 512;
   CV_CN_SHIFT  = 3;
@@ -30,16 +32,20 @@ const
   CV_MAT_DEPTH_MASK = (CV_DEPTH_MAX - 1);
 function CV_MAT_DEPTH(flags: int): int; {$IFDEF USE_INLINE}inline; {$ENDIF}     // #define CV_MAT_DEPTH(flags)     ((flags) & CV_MAT_DEPTH_MASK)
 function CV_MAKETYPE(depth, cn: int): int; {$IFDEF USE_INLINE}inline; {$ENDIF}  // #define CV_MAKETYPE(depth,cn) (CV_MAT_DEPTH(depth) + (((cn)-1) << CV_CN_SHIFT))
-// #define CV_MAKE_TYPE CV_MAKETYPE
+function CV_MAKE_TYPE(depth, cn: int): int; {$IFDEF USE_INLINE}inline; {$ENDIF} // #define CV_MAKE_TYPE CV_MAKETYPE
 
 Var
   CV_8UC1: int;
   CV_8UC2: int;
   CV_8UC3: int;
   CV_8UC4: int;
-  // CV_8UC(n) CV_MAKETYPE(CV_8U,(n))
 
-  // ---------------------- Start base.hpp ----------------------
+function CV_8UC(n: int): int; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_8UC(n) CV_MAKETYPE(CV_8U,(n))
+
+{$ENDREGION 'Interface.h'}
+//
+{$REGION 'base.hpp'}
+
 type
   // ! Various border types, image boundaries are denoted with `|`
   // ! @see borderInterpolate, copyMakeBorder
@@ -55,9 +61,10 @@ type
     BORDER_DEFAULT = BORDER_REFLECT_101,    // !< same as BORDER_REFLECT_101
     BORDER_ISOLATED = 16                    // !< do not look outside of ROI
     );
-  // ---------------------- End base.hpp ----------------------
+{$ENDREGION 'base.hpp'}
+  //
+{$REGION 'cvdef.h'}
 
-  // ---------------------- cvdef.h ----------------------
 const
   (* ************************************************************************************** *)
   (* Matrix type (Mat) *)
@@ -77,9 +84,55 @@ const
 
   OPENCV_ABI_COMPATIBILITY = 400;
 
-Type
+type
+  TRect_<T> = record
+  public
+    // ! default constructor
+    // Rect_();
+    // Rect_(_Tp _x, _Tp _y, _Tp _width, _Tp _height);
+    // #if OPENCV_ABI_COMPATIBILITY < 500
+    // Rect_(const Rect_& r) = default;
+    // Rect_(Rect_&& r) CV_NOEXCEPT = default;
+    // #endif
+    // Rect_(const Point_<_Tp>& org, const Size_<_Tp>& sz);
+    // Rect_(const Point_<_Tp>& pt1, const Point_<_Tp>& pt2);
+    //
+    // #if OPENCV_ABI_COMPATIBILITY < 500
+    // Rect_& operator = (const Rect_& r) = default;
+    // Rect_& operator = (Rect_&& r) CV_NOEXCEPT = default;
+    // #endif
+    // ! the top-left corner
+    // Point_<_Tp> tl() const;
+    // ! the bottom-right corner
+    // Point_<_Tp> br() const;
 
-  // ---------------------- types.hpp ----------------------
+    // ! size (width, height) of the rectangle
+    // Size_<_Tp> size() const;
+    // ! area (width*height) of the rectangle
+    // _Tp area() const;
+    // ! true if empty
+    // bool empty() const;
+
+    // ! conversion to another data type
+    // template<typename _Tp2> operator Rect_<_Tp2>() const;
+
+    // ! checks whether the rectangle contains the point
+    // bool contains(const Point_<_Tp>& pt) const;
+  public
+    x: T;      // !< x coordinate of the top-left corner
+    y: T;      // !< y coordinate of the top-left corner
+    width: T;  // !< width of the rectangle
+    height: T; // !< height of the rectangle
+  end;
+
+  TRect2i = TRect_<int>;
+  TRect = TRect2i;
+  pRect = ^TRect;
+{$ENDREGION 'cvdef.h'}
+  //
+{$REGION 'types.hpp'}
+
+Type
   TSize_<T> = record
   public
     // //! default constructor
@@ -111,6 +164,8 @@ Type
 
   TSize2i = TSize_<int>;
   TSize = TSize2i;
+  pSize = UInt64;
+  rSize = ^TSize;
 
 function size(const _width, _height: int): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
@@ -158,11 +213,21 @@ type
 
   TPoint2i = TPoint_<int>;
   TPoint = TPoint2i;
+  pPoint = UInt64;
+  rPoint = ^TPoint;
 
 function Point(const _x, _y: int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
+{$ENDREGION 'types.hpp'}
+//
+{$REGION 'mat.hpp'}
 
-// ---------------------- mat.hpp ----------------------
 Type
+
+  TCVMat = array [0 .. 95] of byte;    // forward declaration
+  TCVScalar = array [0 .. 31] of byte; // forward declaration
+
+  pMatSize = ^TMatSize;
+
   TMatSize = record
   public
     // explicit MatSize(int* _p) CV_NOEXCEPT;
@@ -189,9 +254,6 @@ Type
     p: psize_t;                    // size_t* p;
     buf: array [0 .. 1] of size_t; // size_t buf[2];
   end;
-
-  // pMatOp = ^TMatOp;
-  pMatOp = Pointer;
 
   pMatExpr = ^TMatExpr;
 
@@ -226,7 +288,7 @@ Type
     //
     class operator Finalize(var Dest: TMatExpr);
   public
-    op: pMatOp; // const MatOp* op;
+    op: pMatOp; // pMatOp; // const MatOp* op;
     flags: int; // int flags;
     //
     a, b, c: TCVMat;     // Mat a, b, c;
@@ -333,7 +395,7 @@ Type
     function empty: Bool; {$IFDEF USE_INLINE}inline; {$ENDIF}               // bool empty() const;
     function total: size_t; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}   // size_t total() const;
     function total(startDim: int; endDim: int = INT_MAX): size_t; overload; {$IFDEF USE_INLINE}inline; {$ENDIF} // size_t total(int startDim, int endDim=INT_MAX) const;
-    function checkVector(elemChannels: int; depth: int = -1; requireContinuous: Bool = true): int; // int checkVector(int elemChannels, int depth=-1, bool requireContinuous=true) const;
+    function checkVector(elemChannels: int; depth: int = -1; requireContinuous: Bool = true): int; {$IFDEF USE_INLINE}inline; {$ENDIF} // int checkVector(int elemChannels, int depth=-1, bool requireContinuous=true) const;
     // uchar* ptr(int i0=0);
     // const uchar* ptr(int i0=0) const;
     // uchar* ptr(int row, int col);
@@ -386,49 +448,7 @@ Type
     step: TMatStep; // MatStep step;
   end;
 
-  // TMatOp_vfptr = array [0 .. 25] of Pointer;
-  // pMatOp_vfptr = ^TMatOp_vfptr;
-  // TMatOp = record
-  // private
-  // _vfptr: pMatOp_vfptr;
-  // public
-  // // MatOp();
-  // // virtual ~MatOp();
-  // //
-  // // 1 virtual bool elementWise(const MatExpr& expr) const;
-  // procedure assign(const expr: TMatExpr; Var m: TMat; &type: Int = -1); {$IFDEF USE_INLINE}inline; {$ENDIF}// 2 virtual void assign(const MatExpr& expr, Mat& m, int type=-1) const = 0;
-  // // 3 virtual void roi(const MatExpr& expr, const Range& rowRange,
-  // // const Range& colRange, MatExpr& res) const;
-  // // 4 virtual void diag(const MatExpr& expr, int d, MatExpr& res) const;
-  // // 5 virtual void augAssignAdd(const MatExpr& expr, Mat& m) const;
-  // // 6 virtual void augAssignSubtract(const MatExpr& expr, Mat& m) const;
-  // // 7 virtual void augAssignMultiply(const MatExpr& expr, Mat& m) const;
-  // // 8 virtual void augAssignDivide(const MatExpr& expr, Mat& m) const;
-  // // 9 virtual void augAssignAnd(const MatExpr& expr, Mat& m) const;
-  // // 10 virtual void augAssignOr(const MatExpr& expr, Mat& m) const;
-  // // 11 virtual void augAssignXor(const MatExpr& expr, Mat& m) const;
-  // //
-  // // 12 virtual void add(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res) const;
-  // // 13 virtual void add(const MatExpr& expr1, const Scalar& s, MatExpr& res) const;
-  // //
-  // // 14 virtual void subtract(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res) const;
-  // // 15 virtual void subtract(const Scalar& s, const MatExpr& expr, MatExpr& res) const;
-  // //
-  // // 16 virtual void multiply(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res, double scale=1) const;
-  // // 17 virtual void multiply(const MatExpr& expr1, double s, MatExpr& res) const;
-  // //
-  // // 18 virtual void divide(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res, double scale=1) const;
-  // // 19 virtual void divide(double s, const MatExpr& expr, MatExpr& res) const;
-  // //
-  // // 20 virtual void abs(const MatExpr& expr, MatExpr& res) const;
-  // //
-  // // 21 virtual void transpose(const MatExpr& expr, MatExpr& res) const;
-  // // 22 virtual void matmul(const MatExpr& expr1, const MatExpr& expr2, MatExpr& res) const;
-  // // 23 virtual void invert(const MatExpr& expr, int method, MatExpr& res) const;
-  // //
-  // // 24 virtual Size size(const MatExpr& expr) const;
-  // // 25 virtual int type(const MatExpr& expr) const;
-  // end;
+  pScalar = ^TScalar;
 
   TScalar = record
   private
@@ -551,12 +571,12 @@ type
   private
 {$HINTS OFF}
     flags: int;   // int flags;
-    obj: Pointer; // void* obj;
+    Obj: Pointer; // void* obj;
     sz: TSize;    // Size sz;
 {$HINTS ON}
   end;
 
-  InputArray = ^TInputArray;
+  pOutputArray = ^TOutputArray;
 
   TOutputArray = record
   private
@@ -620,11 +640,7 @@ type
     class operator Implicit(const OA: TOutputArray): TMat;
   end;
 
-  TMatHelper = record helper for TMat
-  public
-    procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
-    procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
-  end;
+  pInputOutputArray = ^TInputOutputArray;
 
   TInputOutputArray = record
   private
@@ -682,7 +698,9 @@ type
   end;
 
 function noArray(): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-// ---------------------- core.hpp ----------------------
+{$ENDREGION 'mat.hpp'}
+//
+{$REGION 'core.hpp'}
 (* * @brief Swaps two matrices *)
 // CV_EXPORTS void swap(Mat& a, Mat& b);
 // ?swap@cv@@YAXAEAVMat@1@0@Z
@@ -826,9 +844,9 @@ procedure _bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { 
 procedure bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 procedure bitwise_not(Src: TInputArray; dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
-
-// ---------------------- end core.hpp ----------------------
-// ---------------------- imgcodecs.hpp ----------------------
+{$ENDREGION 'core.hpp'}
+//
+{$REGION 'imgcodecs.hpp'}
 
 Type
   ImreadModes = (                    //
@@ -1003,9 +1021,10 @@ function waitKey(delay: int = 0): int; external opencv_world_dll name '?waitKey@
 procedure imshow(const winname: CppString; Mat: TInputArray); overload; external opencv_world_dll index 5268
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-// ---------------------- end imgcodecs.hpp ----------------------
+{$ENDREGION 'imgcodecs.hpp'}
+//
+{$REGION 'highgui.hpp'}
 
-// ---------------------- highgui.hpp ----------------------
 Type
   WindowFlags = (                //
     WINDOW_NORMAL = $00000000,   // !< the user can resize the window (no constraint) / also use to switch a fullscreen window to a normal size.
@@ -1110,9 +1129,10 @@ procedure moveWindow(const winname: CppString; x, y: int); external opencv_world
 // void cv::destroyWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
 procedure destroyWindow(const winname: CppString); external opencv_world_dll index 4411{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-// ---------------------- end highgui.hpp ----------------------
+{$ENDREGION 'highgui.hpp'}
+//
+{$REGION 'imgproc.hpp'}
 
-// ---------------------- start imgproc.hpp ----------------------
 type
   LineTypes = (  //
     FILLED = -1, //
@@ -1807,7 +1827,579 @@ procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: 
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-// ---------------------- end imgproc.hpp ----------------------
+//
+(* * @brief Equalizes the histogram of a grayscale image.
+
+  The function equalizes the histogram of the input image using the following algorithm:
+
+  - Calculate the histogram \f$H\f$ for src .
+  - Normalize the histogram so that the sum of histogram bins is 255.
+  - Compute the integral of the histogram:
+  \f[H'_i =  \sum _{0  \le j < i} H(j)\f]
+  - Transform the image using \f$H'\f$ as a look-up table: \f$\texttt{dst}(x,y) = H'(\texttt{src}(x,y))\f$
+
+  The algorithm normalizes the brightness and increases the contrast of the image.
+
+  @param src Source 8-bit single channel image.
+  @param dst Destination image of the same size and type as src .
+*)
+// CV_EXPORTS_W void equalizeHist( InputArray src, OutputArray dst );
+// 4624
+// ?equalizeHist@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
+// void cv::equalizeHist(class cv::_InputArray const &,class cv::_OutputArray const &)
+procedure equalizeHist(Src: TInputArray; dst: TOutputArray); external opencv_world_dll index 4624 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief Draws a simple or thick elliptic arc or fills an ellipse sector.
+
+  The function cv::ellipse with more parameters draws an ellipse outline, a filled ellipse, an elliptic
+  arc, or a filled ellipse sector. The drawing code uses general parametric form.
+  A piecewise-linear curve is used to approximate the elliptic arc
+  boundary. If you need more control of the ellipse rendering, you can retrieve the curve using
+  #ellipse2Poly and then render it with #polylines or fill it with #fillPoly. If you use the first
+  variant of the function and want to draw the whole ellipse, not an arc, pass `startAngle=0` and
+  `endAngle=360`. If `startAngle` is greater than `endAngle`, they are swapped. The figure below explains
+  the meaning of the parameters to draw the blue arc.
+
+  ![Parameters of Elliptic Arc](pics/ellipse.svg)
+
+  @param img Image.
+  @param center Center of the ellipse.
+  @param axes Half of the size of the ellipse main axes.
+  @param angle Ellipse rotation angle in degrees.
+  @param startAngle Starting angle of the elliptic arc in degrees.
+  @param endAngle Ending angle of the elliptic arc in degrees.
+  @param color Ellipse color.
+  @param thickness Thickness of the ellipse arc outline, if positive. Otherwise, this indicates that
+  a filled ellipse sector is to be drawn.
+  @param lineType Type of the ellipse boundary. See #LineTypes
+  @param shift Number of fractional bits in the coordinates of the center and values of axes.
+*)
+// CV_EXPORTS_W void ellipse(InputOutputArray img, Point center, Size axes,
+// double angle, double startAngle, double endAngle,
+// const Scalar& color, int thickness = 1,
+// int lineType = LINE_8, int shift = 0);
+// 4577
+// ?ellipse2Poly@cv@@YAXV?$Point_@H@1@V?$Size_@H@1@HHHHAEAV?$vector@V?$Point_@H@cv@@V?$allocator@V?$Point_@H@cv@@@std@@@std@@@Z
+// void cv::ellipse2Poly(class cv::Point_<int>,class cv::Size_<int>,int,int,int,int,class std::vector<class cv::Point_<int>,class std::allocator<class cv::Point_<int> > > &)
+procedure ellipse(img: TInputOutputArray; center: TPoint; axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: int = 1; lineType: int = int(LINE_8); shift: int = 0);
+  external opencv_world_dll index 4577 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief Draws a circle.
+
+  The function cv::circle draws a simple or filled circle with a given center and radius.
+  @param img Image where the circle is drawn.
+  @param center Center of the circle.
+  @param radius Radius of the circle.
+  @param color Circle color.
+  @param thickness Thickness of the circle outline, if positive. Negative values, like #FILLED,
+  mean that a filled circle is to be drawn.
+  @param lineType Type of the circle boundary. See #LineTypes
+  @param shift Number of fractional bits in the coordinates of the center and in the radius value.
+*)
+// CV_EXPORTS_W void circle(InputOutputArray img, Point center, int radius,
+// const Scalar& color, int thickness = 1,
+// int lineType = LINE_8, int shift = 0);
+// 3795
+// ?circle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z
+// void cv::circle(class cv::_InputOutputArray const &,class cv::Point_<int>,int,class cv::Scalar_<double> const &,int,int,int)
+procedure circle(img: TInputOutputArray; center: TPoint; radius: int; const color: TScalar; thickness: int = 1; lineType: int = int(LINE_8); shift: int = 0); external opencv_world_dll index 3795
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+{$ENDREGION 'imgproc.hpp'}
+//
+{$REGION 'objectdetect.hpp'}
+
+Type
+  (* * @example samples/cpp/facedetect.cpp
+    This program demonstrates usage of the Cascade classifier class
+    \image html Cascade_Classifier_Tutorial_Result_Haar.jpg "Sample screenshot" width=321 height=254
+  *)
+  (* * @brief Cascade classifier class for object detection. *)
+
+  pCascadeClassifier = ^TCascadeClassifier;
+
+  TCascadeClassifier = record
+  private
+{$HINTS OFF}
+    Dummy: array [0 .. 1] of UInt64;
+{$HINTS ON}
+  public
+    class operator Initialize(out Dest: TCascadeClassifier); // CV_WRAP CascadeClassifier();
+    (* * @brief Loads a classifier from a file.
+      @param filename Name of the file from which the classifier is loaded. *)
+    // CV_WRAP CascadeClassifier(const String& filename);
+    class operator Finalize(var Dest: TCascadeClassifier); // ~CascadeClassifier();
+    (* * @brief Checks whether the classifier has been loaded. *)
+    // CV_WRAP bool empty() const;
+    (* * @brief Loads a classifier from a file.
+
+      @param filename Name of the file from which the classifier is loaded. The file may contain an old
+      HAAR classifier trained by the haartraining application or a new cascade classifier trained by the
+      traincascade application.
+    *)
+    function load(const filename: String): Bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_WRAP bool load( const String& filename );
+    function load(const filename: CvStdString): Bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * @brief Reads a classifier from a FileStorage node.
+      @note The file may contain a new cascade classifier (trained traincascade application) only. *)
+    // CV_WRAP bool read( const FileNode& node );
+
+    (* * @brief Detects objects of different sizes in the input image. The detected objects are returned as a list of rectangles.
+
+      @param image Matrix of the type CV_8U containing an image where objects are detected.
+      @param objects Vector of rectangles where each rectangle contains the detected object, the
+      rectangles may be partially outside the original image.
+      @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+      @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+      to retain it.
+      @param flags Parameter with the same meaning for an old cascade as in the function
+      cvHaarDetectObjects. It is not used for a new cascade.
+      @param minSize Minimum possible object size. Objects smaller than that are ignored.
+      @param maxSize Maximum possible object size. Objects larger than that are ignored. If `maxSize == minSize` model is evaluated on single scale.
+
+      The function is parallelized with the TBB library.
+
+      @note
+      -   (Python) A face detection example using cascade classifiers can be found at
+      opencv_source_code/samples/python/facedetect.py
+    *)
+    procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double = 1.1; minNeighbors: int = 3; flags: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors: int; flags: int; const minSize: TSize { = Size() } ); overload;
+{$IFDEF USE_INLINE}inline;
+{$ENDIF}
+    procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors: int; flags: int; const minSize: TSize;
+      const maxSize: TSize { = Size() } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+    // CV_WRAP void detectMultiScale( InputArray image,
+    // CV_OUT std::vector<Rect>& objects,
+    // double scaleFactor = 1.1,
+    // int minNeighbors = 3, int flags = 0,
+    // Size minSize = Size(),
+    // Size maxSize = Size() );
+
+    (* * @overload
+      @param image Matrix of the type CV_8U containing an image where objects are detected.
+      @param objects Vector of rectangles where each rectangle contains the detected object, the
+      rectangles may be partially outside the original image.
+      @param numDetections Vector of detection numbers for the corresponding objects. An object's number
+      of detections is the number of neighboring positively classified rectangles that were joined
+      together to form the object.
+      @param scaleFactor Parameter specifying how much the image size is reduced at each image scale.
+      @param minNeighbors Parameter specifying how many neighbors each candidate rectangle should have
+      to retain it.
+      @param flags Parameter with the same meaning for an old cascade as in the function
+      cvHaarDetectObjects. It is not used for a new cascade.
+      @param minSize Minimum possible object size. Objects smaller than that are ignored.
+      @param maxSize Maximum possible object size. Objects larger than that are ignored. If `maxSize == minSize` model is evaluated on single scale.
+    *)
+    // CV_WRAP_AS(detectMultiScale2) void detectMultiScale( InputArray image,
+    // CV_OUT std::vector<Rect>& objects,
+    // CV_OUT std::vector<int>& numDetections,
+    // double scaleFactor=1.1,
+    // int minNeighbors=3, int flags=0,
+    // Size minSize=Size(),
+    // Size maxSize=Size() );
+
+    (* * @overload
+      This function allows you to retrieve the final stage decision certainty of classification.
+      For this, one needs to set `outputRejectLevels` on true and provide the `rejectLevels` and `levelWeights` parameter.
+      For each resulting detection, `levelWeights` will then contain the certainty of classification at the final stage.
+      This value can then be used to separate strong from weaker classifications.
+
+      A code sample on how to use it efficiently can be found below:
+      @code
+      Mat img;
+      vector<double> weights;
+      vector<int> levels;
+      vector<Rect> detections;
+      CascadeClassifier model("/path/to/your/model.xml");
+      model.detectMultiScale(img, detections, levels, weights, 1.1, 3, 0, Size(), Size(), true);
+      cerr << "Detection " << detections[0] << " with weight " << weights[0] << endl;
+      @endcode
+    *)
+    // CV_WRAP_AS(detectMultiScale3) void detectMultiScale( InputArray image,
+    // CV_OUT std::vector<Rect>& objects,
+    // CV_OUT std::vector<int>& rejectLevels,
+    // CV_OUT std::vector<double>& levelWeights,
+    // double scaleFactor = 1.1,
+    // int minNeighbors = 3, int flags = 0,
+    // Size minSize = Size(),
+    // Size maxSize = Size(),
+    // bool outputRejectLevels = false );
+
+    // CV_WRAP bool isOldFormatCascade() const;
+    // CV_WRAP Size getOriginalWindowSize() const;
+    // CV_WRAP int getFeatureType() const;
+    // void* getOldCascade();
+
+    // CV_WRAP static bool convert(const String& oldcascade, const String& newcascade);
+
+    // void setMaskGenerator(const Ptr<BaseCascadeClassifier::MaskGenerator>& maskGenerator);
+    // Ptr<BaseCascadeClassifier::MaskGenerator> getMaskGenerator();
+
+    // Ptr<BaseCascadeClassifier> cc;
+  end;
+
+{$ENDREGION 'objectdetect.hpp'}
+  //
+{$REGION 'fast_math.hpp'}
+
+  (* * @brief Rounds floating-point number to the nearest integer
+
+    @param value floating-point number. If the value is outside of INT_MIN ... INT_MAX range, the
+    result is not defined.
+  *)
+  // CV_INLINE int cvRound( double value )
+  // 4320
+  // ?cvRound@@YAHAEBUsoftdouble@cv@@@Z
+  // int cvRound(struct cv::softdouble const &)
+function cvRound(value: double): int; external opencv_world_dll index 4320 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+{$ENDREGION 'fast_math.hpp'}
+//
+{$REGION 'videoio.hpp'}
+
+type
+  VideoCaptureAPIs = (           //
+    CAP_ANY = 0,                 // !< Auto detect == 0
+    CAP_VFW = 200,               // !< Video For Windows (obsolete, removed)
+    CAP_V4L = 200,               // !< V4L/V4L2 capturing support
+    CAP_V4L2 = CAP_V4L,          // !< Same as CAP_V4L
+    CAP_FIREWIRE = 300,          // !< IEEE 1394 drivers
+    CAP_FIREWARE = CAP_FIREWIRE, // !< Same value as CAP_FIREWIRE
+    CAP_IEEE1394 = CAP_FIREWIRE, // !< Same value as CAP_FIREWIRE
+    CAP_DC1394 = CAP_FIREWIRE,   // !< Same value as CAP_FIREWIRE
+    CAP_CMU1394 = CAP_FIREWIRE,  // !< Same value as CAP_FIREWIRE
+    CAP_QT = 500,                // !< QuickTime (obsolete, removed)
+    CAP_UNICAP = 600,            // !< Unicap drivers (obsolete, removed)
+    CAP_DSHOW = 700,             // !< DirectShow (via videoInput)
+    CAP_PVAPI = 800,             // !< PvAPI, Prosilica GigE SDK
+    CAP_OPENNI = 900,            // !< OpenNI (for Kinect)
+    CAP_OPENNI_ASUS = 910,       // !< OpenNI (for Asus Xtion)
+    CAP_ANDROID = 1000,          // !< Android - not used
+    CAP_XIAPI = 1100,            // !< XIMEA Camera API
+    CAP_AVFOUNDATION = 1200,     // !< AVFoundation framework for iOS (OS X Lion will have the same API)
+    CAP_GIGANETIX = 1300,        // !< Smartek Giganetix GigEVisionSDK
+    CAP_MSMF = 1400,             // !< Microsoft Media Foundation (via videoInput)
+    CAP_WINRT = 1410,            // !< Microsoft Windows Runtime using Media Foundation
+    CAP_INTELPERC = 1500,        // !< RealSense (former Intel Perceptual Computing SDK)
+    CAP_REALSENSE = 1500,        // !< Synonym for CAP_INTELPERC
+    CAP_OPENNI2 = 1600,          // !< OpenNI2 (for Kinect)
+    CAP_OPENNI2_ASUS = 1610,     // !< OpenNI2 (for Asus Xtion and Occipital Structure sensors)
+    CAP_OPENNI2_ASTRA = 1620,    // !< OpenNI2 (for Orbbec Astra)
+    CAP_GPHOTO2 = 1700,          // !< gPhoto2 connection
+    CAP_GSTREAMER = 1800,        // !< GStreamer
+    CAP_FFMPEG = 1900,           // !< Open and record video file or stream using the FFMPEG library
+    CAP_IMAGES = 2000,           // !< OpenCV Image Sequence (e.g. img_%02d.jpg)
+    CAP_ARAVIS = 2100,           // !< Aravis SDK
+    CAP_OPENCV_MJPEG = 2200,     // !< Built-in OpenCV MotionJPEG codec
+    CAP_INTEL_MFX = 2300,        // !< Intel MediaSDK
+    CAP_XINE = 2400,             // !< XINE engine (Linux)
+    CAP_UEYE = 2500              // !< uEye Camera API
+    );
+
+  pVideoCapture = ^TVideoCapture;
+
+  TVideoCapture = record
+  public
+    (* * @brief Default constructor
+      @note In @ref videoio_c "C API", when you finished working with video, release CvCapture structure with
+      cvReleaseCapture(), or use Ptr\<CvCapture\> that calls cvReleaseCapture() automatically in the
+      destructor.
+    *)
+    class operator Initialize(out Dest: TVideoCapture); // CV_WRAP VideoCapture();
+
+    (* * @overload
+      @brief  Opens a video file or a capturing device or an IP video stream for video capturing with API Preference
+
+      @param filename it can be:
+      - name of video file (eg. `video.avi`)
+      - or image sequence (eg. `img_%02d.jpg`, which will read samples like `img_00.jpg, img_01.jpg, img_02.jpg, ...`)
+      - or URL of video stream (eg. `protocol://host:port/script_name?script_params|auth`)
+      - or GStreamer pipeline string in gst-launch tool format in case if GStreamer is used as backend
+      Note that each video stream or IP camera feed has its own URL scheme. Please refer to the
+      documentation of source stream to know the right URL.
+      @param apiPreference preferred Capture API backends to use. Can be used to enforce a specific reader
+      implementation if multiple are available: e.g. cv::CAP_FFMPEG or cv::CAP_IMAGES or cv::CAP_DSHOW.
+
+      @sa cv::VideoCaptureAPIs
+    *)
+
+    // CV_WRAP explicit VideoCapture(const String & filename, int apiPreference = CAP_ANY);
+
+    (* * @overload
+      @brief Opens a video file or a capturing device or an IP video stream for video capturing with API Preference and parameters
+
+      The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
+      See cv::VideoCaptureProperties
+    *)
+    // CV_WRAP explicit VideoCapture(const String & filename, int apiPreference, const std: : vector<int> & params);
+
+    (* * @overload
+      @brief  Opens a camera for video capturing
+
+      @param index id of the video capturing device to open. To open default camera using default backend just pass 0.
+      (to backward compatibility usage of camera_id + domain_offset (CAP_* ) is valid when apiPreference is CAP_ANY)
+      @param apiPreference preferred Capture API backends to use. Can be used to enforce a specific reader
+      implementation if multiple are available: e.g. cv::CAP_DSHOW or cv::CAP_MSMF or cv::CAP_V4L.
+
+      @sa cv::VideoCaptureAPIs
+    *)
+    // CV_WRAP explicit VideoCapture(int index, int apiPreference = CAP_ANY);
+
+    (* * @overload
+      @brief Opens a camera for video capturing with API Preference and parameters
+
+      The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
+      See cv::VideoCaptureProperties
+    *)
+    // CV_WRAP explicit VideoCapture(int index, int apiPreference, const std: : vector<int> & params);
+
+    (* * @brief Default destructor
+
+      The method first calls VideoCapture::release to close the already opened file or camera.
+    *)
+    class operator Finalize(var Dest: TVideoCapture); // virtual ~ VideoCapture();
+
+    (* * @brief  Opens a video file or a capturing device or an IP video stream for video capturing.
+
+      @overload
+
+      Parameters are same as the constructor VideoCapture(const String& filename, int apiPreference = CAP_ANY)
+      @return `true` if the file has been successfully opened
+
+      The method first calls VideoCapture::release to close the already opened file or camera.
+    *)
+    // CV_WRAP virtual Bool open(const String & filename, int apiPreference = CAP_ANY);
+
+    (* * @brief  Opens a camera for video capturing
+
+      @overload
+
+      The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
+      See cv::VideoCaptureProperties
+
+      @return `true` if the file has been successfully opened
+
+      The method first calls VideoCapture::release to close the already opened file or camera.
+    *)
+    // CV_WRAP virtual Bool open(const String & filename, int apiPreference, const std: : vector<int> & params);
+
+    (* * @brief  Opens a camera for video capturing
+
+      @overload
+
+      Parameters are same as the constructor VideoCapture(int index, int apiPreference = CAP_ANY)
+      @return `true` if the camera has been successfully opened.
+
+      The method first calls VideoCapture::release to close the already opened file or camera.
+    *)
+    function open(const index: int; const apiPreference: VideoCaptureAPIs = CAP_ANY): Bool; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // CV_WRAP virtual Bool open(int index, int apiPreference = CAP_ANY);
+
+    (* * @brief Returns true if video capturing has been initialized already.
+
+      @overload
+
+      The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
+      See cv::VideoCaptureProperties
+
+      @return `true` if the camera has been successfully opened.
+
+      The method first calls VideoCapture::release to close the already opened file or camera.
+    *)
+    // CV_WRAP virtual Bool open(int index, int apiPreference, const std: : vector<int> & params);
+
+    (* * @brief Returns true if video capturing has been initialized already.
+
+      If the previous call to VideoCapture constructor or VideoCapture::open() succeeded, the method returns
+      true.
+    *)
+    function isOpened: Bool; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_WRAP virtual Bool isOpened()  const;
+
+    (* * @brief Closes video file or capturing device.
+
+      The method is automatically called by subsequent VideoCapture::open and by VideoCapture
+      destructor.
+
+      The C function also deallocates memory and clears \*capture pointer.
+    *)
+    // CV_WRAP virtual void release();
+
+    (* * @brief Grabs the next frame from video file or capturing device.
+
+      @return `true` (non-zero) in the case of success.
+
+      The method/function grabs the next frame from video file or camera and returns true (non-zero) in
+      the case of success.
+
+      The primary use of the function is in multi-camera environments, especially when the cameras do not
+      have hardware synchronization. That is, you call VideoCapture::grab() for each camera and after that
+      call the slower method VideoCapture::retrieve() to decode and get frame from each camera. This way
+      the overhead on demosaicing or motion jpeg decompression etc. is eliminated and the retrieved frames
+      from different cameras will be closer in time.
+
+      Also, when a connected camera is multi-head (for example, a stereo camera or a Kinect device), the
+      correct way of retrieving data from it is to call VideoCapture::grab() first and then call
+      VideoCapture::retrieve() one or more times with different values of the channel parameter.
+
+      @ref tutorial_kinect_openni
+    *)
+    // CV_WRAP virtual Bool grab();
+
+    (* * @brief Decodes and returns the grabbed video frame.
+
+      @param [out] image the video frame is returned here. If no frames has been grabbed the image will be empty.
+      @param flag it could be a frame index or a driver specific flag
+      @return `false` if no frames has been grabbed
+
+      The method decodes and returns the just grabbed frame. If no frames has been grabbed
+      (camera has been disconnected, or there are no more frames in video file), the method returns false
+      and the function returns an empty image (with %cv::Mat, test it with Mat::empty()).
+
+      @sa read()
+
+      @note In @ref videoio_c "C API", functions cvRetrieveFrame() and cv.RetrieveFrame() return image stored inside the video
+      capturing structure. It is not allowed to modify or release the image! You can copy the frame using
+      cvCloneImage and then do whatever you want with the copy.
+    *)
+    // CV_WRAP virtual Bool retrieve(OutputArray image, int flag = 0);
+
+    (* * @brief Stream operator to read the next video frame.
+      @sa read()
+    *)
+    // virtual VideoCapture & operator >> (CV_OUT Mat & image);
+
+    (* * @overload
+      @sa read()
+    *)
+    // virtual VideoCapture & operator >> (CV_OUT UMAT & image);
+
+    (* * @brief Grabs, decodes and returns the next video frame.
+
+      @param [out] image the video frame is returned here. If no frames has been grabbed the image will be empty.
+      @return `false` if no frames has been grabbed
+
+      The method/function combines VideoCapture::grab() and VideoCapture::retrieve() in one call. This is the
+      most convenient method for reading video files or capturing data from decode and returns the just
+      grabbed frame. If no frames has been grabbed (camera has been disconnected, or there are no more
+      frames in video file), the method returns false and the function returns empty image (with %cv::Mat, test it with Mat::empty()).
+
+      @note In @ref videoio_c "C API", functions cvRetrieveFrame() and cv.RetrieveFrame() return image stored inside the video
+      capturing structure. It is not allowed to modify or release the image! You can copy the frame using
+      cvCloneImage and then do whatever you want with the copy.
+    *)
+    function read(const image: TOutputArray): Bool; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_WRAP virtual Bool read(OutputArray image);
+
+    (* * @brief Sets a property in the VideoCapture.
+
+      @param propId Property identifier from cv::VideoCaptureProperties (eg. cv::CAP_PROP_POS_MSEC, cv::CAP_PROP_POS_FRAMES, ...)
+      or one from @ref videoio_flags_others
+      @param value Value of the property.
+      @return `true` if the property is supported by backend used by the VideoCapture instance.
+      @note Even if it returns `true` this doesn't ensure that the property
+      value has been accepted by the capture device. See note in VideoCapture::get()
+    *)
+    // CV_WRAP virtual Bool set (int propId, double value);
+
+    (* * @brief Returns the specified VideoCapture property
+
+      @param propId Property identifier from cv::VideoCaptureProperties (eg. cv::CAP_PROP_POS_MSEC, cv::CAP_PROP_POS_FRAMES, ...)
+      or one from @ref videoio_flags_others
+      @return Value for the specified property. Value 0 is returned when querying a property that is
+      not supported by the backend used by the VideoCapture instance.
+
+      @note Reading / writing properties involves many layers. Some unexpected result might happens
+      along this chain.
+      @code{.txt}
+      VideoCapture -> API Backend -> Operating System -> Device Driver -> Device Hardware
+      @endcode
+      The returned value might be different from what really used by the device or it could be encoded
+      using device dependent rules (eg. steps or percentage). Effective behaviour depends from device
+      driver and API Backend
+
+    *)
+    // CV_WRAP virtual double get(int propId)  const;
+
+    (* * @brief Returns used backend API name
+
+      @note Stream should be opened.
+    *)
+    // CV_WRAP String getBackendName()  const;
+
+    (* * Switches exceptions mode
+      *
+      * methods raise exceptions if not successful instead of returning an error code
+    *)
+    // CV_WRAP void setExceptionMode(Bool enable) { throwOnFail = enable; }
+
+    /// query if exception mode is active
+    // CV_WRAP Bool getExceptionMode() { return throwOnFail; }
+
+    (* * @brief Wait for ready frames from VideoCapture.
+
+      @param streams input video streams
+      @param readyIndex stream indexes with grabbed frames (ready to use .retrieve() to fetch actual frame)
+      @param timeoutNs number of nanoseconds (0 - infinite)
+      @return `true` if streamReady is not empty
+
+      @throws Exception %Exception on stream errors (check .isOpened() to filter out malformed streams) or VideoCapture type is not supported
+
+      The primary use of the function is in multi-camera environments.
+      The method fills the ready state vector, grabs video frame, if camera is ready.
+
+      After this call use VideoCapture::retrieve() to decode and fetch frame data.
+    *)
+    // static (* CV_WRAP *) Bool waitAny(const std: : vector<VideoCapture> & streams, CV_OUT std: : vector<int> & readyIndex, int64 timeoutNs = 0);
+
+  private
+{$HINTS OFF}
+    Dummy: array [0 .. 47] of byte;
+    // Ptr<CvCapture> cap;
+    // Ptr<IVideoCapture> icap;
+    // bool throwOnFail;
+
+    // friend class internal::VideoCapturePrivateAccessor;
+{$HINTS ON}
+  end;
+
+{$ENDREGION 'videoio.hpp'}
+  //
+{$REGION 'opencv_word helpers'}
+
+Type
+  TMatHelper = record helper for TMat
+  public
+    procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
+    procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
+    class function Mat(const m: TRect): TMat; static;
+    class operator Implicit(const m: TRect): TMat; // Mat Mat::operator()( const Rect& roi ) const
+  end;
+{$ENDREGION 'opencv_word helpers'}
+  //
+{$REGION 'opencv_delphi helpers'}
+
+  StdVectorRectHelper = record helper for StdVectorRect
+  private
+    function GetItems(const index: UInt64): TRect;
+  public
+    property Items[const index: UInt64]: TRect read GetItems; default;
+  end;
+
+{$ENDREGION 'opencv_delphi helpers'}
+  //
+{$REGION 'Import'}
+{$I opencv.mat.import.inc}
+{$I opencv.InputArray.import.inc}
+{$I opencv.Scalar.import.inc}
+{$I opencv.OutputArray.import.inc}
+{$I opencv.InputOutputArray.import.inc}
+{$I opencv.MatExpr.import.inc}
+{$I opencv.MatSize.import.inc}
+{$I opencv.operator.import.inc}
+{$I opencv.CascadeClassifier.import.inc}
+{$I opencv.VideoCapture.import.inc}
+{$ENDREGION 'Import'}
 
 implementation
 
@@ -1942,32 +2534,32 @@ end;
 
 class operator TMat.Initialize(out Dest: TMat);
 begin
-  constructor_Mat(@Dest);
+  Constructor_Mat(@Dest);
 end;
 
 class operator TMat.Finalize(var Dest: TMat);
 begin
-  destructor_Mat(@Dest);
+  Destructor_Mat(@Dest);
 end;
 
 function TMat.clone: TMat;
 begin
-  OpenCV.Import.clone(@Self, @Result);
+  clone_Mat(@Self, @Result);
 end;
 
 function TMat.diag(d: int): TMat;
 begin
-  OpenCV.Import.diag(@Self, @Result, d);
+  diag_Mat(@Self, @Result, d);
 end;
 
 function TMat.isContinuous: Bool;
 begin
-  Result := OpenCV.Import.isContinuous(@Self);
+  Result := isContinuous_Mat(@Self);
 end;
 
 function TMat.isSubmatrix: Bool;
 begin
-  Result := OpenCV.Import.isSubmatrix(@Self);
+  Result := isSubmatrix_Mat(@Self);
 end;
 
 class operator TMat.LogicalNot(const m: TMat): TMatExpr;
@@ -1977,80 +2569,80 @@ end;
 
 class function TMat.ones(rows, cols, &type: int): TMatExpr;
 begin
-  OpenCV.Import.ones(@Result, rows, cols, &type);
+  ones_Mat(@Result, rows, cols, &type);
 end;
 
 class function TMat.ones(ndims: int; const sz: pInt; &type: int): TMat;
 begin
-  OpenCV.Import.ones(@Result, ndims, sz, &type);
+  ones_Mat(@Result, ndims, sz, &type);
 end;
 
 function TMat.step1(i: int): size_t;
 begin
-  Result := OpenCV.Import.step1(@Self, i);
+  Result := step1_Mat(@Self, i);
 end;
 
 class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
 begin
   Finalize(Dest);
-  OpenCV.Import.clone(@Src, @Dest);
+  clone_Mat(@Src, @Dest);
 end;
 
 function TMat.channels: int;
 begin
-  Result := OpenCV.Import.channels(@Self);
+  Result := channels_Mat(@Self);
 end;
 
 function TMat.checkVector(elemChannels, depth: int; requireContinuous: Bool): int;
 begin
-  Result := OpenCV.Import.checkVector(@Self, elemChannels, depth, requireContinuous);
+  Result := checkVector_Mat(@Self, elemChannels, depth, requireContinuous);
 end;
 
 procedure TMat.create(rows, cols, &type: int);
 begin
-  OpenCV.Import.constructor_Mat(@Self, rows, cols, &type);
+  Constructor_Mat(@Self, rows, cols, &type);
 end;
 
 function TMat.depth: int;
 begin
-  Result := OpenCV.Import.depth(@Self);
+  Result := depth_Mat(@Self);
 end;
 
 function TMat.elemSize: size_t;
 begin
-  Result := OpenCV.Import.elemSize(@Self);
+  Result := elemSize_Mat(@Self);
 end;
 
 function TMat.elemSize1: size_t;
 begin
-  Result := OpenCV.Import.elemSize1(@Self);
+  Result := elemSize1_Mat(@Self);
 end;
 
 function TMat.empty: Bool;
 begin
-  Result := OpenCV.Import.empty(@Self);
+  Result := empty_Mat(@Self);
 end;
 
 function TMat.total(startDim, endDim: int): size_t;
 begin
-  Result := OpenCV.Import.total(@Self, startDim, endDim);
+  Result := total_Mat(@Self, startDim, endDim);
 end;
 
 function TMat.total: size_t;
 begin
-  Result := OpenCV.Import.total(@Self);
+  Result := total_Mat(@Self);
 end;
 
 function TMat.&type: int;
 begin
-  Result := OpenCV.Import.type(@Self);
+  Result := type_Mat(@Self);
 end;
 
 class function TMat.zeros(
 
   const size: TSize; &type: int): TMatExpr;
 begin
-  OpenCV.Import.zeros(@Result, UInt64(size), &type);
+  zeros_Mat(@Result, UInt64(size), &type);
 end;
 
 { TInputArray }
@@ -2062,7 +2654,7 @@ end;
 
 function TInputArray.getObj: Pointer;
 begin
-  Result := OpenCV.Import.getObj(@Self);
+  Result := getObj_InputArray(@Self);
 end;
 
 class operator TInputArray.Implicit(const IA: TInputArray): TMat;
@@ -2073,7 +2665,7 @@ end;
 
 class operator TInputArray.Implicit(const m: TMatExpr): TInputArray;
 begin
-  Constructor_InputArray(@Result, @m);
+  Constructor_InputArray(@Result, pMatExpr(@m));
 end;
 
 class operator TInputArray.Initialize(out Dest: TInputArray);
@@ -2083,7 +2675,7 @@ end;
 
 class function TInputArray.InputArray(const m: TMat): TInputArray;
 begin
-  Constructor_InputArray(@Result, TCVMatPointer(@m));
+  Constructor_InputArray(@Result, pMat(@m));
 end;
 
 class operator TInputArray.Finalize(var Dest: TInputArray);
@@ -2093,7 +2685,7 @@ end;
 
 function TInputArray.isMat: Bool;
 begin
-  Result := OpenCV.Import.isMat(@Self);
+  Result := isMat_InputArray(@Self);
 end;
 
 { TOutputArray }
@@ -2158,9 +2750,7 @@ end;
 
 { TSize_<T> }
 
-class function TSize_<T>.size(
-
-  const _width, _height: T): TSize_<T>;
+class function TSize_<T>.size(const _width, _height: T): TSize_<T>;
 begin
   Result.width := _width;
   Result.height := _height;
@@ -2173,9 +2763,7 @@ end;
 
 { TMatExpr }
 
-class operator TMatExpr.Finalize(
-
-  var Dest: TMatExpr);
+class operator TMatExpr.Finalize(var Dest: TMatExpr);
 begin
   Destructor_MatExpr(@Dest);
 end;
@@ -2187,24 +2775,15 @@ end;
 
 function TMatExpr.size: TSize;
 begin
-  Result := TSize(MatExpr_size(@Self)^);
+  Result := MatExpr_size(@Self, @Result)^;
 end;
 
 { TMatSize }
 
 class operator TMatSize.Implicit(const m: TMatSize): TSize;
 begin
-  MatSize_MatSizeToSize(@m, @Result);
+  operator_MatSize_MatSizeToSize(@m, @Result);
 end;
-
-// { TMatOp }
-//
-// procedure TMatOp.assign(const expr: TMatExpr; Var m: TMat; &type: Int);
-// Type
-// TAssignProc = procedure(const expr: pMatExpr; Var m: TMat; &type: Int);
-// begin
-// TAssignProc(expr.op^._vfptr[2])(@expr, m, &type);
-// end;
 
 { TInputOutputArray }
 
@@ -2236,7 +2815,7 @@ end;
 
 class function TInputOutputArray.noArray: TInputOutputArray;
 begin
-  InputOutputArray_noArray(@Result);
+  noArray_InputOutputArray(@Result);
 end;
 
 class operator TInputOutputArray.Implicit(const IOA: TInputOutputArray): TInputArray;
@@ -2267,23 +2846,116 @@ begin
   Result := (CV_MAT_DEPTH(depth) + (((cn) - 1) shl CV_CN_SHIFT));
 end;
 
+function CV_MAKE_TYPE(depth, cn: int): int;
+begin
+  Result := CV_MAKETYPE(depth, cn);
+end;
+
+function CV_8UC(n: int): int;
+begin
+  Result := CV_MAKETYPE(CV_8U, n);
+end;
+
 { TMatHelper }
 
 procedure TMatHelper.copyTo(m: TOutputArray);
 begin
-  OpenCV.Import.copyTo(@Self, @m);
+  copyTo_Mat(@Self, @m);
 end;
 
 procedure TMatHelper.copyTo(m: TOutputArray; mask: TInputArray);
 begin
-  OpenCV.Import.copyTo(@Self, @m, @mask);
+  copyTo_Mat(@Self, @m, @mask);
+end;
+
+class operator TMatHelper.Implicit(const m: TRect): TMat;
+begin
+  Constructor_Mat(@Result, @Result, pRect(@m));
+end;
+
+class function TMatHelper.Mat(const m: TRect): TMat;
+begin
+  Result := m;
+end;
+
+{ TCascadeClassifier }
+
+procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors, flags: int);
+begin
+  detectMultiScale(image, objects, scaleFactor, minNeighbors, flags, size(0, 0));
+end;
+
+procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors, flags: int; const minSize: TSize);
+begin
+  detectMultiScale(image, objects, scaleFactor, minNeighbors, flags, minSize, size(0, 0));
+end;
+
+procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors, flags: int; const minSize, maxSize: TSize);
+begin
+  detectMultiScale_CascadeClassifier(@Self, @image, @objects, scaleFactor, minNeighbors, flags, UInt64(minSize), UInt64(maxSize));
+end;
+
+class operator TCascadeClassifier.Finalize(var Dest: TCascadeClassifier);
+begin
+  Destructor_CascadeClassifier(@Dest);
+end;
+
+class operator TCascadeClassifier.Initialize(out Dest: TCascadeClassifier);
+begin
+  Constructor_CascadeClassifier(@Dest);
+end;
+
+function TCascadeClassifier.load(const filename: CvStdString): Bool;
+begin
+  Result := load_CascadeClassifier(@Self, @filename);
+end;
+
+function TCascadeClassifier.load(const filename: String): Bool;
+begin
+  Result := load_CascadeClassifier(@Self, @CvStdString(filename));
+end;
+
+{ StdVectorRectHelper }
+
+function StdVectorRectHelper.GetItems(const index: UInt64): TRect;
+begin
+  Result := pRect(operator_get_StdVectorRect(@Self, index))^;
+end;
+
+{ TVideoCapture }
+
+class operator TVideoCapture.Finalize(var Dest: TVideoCapture);
+begin
+  destructor_VideoCapture(@Dest);
+end;
+
+class operator TVideoCapture.Initialize(out Dest: TVideoCapture);
+begin
+  constructor_VideoCapture(@Dest);
+end;
+
+function TVideoCapture.isOpened: Bool;
+begin
+  Result := isOpened_VideoCapture(@Self);
+end;
+
+function TVideoCapture.open(const index: int; const apiPreference: VideoCaptureAPIs): Bool;
+begin
+  Result := open_VideoCapture(@Self, index, int(apiPreference));
+end;
+
+function TVideoCapture.read(const image: TOutputArray): Bool;
+begin
+  Result := read_VideoCapture(@Self, @image);
 end;
 
 initialization
 
-CV_8UC1 := CV_MAKETYPE(CV_8U, 1);
+{$REGION 'Interface.h'}
+  CV_8UC1 := CV_MAKETYPE(CV_8U, 1);
 CV_8UC2 := CV_MAKETYPE(CV_8U, 2);
 CV_8UC3 := CV_MAKETYPE(CV_8U, 3);
 CV_8UC4 := CV_MAKETYPE(CV_8U, 4);
+{$ENDREGION}
 
 end.
