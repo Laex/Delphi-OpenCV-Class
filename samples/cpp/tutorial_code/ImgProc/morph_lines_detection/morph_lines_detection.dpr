@@ -5,9 +5,8 @@ program morph_lines_detection;
 
 uses
   System.SysUtils,
-  CVResource in 'CVResource.pas',
-  opencv_delphi in 'opencv_delphi.pas',
-  opencv_world in 'opencv_world.pas';
+  CVResource,
+  opencv_world;
 
 const
   EXIT_FAILURE = 1;

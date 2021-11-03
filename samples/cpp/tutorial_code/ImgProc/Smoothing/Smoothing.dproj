@@ -141,9 +141,6 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="CVResource.pas"/>
-        <DCCReference Include="opencv_delphi.pas"/>
-        <DCCReference Include="opencv_world.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

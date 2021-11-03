@@ -6,7 +6,6 @@ program objectDetection;
 uses
   System.SysUtils,
   CVResource,
-  opencv_delphi,
   opencv_world;
 
 Var

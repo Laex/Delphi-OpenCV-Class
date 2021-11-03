@@ -6,7 +6,6 @@ program AddingImages;
 uses
   System.SysUtils,
   CVResource,
-  opencv_delphi,
   opencv_world;
 
 const
