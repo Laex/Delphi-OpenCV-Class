@@ -316,7 +316,8 @@ Type
     // Mat(int ndims, const int* sizes, int type, void* data, const size_t* steps=0);
     // Mat(const std::vector<int>& sizes, int type, void* data, const size_t* steps=0);
     // Mat(const Mat& m, const Range& rowRange, const Range& colRange=Range::all());
-    // Mat(const Mat& m, const Rect& roi);
+    class function Mat(const m: TMat; const roi: TRect): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat(const Mat& m, const Rect& roi);
+    function Mat(const roi: TRect): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(const Mat& m, const Range* ranges);
     // Mat(const Mat& m, const std::vector<Range>& ranges);
 
@@ -1878,12 +1879,14 @@ procedure equalizeHist(Src: TInputArray; dst: TOutputArray); external opencv_wor
 // double angle, double startAngle, double endAngle,
 // const Scalar& color, int thickness = 1,
 // int lineType = LINE_8, int shift = 0);
-// 4577
-// ?ellipse2Poly@cv@@YAXV?$Point_@H@1@V?$Size_@H@1@HHHHAEAV?$vector@V?$Point_@H@cv@@V?$allocator@V?$Point_@H@cv@@@std@@@std@@@Z
-// void cv::ellipse2Poly(class cv::Point_<int>,class cv::Size_<int>,int,int,int,int,class std::vector<class cv::Point_<int>,class std::allocator<class cv::Point_<int> > > &)
-procedure ellipse(img: TInputOutputArray; center: TPoint; axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: int = 1; lineType: int = int(LINE_8); shift: int = 0);
-  external opencv_world_dll index 4577 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+// 4580
+// ?ellipse@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@V?$Size_@H@1@NNNAEBV?$Scalar_@N@1@HHH@Z
+// void cv::ellipse(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Size_<int>,double,double,double,class cv::Scalar_<double> const &,int,int,int)
+procedure _ellipse(img: TInputOutputArray; center: UInt64 { TPoint }; axes: UInt64 { TSize }; angle, startAngle, endAngle: double; const color: TScalar; thickness: int = 1;
+  lineType: int = int(LINE_8); shift: int = 0); external opencv_world_dll index 4580 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: int = 1; lineType: LineTypes = LINE_8;
+  shift: int = 0);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Draws a circle.
 
   The function cv::circle draws a simple or filled circle with a given center and radius.
@@ -1902,9 +1905,9 @@ procedure ellipse(img: TInputOutputArray; center: TPoint; axes: TSize; angle, st
 // 3795
 // ?circle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z
 // void cv::circle(class cv::_InputOutputArray const &,class cv::Point_<int>,int,class cv::Scalar_<double> const &,int,int,int)
-procedure circle(img: TInputOutputArray; center: TPoint; radius: int; const color: TScalar; thickness: int = 1; lineType: int = int(LINE_8); shift: int = 0); external opencv_world_dll index 3795
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+procedure _circle(img: TInputOutputArray; center: UInt64 { TPoint }; radius: int; const color: TScalar; thickness: int = 1; lineType: int = int(LINE_8); shift: int = 0);
+  external opencv_world_dll index 3795 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure circle(img: TInputOutputArray; center: TPoint; radius: int; const color: TScalar; thickness: int = 1; lineType: LineTypes = LINE_8; shift: int = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'imgproc.hpp'}
 //
 {$REGION 'objectdetect.hpp'}
@@ -1964,11 +1967,9 @@ Type
     *)
     procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double = 1.1; minNeighbors: int = 3; flags: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors: int; flags: int; const minSize: TSize { = Size() } ); overload;
-{$IFDEF USE_INLINE}inline;
-{$ENDIF}
-    procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors: int; flags: int; const minSize: TSize;
-      const maxSize: TSize { = Size() } ); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors: int; flags: int; const minSize: TSize; const maxSize: TSize { = Size() } );
+      overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     // CV_WRAP void detectMultiScale( InputArray image,
     // CV_OUT std::vector<Rect>& objects,
@@ -2053,8 +2054,8 @@ Type
   // 4320
   // ?cvRound@@YAHAEBUsoftdouble@cv@@@Z
   // int cvRound(struct cv::softdouble const &)
-function cvRound(value: double): int; external opencv_world_dll index 4320 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+  // function cvRound(value: double): int; external opencv_world_dll index 4320 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function cvRound(value: double): int; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'fast_math.hpp'}
 //
 {$REGION 'videoio.hpp'}
@@ -2372,8 +2373,6 @@ Type
   public
     procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
     procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
-    class function Mat(const m: TRect): TMat; static;
-    class operator Implicit(const m: TRect): TMat; // Mat Mat::operator()( const Rect& roi ) const
   end;
 {$ENDREGION 'opencv_word helpers'}
   //
@@ -2402,6 +2401,22 @@ Type
 {$ENDREGION 'Import'}
 
 implementation
+
+function cvRound(value: double): int;
+begin
+  Result := Round(value);
+end;
+
+procedure circle(img: TInputOutputArray; center: TPoint; radius: int; const color: TScalar; thickness: int = 1; lineType: LineTypes = LINE_8; shift: int = 0);
+begin
+  _circle(img, UInt64(center), radius, color, thickness, int(lineType), shift);
+end;
+
+procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: int = 1; lineType: LineTypes = LINE_8;
+  shift: int = 0);
+begin
+  _ellipse(img, UInt64(center), UInt64(axes), angle, startAngle, endAngle, color, thickness, int(lineType), shift);
+end;
 
 function noArray(): TInputOutputArray;
 begin
@@ -2529,7 +2544,7 @@ end;
 
 class operator TMat.Implicit(const m: TMatExpr): TMat;
 begin
-  Mat_Operator_Assign(@Result, @m);
+  Operator_Mat_Assign(@Result, @m);
 end;
 
 class operator TMat.Initialize(out Dest: TMat);
@@ -2565,6 +2580,16 @@ end;
 class operator TMat.LogicalNot(const m: TMat): TMatExpr;
 begin
   MatExpr_LogicalNot_Mat(@Result, @m);
+end;
+
+function TMat.Mat(const roi: TRect): TMat;
+begin
+  Result := TMat.Mat(Self, roi);
+end;
+
+class function TMat.Mat(const m: TMat; const roi: TRect): TMat;
+begin
+  Constructor_Mat(@Result, @m, @roi);
 end;
 
 class function TMat.ones(rows, cols, &type: int): TMatExpr;
@@ -2868,15 +2893,10 @@ begin
   copyTo_Mat(@Self, @m, @mask);
 end;
 
-class operator TMatHelper.Implicit(const m: TRect): TMat;
-begin
-  Constructor_Mat(@Result, @Result, pRect(@m));
-end;
-
-class function TMatHelper.Mat(const m: TRect): TMat;
-begin
-  Result := m;
-end;
+// class function TMatHelper.Mat(const m: TRect): TMat;
+// begin
+// Result := m;
+// end;
 
 { TCascadeClassifier }
 

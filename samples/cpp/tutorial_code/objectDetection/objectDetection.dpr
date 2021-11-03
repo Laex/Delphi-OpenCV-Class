@@ -9,12 +9,6 @@ uses
   opencv_delphi,
   opencv_world;
 
-const
-  EXIT_FAILURE = 1;
-
-Type
-  size_t = NativeUInt;
-
 Var
   (* * Global variables *)
   face_cascade: TCascadeClassifier;
@@ -36,7 +30,6 @@ begin
 
   // n := faces.size;
 
-  // if faces.size() > 0 then
   for var i: Integer := 0 to faces.size() - 1 do
   begin
     Var
@@ -45,8 +38,7 @@ begin
 
     // Mat faceROI = frame_gray(faces[i]);
     Var
-      faceROI: TMat := faces[i];
-      // Var faceROI :TMat := TMat.Mat(faces[i]);
+      faceROI: TMat := frame_gray.Mat(faces[0]);
 
       // -- In each face, detect eyes
     Var
@@ -59,6 +51,7 @@ begin
         eye_center: TPoint := Point(faces[i].x + eyes[j].x + eyes[j].width div 2, faces[i].y + eyes[j].y + eyes[j].height div 2);
       Var
         radius: Integer := cvRound((eyes[j].width + eyes[j].height) * 0.25);
+
       circle(frame, eye_center, radius, Scalar(255, 0, 0), 4);
     end;
   end;
@@ -67,25 +60,14 @@ begin
   imshow('Capture - Face detection', frame);
 end;
 
-// Var
-// t: string;
-
 begin
   try
-    //
-    //
-    // not working yet
-    //
-    //
-
     // CommandLineParser parser(argc, argv,
     // "{help h||}"
     // "{face_cascade|data/haarcascades/haarcascade_frontalface_alt.xml|Path to face cascade.}"
     // "{eyes_cascade|data/haarcascades/haarcascade_eye_tree_eyeglasses.xml|Path to eyes cascade.}"
     // "{camera|0|Camera device number.}");
-    // parser.about( "\nThis program demonstrates using the cv::CascadeClassifier class to detect objects (Face + eyes) in a video stream.\n"
-    // "You can use Haar or LBP features.\n\n" );
-    // parser.printMessage();
+
     Writeln('This program demonstrates using the cv::CascadeClassifier class to detect objects (Face + eyes) in a video stream.');
     Writeln('You can use Haar or LBP features.');
     Writeln;

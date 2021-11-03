@@ -10,14 +10,19 @@ procedure Destructor_CascadeClassifier(Obj: pCascadeClassifier); external opencv
 
 // ??4CascadeClassifier@cv@@QEAAAEAV01@AEBV01@@Z   public: class cv::CascadeClassifier & __ptr64 __cdecl cv::CascadeClassifier::operator=(class cv::CascadeClassifier const & __ptr64) __ptr64
 // ?convert@CascadeClassifier@cv@@SA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z public: static bool __cdecl cv::CascadeClassifier::convert(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & __ptr64,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & __ptr64)
+
 // 4431
 // ?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAV?$vector@HV?$allocator@H@std@@@5@AEAV?$vector@NV?$allocator@N@std@@@5@NHHV?$Size_@H@2@4_N@Z
 // public: void __cdecl cv::CascadeClassifier::detectMultiScale(class cv::_InputArray const & __ptr64,class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,class std::vector<int,class std::allocator<int> > & __ptr64,class std::vector<double,class std::allocator<double> > & __ptr64,double,int,int,class cv::Size_<int>,class cv::Size_<int>,bool) __ptr64
+// 4432
+// ?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAV?$vector@HV?$allocator@H@std@@@5@NHHV?$Size_@H@2@3@Z
+// public: void __cdecl cv::CascadeClassifier::detectMultiScale(class cv::_InputArray const & __ptr64,class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,class std::vector<int,class std::allocator<int> > & __ptr64,double,int,int,class cv::Size_<int>,class cv::Size_<int>) __ptr64
+// 4433
+// ?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NHHV?$Size_@H@2@2@Z
+// public: void __cdecl cv::CascadeClassifier::detectMultiScale(class cv::_InputArray const & __ptr64,class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,double,int,int,class cv::Size_<int>,class cv::Size_<int>) __ptr64
 procedure detectMultiScale_CascadeClassifier(Obj: pCascadeClassifier; image: pInputArray; objects: pStdVectorRect; scaleFactor: double; minNeighbors: int; flags: int;
-  minSize: UInt64 { TCVSizePointer }; maxSize: UInt64 { TCVSizePointer } ); external opencv_world_dll index 1480 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  minSize: UInt64 { TCVSizePointer }; maxSize: UInt64 { TCVSizePointer } ); external opencv_world_dll index 4433 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-// ?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAV?$vector@HV?$allocator@H@std@@@5@NHHV?$Size_@H@2@3@Z     public: void __cdecl cv::CascadeClassifier::detectMultiScale(class cv::_InputArray const & __ptr64,class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,class std::vector<int,class std::allocator<int> > & __ptr64,double,int,int,class cv::Size_<int>,class cv::Size_<int>) __ptr64
-// ?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NHHV?$Size_@H@2@2@Z  public: void __cdecl cv::CascadeClassifier::detectMultiScale(class cv::_InputArray const & __ptr64,class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,double,int,int,class cv::Size_<int>,class cv::Size_<int>) __ptr64
 // ?empty@CascadeClassifier@cv@@QEBA_NXZ   public: bool __cdecl cv::CascadeClassifier::empty(void)const __ptr64
 // ?getFeatureType@CascadeClassifier@cv@@QEBAHXZ   public: int __cdecl cv::CascadeClassifier::getFeatureType(void)const __ptr64
 // ?getMaskGenerator@CascadeClassifier@cv@@QEAA?AU?$Ptr@VMaskGenerator@BaseCascadeClassifier@cv@@@2@XZ     public: struct cv::Ptr<class cv::BaseCascadeClassifier::MaskGenerator> __cdecl cv::CascadeClassifier::getMaskGenerator(void) __ptr64

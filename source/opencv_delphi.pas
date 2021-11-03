@@ -3,7 +3,6 @@ unit opencv_delphi;
 interface
 
 {$I opencv_delphi.inc}
-
 {$REGION 'CvStdString'}
 
 type
@@ -242,7 +241,7 @@ function size_CppString(Obj: pCppString): UInt64; overload; external opencv_delp
 type
   StdVectorRect = record
   private
-  {$HINTS OFF}
+{$HINTS OFF}
     Dummy: array [0 .. 31] of byte;
 {$HINTS ON}
   public
@@ -275,7 +274,7 @@ procedure Destructor_StdVectorRect(Obj: pStdVectorRect); external opencv_delphi_
 // ??4?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV01@V?$initializer_list@V?$Rect_@H@cv@@@1@@Z	public: class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::operator=(class std::initializer_list<class cv::Rect_<int> >) __ptr64
 // ??A?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV?$Rect_@H@cv@@_K@Z
 // public: class cv::Rect_<int> & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::operator[](unsigned __int64) __ptr64
-function operator_get_StdVectorRect(Obj: pStdVectorRect; i: UInt64): pStdVectorRect;
+function operator_get_StdVectorRect(Obj: pStdVectorRect; i: UInt64): Pointer;
   external opencv_delphi_dll name '??A?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEAAAEAV?$Rect_@H@cv@@_K@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ??A?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@QEBAAEBV?$Rect_@H@cv@@_K@Z	public: class cv::Rect_<int> const & __ptr64 __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::operator[](unsigned __int64)const __ptr64
 // ?_Buy_nonzero@?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAAX_K@Z	private: void __cdecl std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > >::_Buy_nonzero(unsigned __int64) __ptr64
