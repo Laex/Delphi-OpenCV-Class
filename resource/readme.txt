@@ -1,1 +1,0 @@
-data from "opencv\sources\samples\data\"

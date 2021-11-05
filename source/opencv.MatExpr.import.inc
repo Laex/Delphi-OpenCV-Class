@@ -27,7 +27,7 @@ procedure Destructor_MatExpr(Obj: pMatExpr); overload; external opencv_world_dll
 // 6473
 // ?size@MatExpr@cv@@QEBA?AV?$Size_@H@2@XZ
 // public: class cv::Size_<int> __cdecl cv::MatExpr::size(void)const __ptr64
-function MatExpr_size(Obj: pMatExpr; p: rSize): rSize; external opencv_world_dll index 6473 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function MatExpr_size(Obj: pMatExpr; p: pSize): pSize; external opencv_world_dll index 6473 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?swap@MatExpr@cv@@QEAAXAEAV12@@Z        public: void __cdecl cv::MatExpr::swap(class cv::MatExpr & __ptr64) __ptr64
 // ?t@MatExpr@cv@@QEBA?AV12@XZ     public: class cv::MatExpr __cdecl cv::MatExpr::t(void)const __ptr64

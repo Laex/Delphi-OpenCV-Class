@@ -301,15 +301,15 @@ function type_Mat(Obj: pMat): int; overload; external opencv_world_dll name '?ty
 procedure updateContinuityFlag_Mat(Obj: pMat); overload; external opencv_world_dll name '?updateContinuityFlag@Mat@cv@@QEAAXXZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?zeros@Mat@cv@@SA?AVMatExpr@2@HHH@Z
 // public: static class cv::MatExpr __cdecl cv::Mat::zeros(int,int,int)
-function zeros_Mat(Obj: pMat; a: int; b: int; c: int): pMatExpr; overload; external opencv_world_dll name '?zeros@Mat@cv@@SA?AVMatExpr@2@HHH@Z'
+procedure zeros_Mat(Obj: pMatExpr; a: int; b: int; c: int); overload; external opencv_world_dll name '?zeros@Mat@cv@@SA?AVMatExpr@2@HHH@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?zeros@Mat@cv@@SA?AVMatExpr@2@HPEBHH@Z
 // public: static class cv::MatExpr __cdecl cv::Mat::zeros(int,int const * __ptr64,int)
-function zeros_Mat(Obj: pMat; a: int; b: pInt; c: int): pMatExpr; overload; external opencv_world_dll name '?zeros@Mat@cv@@SA?AVMatExpr@2@HPEBHH@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// function zeros_Mat(Obj: pMat; a: int; b: pInt; c: int): pMatExpr; overload; external opencv_world_dll name '?zeros@Mat@cv@@SA?AVMatExpr@2@HPEBHH@Z'
+// {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?zeros@Mat@cv@@SA?AVMatExpr@2@V?$Size_@H@2@H@Z
 // public: static class cv::MatExpr __cdecl cv::Mat::zeros(class cv::Size_<int>,int)
-procedure zeros_Mat(Obj: pMat; a: UInt64; b: int) { : TCVMatExprPointer }; overload; external opencv_world_dll
+procedure zeros_Mat(Obj: pMatExpr; a: UInt64; b: int); overload; external opencv_world_dll
 // name '?zeros@Mat@cv@@SA?AVMatExpr@2@V?$Size_@H@2@H@Z'
   index 6924 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 

@@ -2,6 +2,7 @@ unit opencv_world;
 
 { .$DEFINE DELAYED_LOAD_DLL }
 { .$DEFINE USE_INLINE }
+{$DEFINE UseSystemMath}
 {$IF CompilerVersion >= 21.0}
 {$WEAKLINKRTTI ON}
 {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
@@ -9,6 +10,7 @@ unit opencv_world;
 {$WARN SYMBOL_PLATFORM OFF}
 {$WRITEABLECONST ON}
 {$POINTERMATH ON}
+{$Z4}
 
 interface
 
@@ -23,6 +25,7 @@ Type
   psize_t = ^size_t;
   Int = integer;
   pInt = ^Int;
+  unsigned = UInt32;
   float = Single;
   pFloat = ^float;
   pUChar = type pByte;
@@ -94,7 +97,6 @@ type
 
   pStdVectorMat = ^StdVectorMat;
 {$ENDREGION 'std::vector<Rect>'}
-
   //
 {$REGION 'CV const'}
 
@@ -227,6 +229,9 @@ const
 
   OPENCV_ABI_COMPATIBILITY = 400;
 
+function MIN(a, b: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) > (b) ? (b) : (a))
+function MAX(a, b: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) < (b) ? (b) : (a))
+
 type
   TRect_<T> = record
   public
@@ -307,8 +312,8 @@ Type
 
   TSize2i = TSize_<Int>;
   TSize = TSize2i;
-  pSize = UInt64;
-  rSize = ^TSize;
+  pSize = ^TSize;
+  rSize = UInt64;
 
 function size(const _width, _height: Int): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
@@ -356,8 +361,8 @@ type
 
   TPoint2i = TPoint_<Int>;
   TPoint = TPoint2i;
-  pPoint = UInt64;
-  rPoint = ^TPoint;
+  pPoint = ^TPoint;
+  rPoint = UInt64;
 
 function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'types.hpp'}
@@ -495,8 +500,9 @@ Type
     // MatExpr mul(InputArray m, double scale=1) const;
     // Mat cross(InputArray m) const;
     // double dot(InputArray m) const;
+    class function zeros(const rows, cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
-    class function zeros(const size: TSize; &type: Int): TMatExpr; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
+    class function zeros(const size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
     // CV_NODISCARD_STD static MatExpr zeros(int ndims, const int* sz, int type);
     class function ones(rows: Int; cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
     // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
@@ -1080,8 +1086,174 @@ procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const 
 procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: Int = -1); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
+Type
+  (* * @brief Random Number Generator
+
+    Random number generator. It encapsulates the state (currently, a 64-bit
+    integer) and has methods to return scalar random values and to fill
+    arrays with random values. Currently it supports uniform and Gaussian
+    (normal) distributions. The generator uses Multiply-With-Carry
+    algorithm, introduced by G. Marsaglia (
+    <http://en.wikipedia.org/wiki/Multiply-with-carry> ).
+    Gaussian-distribution random numbers are generated using the Ziggurat
+    algorithm ( <http://en.wikipedia.org/wiki/Ziggurat_algorithm> ),
+    introduced by G. Marsaglia and W. W. Tsang.
+  *)
+  pRNG = ^TRNG;
+
+  TRNG = record
+  public const
+    RNG_UNIFORM = 0;
+    RNG_NORMAL  = 1;
+  public
+
+    (* * @brief constructor
+      These are the RNG constructors. The first form sets the state to some
+      pre-defined value, equal to 2\*\*32-1 in the current implementation. The
+      second form sets the state to the specified value. If you passed state=0
+      , the constructor uses the above default value instead to avoid the
+      singular random number sequence, consisting of all zeros.
+    *)
+    class operator Initialize(out Dest: TRNG); // RNG();
+    (* * @overload
+      @param state 64-bit value used to initialize the RNG.
+    *)
+    class function RNG(state: UInt64): TRNG; static; {$IFDEF USE_INLINE}inline; {$ENDIF}    // RNG(UInt64 state);
+    class operator Implicit(const u: UInt64): TRNG; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* *The method updates the state using the MWC algorithm and returns the
+      next 32-bit random number. *)
+    // unsigned next();
+
+    (* *Each of the methods updates the state using the MWC algorithm and
+      returns the next random number of the specified type. In case of integer
+      types, the returned number is from the available value range for the
+      specified type. In case of floating-point types, the returned value is
+      from [0,1) range.
+    *)
+    // operator uchar();
+    (* * @overload *)
+    // operator schar();
+    (* * @overload *)
+    // operator ushort();
+    (* * @overload *)
+    // operator short();
+    (* * @overload *)
+    class operator Implicit(const p: TRNG): unsigned; {$IFDEF USE_INLINE}inline; {$ENDIF} // operator unsigned();
+    (* * @overload *)
+    // operator Int();
+    (* * @overload *)
+    // operator float();
+    (* * @overload *)
+    // operator double();
+
+    (* * @brief returns a random integer sampled uniformly from [0, N).
+
+      The methods transform the state using the MWC algorithm and return the
+      next random number. The first form is equivalent to RNG::next . The
+      second form returns the random number modulo N , which means that the
+      result is in the range [0, N) .
+    *)
+    // unsigned operator()();
+    (* * @overload
+      @param N upper non-inclusive boundary of the returned random number.
+    *)
+    // unsigned operator()(unsigned n);
+
+    (* * @brief returns uniformly distributed integer random number from [a,b) range
+
+      The methods transform the state using the MWC algorithm and return the
+      next uniformly-distributed random number of the specified type, deduced
+      from the input parameter type, from the range [a, b) . There is a nuance
+      illustrated by the following sample:
+
+      @code{.cpp}
+      RNG rng;
+
+      // always produces 0
+      double a = rng.uniform(0, 1);
+
+      // produces double from [0, 1)
+      double a1 = rng.uniform((double)0, (double)1);
+
+      // produces float from [0, 1)
+      float b = rng.uniform(0.f, 1.f);
+
+      // produces double from [0, 1)
+      double c = rng.uniform(0., 1.);
+
+      // may cause compiler error because of ambiguity:
+      //  RNG::uniform(0, (int)0.999999)? or RNG::uniform((double)0, 0.99999)?
+      double d = rng.uniform(0, 0.999999);
+      @endcode
+
+      The compiler does not take into account the type of the variable to
+      which you assign the result of RNG::uniform . The only thing that
+      matters to the compiler is the type of a and b parameters. So, if you
+      want a floating-point random number, but the range boundaries are
+      integer numbers, either put dots in the end, if they are constants, or
+      use explicit type cast operators, as in the a1 initialization above.
+      @param a lower inclusive boundary of the returned random number.
+      @param b upper non-inclusive boundary of the returned random number.
+    *)
+    function UNIFORM(a, b: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}// Int UNIFORM(Int a, Int b);
+    (* * @overload *)
+    // float UNIFORM(float a, float b);
+    (* * @overload *)
+    // double UNIFORM(double a, double b);
+
+    (* * @brief Fills arrays with random numbers.
+
+      @param mat 2D or N-dimensional matrix; currently matrices with more than
+      4 channels are not supported by the methods, use Mat::reshape as a
+      possible workaround.
+      @param distType distribution type, RNG::UNIFORM or RNG::NORMAL.
+      @param a first distribution parameter; in case of the uniform
+      distribution, this is an inclusive lower boundary, in case of the normal
+      distribution, this is a mean value.
+      @param b second distribution parameter; in case of the uniform
+      distribution, this is a non-inclusive upper boundary, in case of the
+      normal distribution, this is a standard deviation (diagonal of the
+      standard deviation matrix or the full standard deviation matrix).
+      @param saturateRange pre-saturation flag; for uniform distribution only;
+      if true, the method will first convert a and b to the acceptable value
+      range (according to the mat datatype) and then will generate uniformly
+      distributed random numbers within the range [saturate(a), saturate(b)),
+      if saturateRange=false, the method will generate uniformly distributed
+      random numbers in the original range [a, b) and then will saturate them,
+      it means, for example, that
+      <tt>theRNG().fill(mat_8u, RNG::UNIFORM, -DBL_MAX, DBL_MAX)</tt> will likely
+      produce array mostly filled with 0's and 255's, since the range (0, 255)
+      is significantly smaller than [-DBL_MAX, DBL_MAX).
+
+      Each of the methods fills the matrix with the random values from the
+      specified distribution. As the new numbers are generated, the RNG state
+      is updated accordingly. In case of multiple-channel images, every
+      channel is filled independently, which means that RNG cannot generate
+      samples from the multi-dimensional Gaussian distribution with
+      non-diagonal covariance matrix directly. To do that, the method
+      generates samples from multi-dimensional standard Gaussian distribution
+      with zero mean and identity covariation matrix, and then transforms them
+      using transform to get samples from the specified Gaussian distribution.
+    *)
+    // void fill(InputOutputArray Mat, Int distType, InputArray a, InputArray b, BOOL saturateRange = false);
+
+    (* * @brief Returns the next random number sampled from the Gaussian distribution
+      @param sigma standard deviation of the distribution.
+
+      The method transforms the state using the MWC algorithm and returns the
+      next random number from the Gaussian distribution N(0,sigma) . That is,
+      the mean value of the returned random numbers is zero and the standard
+      deviation is the specified sigma .
+    *)
+    // double gaussian(double sigma);
+  public
+    state: UInt64; // UInt64 state;
+
+    // BOOL operator==(const RNG & other)  const;
+  end;
+
 {$ENDREGION 'core.hpp'}
-//
+  //
 {$REGION 'imgcodecs.hpp'}
 
 Type
@@ -1387,6 +1559,19 @@ type
     FONT_HERSHEY_SCRIPT_SIMPLEX = 6, // !< hand-writing style font
     FONT_HERSHEY_SCRIPT_COMPLEX = 7, // !< more complex variant of FONT_HERSHEY_SCRIPT_SIMPLEX
     FONT_ITALIC = 16                 // !< flag for italic font
+    );
+
+  (* * Possible set of marker types used for the cv::drawMarker function
+    @ingroup imgproc_draw
+  *)
+  MarkerTypes = (            //
+    MARKER_CROSS = 0,        // !< A crosshair marker shape
+    MARKER_TILTED_CROSS = 1, // !< A 45 degree tilted crosshair marker shape
+    MARKER_STAR = 2,         // !< A star marker shape, combination of cross and tilted cross
+    MARKER_DIAMOND = 3,      // !< A diamond marker shape
+    MARKER_SQUARE = 4,       // !< A square marker shape
+    MARKER_TRIANGLE_UP = 5,  // !< An upwards pointing triangle marker shape
+    MARKER_TRIANGLE_DOWN = 6 // !< A downwards pointing triangle marker shape
     );
 
   ColorConversionCodes = (           //
@@ -1719,6 +1904,62 @@ procedure _putText(img: TInputOutputArray; const text: CppString; org: UInt64; f
 
 procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
   bottomLeftOrigin: BOOL = false); {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Calculates the width and height of a text string.
+
+  The function cv::getTextSize calculates and returns the size of a box that contains the specified text.
+  That is, the following code renders some text, the tight box surrounding it, and the baseline: :
+  @code
+  String text = "Funny text inside the box";
+  int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX;
+  double fontScale = 2;
+  int thickness = 3;
+
+  Mat img(600, 800, CV_8UC3, Scalar::all(0));
+
+  int baseline=0;
+  Size textSize = getTextSize(text, fontFace,
+  fontScale, thickness, &baseline);
+  baseline += thickness;
+
+  // center the text
+  Point textOrg((img.cols - textSize.width)/2,
+  (img.rows + textSize.height)/2);
+
+  // draw the box
+  rectangle(img, textOrg + Point(0, baseline),
+  textOrg + Point(textSize.width, -textSize.height),
+  Scalar(0,0,255));
+  // ... and the baseline first
+  line(img, textOrg + Point(0, thickness),
+  textOrg + Point(textSize.width, thickness),
+  Scalar(0, 0, 255));
+
+  // then put the text itself
+  putText(img, text, textOrg, fontFace, fontScale,
+  Scalar::all(255), thickness, 8);
+  @endcode
+
+  @param text Input text string.
+  @param fontFace Font to use, see #HersheyFonts.
+  @param fontScale Font scale factor that is multiplied by the font-specific base size.
+  @param thickness Thickness of lines used to render the text. See #putText for details.
+  @param[out] baseLine y-coordinate of the baseline relative to the bottom-most text
+  point.
+  @return The size of a box that contains the specified text.
+
+  @see putText
+*)
+// CV_EXPORTS_W Size getTextSize(const String& text, int fontFace,
+// double fontScale, int thickness,
+// CV_OUT int* baseLine);
+// 5135
+// ?getTextSize@cv@@YA?AV?$Size_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HNHPEAH@Z
+// class cv::Size_<int> cv::getTextSize(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,double,int,int *)
+// function _getTextSize(const text: CvStdString; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil): pSize;
+// external opencv_world_dll index 5135{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure _getTextSize(const R: pSize; text: CvStdString; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil);
+  external opencv_world_dll index 5135{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function getTextSize(const text: String; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
 (* * @brief Blurs an image using the normalized box filter.
 
@@ -2116,8 +2357,30 @@ procedure equalizeHist(Src: TInputArray; dst: TOutputArray); external opencv_wor
 procedure _ellipse(img: TInputOutputArray; center: UInt64 { TPoint }; axes: UInt64 { TSize }; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1;
   lineType: Int = Int(LINE_8); shift: Int = 0); external opencv_world_dll index 4580 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
-  shift: Int = 0);
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+  shift: Int = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Draws a marker on a predefined position in an image.
+
+  The function cv::drawMarker draws a marker on a given position in the image. For the moment several
+  marker types are supported, see #MarkerTypes for more information.
+
+  @param img Image.
+  @param position The point where the crosshair is positioned.
+  @param color Line color.
+  @param markerType The specific type of marker you want to use, see #MarkerTypes
+  @param thickness Line thickness.
+  @param line_type Type of the line, See #LineTypes
+  @param markerSize The length of the marker axis [default = 20 pixels]
+*)
+// CV_EXPORTS_W void drawMarker(InputOutputArray img, Point position, const Scalar& color,
+// int markerType = MARKER_CROSS, int markerSize=20, int thickness=1,
+// int line_type=8);
+// 4534
+// ?drawMarker@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@AEBV?$Scalar_@N@1@HHHH@Z
+// void cv::drawMarker(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int,int)
+procedure _drawMarker(img: TInputOutputArray; position: UInt64 { TPoint }; const color: TScalar; markerType: Int = Int(MARKER_CROSS); markerSize: Int = 20; thickness: Int = 1; line_type: Int = 8);
+  external opencv_world_dll index 4534 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure drawMarker(const img: TInputOutputArray; const position: TPoint; const color: TScalar; const markerType: MarkerTypes = MARKER_CROSS; const markerSize: Int = 20; const thickness: Int = 1;
+  const line_type: LineTypes = LineTypes(8)); {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Draws a circle.
 
   The function cv::circle draws a simple or filled circle with a given center and radius.
@@ -2189,7 +2452,7 @@ procedure circle(img: TInputOutputArray; center: TPoint; radius: Int; const colo
 // float const * *,
 // bool,
 // bool)
-procedure calcHist(const images: pMat; nimages: Int; channels: pInt; mask: TInputArray; hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; uniform: BOOL = true;
+procedure calcHist(const images: pMat; nimages: Int; channels: pInt; mask: TInputArray; hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; UNIFORM: BOOL = true;
   accumulate: BOOL = false); external opencv_world_dll index 3717 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Draws a line segment connecting two points.
@@ -2213,10 +2476,121 @@ procedure calcHist(const images: pMat; nimages: Int; channels: pInt; mask: TInpu
 // ?line@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
 // void cv::line(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int)
 procedure _line(img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0);
-  external opencv_world_dll index 5464
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  external opencv_world_dll index 5464{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure line(img: TInputOutputArray; pt1: TPoint; pt2: TPoint; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Draws an arrow segment pointing from the first point to the second one.
+
+  The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
+
+  @param img Image.
+  @param pt1 The point the arrow starts from.
+  @param pt2 The point the arrow points to.
+  @param color Line color.
+  @param thickness Line thickness.
+  @param line_type Type of the line. See #LineTypes
+  @param shift Number of fractional bits in the point coordinates.
+  @param tipLength The length of the arrow tip in relation to the arrow length
+*)
+// CV_EXPORTS_W void arrowedLine(InputOutputArray img, Point pt1, Point pt2, const Scalar& color,
+// int thickness=1, int line_type=8, int shift=0, double tipLength=0.1);
+// 3560
+// ?arrowedLine@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z
+// void cv::arrowedLine(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int,double)
+procedure _arrowedLine(img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; line_type: Int = 8; shift: Int = 0; tipLength: double = 0.1);
+  external opencv_world_dll index 3560{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
+  const shift: Int = 0; const tipLength: double = 0.1); {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Draws a simple, thick, or filled up-right rectangle.
+
+  The function cv::rectangle draws a rectangle outline or a filled rectangle whose two opposite corners
+  are pt1 and pt2.
+
+  @param img Image.
+  @param pt1 Vertex of the rectangle.
+  @param pt2 Vertex of the rectangle opposite to pt1 .
+  @param color Rectangle color or brightness (grayscale image).
+  @param thickness Thickness of lines that make up the rectangle. Negative values, like #FILLED,
+  mean that the function has to draw a filled rectangle.
+  @param lineType Type of the line. See #LineTypes
+  @param shift Number of fractional bits in the point coordinates.
+*)
+// CV_EXPORTS_W void rectangle(InputOutputArray img, Point pt1, Point pt2,
+// const Scalar& color, int thickness = 1,
+// int lineType = LINE_8, int shift = 0);
+// 6066
+// ?rectangle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
+// void cv::rectangle(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int)
+procedure _rectangle(img: TInputOutputArray; pt1, pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0);
+  external opencv_world_dll index 6066{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8; const shift: Int = 0);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Fills the area bounded by one or more polygons.
+
+  The function cv::fillPoly fills an area bounded by several polygonal contours. The function can fill
+  complex areas, for example, areas with holes, contours with self-intersections (some of their
+  parts), and so forth.
+
+  @param img Image.
+  @param pts Array of polygons where each polygon is represented as an array of points.
+  @param color Polygon color.
+  @param lineType Type of the polygon boundaries. See #LineTypes
+  @param shift Number of fractional bits in the vertex coordinates.
+  @param offset Optional offset of all points of the contours.
+*)
+// CV_EXPORTS_W void fillPoly(InputOutputArray img, InputArrayOfArrays pts,
+// const Scalar& color, int lineType = LINE_8, int shift = 0,
+// Point offset = Point() );
+// 4711
+// ?fillPoly@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@AEBV?$Scalar_@N@1@HHV?$Point_@H@1@@Z
+// void cv::fillPoly(class cv::_InputOutputArray const &,class cv::_InputArray const &,class cv::Scalar_<double> const &,int,int,class cv::Point_<int>)
+
+(* * @overload *)
+// CV_EXPORTS void fillPoly(InputOutputArray img, const Point** pts,
+// const int* npts, int ncontours,
+// const Scalar& color, int lineType = LINE_8, int shift = 0,
+// Point offset = Point() );
+// 4712
+// ?fillPoly@cv@@YAXAEBV_InputOutputArray@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV31@@Z
+// void cv::fillPoly(class cv::_InputOutputArray const &,class cv::Point_<int> const **,int const *,int,class cv::Scalar_<double> const &,int,int,class cv::Point_<int>)
+procedure _fillPoly(img: TInputOutputArray; const pts: pPoint; const npts: pInt; ncontours: Int; const color: TScalar; lineType: Int = Int(LINE_8); shift: Int = 0;
+  offset: UInt64 { TPoint } { = Point() } = 0); external opencv_world_dll index 4712{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes { = LINE_8 }; const shift: Int { = 0 };
+  const offset: TPoint); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes = LINE_8; const shift: Int = 0); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @brief Draws several polygonal curves.
+
+  @param img Image.
+  @param pts Array of polygonal curves.
+  @param isClosed Flag indicating whether the drawn polylines are closed or not. If they are closed,
+  the function draws a line from the last vertex of each curve to its first vertex.
+  @param color Polyline color.
+  @param thickness Thickness of the polyline edges.
+  @param lineType Type of the line segments. See #LineTypes
+  @param shift Number of fractional bits in the vertex coordinates.
+
+  The function cv::polylines draws one or more polygonal curves.
+*)
+// CV_EXPORTS_W void polylines(InputOutputArray img, InputArrayOfArrays pts,
+// bool isClosed, const Scalar& color,
+// int thickness = 1, int lineType = LINE_8, int shift = 0 );
+// 5854
+// ?polylines@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@_NAEBV?$Scalar_@N@1@HHH@Z	void cv::polylines(class cv::_InputOutputArray const &,class cv::_InputArray const &,bool,class cv::Scalar_<double> const &,int,int,int)
+
+(* * @overload *)
+// CV_EXPORTS void polylines(InputOutputArray img, const Point* const* pts, const int* npts,
+// int ncontours, bool isClosed, const Scalar& color,
+// int thickness = 1, int lineType = LINE_8, int shift = 0 );
+// 5855
+// ?polylines@cv@@YAXAEBV_InputOutputArray@1@PEBQEBV?$Point_@H@1@PEBHH_NAEBV?$Scalar_@N@1@HHH@Z
+// void cv::polylines(class cv::_InputOutputArray const &,class cv::Point_<int> const * const *,int const *,int,bool,class cv::Scalar_<double> const &,int,int,int)
+procedure _polylines(img: TInputOutputArray; const pts: pPoint; const npts: pInt; ncontours: Int; isClosed: BOOL; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8);
+  shift: Int = 0); external opencv_world_dll index 5855{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const isClosed: BOOL; const color: TScalar; const thickness: Int = 1;
+  const lineType: LineTypes = LINE_8; const shift: Int = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'imgproc.hpp'}
 //
 {$REGION 'objectdetect.hpp'}
@@ -2683,6 +3057,7 @@ Type
     class function create(rows, cols, &type: Int; const s: TScalar): TMat; static; {$IFDEF USE_INLINE}inline; {$ENDIF}  // Mat(int rows, int cols, int type, const Scalar& s);
     procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
     procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
+    class operator Subtract(const m: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 {$ENDREGION 'opencv_word helpers'}
   //
@@ -2720,11 +3095,18 @@ type
 {$I opencv.operator.import.inc}
 {$I opencv.CascadeClassifier.import.inc}
 {$I opencv.VideoCapture.import.inc}
+{$I opencv.rng.import.inc}
 {$ENDREGION 'Import'}
 
 implementation
 
-{$REGION 'CvStdString'}
+{$IFDEF UseSystemMath}
+
+Uses
+  System.Math;
+{$ENDIF}
+//
+{$REGION 'Std'}
 { CppString }
 
 procedure CvStdString.assign(const p: pAnsiChar);
@@ -2760,10 +3142,10 @@ end;
 
 class operator CvStdString.Implicit(const s: CvStdString): string;
 var
-  r: pAnsiChar;
+  R: pAnsiChar;
 begin
-  r := c_str_CppString(@s);
-  Result := string(r);
+  R := c_str_CppString(@s);
+  Result := string(R);
 end;
 
 class operator CvStdString.Initialize(out Dest: CvStdString);
@@ -2781,9 +3163,6 @@ begin
   Result := size_CppString(@Self);
 end;
 
-{$ENDREGION}
-//
-{$REGION 'std::vector<Rect>'}
 { StdVectorRect }
 
 class operator StdVectorRect.Finalize(var Dest: StdVectorRect);
@@ -2801,7 +3180,33 @@ begin
   Result := size_StdVectorRect(@Self);
 end;
 
-{$ENDREGION}
+{$ENDREGION 'std'}
+
+function MIN(a, b: Int): Int;
+begin
+{$IFDEF UseSystemMath}
+  Result := System.Math.MIN(a, b);
+{$ELSE}
+  // ((a) > (b) ? (b) : (a))
+  if a > b then
+    Result := b
+  else
+    Result := a;
+{$ENDIF}
+end;
+
+function MAX(a, b: Int): Int;
+begin
+{$IFDEF UseSystemMath}
+  Result := System.Math.MAX(a, b);
+{$ELSE}
+  // ((a) < (b) ? (b) : (a))
+  if a < b then
+    Result := b
+  else
+    Result := a;
+{$ENDIF}
+end;
 
 function cvRound(value: double): Int;
 begin
@@ -2813,9 +3218,43 @@ begin
   _circle(img, UInt64(center), radius, color, thickness, Int(lineType), shift);
 end;
 
+procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8; const shift: Int = 0);
+begin
+  _rectangle(img, UInt64(pt1), UInt64(pt2), color, thickness, Int(lineType), shift);
+end;
+
+procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes { = LINE_8 }; const shift: Int { = 0 };
+  const offset: TPoint); overload;
+begin
+  _fillPoly(img, pts, npts, ncontours, color, Int(lineType), shift, UInt64(offset));
+end;
+
+procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes = LINE_8; const shift: Int = 0);
+begin
+  fillPoly(img, pts, npts, ncontours, color, lineType, shift, Point(0, 0));
+end;
+
+procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const isClosed: BOOL; const color: TScalar; const thickness: Int = 1;
+  const lineType: LineTypes = LINE_8; const shift: Int = 0);
+begin
+  _polylines(img, pts, npts, ncontours, isClosed, color, thickness, Int(lineType), shift);
+end;
+
+procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
+  const shift: Int = 0; const tipLength: double = 0.1);
+begin
+  _arrowedLine(img, UInt64(pt1), UInt64(pt2), color, thickness, Int(line_type), shift, tipLength);
+end;
+
 procedure line(img: TInputOutputArray; pt1: TPoint; pt2: TPoint; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
 begin
   _line(img, UInt64(pt1), UInt64(pt2), color, thickness, Int(lineType), shift);
+end;
+
+procedure drawMarker(const img: TInputOutputArray; const position: TPoint; const color: TScalar; const markerType: MarkerTypes = MARKER_CROSS; const markerSize: Int = 20; const thickness: Int = 1;
+  const line_type: LineTypes = LineTypes(8));
+begin
+  _drawMarker(img, UInt64(position), color, Int(markerType), markerSize, thickness, Int(line_type));
 end;
 
 procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
@@ -2922,11 +3361,15 @@ begin
   _blur(Src, dst, UInt64(ksize), UInt64(anchor), Int(borderType));
 end;
 
-procedure putText(img: TInputOutputArray;
-
-  const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: BOOL = false);
+procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
+  bottomLeftOrigin: BOOL = false);
 begin
   _putText(img, text, UInt64(org), fontFace, fontScale, color, thickness, lineType, bottomLeftOrigin);
+end;
+
+function getTextSize(const text: String; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil): TSize;
+begin
+  _getTextSize(@Result, text, fontFace, fontScale, thickness, baseLine);
 end;
 
 procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: Int); overload;
@@ -3116,9 +3559,12 @@ begin
   Result := type_Mat(@Self);
 end;
 
-class function TMat.zeros(
+class function TMat.zeros(const rows, cols: Int; &type: Int): TMatExpr;
+begin
+  zeros_Mat(@Result, rows, cols, &type);
+end;
 
-  const size: TSize; &type: Int): TMatExpr;
+class function TMat.zeros(const size: TSize; &type: Int): TMatExpr;
 begin
   zeros_Mat(@Result, UInt64(size), &type);
 end;
@@ -3361,6 +3807,11 @@ begin
   Constructor_Mat(@Result, rows, cols, &type, @s);
 end;
 
+class operator TMatHelper.Subtract(const m: TMat; const s: TScalar): TMatExpr;
+begin
+  MatExpr_Subtract_Mat_MatExpr(@Result, @m, @s);
+end;
+
 { TCascadeClassifier }
 
 procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors, flags: Int);
@@ -3454,6 +3905,33 @@ end;
 function StdVectorMatHelper.GetItems(const index: UInt64): TMat;
 begin
   Result := pMat(operator_get_StdVectorMat(@Self, index))^;
+end;
+
+{ TRNG }
+
+class operator TRNG.Implicit(const p: TRNG): unsigned;
+begin
+  Result := operator_RNG_ToUnsignedInt(@p);
+end;
+
+class operator TRNG.Implicit(const u: UInt64): TRNG;
+begin
+  Result := TRNG.RNG(u);
+end;
+
+class operator TRNG.Initialize(out Dest: TRNG);
+begin
+  constructor_RNG(@Dest);
+end;
+
+class function TRNG.RNG(state: UInt64): TRNG;
+begin
+  constructor_RNG(@Result, state);
+end;
+
+function TRNG.UNIFORM(a, b: Int): Int;
+begin
+  Result := uniform_RNG(@Self, a, b);
 end;
 
 initialization
