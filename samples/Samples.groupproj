@@ -18,6 +18,9 @@
         <Projects Include="cpp\tutorial_code\objectDetection\objectDetection.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="cpp\tutorial_code\Histograms_Matching\calcHist_Demo\calcHist_Demo.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -71,14 +74,23 @@
     <Target Name="objectDetection:Make">
         <MSBuild Projects="cpp\tutorial_code\objectDetection\objectDetection.dproj" Targets="Make"/>
     </Target>
+    <Target Name="calcHist_Demo">
+        <MSBuild Projects="cpp\tutorial_code\Histograms_Matching\calcHist_Demo\calcHist_Demo.dproj"/>
+    </Target>
+    <Target Name="calcHist_Demo:Clean">
+        <MSBuild Projects="cpp\tutorial_code\Histograms_Matching\calcHist_Demo\calcHist_Demo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="calcHist_Demo:Make">
+        <MSBuild Projects="cpp\tutorial_code\Histograms_Matching\calcHist_Demo\calcHist_Demo.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection"/>
+        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean"/>
+        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make"/>
+        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

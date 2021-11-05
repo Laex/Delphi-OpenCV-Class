@@ -9,4 +9,14 @@ const
 
 implementation
 
+{$IFDEF DEBUG}
+
+Uses
+  System.SysUtils;
+
+initialization
+
+Assert(DirectoryExists(OpenCVRootPath), 'Specify the path to OpenCV');
+{$ENDIF}
+
 end.

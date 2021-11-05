@@ -1,13 +1,14 @@
 unit opencv_world;
 
-{$DEFINE DELAYED_LOAD_DLL}
-{$DEFINE USE_INLINE}
+{ .$DEFINE DELAYED_LOAD_DLL }
+{ .$DEFINE USE_INLINE }
 {$IF CompilerVersion >= 21.0}
 {$WEAKLINKRTTI ON}
 {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
 {$IFEND}
 {$WARN SYMBOL_PLATFORM OFF}
 {$WRITEABLECONST ON}
+{$POINTERMATH ON}
 
 interface
 
@@ -22,6 +23,8 @@ Type
   psize_t = ^size_t;
   Int = integer;
   pInt = ^Int;
+  float = Single;
+  pFloat = ^float;
   pUChar = type pByte;
   pMatOp = type Pointer;
   pMatAllocator = type Pointer;
@@ -73,6 +76,25 @@ type
 
   pStdVectorRect = ^StdVectorRect;
 {$ENDREGION 'std::vector<Rect>'}
+  //
+{$REGION 'std::vector<Mat>'}
+
+type
+  StdVectorMat = record
+  private
+{$HINTS OFF}
+    Dummy: array [0 .. 31] of byte;
+{$HINTS ON}
+  public
+    class operator Initialize(out Dest: StdVectorMat);
+    class operator Finalize(var Dest: StdVectorMat);
+
+    function size: int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+  pStdVectorMat = ^StdVectorMat;
+{$ENDREGION 'std::vector<Rect>'}
+
   //
 {$REGION 'CV const'}
 
@@ -128,6 +150,59 @@ type
     BORDER_REFLECT101 = BORDER_REFLECT_101, // !< same as BORDER_REFLECT_101
     BORDER_DEFAULT = BORDER_REFLECT_101,    // !< same as BORDER_REFLECT_101
     BORDER_ISOLATED = 16                    // !< do not look outside of ROI
+    );
+
+  (* * norm types
+    src1 and src2 denote input arrays.
+  *)
+  NormTypes = ( //
+    (* *
+      \f[
+      norm =  \forkthree
+      {\|\texttt{src1}\|_{L_{\infty}} =  \max _I | \texttt{src1} (I)|}{if  \(\texttt{normType} = \texttt{NORM_INF}\) }
+      {\|\texttt{src1}-\texttt{src2}\|_{L_{\infty}} =  \max _I | \texttt{src1} (I) -  \texttt{src2} (I)|}{if  \(\texttt{normType} = \texttt{NORM_INF}\) }
+      {\frac{\|\texttt{src1}-\texttt{src2}\|_{L_{\infty}}    }{\|\texttt{src2}\|_{L_{\infty}} }}{if  \(\texttt{normType} = \texttt{NORM_RELATIVE | NORM_INF}\) }
+      \f]
+    *)
+    NORM_INF = 1,
+    (* *
+      \f[
+      norm =  \forkthree
+      {\| \texttt{src1} \| _{L_1} =  \sum _I | \texttt{src1} (I)|}{if  \(\texttt{normType} = \texttt{NORM_L1}\)}
+      { \| \texttt{src1} - \texttt{src2} \| _{L_1} =  \sum _I | \texttt{src1} (I) -  \texttt{src2} (I)|}{if  \(\texttt{normType} = \texttt{NORM_L1}\) }
+      { \frac{\|\texttt{src1}-\texttt{src2}\|_{L_1} }{\|\texttt{src2}\|_{L_1}} }{if  \(\texttt{normType} = \texttt{NORM_RELATIVE | NORM_L1}\) }
+      \f] *)
+    NORM_L1 = 2,
+    (* *
+      \f[
+      norm =  \forkthree
+      { \| \texttt{src1} \| _{L_2} =  \sqrt{\sum_I \texttt{src1}(I)^2} }{if  \(\texttt{normType} = \texttt{NORM_L2}\) }
+      { \| \texttt{src1} - \texttt{src2} \| _{L_2} =  \sqrt{\sum_I (\texttt{src1}(I) - \texttt{src2}(I))^2} }{if  \(\texttt{normType} = \texttt{NORM_L2}\) }
+      { \frac{\|\texttt{src1}-\texttt{src2}\|_{L_2} }{\|\texttt{src2}\|_{L_2}} }{if  \(\texttt{normType} = \texttt{NORM_RELATIVE | NORM_L2}\) }
+      \f]
+    *)
+    NORM_L2 = 4,
+    (* *
+      \f[
+      norm =  \forkthree
+      { \| \texttt{src1} \| _{L_2} ^{2} = \sum_I \texttt{src1}(I)^2} {if  \(\texttt{normType} = \texttt{NORM_L2SQR}\)}
+      { \| \texttt{src1} - \texttt{src2} \| _{L_2} ^{2} =  \sum_I (\texttt{src1}(I) - \texttt{src2}(I))^2 }{if  \(\texttt{normType} = \texttt{NORM_L2SQR}\) }
+      { \left(\frac{\|\texttt{src1}-\texttt{src2}\|_{L_2} }{\|\texttt{src2}\|_{L_2}}\right)^2 }{if  \(\texttt{normType} = \texttt{NORM_RELATIVE | NORM_L2SQR}\) }
+      \f]
+    *)
+    NORM_L2SQR = 5,
+    (* *
+      In the case of one input array, calculates the Hamming distance of the array from zero,
+      In the case of two input arrays, calculates the Hamming distance between the arrays.
+    *)
+    NORM_HAMMING = 6,
+    (* *
+      Similar to NORM_HAMMING, but in the calculation, each two bits of the input sequence will
+      be added and treated as a single bit to be used in the same calculation as NORM_HAMMING.
+    *)
+    NORM_HAMMING2 = 7, NORM_TYPE_MASK = 7, // !< bit-mask which can be used to separate norm type from norm flags
+    NORM_RELATIVE = 8,                     // !< flag
+    NORM_MINMAX = 32                       // !< flag
     );
 {$ENDREGION 'base.hpp'}
   //
@@ -370,6 +445,7 @@ Type
   public
     // default constructor
     class operator Initialize(out Dest: TMat); // Mat();
+    class function Mat(): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // constructors
     // Mat(Size size, int type);
     // Mat(int rows, int cols, int type, const Scalar& s);
@@ -431,8 +507,8 @@ Type
     // void create(Size size, int type);
     // void create(int ndims, const int* sizes, int type);
     // void create(const std::vector<int>& sizes, int type);
-    // void addref();
-    // void release();
+    procedure addref; {$IFDEF USE_INLINE}inline; {$ENDIF} // void addref();
+    procedure release; {$IFDEF USE_INLINE}inline; {$ENDIF}// void release();
     // // ! internal use function, consider to use 'release' method instead; deallocates the matrix data
     // void deallocate();
     // // ! internal use function; properly re-allocates _size, _step arrays
@@ -475,6 +551,7 @@ Type
     // Mat(Mat&& m);
     // Mat& operator = (Mat&& m);
     class operator LogicalNot(const m: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function at<T>(i0: Int): T; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public const
     MAGIC_VAL       = $42FF0000;
     AUTO_STEP       = 0;
@@ -666,8 +743,8 @@ type
   public
     class operator Initialize(out Dest: TOutputArray); // _OutputArray();
     // _OutputArray(int _flags, void* _obj);
-    class function OutputArray(const m: TMat): TOutputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // _OutputArray(Mat& m);
-    // _OutputArray(std::vector<Mat>& vec);
+    class function OutputArray(const m: TMat): TOutputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // _OutputArray(Mat& m);
+    class function OutputArray(const vec: StdVectorMat): TOutputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// _OutputArray(std::vector<Mat>& vec);
     // _OutputArray(cuda::GpuMat& d_mat);
     // _OutputArray(std::vector<cuda::GpuMat>& d_mat);
     // _OutputArray(ogl::Buffer& buf);
@@ -705,8 +782,11 @@ type
     // void move(Mat& m) const;
 
     class operator Implicit(const m: TMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: StdVectorMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const OA: TOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
+
+  TOutputArrayOfArrays = TOutputArray;
 
   pInputOutputArray = ^TInputOutputArray;
 
@@ -911,6 +991,94 @@ procedure addWeighted(src1: TInputArray; alpha: double; src2: TInputArray; beta,
 procedure _bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() } ); external opencv_world_dll index 3629 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 procedure bitwise_not(Src: TInputArray; dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
+
+(* * @overload
+  @param m input multi-channel array.
+  @param mv output vector of arrays; the arrays themselves are reallocated, if needed.
+*)
+// CV_EXPORTS_W void split(InputArray m, OutputArrayOfArrays mv);
+// 6515
+// ?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
+// void cv::split(class cv::_InputArray const &,class cv::_OutputArray const &)
+procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); external opencv_world_dll index 6515 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief Normalizes the norm or value range of an array.
+
+  The function cv::normalize normalizes scale and shift the input array elements so that
+  \f[\| \texttt{dst} \| _{L_p}= \texttt{alpha}\f]
+  (where p=Inf, 1 or 2) when normType=NORM_INF, NORM_L1, or NORM_L2, respectively; or so that
+  \f[\min _I  \texttt{dst} (I)= \texttt{alpha} , \, \, \max _I  \texttt{dst} (I)= \texttt{beta}\f]
+
+  when normType=NORM_MINMAX (for dense arrays only). The optional mask specifies a sub-array to be
+  normalized. This means that the norm or min-n-max are calculated over the sub-array, and then this
+  sub-array is modified to be normalized. If you want to only use the mask to calculate the norm or
+  min-max but modify the whole array, you can use norm and Mat::convertTo.
+
+  In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
+  the range transformation for sparse matrices is not allowed since it can shift the zero level.
+
+  Possible usage with some positive example data:
+  @code{.cpp}
+  vector<double> positiveData = { 2.0, 8.0, 10.0 };
+  vector<double> normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
+
+  // Norm to probability (total count)
+  // sum(numbers) = 20.0
+  // 2.0      0.1     (2.0/20.0)
+  // 8.0      0.4     (8.0/20.0)
+  // 10.0     0.5     (10.0/20.0)
+  normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
+
+  // Norm to unit vector: ||positiveData|| = 1.0
+  // 2.0      0.15
+  // 8.0      0.62
+  // 10.0     0.77
+  normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
+
+  // Norm to max element
+  // 2.0      0.2     (2.0/10.0)
+  // 8.0      0.8     (8.0/10.0)
+  // 10.0     1.0     (10.0/10.0)
+  normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
+
+  // Norm to range [0.0;1.0]
+  // 2.0      0.0     (shift to left border)
+  // 8.0      0.75    (6.0/8.0)
+  // 10.0     1.0     (shift to right border)
+  normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
+  @endcode
+
+  @param src input array.
+  @param dst output array of the same size as src .
+  @param alpha norm value to normalize to or the lower range boundary in case of the range
+  normalization.
+  @param beta upper range boundary in case of the range normalization; it is not used for the norm
+  normalization.
+  @param norm_type normalization type (see cv::NormTypes).
+  @param dtype when negative, the output array has the same type as src; otherwise, it has the same
+  number of channels as src and the depth =CV_MAT_DEPTH(dtype).
+  @param mask optional operation mask.
+  @sa norm, Mat::convertTo, SparseMat::convertTo
+*)
+// CV_EXPORTS_W void normalize( InputArray src, InputOutputArray dst, double alpha = 1, double beta = 0,
+// int norm_type = NORM_L2, int dtype = -1, InputArray mask = noArray());
+// 5761
+// ?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z
+// void cv::normalize(class cv::_InputArray const &,class cv::_InputOutputArray const &,double,double,int,int,class cv::_InputArray const &)
+procedure _normalize(                  //
+  Src: TInputArray;                    //
+  dst: TInputOutputArray;              //
+  alpha: double { = 1 };               //
+  beta: double { = 0 };                //
+  norm_type: Int { = int(NORM_L2) };   //
+  dtype: Int { = -1 };                 //
+  mask: TInputArray { = noArray() } ); //
+  external opencv_world_dll index 5761 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 }; dtype: Int { = -1 };
+  const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
+procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: Int = -1); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
 {$ENDREGION 'core.hpp'}
 //
@@ -1971,6 +2139,84 @@ procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes
 procedure _circle(img: TInputOutputArray; center: UInt64 { TPoint }; radius: Int; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0);
   external opencv_world_dll index 3795 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure circle(img: TInputOutputArray; center: TPoint; radius: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Calculates a histogram of a set of arrays.
+
+  The function cv::calcHist calculates the histogram of one or more arrays. The elements of a tuple used
+  to increment a histogram bin are taken from the corresponding input arrays at the same location. The
+  sample below shows how to compute a 2D Hue-Saturation histogram for a color image. :
+  @include snippets/imgproc_calcHist.cpp
+
+  @param images Source arrays. They all should have the same depth, CV_8U, CV_16U or CV_32F , and the same
+  size. Each of them can have an arbitrary number of channels.
+  @param nimages Number of source images.
+  @param channels List of the dims channels used to compute the histogram. The first array channels
+  are numerated from 0 to images[0].channels()-1 , the second array channels are counted from
+  images[0].channels() to images[0].channels() + images[1].channels()-1, and so on.
+  @param mask Optional mask. If the matrix is not empty, it must be an 8-bit array of the same size
+  as images[i] . The non-zero mask elements mark the array elements counted in the histogram.
+  @param hist Output histogram, which is a dense or sparse dims -dimensional array.
+  @param dims Histogram dimensionality that must be positive and not greater than CV_MAX_DIMS
+  (equal to 32 in the current OpenCV version).
+  @param histSize Array of histogram sizes in each dimension.
+  @param ranges Array of the dims arrays of the histogram bin boundaries in each dimension. When the
+  histogram is uniform ( uniform =true), then for each dimension i it is enough to specify the lower
+  (inclusive) boundary \f$L_0\f$ of the 0-th histogram bin and the upper (exclusive) boundary
+  \f$U_{\texttt{histSize}[i]-1}\f$ for the last histogram bin histSize[i]-1 . That is, in case of a
+  uniform histogram each of ranges[i] is an array of 2 elements. When the histogram is not uniform (
+  uniform=false ), then each of ranges[i] contains histSize[i]+1 elements:
+  \f$L_0, U_0=L_1, U_1=L_2, ..., U_{\texttt{histSize[i]}-2}=L_{\texttt{histSize[i]}-1}, U_{\texttt{histSize[i]}-1}\f$
+  . The array elements, that are not between \f$L_0\f$ and \f$U_{\texttt{histSize[i]}-1}\f$ , are not
+  counted in the histogram.
+  @param uniform Flag indicating whether the histogram is uniform or not (see above).
+  @param accumulate Accumulation flag. If it is set, the histogram is not cleared in the beginning
+  when it is allocated. This feature enables you to compute a single histogram from several sets of
+  arrays, or to update the histogram in time.
+*)
+// CV_EXPORTS void calcHist( const Mat* images, int nimages,
+// const int* channels, InputArray mask,
+// OutputArray hist, int dims, const int* histSize,
+// const float** ranges, bool uniform = true, bool accumulate = false );
+// 3717
+// ?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@1@AEBV_OutputArray@1@H1PEAPEBM_N5@Z
+// void cv::calcHist(
+// class cv::Mat const *,
+// int,
+// int const *,
+// class cv::_InputArray const &,
+// class cv::_OutputArray const &,
+// int,
+// int const *,
+// float const * *,
+// bool,
+// bool)
+procedure calcHist(const images: pMat; nimages: Int; channels: pInt; mask: TInputArray; hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; uniform: BOOL = true;
+  accumulate: BOOL = false); external opencv_world_dll index 3717 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief Draws a line segment connecting two points.
+
+  The function line draws the line segment between pt1 and pt2 points in the image. The line is
+  clipped by the image boundaries. For non-antialiased lines with integer coordinates, the 8-connected
+  or 4-connected Bresenham algorithm is used. Thick lines are drawn with rounding endings. Antialiased
+  lines are drawn using Gaussian filtering.
+
+  @param img Image.
+  @param pt1 First point of the line segment.
+  @param pt2 Second point of the line segment.
+  @param color Line color.
+  @param thickness Line thickness.
+  @param lineType Type of the line. See #LineTypes.
+  @param shift Number of fractional bits in the point coordinates.
+*)
+// CV_EXPORTS_W void line(InputOutputArray img, Point pt1, Point pt2, const Scalar& color,
+// int thickness = 1, int lineType = LINE_8, int shift = 0);
+// 5464
+// ?line@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
+// void cv::line(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int)
+procedure _line(img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0);
+  external opencv_world_dll index 5464
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure line(img: TInputOutputArray; pt1: TPoint; pt2: TPoint; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'imgproc.hpp'}
 //
 {$REGION 'objectdetect.hpp'}
@@ -2434,6 +2680,7 @@ type
 Type
   TMatHelper = record helper for TMat
   public
+    class function create(rows, cols, &type: Int; const s: TScalar): TMat; static; {$IFDEF USE_INLINE}inline; {$ENDIF}  // Mat(int rows, int cols, int type, const Scalar& s);
     procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
     procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
   end;
@@ -2441,6 +2688,7 @@ Type
   //
 {$REGION 'opencv_delphi helpers'}
 
+type
   StdVectorRectHelper = record helper for StdVectorRect
   private
     function GetItems(const index: UInt64): TRect;
@@ -2448,12 +2696,19 @@ Type
     property Items[const index: UInt64]: TRect read GetItems; default;
   end;
 
+type
+  StdVectorMatHelper = record helper for StdVectorMat
+  private
+    function GetItems(const index: UInt64): TMat;
+  public
+    property Items[const index: UInt64]: TMat read GetItems; default;
+  end;
+
 {$ENDREGION 'opencv_delphi helpers'}
   //
 {$REGION 'Import'}
   // Std
-{$I opencv.CvStdString.import.inc}
-{$I opencv.StdVectorRect.import.inc}
+{$I opencv.std.import.inc} // std::
   // OpenCV
 {$I opencv.mat.import.inc}
 {$I opencv.InputArray.import.inc}
@@ -2543,7 +2798,7 @@ end;
 
 function StdVectorRect.size: int64;
 begin
-  Result := size__StdVectorRect(@Self);
+  Result := size_StdVectorRect(@Self);
 end;
 
 {$ENDREGION}
@@ -2556,6 +2811,11 @@ end;
 procedure circle(img: TInputOutputArray; center: TPoint; radius: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
 begin
   _circle(img, UInt64(center), radius, color, thickness, Int(lineType), shift);
+end;
+
+procedure line(img: TInputOutputArray; pt1: TPoint; pt2: TPoint; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
+begin
+  _line(img, UInt64(pt1), UInt64(pt2), color, thickness, Int(lineType), shift);
 end;
 
 procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
@@ -2686,6 +2946,17 @@ begin
   _bitwise_not(Src, dst, noArray());
 end;
 
+procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 }; dtype: Int { = -1 };
+  const mask: TInputArray { = noArray() } );
+begin
+  _normalize(Src, dst, alpha, beta, Int(norm_type), dtype, mask);
+end;
+
+procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: Int = -1);
+begin
+  normalize(Src, dst, alpha, beta, norm_type, dtype, noArray);
+end;
+
 { TMat }
 
 class operator TMat.Implicit(const m: TMatExpr): TMat;
@@ -2733,6 +3004,11 @@ begin
   Result := TMat.Mat(Self, roi);
 end;
 
+class function TMat.Mat: TMat;
+begin
+  Constructor_Mat(@Result);
+end;
+
 class function TMat.Mat(const m: TMat; const roi: TRect): TMat;
 begin
   Constructor_Mat(@Result, @m, @roi);
@@ -2748,15 +3024,46 @@ begin
   ones_Mat(@Result, ndims, sz, &type);
 end;
 
+procedure TMat.release;
+begin
+  release_Mat(@Self);
+end;
+
 function TMat.step1(i: Int): size_t;
 begin
   Result := step1_Mat(@Self, i);
+end;
+
+procedure TMat.addref;
+begin
+  addref_Mat(@Self);
 end;
 
 class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
 begin
   Finalize(Dest);
   clone_Mat(@Src, @Dest);
+end;
+
+function TMat.at<T>(i0: Int): T;
+Type
+  pT = ^T;
+begin
+  // CV_DbgAssert(dims <= 2);
+  // CV_DbgAssert(data);
+  // CV_DbgAssert((unsigned)i0 < (unsigned)(size.p[0] * size.p[1]));
+  // CV_DbgAssert(elemSize() == sizeof(_Tp));
+{$WARNINGS OFF}
+  if (isContinuous() or (size.p[0] = 1)) then
+    Exit(pT(data)[i0]);
+  if (size.p[1] = 1) then
+    Exit(pT(data + step.p[0] * i0)^); // *(_Tp*)(data + step.p[0] * i0);
+  Var
+    i: Int := i0 div cols;
+  Var
+    j: Int := i0 - i * cols;
+  Exit(pT(data + step.p[0] * i0)[j]);
+{$WARNINGS ON}
 end;
 
 function TMat.channels: Int;
@@ -2866,9 +3173,14 @@ begin
   Constructor_OutputArray(@Dest);
 end;
 
+class function TOutputArray.OutputArray(const vec: StdVectorMat): TOutputArray;
+begin
+  Constructor_OutputArray(@Result, pStdVectorMat(@vec));
+end;
+
 class function TOutputArray.OutputArray(const m: TMat): TOutputArray;
 begin
-  Constructor_OutputArray(@Result, @m);
+  Constructor_OutputArray(@Result, pMat(@m));
 end;
 
 class operator TOutputArray.Finalize(var Dest: TOutputArray);
@@ -2885,6 +3197,11 @@ class operator TOutputArray.Implicit(const OA: TOutputArray): TMat;
 begin
   Assert(OA.InputArray.isMat);
   Result := pMat(OA.InputArray.getObj)^;
+end;
+
+class operator TOutputArray.Implicit(const m: StdVectorMat): TOutputArray;
+begin
+  Result := TOutputArray.OutputArray(m);
 end;
 
 { TScalar }
@@ -3039,6 +3356,11 @@ begin
   copyTo_Mat(@Self, @m, @mask);
 end;
 
+class function TMatHelper.create(rows, cols, &type: Int; const s: TScalar): TMat;
+begin
+  Constructor_Mat(@Result, rows, cols, &type, @s);
+end;
+
 { TCascadeClassifier }
 
 procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors, flags: Int);
@@ -3108,6 +3430,30 @@ end;
 function TVideoCapture.read(const image: TOutputArray): BOOL;
 begin
   Result := read_VideoCapture(@Self, @image);
+end;
+
+{ StdVectorMat }
+
+class operator StdVectorMat.Finalize(var Dest: StdVectorMat);
+begin
+  Destructor_StdVectorMat(@Dest);
+end;
+
+class operator StdVectorMat.Initialize(out Dest: StdVectorMat);
+begin
+  Constructor_StdVectorMat(@Dest);
+end;
+
+function StdVectorMat.size: int64;
+begin
+  Result := size_StdVectorMat(@Self);
+end;
+
+{ StdVectorMatHelper }
+
+function StdVectorMatHelper.GetItems(const index: UInt64): TMat;
+begin
+  Result := pMat(operator_get_StdVectorMat(@Self, index))^;
 end;
 
 initialization
