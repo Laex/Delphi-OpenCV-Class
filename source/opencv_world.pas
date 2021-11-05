@@ -452,7 +452,7 @@ Type
     class operator Initialize(out Dest: TMat); // Mat();
     class function Mat(): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // constructors
-    // Mat(Size size, int type);
+    class function Mat(const size: TSize; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat(Size size, int type);
     // Mat(int rows, int cols, int type, const Scalar& s);
     // Mat(Size size, int type, const Scalar& s);
     // Mat(int ndims, const int* sizes, int type);
@@ -509,8 +509,8 @@ Type
     class function ones(ndims: Int; const sz: pInt; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
     // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
     // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
-    procedure create(rows, cols, &type: Int); {$IFDEF USE_INLINE}inline; {$ENDIF} // void create(int rows, int cols, int type);
-    // void create(Size size, int type);
+    procedure create(rows, cols, &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} // void create(int rows, int cols, int type);
+    procedure create(size: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void create(Size size, int type);
     // void create(int ndims, const int* sizes, int type);
     // void create(const std::vector<int>& sizes, int type);
     procedure addref; {$IFDEF USE_INLINE}inline; {$ENDIF} // void addref();
@@ -2591,6 +2591,94 @@ procedure _polylines(img: TInputOutputArray; const pts: pPoint; const npts: pInt
   shift: Int = 0); external opencv_world_dll index 5855{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const isClosed: BOOL; const color: TScalar; const thickness: Int = 1;
   const lineType: LineTypes = LINE_8; const shift: Int = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @example samples/cpp/edge.cpp This program demonstrates usage of the Canny edge detector
+  Check@ref tutorial_canny_detector " the corresponding tutorial "
+  for more details *)
+
+(* * @brief Finds edges in an image using the Canny algorithm @cite Canny86 .
+
+  The function finds edges in the input image and marks them in the output map edges using the
+  Canny algorithm. The smallest value between threshold1 and threshold2 is used for edge linking. The
+  largest value is used to find initial segments of strong edges. See
+  <http://en.wikipedia.org/wiki/Canny_edge_detector>
+
+  @param image 8-bit input image.
+  @param edges output edge map; single channels 8-bit image, which has the same size as image .
+  @param threshold1 first threshold for the hysteresis procedure.
+  @param threshold2 second threshold for the hysteresis procedure.
+  @param apertureSize aperture size for the Sobel operator.
+  @param L2gradient a flag, indicating whether a more accurate \f$L_2\f$ norm
+  \f$=\sqrt{(dI/dx)^2 + (dI/dy)^2}\f$ should be used to calculate the image gradient magnitude (
+  L2gradient=true ), or whether the default \f$L_1\f$ norm \f$=|dI/dx|+|dI/dy|\f$ is enough (
+  L2gradient=false ).
+*)
+// CV_EXPORTS_W void Canny( InputArray image, OutputArray edges,
+// double threshold1, double threshold2,
+// int apertureSize = 3, bool L2gradient = false );
+// 3355
+// ?Canny@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NNH_N@Z
+// void cv::Canny(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int,bool)
+procedure Canny(image: TInputArray; edges: TOutputArray; threshold1, threshold2: double; apertureSize: Int = 3; L2gradient: BOOL = false); overload;
+  external opencv_world_dll index 3355{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * \overload
+
+  Finds edges in an image using the Canny algorithm with custom image gradient.
+
+  @param dx 16-bit x derivative of input image (CV_16SC1 or CV_16SC3).
+  @param dy 16-bit y derivative of input image (same type as dx).
+  @param edges output edge map; single channels 8-bit image, which has the same size as image .
+  @param threshold1 first threshold for the hysteresis procedure.
+  @param threshold2 second threshold for the hysteresis procedure.
+  @param L2gradient a flag, indicating whether a more accurate \f$L_2\f$ norm
+  \f$=\sqrt{(dI/dx)^2 + (dI/dy)^2}\f$ should be used to calculate the image gradient magnitude (
+  L2gradient=true ), or whether the default \f$L_1\f$ norm \f$=|dI/dx|+|dI/dy|\f$ is enough (
+  L2gradient=false ).
+*)
+// CV_EXPORTS_W void Canny( InputArray dx, InputArray dy,
+// OutputArray edges,
+// double threshold1, double threshold2,
+// bool L2gradient = false );
+// 3354
+// ?Canny@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NN_N@Z
+// void cv::Canny(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,double,bool)
+procedure Canny(dx: TInputArray; dy: TInputArray; edges: TOutputArray; threshold1, threshold2: double; L2gradient: BOOL = false); overload;
+  external opencv_world_dll index 3354{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * @brief Calculates the first x- or y- image derivative using Scharr operator.
+
+  The function computes the first x- or y- spatial image derivative using the Scharr operator. The
+  call
+
+  \f[\texttt{Scharr(src, dst, ddepth, dx, dy, scale, delta, borderType)}\f]
+
+  is equivalent to
+
+  \f[\texttt{Sobel(src, dst, ddepth, dx, dy, FILTER_SCHARR, scale, delta, borderType)} .\f]
+
+  @param src input image.
+  @param dst output image of the same size and the same number of channels as src.
+  @param ddepth output image depth, see @ref filter_depths "combinations"
+  @param dx order of the derivative x.
+  @param dy order of the derivative y.
+  @param scale optional scale factor for the computed derivative values; by default, no scaling is
+  applied (see #getDerivKernels for details).
+  @param delta optional delta value that is added to the results prior to storing them in dst.
+  @param borderType pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not supported.
+  @sa  cartToPolar
+*)
+// CV_EXPORTS_W void Scharr( InputArray src, OutputArray dst, int ddepth,
+// int dx, int dy, double scale = 1, double delta = 0,
+// int borderType = BORDER_DEFAULT );
+// 3441
+// ?Scharr@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHNNH@Z
+// void cv::Scharr(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,double,double,int)
+procedure _Scharr(Src: TInputArray; dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0; borderType: Int = Int(BORDER_DEFAULT));
+  external opencv_world_dll index 3441{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: Int; const dx, dy: Int; const scale: double = 1; const delta: double = 0;
+  const borderType: BorderTypes = BORDER_DEFAULT);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'imgproc.hpp'}
 //
 {$REGION 'objectdetect.hpp'}
@@ -3054,10 +3142,11 @@ type
 Type
   TMatHelper = record helper for TMat
   public
-    class function create(rows, cols, &type: Int; const s: TScalar): TMat; static; {$IFDEF USE_INLINE}inline; {$ENDIF}  // Mat(int rows, int cols, int type, const Scalar& s);
+    class function Mat(rows, cols, &type: Int; const s: TScalar): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}  // Mat(int rows, int cols, int type, const Scalar& s);
     procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
     procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
     class operator Subtract(const m: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const Scalar& s);
   end;
 {$ENDREGION 'opencv_word helpers'}
   //
@@ -3240,6 +3329,12 @@ begin
   _polylines(img, pts, npts, ncontours, isClosed, color, thickness, Int(lineType), shift);
 end;
 
+procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: Int; const dx, dy: Int; const scale: double = 1; const delta: double = 0;
+  const borderType: BorderTypes = BORDER_DEFAULT);
+begin
+  _Scharr(Src, dst, depth, dx, dy, scale, delta, Int(borderType));
+end;
+
 procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
   const shift: Int = 0; const tipLength: double = 0.1);
 begin
@@ -3404,7 +3499,7 @@ end;
 
 class operator TMat.Implicit(const m: TMatExpr): TMat;
 begin
-  Operator_Mat_Assign(@Result, @m);
+  Operator_Mat_Assign_MatExpr(@Result, @m);
 end;
 
 class operator TMat.Initialize(out Dest: TMat);
@@ -3420,6 +3515,11 @@ end;
 function TMat.clone: TMat;
 begin
   clone_Mat(@Self, @Result);
+end;
+
+procedure TMat.create(size: TSize; &type: Int);
+begin
+  create_Mat(@Self, @size, &type);
 end;
 
 function TMat.diag(d: Int): TMat;
@@ -3440,6 +3540,11 @@ end;
 class operator TMat.LogicalNot(const m: TMat): TMatExpr;
 begin
   MatExpr_LogicalNot_Mat(@Result, @m);
+end;
+
+class function TMat.Mat(const size: TSize; &type: Int): TMat;
+begin
+  Constructor_Mat(@Result, rSize(size), &type);
 end;
 
 function TMat.Mat(const roi: TRect): TMat;
@@ -3802,9 +3907,14 @@ begin
   copyTo_Mat(@Self, @m, @mask);
 end;
 
-class function TMatHelper.create(rows, cols, &type: Int; const s: TScalar): TMat;
+class function TMatHelper.Mat(rows, cols, &type: Int; const s: TScalar): TMat;
 begin
   Constructor_Mat(@Result, rows, cols, &type, @s);
+end;
+
+class operator TMatHelper.Implicit(const s: TScalar): TMat;
+begin
+  Operator_Mat_Assign_Scalar(@Result, @s);
 end;
 
 class operator TMatHelper.Subtract(const m: TMat; const s: TScalar): TMatExpr;
