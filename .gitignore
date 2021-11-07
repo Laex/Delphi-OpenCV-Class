@@ -32,6 +32,8 @@ Test/
 # Delphi compiler-generated binaries (safe to delete)
 *.exe
 *.dll
+!opencv_delphi454.dll
+!opencv_delphi454d.dll
 *.bpl
 *.bpi
 *.dcp

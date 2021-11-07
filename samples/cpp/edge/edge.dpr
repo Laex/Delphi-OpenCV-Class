@@ -79,7 +79,7 @@ begin
     createTrackbar('Canny threshold Scharr', window_name2, @edgeThreshScharr, 400, onTrackbar);
 
     // Show the image
-    onTrackbar(0, 0);
+    onTrackbar(0, nil);
 
     // Wait for a key stroke; the same function arranges events processing
     waitKey(0);

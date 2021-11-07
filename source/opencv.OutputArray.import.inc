@@ -1,6 +1,6 @@
 // ??0_OutputArray@cv@@QEAA@AEAV?$vector@VGpuMat@cuda@cv@@V?$allocator@VGpuMat@cuda@cv@@@std@@@std@@@Z	public: __cdecl cv::_OutputArray::_OutputArray(class std::vector<class cv::cuda::GpuMat,class std::allocator<class cv::cuda::GpuMat> > & __ptr64) __ptr64
 // ??0_OutputArray@cv@@QEAA@AEAV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@@Z	public: __cdecl cv::_OutputArray::_OutputArray(class std::vector<class cv::Mat,class std::allocator<class cv::Mat> > & __ptr64) __ptr64
-procedure Constructor_OutputArray(Obj: pOutputArray; m: pStdVectorMat); overload; external opencv_world_dll index 1370 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure Constructor_OutputArray(Obj: pOutputArray; m: TStdPointer); overload; external opencv_world_dll index 1370 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ??0_OutputArray@cv@@QEAA@AEAV?$vector@VUMat@cv@@V?$allocator@VUMat@cv@@@std@@@std@@@Z	public: __cdecl cv::_OutputArray::_OutputArray(class std::vector<class cv::UMat,class std::allocator<class cv::UMat> > & __ptr64) __ptr64
 // ??0_OutputArray@cv@@QEAA@AEAVBuffer@ogl@1@@Z	public: __cdecl cv::_OutputArray::_OutputArray(class cv::ogl::Buffer & __ptr64) __ptr64
 // ??0_OutputArray@cv@@QEAA@AEAVGpuMat@cuda@1@@Z	public: __cdecl cv::_OutputArray::_OutputArray(class cv::cuda::GpuMat & __ptr64) __ptr64

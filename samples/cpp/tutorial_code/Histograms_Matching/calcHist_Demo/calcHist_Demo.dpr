@@ -35,7 +35,7 @@ begin
 
     // ! [Separate the image in 3 places ( B, G and R )]
     Var
-      bgr_planes: StdVectorMat; // vector<Mat> bgr_planes;
+      bgr_planes: TStdVectorMat; // vector<Mat> bgr_planes;
 
     split(src, bgr_planes); // ! [Separate the image in 3 places ( B, G and R )]
 
@@ -73,7 +73,7 @@ begin
       bin_w: int := cvRound(hist_w / histSize);
 
     Var
-      histImage: TMat := TMat.Create(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
+      histImage: TMat := TMat.Mat(hist_h, hist_w, CV_8UC3, Scalar(0, 0, 0));
       // ! [Draw the histograms for B, G and R]
 
       // ! [Normalize the result to ( 0, histImage.rows )]

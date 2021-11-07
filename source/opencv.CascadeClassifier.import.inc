@@ -20,9 +20,8 @@ procedure Destructor_CascadeClassifier(Obj: pCascadeClassifier); external opencv
 // 4433
 // ?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NHHV?$Size_@H@2@2@Z
 // public: void __cdecl cv::CascadeClassifier::detectMultiScale(class cv::_InputArray const & __ptr64,class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,double,int,int,class cv::Size_<int>,class cv::Size_<int>) __ptr64
-procedure detectMultiScale_CascadeClassifier(Obj: pCascadeClassifier; image: pInputArray; objects: pStdVectorRect; scaleFactor: double; minNeighbors: int; flags: int;
-  minSize: UInt64 { TCVSizePointer }; maxSize: UInt64 { TCVSizePointer } ); external opencv_world_dll index 4433 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+procedure detectMultiScale_CascadeClassifier(Obj: pCascadeClassifier; image: pInputArray; objects: TStdPointer; scaleFactor: double; minNeighbors: int; flags: int; minSize: UInt64 { TCVSizePointer };
+  maxSize: UInt64 { TCVSizePointer } ); external opencv_world_dll index 4433 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?empty@CascadeClassifier@cv@@QEBA_NXZ   public: bool __cdecl cv::CascadeClassifier::empty(void)const __ptr64
 // ?getFeatureType@CascadeClassifier@cv@@QEBAHXZ   public: int __cdecl cv::CascadeClassifier::getFeatureType(void)const __ptr64
 // ?getMaskGenerator@CascadeClassifier@cv@@QEAA?AU?$Ptr@VMaskGenerator@BaseCascadeClassifier@cv@@@2@XZ     public: struct cv::Ptr<class cv::BaseCascadeClassifier::MaskGenerator> __cdecl cv::CascadeClassifier::getMaskGenerator(void) __ptr64

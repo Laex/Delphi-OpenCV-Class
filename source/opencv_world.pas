@@ -1,7 +1,9 @@
 unit opencv_world;
 
-{ .$DEFINE DELAYED_LOAD_DLL }
-{ .$DEFINE USE_INLINE }
+{$IFDEF RELEASE}
+{$DEFINE DELAYED_LOAD_DLL}
+{$DEFINE USE_INLINE}
+{$ENDIF}
 {$DEFINE UseSystemMath}
 {$IF CompilerVersion >= 21.0}
 {$WEAKLINKRTTI ON}
@@ -13,6 +15,14 @@ unit opencv_world;
 {$Z4}
 
 interface
+
+Uses
+  System.TypInfo,
+  System.SysUtils
+{$IFDEF UseSystemMath}
+    , System.Math
+{$ENDIF}
+    ;
 
 const
   cvversion         = '454';
@@ -28,6 +38,8 @@ Type
   unsigned = UInt32;
   float = Single;
   pFloat = ^float;
+  ppAnsiChar = ^pAnsiChar;
+  uchar = Byte;
   pUChar = type pByte;
   pMatOp = type Pointer;
   pMatAllocator = type Pointer;
@@ -35,12 +47,14 @@ Type
   pUCharConst = pUChar;
   PointerConst = type Pointer;
   //
-{$REGION 'CvStdString'}
+{$REGION 'std::'}
 
 type
+  // cv::std::String
   CvStdString = record
-  private{$HINTS OFF}
-    Dummy: array [0 .. 39] of byte;
+  private
+{$HINTS OFF}
+    Dummy: array [0 .. 39] of Byte;
 {$HINTS ON}
   public
     class operator Initialize(out Dest: CvStdString);
@@ -60,43 +74,29 @@ type
 
   pCppString = ^CvStdString;
   pCvStdString = ^CvStdString;
-{$ENDREGION 'CvStdString'}
-  //
-{$REGION 'std::vector<Rect>'}
 
-type
-  StdVectorRect = record
+  TVectorType = (vtMat = 1, vtRect = 2, vtPoint = 3, vtVectorMat = 4, vtVectorRect = 5, vtVectorPoint = 6);
+
+  TStdPointer = type Pointer;
+
+  TStdVector<T> = record
   private
-{$HINTS OFF}
-    Dummy: array [0 .. 31] of byte;
-{$HINTS ON}
+    vt: TVectorType;
+    v: TStdPointer;
   public
-    class operator Initialize(out Dest: StdVectorRect);
-    class operator Finalize(var Dest: StdVectorRect);
-
-    function size: int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Initialize(out Dest: TStdVector<T>);
+    class operator Finalize(var Dest: TStdVector<T>);
+  private
+    procedure CreateVector; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure DestroyVector; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function GetItems(const index: UInt64): T; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  public
+    function size: { UInt64 } Int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    property VectorType: TVectorType read vt;
+    property Items[const index: UInt64]: T read GetItems; default;
   end;
 
-  pStdVectorRect = ^StdVectorRect;
-{$ENDREGION 'std::vector<Rect>'}
-  //
-{$REGION 'std::vector<Mat>'}
-
-type
-  StdVectorMat = record
-  private
-{$HINTS OFF}
-    Dummy: array [0 .. 31] of byte;
-{$HINTS ON}
-  public
-    class operator Initialize(out Dest: StdVectorMat);
-    class operator Finalize(var Dest: StdVectorMat);
-
-    function size: int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  end;
-
-  pStdVectorMat = ^StdVectorMat;
-{$ENDREGION 'std::vector<Rect>'}
+{$ENDREGION 'std::'}
   //
 {$REGION 'CV const'}
 
@@ -276,6 +276,10 @@ type
   TRect2i = TRect_<Int>;
   TRect = TRect2i;
   pRect = ^TRect;
+
+  TStdVectorRect = TStdVector<TRect>;
+  pStdVectorRect = ^TStdVectorRect;
+
 {$ENDREGION 'cvdef.h'}
   //
 {$REGION 'types.hpp'}
@@ -371,8 +375,8 @@ function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 Type
 
-  TCVMat = array [0 .. 95] of byte;    // forward declaration
-  TCVScalar = array [0 .. 31] of byte; // forward declaration
+  TCVMat = array [0 .. 95] of Byte;    // forward declaration
+  TCVScalar = array [0 .. 31] of Byte; // forward declaration
 
   pMatSize = ^TMatSize;
 
@@ -599,12 +603,15 @@ Type
     step: TMatStep; // MatStep step;
   end;
 
+  TStdVectorMat = TStdVector<TMat>;
+  pStdVectorMat = ^TStdVectorMat;
+
   pScalar = ^TScalar;
 
   TScalar = record
   private
 {$HINTS OFF}
-    V: array [0 .. 3] of double;
+    v: array [0 .. 3] of double;
 {$HINTS ON}
   public
     class operator Initialize(out Dest: TScalar); // Scalar_();
@@ -727,6 +734,8 @@ type
 {$HINTS ON}
   end;
 
+  TInputArrayOfArrays = TInputArray;
+
   pOutputArray = ^TOutputArray;
 
   TOutputArray = record
@@ -750,7 +759,7 @@ type
     class operator Initialize(out Dest: TOutputArray); // _OutputArray();
     // _OutputArray(int _flags, void* _obj);
     class function OutputArray(const m: TMat): TOutputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // _OutputArray(Mat& m);
-    class function OutputArray(const vec: StdVectorMat): TOutputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// _OutputArray(std::vector<Mat>& vec);
+    class function OutputArray(const vec: TStdVectorMat): TOutputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// _OutputArray(std::vector<Mat>& vec);
     // _OutputArray(cuda::GpuMat& d_mat);
     // _OutputArray(std::vector<cuda::GpuMat>& d_mat);
     // _OutputArray(ogl::Buffer& buf);
@@ -788,7 +797,7 @@ type
     // void move(Mat& m) const;
 
     class operator Implicit(const m: TMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: StdVectorMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: TStdVectorMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const OA: TOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
@@ -2679,6 +2688,54 @@ procedure _Scharr(Src: TInputArray; dst: TOutputArray; depth: Int; dx, dy: Int; 
 procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: Int; const dx, dy: Int; const scale: double = 1; const delta: double = 0;
   const borderType: BorderTypes = BORDER_DEFAULT);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Draws contours outlines or filled contours.
+
+  The function draws contour outlines in the image if \f$\texttt{thickness} \ge 0\f$ or fills the area
+  bounded by the contours if \f$\texttt{thickness}<0\f$ . The example below shows how to retrieve
+  connected components from the binary image and label them: :
+  @include snippets/imgproc_drawContours.cpp
+
+  @param image Destination image.
+  @param contours All the input contours. Each contour is stored as a point vector.
+  @param contourIdx Parameter indicating a contour to draw. If it is negative, all the contours are drawn.
+  @param color Color of the contours.
+  @param thickness Thickness of lines the contours are drawn with. If it is negative (for example,
+  thickness=#FILLED ), the contour interiors are drawn.
+  @param lineType Line connectivity. See #LineTypes
+  @param hierarchy Optional information about hierarchy. It is only needed if you want to draw only
+  some of the contours (see maxLevel ).
+  @param maxLevel Maximal level for drawn contours. If it is 0, only the specified contour is drawn.
+  If it is 1, the function draws the contour(s) and all the nested contours. If it is 2, the function
+  draws the contours, all the nested contours, all the nested-to-nested contours, and so on. This
+  parameter is only taken into account when there is hierarchy available.
+  @param offset Optional contour shift parameter. Shift all the drawn contours by the specified
+  \f$\texttt{offset}=(dx,dy)\f$ .
+  @note When thickness=#FILLED, the function is designed to handle connected components with holes correctly
+  even when no hierarchy data is provided. This is done by analyzing all the outlines together
+  using even-odd rule. This may give incorrect results if you have a joint collection of separately retrieved
+  contours. In order to solve this problem, you need to call #drawContours separately for each sub-group
+  of contours, or iterate over the collection using contourIdx parameter.
+*)
+// CV_EXPORTS_W void drawContours( InputOutputArray image, InputArrayOfArrays contours,
+// int contourIdx, const Scalar& color,
+// int thickness = 1, int lineType = LINE_8,
+// InputArray hierarchy = noArray(),
+// int maxLevel = INT_MAX, Point offset = Point() );
+// 4531
+// ?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z
+// void cv::drawContours(class cv::_InputOutputArray const &,class cv::_InputArray const &,int,class cv::Scalar_<double> const &,int,int,class cv::_InputArray const &,int,class cv::Point_<int>)
+procedure _drawContours(image: TInputOutputArray; contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes { = LINE_8 };
+  hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: UInt64 { TPoint  = Point() } );
+  external opencv_world_dll name '?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8);
+  overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
+  const hierarchy: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
+  const hierarchy: TInputArray; const maxLevel: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
+  const hierarchy: TInputArray; const maxLevel: Int; const offset: TPoint); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'imgproc.hpp'}
 //
 {$REGION 'objectdetect.hpp'}
@@ -2736,10 +2793,10 @@ Type
       -   (Python) A face detection example using cascade classifiers can be found at
       opencv_source_code/samples/python/facedetect.py
     *)
-    procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double = 1.1; minNeighbors: Int = 3; flags: Int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors: Int; flags: Int; const minSize: TSize { = Size() } ); overload;
+    procedure detectMultiScale(const image: TInputArray; const objects: TStdVectorRect; scaleFactor: double = 1.1; minNeighbors: Int = 3; flags: Int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure detectMultiScale(const image: TInputArray; const objects: TStdVectorRect; scaleFactor: double; minNeighbors: Int; flags: Int; const minSize: TSize { = Size() } ); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors: Int; flags: Int; const minSize: TSize; const maxSize: TSize { = Size() } );
+    procedure detectMultiScale(const image: TInputArray; const objects: TStdVectorRect; scaleFactor: double; minNeighbors: Int; flags: Int; const minSize: TSize; const maxSize: TSize { = Size() } );
       overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     // CV_WRAP void detectMultiScale( InputArray image,
@@ -3126,7 +3183,7 @@ type
 
   private
 {$HINTS OFF}
-    Dummy: array [0 .. 47] of byte;
+    Dummy: array [0 .. 47] of Byte;
     // Ptr<CvCapture> cap;
     // Ptr<IVideoCapture> icap;
     // bool throwOnFail;
@@ -3136,6 +3193,171 @@ type
   end;
 
 {$ENDREGION 'videoio.hpp'}
+  //
+{$REGION 'utility.hpp'}
+
+type
+
+  TParam = (Param_INT = 0, Param_BOOLEAN = 1, Param_REAL = 2, Param_STRING = 3, Param_MAT = 4, Param_MAT_VECTOR = 5, Param_ALGORITHM = 6, Param_FLOAT = 7, Param_UNSIGNED_INT = 8, Param_UInt64 = 9,
+    Param_UCHAR = 11, Param_SCALAR = 12);
+
+  pCommandLineParser = ^TCommandLineParser;
+
+  TCommandLineParser = record
+  public
+    (* * @brief Constructor
+
+      Initializes command line parser object
+
+      @param argc number of command line arguments (from main())
+      @param argv array of command line arguments (from main())
+      @param keys string describing acceptable command line parameters (see class description for syntax)
+    *)
+    // class function CommandLineParser(const keys: String): TCommandLineParser; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure CommandLineParser(const keys: String); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // CommandLineParser(int argc, const char* const argv[], const String& keys);
+
+    (* * @brief Copy constructor *)
+    // CommandLineParser(const CommandLineParser& parser);
+
+    (* * @brief Assignment operator *)
+    // CommandLineParser& operator= (const CommandLineParser& parser);
+
+    (* * @brief Destructor *)
+    class operator Finalize(var Dest: TCommandLineParser); // ~CommandLineParser();
+
+    (* * @brief Returns application path
+
+      This method returns the path to the executable from the command line (`argv[0]`).
+
+      For example, if the application has been started with such a command:
+      @code{.sh}
+      $ ./bin/my-executable
+      @endcode
+      this method will return `./bin`.
+    *)
+    // String getPathToApplication() const;
+
+    (* * @brief Access arguments by name
+
+      Returns argument converted to selected type. If the argument is not known or can not be
+      converted to selected type, the error flag is set (can be checked with @ref check).
+
+      For example, define:
+      @code{.cpp}
+      String keys = "{N count||}";
+      @endcode
+
+      Call:
+      @code{.sh}
+      $ ./my-app -N=20
+      # or
+      $ ./my-app --count=20
+      @endcode
+
+      Access:
+      @code{.cpp}
+      int N = parser.get<int>("N");
+      @endcode
+
+      @param name name of the argument
+      @param space_delete remove spaces from the left and right of the string
+      @tparam T the argument will be converted to this type if possible
+
+      @note You can access positional arguments by their `@`-prefixed name:
+      @code{.cpp}
+      parser.get<String>("@image");
+      @endcode
+    *)
+    // template <typename T>
+    // T get(const String& name, bool space_delete = true) const
+    function get<T>(const name: String; space_delete: BOOL = true): T; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    {
+      T val = T();
+      getByName(name, space_delete, ParamType<T>::type, (void*)&val);
+      return val;
+    }
+
+    (* * @brief Access positional arguments by index
+
+      Returns argument converted to selected type. Indexes are counted from zero.
+
+      For example, define:
+      @code{.cpp}
+      String keys = "{@arg1||}{@arg2||}"
+      @endcode
+
+      Call:
+      @code{.sh}
+      ./my-app abc qwe
+      @endcode
+
+      Access arguments:
+      @code{.cpp}
+      String val_1 = parser.get<String>(0); // returns "abc", arg1
+      String val_2 = parser.get<String>(1); // returns "qwe", arg2
+      @endcode
+
+      @param index index of the argument
+      @param space_delete remove spaces from the left and right of the string
+      @tparam T the argument will be converted to this type if possible
+    *)
+    // template <typename T>
+    // T get(int index, bool space_delete = true) const
+    {
+      T val = T();
+      getByIndex(index, space_delete, ParamType<T>::type, (void*)&val);
+      return val;
+    }
+
+    (* * @brief Check if field was provided in the command line
+
+      @param name argument name to check
+    *)
+    function has(const name: String): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}  // bool has(const String& name) const;
+
+    (* * @brief Check for parsing errors
+
+      Returns false if error occurred while accessing the parameters (bad conversion, missing arguments,
+      etc.). Call @ref printErrors to print error messages list.
+    *)
+    function check: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // bool check() const;
+
+    (* * @brief Set the about message
+
+      The about message will be shown when @ref printMessage is called, right before arguments table.
+    *)
+    procedure about(const message: String); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // void about(const String& message);
+
+    (* * @brief Print help message
+
+      This method will print standard help message containing the about message and arguments description.
+
+      @sa about
+    *)
+    procedure printMessage; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // void printMessage() const;
+
+    (* * @brief Print list of errors occurred
+      @sa check *)
+    procedure printErrors; {$IFDEF USE_INLINE}inline; {$ENDIF}// void printErrors() const;
+    //
+    // class operator assign(var Dest: TCommandLineParser; const [ref] Src: TCommandLineParser);
+  private
+    function TypeToTParam<T>(): TParam; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    //
+    // void getByName(const String& name, bool space_delete, Param type, void* dst) const;
+    procedure getByName(const name: String; const space_delete: BOOL; &type: TParam; dst: Pointer); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // void getByIndex(int index, bool space_delete, Param type, void* dst) const;
+  private
+{$HINTS OFF}
+    // struct Impl;
+    impl: Pointer; // Impl* impl;
+{$HINTS ON}
+  end;
+{$ENDREGION 'utility.hpp'}
   //
 {$REGION 'opencv_word helpers'}
 
@@ -3149,26 +3371,6 @@ Type
     class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const Scalar& s);
   end;
 {$ENDREGION 'opencv_word helpers'}
-  //
-{$REGION 'opencv_delphi helpers'}
-
-type
-  StdVectorRectHelper = record helper for StdVectorRect
-  private
-    function GetItems(const index: UInt64): TRect;
-  public
-    property Items[const index: UInt64]: TRect read GetItems; default;
-  end;
-
-type
-  StdVectorMatHelper = record helper for StdVectorMat
-  private
-    function GetItems(const index: UInt64): TMat;
-  public
-    property Items[const index: UInt64]: TMat read GetItems; default;
-  end;
-
-{$ENDREGION 'opencv_delphi helpers'}
   //
 {$REGION 'Import'}
   // Std
@@ -3185,15 +3387,11 @@ type
 {$I opencv.CascadeClassifier.import.inc}
 {$I opencv.VideoCapture.import.inc}
 {$I opencv.rng.import.inc}
+{$I opencv.CommandLineParser.import.inc}
 {$ENDREGION 'Import'}
 
 implementation
 
-{$IFDEF UseSystemMath}
-
-Uses
-  System.Math;
-{$ENDIF}
 //
 {$REGION 'Std'}
 { CppString }
@@ -3250,23 +3448,6 @@ end;
 function CvStdString.size: UInt64;
 begin
   Result := size_CppString(@Self);
-end;
-
-{ StdVectorRect }
-
-class operator StdVectorRect.Finalize(var Dest: StdVectorRect);
-begin
-  Destructor_StdVectorRect(@Dest);
-end;
-
-class operator StdVectorRect.Initialize(out Dest: StdVectorRect);
-begin
-  Constructor_StdVectorRect(@Dest);
-end;
-
-function StdVectorRect.size: int64;
-begin
-  Result := size_StdVectorRect(@Self);
 end;
 
 {$ENDREGION 'std'}
@@ -3333,6 +3514,31 @@ procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: I
   const borderType: BorderTypes = BORDER_DEFAULT);
 begin
   _Scharr(Src, dst, depth, dx, dy, scale, delta, Int(borderType));
+end;
+
+// procedure _drawContours(image: TInputOutputArray; contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
+// hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: TPoint { = Point() } );
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8);
+begin
+  drawContours(image, contours, contourIdx, color, thickness, lineType, noArray());
+end;
+
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
+  const hierarchy: TInputArray);
+begin
+  drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, INT_MAX);
+end;
+
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
+  const hierarchy: TInputArray; const maxLevel: Int);
+begin
+  drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, maxLevel, Point(0, 0));
+end;
+
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
+  const hierarchy: TInputArray; const maxLevel: Int; const offset: TPoint);
+begin
+  _drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, maxLevel, UInt64(offset));
 end;
 
 procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
@@ -3724,9 +3930,9 @@ begin
   Constructor_OutputArray(@Dest);
 end;
 
-class function TOutputArray.OutputArray(const vec: StdVectorMat): TOutputArray;
+class function TOutputArray.OutputArray(const vec: TStdVectorMat): TOutputArray;
 begin
-  Constructor_OutputArray(@Result, pStdVectorMat(@vec));
+  Constructor_OutputArray(@Result, vec.v);
 end;
 
 class function TOutputArray.OutputArray(const m: TMat): TOutputArray;
@@ -3750,7 +3956,7 @@ begin
   Result := pMat(OA.InputArray.getObj)^;
 end;
 
-class operator TOutputArray.Implicit(const m: StdVectorMat): TOutputArray;
+class operator TOutputArray.Implicit(const m: TStdVectorMat): TOutputArray;
 begin
   Result := TOutputArray.OutputArray(m);
 end;
@@ -3924,19 +4130,19 @@ end;
 
 { TCascadeClassifier }
 
-procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors, flags: Int);
+procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: TStdVectorRect; scaleFactor: double; minNeighbors, flags: Int);
 begin
   detectMultiScale(image, objects, scaleFactor, minNeighbors, flags, size(0, 0));
 end;
 
-procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors, flags: Int; const minSize: TSize);
+procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: TStdVectorRect; scaleFactor: double; minNeighbors, flags: Int; const minSize: TSize);
 begin
   detectMultiScale(image, objects, scaleFactor, minNeighbors, flags, minSize, size(0, 0));
 end;
 
-procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: StdVectorRect; scaleFactor: double; minNeighbors, flags: Int; const minSize, maxSize: TSize);
+procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: TStdVectorRect; scaleFactor: double; minNeighbors, flags: Int; const minSize, maxSize: TSize);
 begin
-  detectMultiScale_CascadeClassifier(@Self, @image, @objects, scaleFactor, minNeighbors, flags, UInt64(minSize), UInt64(maxSize));
+  detectMultiScale_CascadeClassifier(@Self, @image, objects.v, scaleFactor, minNeighbors, flags, UInt64(minSize), UInt64(maxSize));
 end;
 
 class operator TCascadeClassifier.Finalize(var Dest: TCascadeClassifier);
@@ -3957,13 +4163,6 @@ end;
 function TCascadeClassifier.load(const filename: String): BOOL;
 begin
   Result := load_CascadeClassifier(@Self, @CvStdString(filename));
-end;
-
-{ StdVectorRectHelper }
-
-function StdVectorRectHelper.GetItems(const index: UInt64): TRect;
-begin
-  Result := pRect(operator_get_StdVectorRect(@Self, index))^;
 end;
 
 { TVideoCapture }
@@ -3993,30 +4192,6 @@ begin
   Result := read_VideoCapture(@Self, @image);
 end;
 
-{ StdVectorMat }
-
-class operator StdVectorMat.Finalize(var Dest: StdVectorMat);
-begin
-  Destructor_StdVectorMat(@Dest);
-end;
-
-class operator StdVectorMat.Initialize(out Dest: StdVectorMat);
-begin
-  Constructor_StdVectorMat(@Dest);
-end;
-
-function StdVectorMat.size: int64;
-begin
-  Result := size_StdVectorMat(@Self);
-end;
-
-{ StdVectorMatHelper }
-
-function StdVectorMatHelper.GetItems(const index: UInt64): TMat;
-begin
-  Result := pMat(operator_get_StdVectorMat(@Self, index))^;
-end;
-
 { TRNG }
 
 class operator TRNG.Implicit(const p: TRNG): unsigned;
@@ -4042,6 +4217,156 @@ end;
 function TRNG.UNIFORM(a, b: Int): Int;
 begin
   Result := uniform_RNG(@Self, a, b);
+end;
+
+{ TCommandLineParser }
+
+procedure TCommandLineParser.about(const message: String);
+begin
+  About_CommandLineParser(@Self, @(CvStdString(message)));
+end;
+
+// class operator TCommandLineParser.assign(var Dest: TCommandLineParser; const [ref] Src: TCommandLineParser);
+// begin
+// Finalize(Dest);
+// operator_CommandLineParser_Assign_CommandLineParser(@Dest, @Src);
+// end;
+
+// class function TCommandLineParser.CommandLineParser(const keys: String): TCommandLineParser;
+function TCommandLineParser.check: BOOL;
+begin
+  Result := check_CommandLineParser(@Self);
+end;
+
+procedure TCommandLineParser.CommandLineParser(const keys: String);
+Var
+  argv: ppAnsiChar;
+  argc: Int;
+begin
+  argc := ParamCount + 1;
+  argv := AllocMem(SizeOf(pAnsiChar) * argc);
+  for Var i := 0 to argc - 1 do
+  begin
+    argv[i] := pAnsiChar(AllocMem(SizeOf(AnsiChar) * length(ParamStr(i)) + 1));
+    Move(pAnsiChar(AnsiString(ParamStr(i)))^, argv[i]^, length(ParamStr(i)));
+  end;
+  Constructor_CommandLineParser(@Self, argc, argv, @CvStdString(keys));
+  for Var i := 0 to argc - 1 do
+    FreeMem(argv[i]);
+  FreeMem(argv);
+end;
+
+class operator TCommandLineParser.Finalize(var Dest: TCommandLineParser);
+begin
+  Destructor_CommandLineParser(@Dest);
+end;
+
+function TCommandLineParser.get<T>(const name: String; space_delete: BOOL): T;
+begin
+  getByName(name, space_delete, TypeToTParam<T>, @Result);
+end;
+
+procedure TCommandLineParser.getByName(const name: String; const space_delete: BOOL; &type: TParam; dst: Pointer);
+begin
+  getByName_CommandLineParser(@Self, @CvStdString(Name), space_delete, Int(&type), dst);
+end;
+
+function TCommandLineParser.has(const name: String): BOOL;
+begin
+  Result := Has_CommandLineParser(@Self, @CvStdString(Name));
+end;
+
+procedure TCommandLineParser.printErrors;
+begin
+  printErrors_CommandLineParser(@Self);
+end;
+
+procedure TCommandLineParser.printMessage;
+begin
+  printMessage_CommandLineParser(@Self);
+end;
+
+function TCommandLineParser.TypeToTParam<T>: TParam;
+Var
+  s: string;
+begin
+  //
+  // (INTp = 0, BOOLEANp = 1, REAL = 2, STRINGp = 3, MATp = 4, MAT_VECTOR = 5, ALGORITHM = 6, FLOATp = 7, UNSIGNED_INT = 8, UInt64p = 9, UCHAR = 11, SCALARp = 12);
+  s := GetTypeName(TypeInfo(T));
+  if SameText('Integer', s) then
+    Exit(Param_INT)
+  else if SameText('LongBool', s) then
+    Exit(Param_BOOLEAN)
+  else if SameText('Double', s) then
+    Exit(Param_REAL)
+  else if SameText('CvStdString', s) then
+    Exit(Param_STRING)
+  else if SameText('TMat', s) then
+    Exit(Param_MAT)
+  else if SameText('StdVectorRect', s) then
+    Exit(Param_MAT_VECTOR)
+  else
+    // if SameText('TAlgorithm', s) then
+    // Exit(Param_ALGORITHM) else
+    if SameText('Single', s) then
+      Exit(Param_FLOAT)
+    else if SameText('Cardinal', s) then
+      Exit(Param_UNSIGNED_INT)
+    else if SameText('UInt64', s) then
+      Exit(Param_UInt64)
+    else if SameText('Byte', s) then
+      Exit(Param_UCHAR)
+    else if SameText('TScalar', s) then
+      Exit(Param_SCALAR)
+    else
+      Assert(false, 'TODO Supplement types');
+end;
+
+{ TStdVector<T> }
+
+procedure TStdVector<T>.CreateVector;
+Var
+  TypeName: string;
+begin
+  TypeName := GetTypeName(TypeInfo(T));
+  if SameText('TMat', TypeName) then
+    vt := vtMat
+  else if SameText('TRect_<System.Integer>', TypeName) then
+    vt := vtRect
+  else
+    Assert(false);
+
+  v := CreateStdVector(vt);
+  Assert(Assigned(v));
+end;
+
+procedure TStdVector<T>.DestroyVector;
+begin
+  if Assigned(v) then
+  begin
+    DestroyStdVector(v, vt);
+    v := nil;
+  end;
+end;
+
+class operator TStdVector<T>.Finalize(var Dest: TStdVector<T>);
+begin
+  Dest.DestroyVector;
+end;
+
+function TStdVector<T>.GetItems(const index: UInt64): T;
+begin
+  StdItem(v, vt, index, @Result);
+end;
+
+class operator TStdVector<T>.Initialize(out Dest: TStdVector<T>);
+begin
+  Dest.CreateVector;
+end;
+
+function TStdVector<T>.size: { UInt64 } Int64;
+begin
+  Result := StdSize(v, vt);
 end;
 
 initialization

@@ -18,13 +18,15 @@ procedure detectAndDisplay(frame: TMat);
 Var
   frame_gray: TMat;
   // n: Int64;
+  // R:TRect;
 begin
   cvtColor(frame, frame_gray, COLOR_BGR2GRAY);
   equalizeHist(frame_gray, frame_gray);
 
   // -- Detect faces
   Var
-    faces: StdVectorRect;
+    faces: TStdVectorRect;
+
   face_cascade.detectMultiScale(frame_gray, faces);
 
   // n := faces.size;
@@ -33,6 +35,8 @@ begin
   begin
     Var
       center: TPoint := Point(faces[i].x + faces[i].width div 2, faces[i].y + faces[i].height div 2);
+
+      // R:=faces[i];
     ellipse(frame, center, size(faces[i].width div 2, faces[i].height div 2), 0, 0, 360, Scalar(255, 0, 255), 4);
 
     // Mat faceROI = frame_gray(faces[i]);
@@ -41,7 +45,8 @@ begin
 
       // -- In each face, detect eyes
     Var
-      eyes: StdVectorRect;
+      eyes: TStdVectorRect;
+
     eyes_cascade.detectMultiScale(faceROI, eyes);
 
     for Var j: Integer := 0 to eyes.size() - 1 do
@@ -121,7 +126,10 @@ begin
     end;
   except
     on E: Exception do
+    begin
       Writeln(E.ClassName, ': ', E.Message);
+      Readln;
+    end;
   end;
 
 end.
