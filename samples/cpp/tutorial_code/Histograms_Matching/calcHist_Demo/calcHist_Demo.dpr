@@ -35,7 +35,7 @@ begin
 
     // ! [Separate the image in 3 places ( B, G and R )]
     Var
-      bgr_planes: TStdVectorMat; // vector<Mat> bgr_planes;
+      bgr_planes: TStdVector<TMat>; // vector<Mat> bgr_planes;
 
     split(src, bgr_planes); // ! [Separate the image in 3 places ( B, G and R )]
 

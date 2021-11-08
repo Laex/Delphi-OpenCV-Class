@@ -75,24 +75,23 @@ type
   pCppString = ^CvStdString;
   pCvStdString = ^CvStdString;
 
-  TVectorType = (vtMat = 1, vtRect = 2, vtPoint = 3, vtVectorMat = 4, vtVectorRect = 5, vtVectorPoint = 6);
-
   TStdPointer = type Pointer;
+
+  TVectorType = (vtMat = 1, vtRect = 2, vtPoint = 3, vtVectorMat = 4, vtVectorRect = 5, vtVectorPoint = 6);
 
   TStdVector<T> = record
   private
-    vt: TVectorType;
-    v: TStdPointer;
+{$HINTS OFF}
+    data: array [0 .. 31] of Byte;
+{$HINTS ON}
+    class function vt: TVectorType; static;
   public
     class operator Initialize(out Dest: TStdVector<T>);
     class operator Finalize(var Dest: TStdVector<T>);
   private
-    procedure CreateVector; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure DestroyVector; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function GetItems(const index: UInt64): T; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     function size: { UInt64 } Int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    property VectorType: TVectorType read vt;
     property Items[const index: UInt64]: T read GetItems; default;
   end;
 
@@ -3932,7 +3931,7 @@ end;
 
 class function TOutputArray.OutputArray(const vec: TStdVectorMat): TOutputArray;
 begin
-  Constructor_OutputArray(@Result, vec.v);
+  Constructor_OutputArray(@Result, @vec);
 end;
 
 class function TOutputArray.OutputArray(const m: TMat): TOutputArray;
@@ -4142,7 +4141,7 @@ end;
 
 procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: TStdVectorRect; scaleFactor: double; minNeighbors, flags: Int; const minSize, maxSize: TSize);
 begin
-  detectMultiScale_CascadeClassifier(@Self, @image, objects.v, scaleFactor, minNeighbors, flags, UInt64(minSize), UInt64(maxSize));
+  detectMultiScale_CascadeClassifier(@Self, @image, @objects, scaleFactor, minNeighbors, flags, UInt64(minSize), UInt64(maxSize));
 end;
 
 class operator TCascadeClassifier.Finalize(var Dest: TCascadeClassifier);
@@ -4324,9 +4323,31 @@ end;
 
 { TStdVector<T> }
 
-procedure TStdVector<T>.CreateVector;
+
+class operator TStdVector<T>.Finalize(var Dest: TStdVector<T>);
+begin
+  DestroyStdVector(@Dest, vt);
+end;
+
+function TStdVector<T>.GetItems(const index: UInt64): T;
+begin
+  StdItem(@Self, vt, index, @Result);
+end;
+
+class operator TStdVector<T>.Initialize(out Dest: TStdVector<T>);
+begin
+  FillChar(Dest,SizeOf(Dest),0);
+  CreateStdVector(@Dest, vt);
+end;
+
+function TStdVector<T>.size: { UInt64 } Int64;
+begin
+  Result := StdSize(@Self, vt);
+end;
+
+class function TStdVector<T>.vt: TVectorType;
 Var
-  TypeName: string;
+  TypeName: String;
 begin
   TypeName := GetTypeName(TypeInfo(T));
   if SameText('TMat', TypeName) then
@@ -4335,38 +4356,6 @@ begin
     vt := vtRect
   else
     Assert(false);
-
-  v := CreateStdVector(vt);
-  Assert(Assigned(v));
-end;
-
-procedure TStdVector<T>.DestroyVector;
-begin
-  if Assigned(v) then
-  begin
-    DestroyStdVector(v, vt);
-    v := nil;
-  end;
-end;
-
-class operator TStdVector<T>.Finalize(var Dest: TStdVector<T>);
-begin
-  Dest.DestroyVector;
-end;
-
-function TStdVector<T>.GetItems(const index: UInt64): T;
-begin
-  StdItem(v, vt, index, @Result);
-end;
-
-class operator TStdVector<T>.Initialize(out Dest: TStdVector<T>);
-begin
-  Dest.CreateVector;
-end;
-
-function TStdVector<T>.size: { UInt64 } Int64;
-begin
-  Result := StdSize(v, vt);
 end;
 
 initialization

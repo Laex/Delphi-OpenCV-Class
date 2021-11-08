@@ -66,26 +66,31 @@ BODY_API unsigned __int64 StdSize(void* p, int vt)
 	}
 }
 
-BODY_API void* CreateStdVector(int vt)
+
+BODY_API void CreateStdVector(void* obj, int vt)
 {
 	if (vt)
 	{
 		switch (vt)
 		{
 		case vtMat:
-			return static_cast<void*>(new vector<Mat>);
-		case vtRect:
-			return static_cast<void*>(new vector<Rect>);
-		case vtPoint:
-			return static_cast<void*>(new vector<Point>);
-		case vtVectorMat:
-			return static_cast<void*>(new vector<vector<Mat>>);
-		case vtVectorRect:
-			return static_cast<void*>(new vector<vector<Rect>>);
-		case vtVectorPoint:
-			return static_cast<void*>(new vector<vector<Point>>);
-		default:
-			return nullptr;
+			*(static_cast<vector<Mat>*>(obj)) = vector<Mat>();
+			break;		
+		case vtRect:			
+			*(static_cast<vector<Rect>*>(obj)) = vector<Rect>();
+			break;
+		case vtPoint:			
+			*(static_cast<vector<Point>*>(obj)) = vector<Point>();
+			break;
+		case vtVectorMat:			
+			*(static_cast<vector<vector<Mat>>*>(obj)) = vector<vector<Mat>>();
+			break;
+		case vtVectorRect:			
+			*(static_cast<vector<vector<Rect>>*>(obj)) = vector<vector<Rect>>();
+			break;
+		case vtVectorPoint:			
+			*(static_cast<vector<vector<Point>>*>(obj)) = vector<vector<Point>>();
+			break;
 		}
 	}
 }
@@ -97,22 +102,22 @@ BODY_API void DestroyStdVector(void* p, int vt)
 		switch (vt)
 		{
 		case vtMat:
-			delete static_cast<vector<Mat>*>(p);
+			static_cast<vector<Mat>*>(p)->~vector();
 			break;
-		case vtRect:
-			delete static_cast<vector<Rect>*>(p);
+		case vtRect:			
+			static_cast<vector<Rect>*>(p)->~vector();
 			break;
 		case vtPoint:
-			delete static_cast<vector<Point>*>(p);
+			static_cast<vector<Point>*>(p)->~vector();
 			break;
 		case vtVectorMat:
-			delete static_cast<vector<vector<Mat>>*>(p);
+			static_cast<vector<vector<Mat>>*>(p)->~vector();
 			break;
 		case vtVectorRect:
-			delete static_cast<vector<vector<Rect>>*>(p);
+			static_cast<vector<vector<Rect>>*>(p)->~vector();
 			break;
 		case vtVectorPoint:
-			delete static_cast<vector<vector<Point>>*>(p);
+			static_cast<vector<vector<Point>>*>(p)->~vector();			
 			break;
 		}
 	}
