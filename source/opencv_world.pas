@@ -1,9 +1,9 @@
 unit opencv_world;
 
-{$IFDEF RELEASE}
-{$DEFINE DELAYED_LOAD_DLL}
-{$DEFINE USE_INLINE}
-{$ENDIF}
+// {$IFDEF RELEASE}
+// {$DEFINE DELAYED_LOAD_DLL}
+// {$DEFINE USE_INLINE}
+// {$ENDIF}
 {$DEFINE UseSystemMath}
 {$IF CompilerVersion >= 21.0}
 {$WEAKLINKRTTI ON}
@@ -75,25 +75,32 @@ type
   pCppString = ^CvStdString;
   pCvStdString = ^CvStdString;
 
+Type
+  // std::vector<T>
+
   TStdPointer = type Pointer;
 
-  TVectorType = (vtMat = 1, vtRect = 2, vtPoint = 3, vtVectorMat = 4, vtVectorRect = 5, vtVectorPoint = 6);
+  TVectorType = (vtMat = 1, vtRect = 2, vtPoint = 3, vtVectorMat = 4, vtVectorRect = 5, vtVectorPoint = 6, vtPoint2f = 7);
 
   TStdVector<T> = record
   private
 {$HINTS OFF}
-    data: array [0 .. 31] of Byte;
+    Data: array [0 .. 31] of Byte;
 {$HINTS ON}
     class function vt: TVectorType; static;
+    function GetItems(const index: UInt64): T; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     class operator Initialize(out Dest: TStdVector<T>);
     class operator Finalize(var Dest: TStdVector<T>);
-  private
-    function GetItems(const index: UInt64): T; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  public
+
     function size: { UInt64 } Int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function empty: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure push_back(const Value: T); {$IFDEF USE_INLINE}inline; {$ENDIF}
     property Items[const index: UInt64]: T read GetItems; default;
   end;
+
+  TStdVectorCppString = TStdVector<CvStdString>;
+  pStdVectorCppString = ^TStdVectorCppString;
 
 {$ENDREGION 'std::'}
   //
@@ -130,8 +137,56 @@ Var
   CV_8UC2: Int;
   CV_8UC3: Int;
   CV_8UC4: Int;
-
 function CV_8UC(n: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_8UC(n) CV_MAKETYPE(CV_8U,(n))
+
+Var
+  CV_8SC1: Int;
+  CV_8SC2: Int;
+  CV_8SC3: Int;
+  CV_8SC4: Int;
+function CV_8SC(n: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_MAKETYPE(CV_8S,(n))
+
+Var
+  CV_16UC1: Int;
+  CV_16UC2: Int;
+  CV_16UC3: Int;
+  CV_16UC4: Int;
+function CV_16UC(n: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_MAKETYPE(CV_16U,(n))
+
+Var
+  CV_16SC1: Int;
+  CV_16SC2: Int;
+  CV_16SC3: Int;
+  CV_16SC4: Int;
+function CV_16SC(n: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_MAKETYPE(CV_16S,(n))
+
+Var
+  CV_32SC1: Int;
+  CV_32SC2: Int;
+  CV_32SC3: Int;
+  CV_32SC4: Int;
+function CV_32SC(n: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_MAKETYPE(CV_32S,(n))
+
+Var
+  CV_32FC1: Int;
+  CV_32FC2: Int;
+  CV_32FC3: Int;
+  CV_32FC4: Int;
+function CV_32FC(n: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_MAKETYPE(CV_32F,(n))
+
+Var
+  CV_64FC1: Int;
+  CV_64FC2: Int;
+  CV_64FC3: Int;
+  CV_64FC4: Int;
+function CV_64FC(n: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_MAKETYPE(CV_64F,(n))
+
+Var
+  CV_16FC1: Int;
+  CV_16FC2: Int;
+  CV_16FC3: Int;
+  CV_16FC4: Int;
+function CV_16FC(n: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_MAKETYPE(CV_16F,(n))
 
 {$ENDREGION 'Interface.h'}
 //
@@ -357,6 +412,8 @@ type
     // double cross(const Point_& pt) const;
     // ! checks whether the point is inside the specified rectangle
     // bool inside(const Rect_<_Tp>& r) const;
+    class operator Implicit(const m: TPoint_<T>): UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const p: TPoint_<T>): TPoint_<Int>; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     x: T; // !< x coordinate of the point
     y: T; // !< y coordinate of the point
@@ -367,12 +424,16 @@ type
   pPoint = ^TPoint;
   rPoint = UInt64;
 
+  TPoint2f = TPoint_<float>;
+
 function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'types.hpp'}
 //
 {$REGION 'mat.hpp'}
 
 Type
+
+  AccessFlag = (ACCESS_READ = 1 shl 24, ACCESS_WRITE = 1 shl 25, ACCESS_RW = 3 shl 24, ACCESS_MASK = ACCESS_RW, ACCESS_FAST = 1 shl 26);
 
   TCVMat = array [0 .. 95] of Byte;    // forward declaration
   TCVScalar = array [0 .. 31] of Byte; // forward declaration
@@ -384,6 +445,7 @@ Type
     // explicit MatSize(int* _p) CV_NOEXCEPT;
     // int dims() const CV_NOEXCEPT;
     class operator Implicit(const m: TMatSize): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}// Size operator()() const;
+    class operator Implicit(const m: TMatSize): String; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // const int& operator[](int i) const;
     // int& operator[](int i);
     // operator const int*() const CV_NOEXCEPT;  // TODO OpenCV 4.0: drop this
@@ -487,8 +549,7 @@ Type
     // Mat colRange(const Range& r) const;
     function diag(d: Int = 0): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat diag(int d=0) const;
     // CV_NODISCARD_STD static Mat diag(const Mat& d);
-    // procedure clone(R: pCVMatPointer); // CV_NODISCARD_STD Mat clone() const;
-    function clone: TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function clone: TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_NODISCARD_STD Mat clone() const;
     // void copyTo( OutputArray m ) const;
     // void copyTo( OutputArray m, InputArray mask ) const;
     // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
@@ -512,8 +573,8 @@ Type
     class function ones(ndims: Int; const sz: pInt; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
     // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
     // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
-    procedure create(rows, cols, &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} // void create(int rows, int cols, int type);
-    procedure create(size: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void create(Size size, int type);
+    procedure Create(rows, cols, &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} // void create(int rows, int cols, int type);
+    procedure Create(size: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void create(Size size, int type);
     // void create(int ndims, const int* sizes, int type);
     // void create(const std::vector<int>& sizes, int type);
     procedure addref; {$IFDEF USE_INLINE}inline; {$ENDIF} // void addref();
@@ -560,7 +621,10 @@ Type
     // Mat(Mat&& m);
     // Mat& operator = (Mat&& m);
     class operator LogicalNot(const m: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function at<T>(i0: Int): T; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function at<T>(const i0: Int): T; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function at<T>(const i0, i1: Int): T; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function pt<T>(const i0, i1: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure st<T>(const i0, i1: Int; const V: T); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public const
     MAGIC_VAL       = $42FF0000;
     AUTO_STEP       = 0;
@@ -578,7 +642,7 @@ Type
     // ! the number of rows and columns or (-1, -1) when the matrix has more than 2 dimensions
     rows, cols: Int; // int rows, cols;
     // ! pointer to the data
-    data: pUChar; // uchar* data;
+    Data: pUChar; // uchar* data;
     //
     // ! helper fields used in locateROI and adjustROI
     datastart: pUChar; // const uchar* datastart;
@@ -610,12 +674,12 @@ Type
   TScalar = record
   private
 {$HINTS OFF}
-    v: array [0 .. 3] of double;
+    V: array [0 .. 3] of double;
 {$HINTS ON}
   public
     class operator Initialize(out Dest: TScalar); // Scalar_();
-    class function create(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // Scalar_(_Tp v0, _Tp v1, _Tp v2=0, _Tp v3=0);
-    class function create(const v0: double): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Scalar_(_Tp v0);
+    class function Create(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // Scalar_(_Tp v0, _Tp v1, _Tp v2=0, _Tp v3=0);
+    class function Create(const v0: double): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Scalar_(_Tp v0);
     // Scalar_(const Scalar_& s);
     // Scalar_(Scalar_&& s) CV_NOEXCEPT;
     // Scalar_& operator=(const Scalar_& s);
@@ -725,6 +789,7 @@ type
     class operator Implicit(const m: TMat): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TMatExpr): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const IA: TInputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: TStdVector < TStdVector < TPoint >> ): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   private
 {$HINTS OFF}
     flags: Int;   // int flags;
@@ -795,12 +860,16 @@ type
     // void move(UMat& u) const;
     // void move(Mat& m) const;
 
+    class function noArray: TOutputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TStdVectorMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const OA: TOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: TStdVector<TPoint>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: TStdVector<TPoint2f>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   TOutputArrayOfArrays = TOutputArray;
+  pOutputArrayOfArrays = ^TOutputArrayOfArrays;
 
   pInputOutputArray = ^TInputOutputArray;
 
@@ -862,11 +931,23 @@ type
 function noArray(): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'mat.hpp'}
 //
+{$REGION 'matx.hpp'}
+
+type
+  TMatX<T> = record
+
+  end;
+
+  Vec6f = array [0 .. 5] of float;
+  pVec6f = ^Vec6f;
+
+{$ENDREGION 'matx.hpp'}
+  //
 {$REGION 'core.hpp'}
-(* * @brief Swaps two matrices *)
-// CV_EXPORTS void swap(Mat& a, Mat& b);
-// ?swap@cv@@YAXAEAVMat@1@0@Z
-// void cv::swap(class cv::Mat &,class cv::Mat &)
+  (* * @brief Swaps two matrices *)
+  // CV_EXPORTS void swap(Mat& a, Mat& b);
+  // ?swap@cv@@YAXAEAVMat@1@0@Z
+  // void cv::swap(class cv::Mat &,class cv::Mat &)
 procedure swap(Var a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEAVMat@1@0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // CV_EXPORTS void swap( UMat& a, UMat& b );
@@ -894,7 +975,7 @@ procedure swap(Var a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEA
 *)
 // CV_EXPORTS_W int borderInterpolate(int p, int len, int borderType);
 // ?borderInterpolate@cv@@YAHHHH@Z
-function borderInterpolate(p, Len, borderType: Int): Int; external opencv_world_dll name '?borderInterpolate@cv@@YAHHHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function borderInterpolate(p, len, borderType: Int): Int; external opencv_world_dll name '?borderInterpolate@cv@@YAHHHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @example samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp
   An example using copyMakeBorder function.
@@ -1260,8 +1341,51 @@ Type
     // BOOL operator==(const RNG & other)  const;
   end;
 
+  (* * @brief Finds the global minimum and maximum in an array.
+
+    The function cv::minMaxLoc finds the minimum and maximum element values and their positions. The
+    extremums are searched across the whole array or, if mask is not an empty array, in the specified
+    array region.
+
+    The function do not work with multi-channel arrays. If you need to find minimum or maximum
+    elements across all the channels, use Mat::reshape first to reinterpret the array as
+    single-channel. Or you may extract the particular channel using either extractImageCOI , or
+    mixChannels , or split .
+    @param src input single-channel array.
+    @param minVal pointer to the returned minimum value; NULL is used if not required.
+    @param maxVal pointer to the returned maximum value; NULL is used if not required.
+    @param minLoc pointer to the returned minimum location (in 2D case); NULL is used if not required.
+    @param maxLoc pointer to the returned maximum location (in 2D case); NULL is used if not required.
+    @param mask optional mask used to select a sub-array.
+    @sa max, min, compare, inRange, extractImageCOI, mixChannels, split, Mat::reshape
+  *)
+
+  // CV_EXPORTS_W void minMaxLoc(InputArray src, CV_OUT double* minVal,
+  // CV_OUT double* maxVal = 0, CV_OUT Point* minLoc = 0,
+  // CV_OUT Point* maxLoc = 0, InputArray mask = noArray());
+  // 5673
+  // ?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z
+  // void cv::minMaxLoc(class cv::_InputArray const &,double *,double *,class cv::Point_<int> *,class cv::Point_<int> *,class cv::_InputArray const &)
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil }; const minLoc: pPoint { = nil }; const maxLoc: pPoint { = nil };
+  const mask: TInputArray { = noArray() } ); overload; external opencv_world_dll
+// name '?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z'
+  index 5673
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil };
+  const mask: TInputArray { = noArray() } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//
 {$ENDREGION 'core.hpp'}
-  //
+//
 {$REGION 'imgcodecs.hpp'}
 
 Type
@@ -1520,7 +1644,7 @@ procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTO
 // int cv::createTrackbar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int *,int,void (*)(int,void *),void *)
 Type
   TTrackbarCallback = procedure(pos: Int; userdata: Pointer);
-function createTrackbar(const trackbarname: CppString; const winname: CppString; value: pInt; count: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
+function createTrackbar(const trackbarname: CppString; const winname: CppString; Value: pInt; Count: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
   external opencv_world_dll index 4302{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Moves the window to the specified position
@@ -2117,7 +2241,7 @@ procedure medianBlur(Src: TInputArray; dst: TOutputArray; ksize: Int); external 
 // 6609
 // ?threshold@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@NNH@Z
 // double cv::threshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int)
-function threshold(Src: TInputArray; dst: TOutputArray; thresh, maxval: double; &type: Int): double; external opencv_world_dll index 6609 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function threshold(Src: TInputArray; dst: TOutputArray; thresh, maxVal: double; &type: Int): double; external opencv_world_dll index 6609 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Applies an adaptive threshold to an array.
 
@@ -2654,6 +2778,31 @@ procedure Canny(image: TInputArray; edges: TOutputArray; threshold1, threshold2:
 procedure Canny(dx: TInputArray; dy: TInputArray; edges: TOutputArray; threshold1, threshold2: double; L2gradient: BOOL = false); overload;
   external opencv_world_dll index 3354{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
+(* * @brief Calculates the minimal eigenvalue of gradient matrices for corner detection.
+
+  The function is similar to cornerEigenValsAndVecs but it calculates and stores only the minimal
+  eigenvalue of the covariance matrix of derivatives, that is, \f$\min(\lambda_1, \lambda_2)\f$ in terms
+  of the formulae in the cornerEigenValsAndVecs description.
+
+  @param src Input single-channel 8-bit or floating-point image.
+  @param dst Image to store the minimal eigenvalues. It has the type CV_32FC1 and the same size as
+  src .
+  @param blockSize Neighborhood size (see the details on #cornerEigenValsAndVecs ).
+  @param ksize Aperture parameter for the Sobel operator.
+  @param borderType Pixel extrapolation method. See #BorderTypes. #BORDER_WRAP is not supported.
+*)
+// CV_EXPORTS_W void cornerMinEigenVal( InputArray src, OutputArray dst,
+// int blockSize, int ksize = 3,
+// int borderType = BORDER_DEFAULT );
+// 4090
+// ?cornerMinEigenVal@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z
+// void cv::cornerMinEigenVal(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
+procedure cornerMinEigenVal(Src: TInputArray; dst: TOutputArray; blockSize: Int; ksize: Int = 3; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll
+// name '?cornerMinEigenVal@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
+  index 4090
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+//
 (* * @brief Calculates the first x- or y- image derivative using Scharr operator.
 
   The function computes the first x- or y- spatial image derivative using the Scharr operator. The
@@ -2724,8 +2873,10 @@ procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: I
 // ?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z
 // void cv::drawContours(class cv::_InputOutputArray const &,class cv::_InputArray const &,int,class cv::Scalar_<double> const &,int,int,class cv::_InputArray const &,int,class cv::Point_<int>)
 procedure _drawContours(image: TInputOutputArray; contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes { = LINE_8 };
-  hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: UInt64 { TPoint  = Point() } );
-  external opencv_world_dll name '?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: UInt64 { TPoint  = Point() } ); external opencv_world_dll
+// name '?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z'
+  index 4531
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8);
   overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2735,6 +2886,178 @@ procedure drawContours(const image: TInputOutputArray; const contours: TInputArr
   const hierarchy: TInputArray; const maxLevel: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
   const hierarchy: TInputArray; const maxLevel: Int; const offset: TPoint); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Saves an image to a specified file.
+
+  The function imwrite saves the image to the specified file. The image format is chosen based on the
+  filename extension (see cv::imread for the list of extensions). In general, only 8-bit
+  single-channel or 3-channel (with 'BGR' channel order) images
+  can be saved using this function, with these exceptions:
+
+  - 16-bit unsigned (CV_16U) images can be saved in the case of PNG, JPEG 2000, and TIFF formats
+  - 32-bit float (CV_32F) images can be saved in PFM, TIFF, OpenEXR, and Radiance HDR formats;
+  3-channel (CV_32FC3) TIFF images will be saved using the LogLuv high dynamic range encoding
+  (4 bytes per pixel)
+  - PNG images with an alpha channel can be saved using this function. To do this, create
+  8-bit (or 16-bit) 4-channel image BGRA, where the alpha channel goes last. Fully transparent pixels
+  should have alpha set to 0, fully opaque pixels should have alpha set to 255/65535 (see the code sample below).
+  - Multiple images (vector of Mat) can be saved in TIFF format (see the code sample below).
+
+  If the image format is not supported, the image will be converted to 8-bit unsigned (CV_8U) and saved that way.
+
+  If the format, depth or channel order is different, use
+  Mat::convertTo and cv::cvtColor to convert it before saving. Or, use the universal FileStorage I/O
+  functions to save the image to XML or YAML format.
+
+  The sample below shows how to create a BGRA image, how to set custom compression parameters and save it to a PNG file.
+  It also demonstrates how to save multiple images in a TIFF file:
+  @include snippets/imgcodecs_imwrite.cpp
+  @param filename Name of the file.
+  @param img (Mat or vector of Mat) Image or Images to be saved.
+  @param params Format-specific parameters encoded as pairs (paramId_1, paramValue_1, paramId_2, paramValue_2, ... .) see cv::ImwriteFlags
+*)
+// CV_EXPORTS_W bool imwrite( const String& filename, InputArray img,
+// const std::vector<int>& params = std::vector<int>());
+// 5269
+// ?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z
+// bool cv::imwrite(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &,class std::vector<int,class std::allocator<int> > const &)
+function imwrite(const filename: CppString; img: TInputArray; const params: TStdVector<Int> { = std::vector<int>() }
+  ): BOOL; overload; external opencv_world_dll name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
+// index 5269
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function imwrite(const filename: CppString; const img: TInputArray): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @brief Calculates eigenvalues and eigenvectors of image blocks for corner detection.
+
+  For every pixel \f$p\f$ , the function cornerEigenValsAndVecs considers a blockSize \f$\times\f$ blockSize
+  neighborhood \f$S(p)\f$ . It calculates the covariation matrix of derivatives over the neighborhood as:
+
+  \f[M =  \begin{bmatrix} \sum _{S(p)}(dI/dx)^2 &  \sum _{S(p)}dI/dx dI/dy  \\ \sum _{S(p)}dI/dx dI/dy &  \sum _{S(p)}(dI/dy)^2 \end{bmatrix}\f]
+
+  where the derivatives are computed using the Sobel operator.
+
+  After that, it finds eigenvectors and eigenvalues of \f$M\f$ and stores them in the destination image as
+  \f$(\lambda_1, \lambda_2, x_1, y_1, x_2, y_2)\f$ where
+
+  -   \f$\lambda_1, \lambda_2\f$ are the non-sorted eigenvalues of \f$M\f$
+  -   \f$x_1, y_1\f$ are the eigenvectors corresponding to \f$\lambda_1\f$
+  -   \f$x_2, y_2\f$ are the eigenvectors corresponding to \f$\lambda_2\f$
+
+  The output of the function can be used for robust edge or corner detection.
+
+  @param src Input single-channel 8-bit or floating-point image.
+  @param dst Image to store the results. It has the same size as src and the type CV_32FC(6) .
+  @param blockSize Neighborhood size (see details below).
+  @param ksize Aperture parameter for the Sobel operator.
+  @param borderType Pixel extrapolation method. See #BorderTypes. #BORDER_WRAP is not supported.
+
+  @sa  cornerMinEigenVal, cornerHarris, preCornerDetect
+*)
+// CV_EXPORTS_W void cornerEigenValsAndVecs( InputArray src, OutputArray dst,
+// int blockSize, int ksize,
+// int borderType = BORDER_DEFAULT );
+// 4088
+// ?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z
+// void cv::cornerEigenValsAndVecs(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
+procedure cornerEigenValsAndVecs(Src: TInputArray; dst: TOutputArray; blockSize, ksize: Int; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll
+// name '?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
+  index 4088 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * @brief Determines strong corners on an image.
+
+  The function finds the most prominent corners in the image or in the specified image region, as
+  described in @cite Shi94
+
+  -   Function calculates the corner quality measure at every source image pixel using the
+  #cornerMinEigenVal or #cornerHarris .
+  -   Function performs a non-maximum suppression (the local maximums in *3 x 3* neighborhood are
+  retained).
+  -   The corners with the minimal eigenvalue less than
+  \f$\texttt{qualityLevel} \cdot \max_{x,y} qualityMeasureMap(x,y)\f$ are rejected.
+  -   The remaining corners are sorted by the quality measure in the descending order.
+  -   Function throws away each corner for which there is a stronger corner at a distance less than
+  maxDistance.
+
+  The function can be used to initialize a point-based tracker of an object.
+
+  @note If the function is called with different values A and B of the parameter qualityLevel , and
+  A \> B, the vector of returned corners with qualityLevel=A will be the prefix of the output vector
+  with qualityLevel=B .
+
+  @param image Input 8-bit or floating-point 32-bit, single-channel image.
+  @param corners Output vector of detected corners.
+  @param maxCorners Maximum number of corners to return. If there are more corners than are found,
+  the strongest of them is returned. `maxCorners <= 0` implies that no limit on the maximum is set
+  and all detected corners are returned.
+  @param qualityLevel Parameter characterizing the minimal accepted quality of image corners. The
+  parameter value is multiplied by the best corner quality measure, which is the minimal eigenvalue
+  (see #cornerMinEigenVal ) or the Harris function response (see #cornerHarris ). The corners with the
+  quality measure less than the product are rejected. For example, if the best corner has the
+  quality measure = 1500, and the qualityLevel=0.01 , then all the corners with the quality measure
+  less than 15 are rejected.
+  @param minDistance Minimum possible Euclidean distance between the returned corners.
+  @param mask Optional region of interest. If the image is not empty (it needs to have the type
+  CV_8UC1 and the same size as image ), it specifies the region in which the corners are detected.
+  @param blockSize Size of an average block for computing a derivative covariation matrix over each
+  pixel neighborhood. See cornerEigenValsAndVecs .
+  @param useHarrisDetector Parameter indicating whether to use a Harris detector (see #cornerHarris)
+  or #cornerMinEigenVal.
+  @param k Free parameter of the Harris detector.
+
+  @sa  cornerMinEigenVal, cornerHarris, calcOpticalFlowPyrLK, estimateRigidTransform,
+*)
+
+// CV_EXPORTS_W void goodFeaturesToTrack(
+// InputArray image,
+// OutputArray corners,
+// int maxCorners,
+// double qualityLevel,
+// double minDistance,
+// InputArray mask = noArray(),
+// int blockSize = 3,
+// bool useHarrisDetector = false,
+// double k = 0.04);
+// 5200
+// ?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z
+// void cv::goodFeaturesToTrack(
+// class cv::_InputArray const &,
+// class cv::_OutputArray const &,
+// int,
+// double,
+// double,
+// class cv::_InputArray const &,
+// int,
+// bool,
+// double)
+procedure goodFeaturesToTrack(image: TInputArray; corners: TOutputArray; maxCorners: Int; qualityLevel: double; minDistance: double; mask: TInputArray { = noArray() }; blockSize: Int = 3;
+  useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
+// name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z'
+  index 5200 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+//
+// CV_EXPORTS_W void goodFeaturesToTrack( InputArray image, OutputArray corners,
+// int maxCorners, double qualityLevel, double minDistance,
+// InputArray mask, int blockSize,
+// int gradientSize, bool useHarrisDetector = false,
+// double k = 0.04 );
+// 5199
+// ?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0HH_NN@Z
+// void cv::goodFeaturesToTrack(
+// class cv::_InputArray const &,
+// class cv::_OutputArray const &,
+// int,
+// double,
+// double,
+// class cv::_InputArray const &,
+// int,
+// int,
+// bool,
+// double)
+procedure goodFeaturesToTrack(image: TInputArray; corners: TOutputArray; maxCorners: Int; qualityLevel: double; minDistance: double; mask: TInputArray; blockSize: Int; gradientSize: Int;
+  useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
+// name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z'
+  index 5199 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+//
 {$ENDREGION 'imgproc.hpp'}
 //
 {$REGION 'objectdetect.hpp'}
@@ -2868,6 +3191,119 @@ Type
     // Ptr<BaseCascadeClassifier> cc;
   end;
 
+  pImpl = type Pointer;
+
+  pQRCodeDetector = ^TQRCodeDetector;
+
+  TQRCodeDetector = record
+  public
+    class operator Initialize(out Dest: TQRCodeDetector); // CV_WRAP QRCodeDetector();
+    class operator Finalize(var Dest: TQRCodeDetector);   // ~QRCodeDetector();
+
+    (* * @brief sets the epsilon used during the horizontal scan of QR code stop marker detection.
+      @param epsX Epsilon neighborhood, which allows you to determine the horizontal pattern
+      of the scheme 1:1:3:1:1 according to QR code standard.
+    *)
+    // CV_WRAP void setEpsX(double epsX);
+    (* * @brief sets the epsilon used during the vertical scan of QR code stop marker detection.
+      @param epsY Epsilon neighborhood, which allows you to determine the vertical pattern
+      of the scheme 1:1:3:1:1 according to QR code standard.
+    *)
+    // CV_WRAP void setEpsY(double epsY);
+
+    (* * @brief Detects QR code in image and returns the quadrangle containing the code.
+      @param img grayscale or color (BGR) image containing (or not) QR code.
+      @param points Output vector of vertices of the minimum-area quadrangle containing the code.
+    *)
+    function detect(const img: TInputArray; const points: TOutputArray): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // CV_WRAP bool detect(InputArray img, OutputArray points) const;
+
+    (* * @brief Decodes QR code in image once it's found by the detect() method.
+
+      Returns UTF8-encoded output string or empty string if the code cannot be decoded.
+      @param img grayscale or color (BGR) image containing QR code.
+      @param points Quadrangle vertices found by detect() method (or some other algorithm).
+      @param straight_qrcode The optional output image containing rectified and binarized QR code
+    *)
+    // CV_WRAP std::string decode(InputArray img, InputArray points, OutputArray straight_qrcode = noArray());
+
+    (* * @brief Decodes QR code on a curved surface in image once it's found by the detect() method.
+
+      Returns UTF8-encoded output string or empty string if the code cannot be decoded.
+      @param img grayscale or color (BGR) image containing QR code.
+      @param points Quadrangle vertices found by detect() method (or some other algorithm).
+      @param straight_qrcode The optional output image containing rectified and binarized QR code
+    *)
+    // CV_WRAP cv::String decodeCurved(InputArray img, InputArray points, OutputArray straight_qrcode = noArray());
+
+    (* * @brief Both detects and decodes QR code
+
+      @param img grayscale or color (BGR) image containing QR code.
+      @param points optional output array of vertices of the found QR code quadrangle. Will be empty if not found.
+      @param straight_qrcode The optional output image containing rectified and binarized QR code
+    *)
+    function detectAndDecode(const img: TInputArray; const points: TOutputArray { =noArray() }; const straight_qrcode: TOutputArray { = noArray() } ): CppString; overload; {$IFDEF USE_INLINE}inline;
+{$ENDIF}
+    function detectAndDecode(const img: TInputArray; const points: TOutputArray { =noArray() } ): CppString; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function detectAndDecode(const img: TInputArray): CppString; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // CV_WRAP std::string detectAndDecode(InputArray img, OutputArray points=noArray(),
+    // OutputArray straight_qrcode = noArray());
+
+    (* * @brief Both detects and decodes QR code on a curved surface
+
+      @param img grayscale or color (BGR) image containing QR code.
+      @param points optional output array of vertices of the found QR code quadrangle. Will be empty if not found.
+      @param straight_qrcode The optional output image containing rectified and binarized QR code
+    *)
+    // CV_WRAP std::string detectAndDecodeCurved(InputArray img, OutputArray points=noArray(),
+    // OutputArray straight_qrcode = noArray());
+
+    (* * @brief Detects QR codes in image and returns the vector of the quadrangles containing the codes.
+      @param img grayscale or color (BGR) image containing (or not) QR codes.
+      @param points Output vector of vector of vertices of the minimum-area quadrangle containing the codes.
+    *)
+    // CV_WRAP bool detectMulti(InputArray img, OutputArray points) const;
+    function detectMulti(const img: TInputArray; const points: TOutputArray): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * @brief Decodes QR codes in image once it's found by the detect() method.
+      @param img grayscale or color (BGR) image containing QR codes.
+      @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
+      @param points vector of Quadrangle vertices found by detect() method (or some other algorithm).
+      @param straight_qrcode The optional output vector of images containing rectified and binarized QR codes
+    *)
+    function decodeMulti(const img: TInputArray; const points: TInputArray; const decoded_info: TStdVectorCppString; const straight_qrcode: TOutputArrayOfArrays): BOOL; overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+    function decodeMulti(const img: TInputArray; const points: TInputArray; const decoded_info: TStdVectorCppString): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // CV_WRAP bool decodeMulti(
+    // InputArray img, InputArray points,
+    // CV_OUT std::vector<std::string>& decoded_info,
+    // OutputArrayOfArrays straight_qrcode = noArray()
+    // ) const;
+
+    (* * @brief Both detects and decodes QR codes
+      @param img grayscale or color (BGR) image containing QR codes.
+      @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
+      @param points optional output vector of vertices of the found QR code quadrangles. Will be empty if not found.
+      @param straight_qrcode The optional output vector of images containing rectified and binarized QR codes
+    *)
+    function detectAndDecodeMulti(const img: TInputArray; const decoded_info: TStdVectorCppString; const points: TOutputArray { = noArray() };
+      const straight_qrcode: TOutputArrayOfArrays { = noArray() } ): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function detectAndDecodeMulti(const img: TInputArray; const decoded_info: TStdVectorCppString; const points: TOutputArray { = noArray() }
+      ): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function detectAndDecodeMulti(const img: TInputArray; const decoded_info: TStdVectorCppString): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // CV_WRAP
+    // bool detectAndDecodeMulti(
+    // InputArray img, CV_OUT std::vector<std::string>& decoded_info,
+    // OutputArray points = noArray(),
+    // OutputArrayOfArrays straight_qrcode = noArray()
+    // ) const;
+
+  private
+{$HINTS OFF}
+    // struct Impl;
+    p: pImpl; // Ptr<Impl> p;
+{$HINTS ON}
+  end;
+
 {$ENDREGION 'objectdetect.hpp'}
   //
 {$REGION 'fast_math.hpp'}
@@ -2882,7 +3318,7 @@ Type
   // ?cvRound@@YAHAEBUsoftdouble@cv@@@Z
   // int cvRound(struct cv::softdouble const &)
   // function cvRound(value: double): int; external opencv_world_dll index 4320 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function cvRound(value: double): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function cvRound(Value: double): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'fast_math.hpp'}
 //
 {$REGION 'videoio.hpp'}
@@ -3344,6 +3780,7 @@ type
     procedure printErrors; {$IFDEF USE_INLINE}inline; {$ENDIF}// void printErrors() const;
     //
     // class operator assign(var Dest: TCommandLineParser; const [ref] Src: TCommandLineParser);
+    class operator Implicit(const keys: String): TCommandLineParser; {$IFDEF USE_INLINE}inline; {$ENDIF}
   private
     function TypeToTParam<T>(): TParam; {$IFDEF USE_INLINE}inline; {$ENDIF}
     //
@@ -3358,6 +3795,16 @@ type
   end;
 {$ENDREGION 'utility.hpp'}
   //
+{$REGION 'check.hpp'}
+
+  (* * Returns string of cv::Mat depth value: CV_8UC3 -> "CV_8UC3" or "<invalid type>" *)
+  // CV_EXPORTS const String typeToString(int type);
+  // ?typeToString@cv@@YA?BV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
+  // class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const cv::typeToString(int)
+function typeToString(&type: Int): CppString; external opencv_world_dll name '?typeToString@cv@@YA?BV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$ENDREGION 'check.hpp'}
+//
 {$REGION 'opencv_word helpers'}
 
 Type
@@ -3369,6 +3816,12 @@ Type
     class operator Subtract(const m: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const Scalar& s);
   end;
+
+  // TPoint2fHelper = record helper for TPoint2f
+  // public
+  // class operator Implicit(const p: TPoint2f): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  // end;
+
 {$ENDREGION 'opencv_word helpers'}
   //
 {$REGION 'Import'}
@@ -3387,9 +3840,13 @@ Type
 {$I opencv.VideoCapture.import.inc}
 {$I opencv.rng.import.inc}
 {$I opencv.CommandLineParser.import.inc}
+{$I opencv.QRCodeDetector.import.inc}
 {$ENDREGION 'Import'}
 
 implementation
+
+Uses
+  System.Rtti;
 
 //
 {$REGION 'Std'}
@@ -3477,19 +3934,19 @@ begin
 {$ENDIF}
 end;
 
-function cvRound(value: double): Int;
+function cvRound(Value: double): Int;
 begin
-  Result := Round(value);
+  Result := Round(Value);
 end;
 
 procedure circle(img: TInputOutputArray; center: TPoint; radius: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
 begin
-  _circle(img, UInt64(center), radius, color, thickness, Int(lineType), shift);
+  _circle(img, center, radius, color, thickness, Int(lineType), shift);
 end;
 
 procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8; const shift: Int = 0);
 begin
-  _rectangle(img, UInt64(pt1), UInt64(pt2), color, thickness, Int(lineType), shift);
+  _rectangle(img, pt1, pt2, color, thickness, Int(lineType), shift);
 end;
 
 procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes { = LINE_8 }; const shift: Int { = 0 };
@@ -3538,6 +3995,13 @@ procedure drawContours(const image: TInputOutputArray; const contours: TInputArr
   const hierarchy: TInputArray; const maxLevel: Int; const offset: TPoint);
 begin
   _drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, maxLevel, UInt64(offset));
+end;
+
+function imwrite(const filename: CppString; const img: TInputArray): BOOL;
+begin
+  Var
+    a: TStdVector<Int>;
+  Result := imwrite(filename, img, a);
 end;
 
 procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
@@ -3722,7 +4186,7 @@ begin
   clone_Mat(@Self, @Result);
 end;
 
-procedure TMat.create(size: TSize; &type: Int);
+procedure TMat.Create(size: TSize; &type: Int);
 begin
   create_Mat(@Self, @size, &type);
 end;
@@ -3777,9 +4241,30 @@ begin
   ones_Mat(@Result, ndims, sz, &type);
 end;
 
+function TMat.pt<T>(const i0, i1: Int): Pointer;
+Type
+  pType = ^T;
+begin
+{$WARNINGS OFF}
+  Result := Pointer(Data + step.p[0] * i0 + i1 * SizeOf(T));
+{$WARNINGS ON}
+end;
+
 procedure TMat.release;
 begin
   release_Mat(@Self);
+end;
+
+procedure TMat.st<T>(const i0, i1: Int; const V: T);
+Type
+  pType = ^T;
+var
+  p: pType;
+begin
+{$WARNINGS OFF}
+  p := pType(Data + step.p[0] * i0);
+  p[i1] := V;
+{$WARNINGS ON}
 end;
 
 function TMat.step1(i: Int): size_t;
@@ -3798,9 +4283,23 @@ begin
   clone_Mat(@Src, @Dest);
 end;
 
-function TMat.at<T>(i0: Int): T;
+function TMat.at<T>(const i0, i1: Int): T;
 Type
-  pT = ^T;
+  pType = ^T;
+begin
+  // CV_DbgAssert(dims <= 2);
+  // CV_DbgAssert(data);
+  // CV_DbgAssert((unsigned)i0 < (unsigned)size.p[0]);
+  // CV_DbgAssert((unsigned)(i1 * DataType<_Tp>::channels) < (unsigned)(size.p[1] * channels()));
+  // CV_DbgAssert(CV_ELEM_SIZE1(traits::Depth<_Tp>::value) == elemSize1());
+{$WARNINGS OFF}
+  Result := pType(Data + step.p[0] * i0)[i1];
+{$WARNINGS ON}
+end;
+
+function TMat.at<T>(const i0: Int): T;
+Type
+  pType = ^T;
 begin
   // CV_DbgAssert(dims <= 2);
   // CV_DbgAssert(data);
@@ -3808,14 +4307,14 @@ begin
   // CV_DbgAssert(elemSize() == sizeof(_Tp));
 {$WARNINGS OFF}
   if (isContinuous() or (size.p[0] = 1)) then
-    Exit(pT(data)[i0]);
+    Exit(pType(Data)[i0]);
   if (size.p[1] = 1) then
-    Exit(pT(data + step.p[0] * i0)^); // *(_Tp*)(data + step.p[0] * i0);
+    Exit((pType(Data + step.p[0] * i0))[0]); // *(_Tp*)(data + step.p[0] * i0);
   Var
     i: Int := i0 div cols;
   Var
     j: Int := i0 - i * cols;
-  Exit(pT(data + step.p[0] * i0)[j]);
+  Exit((pType(Data + step.p[0] * i0))[j]);
 {$WARNINGS ON}
 end;
 
@@ -3829,7 +4328,7 @@ begin
   Result := checkVector_Mat(@Self, elemChannels, depth, requireContinuous);
 end;
 
-procedure TMat.create(rows, cols, &type: Int);
+procedure TMat.Create(rows, cols, &type: Int);
 begin
   Constructor_Mat(@Self, rows, cols, &type);
 end;
@@ -3922,11 +4421,23 @@ begin
   Result := isMat_InputArray(@Self);
 end;
 
+class operator TInputArray.Implicit(const V: TStdVector < TStdVector < TPoint >> ): TInputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + 12 { + traits::Type<Point>::value } + Int(ACCESS_READ); // -2130444276;
+  Result.Obj := @V;
+  Result.sz := size(0, 0);
+end;
+
 { TOutputArray }
 
 class operator TOutputArray.Initialize(out Dest: TOutputArray);
 begin
   Constructor_OutputArray(@Dest);
+end;
+
+class function TOutputArray.noArray: TOutputArray;
+begin
+  noArray_InputOutputArray(@Result);
 end;
 
 class function TOutputArray.OutputArray(const vec: TStdVectorMat): TOutputArray;
@@ -3960,26 +4471,44 @@ begin
   Result := TOutputArray.OutputArray(m);
 end;
 
+class operator TOutputArray.Implicit(const V: TStdVector<TPoint>): TOutputArray;
+begin
+  Result.InputArray.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(STD_VECTOR) + 12 { traits::Type<Point>::value } + Int(ACCESS_WRITE);
+  Result.InputArray.Obj := @V;
+  Result.InputArray.sz := size(0, 0);
+end;
+
+class operator TOutputArray.Implicit(const V: TStdVector<TPoint2f>): TOutputArray;
+begin
+  // Result.InputArray.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(STD_VECTOR) + traits::Type<Point2f>::value + Int(ACCESS_WRITE);
+  // -858993460
+  // -1640896696
+  // 1740368104
+  Result.InputArray.flags := -2113732595;
+  Result.InputArray.Obj := @V;
+  Result.InputArray.sz := size(0, 0);
+end;
+
 { TScalar }
 
-class function TScalar.create(const v0, v1, v2, v3: double): TScalar;
+class function TScalar.Create(const v0, v1, v2, v3: double): TScalar;
 begin
   constructor_Scalar(@Result, v0, v1, v2, v3);
 end;
 
 class function TScalar.all(const v0: double): TScalar;
 begin
-  Result := TScalar.create(v0, v0, v0, v0);
+  Result := TScalar.Create(v0, v0, v0, v0);
 end;
 
-class function TScalar.create(const v0: double): TScalar;
+class function TScalar.Create(const v0: double): TScalar;
 begin
   constructor_Scalar(@Result, v0);
 end;
 
 class operator TScalar.Implicit(const v0: double): TScalar;
 begin
-  Result := TScalar.create(v0);
+  Result := TScalar.Create(v0);
 end;
 
 class operator TScalar.Initialize(out Dest: TScalar);
@@ -3989,7 +4518,7 @@ end;
 
 function Scalar(const v0, v1, v2, v3: double): TScalar;
 begin
-  Result := TScalar.create(v0, v1, v2, v3);
+  Result := TScalar.Create(v0, v1, v2, v3);
 end;
 
 { TSize_<T> }
@@ -4027,6 +4556,12 @@ end;
 class operator TMatSize.Implicit(const m: TMatSize): TSize;
 begin
   operator_MatSize_MatSizeToSize(@m, @Result);
+end;
+
+class operator TMatSize.Implicit(const m: TMatSize): String;
+begin
+  With TSize(m) do
+    Result := '(' + width.ToString + ',' + height.ToString + ')';
 end;
 
 { TInputOutputArray }
@@ -4069,6 +4604,28 @@ end;
 
 { TPoint_<T> }
 
+class operator TPoint_<T>.Implicit(const m: TPoint_<T>): UInt64;
+begin
+  Assert(SizeOf(m) = 8);
+  Move(m, Result, 8);
+end;
+
+class operator TPoint_<T>.Implicit(const p: TPoint_<T>): TPoint_<Int>;
+begin
+  if TypeInfo(T) = TypeInfo(float) then
+  begin
+    Result.x := Trunc(pFloat(@p.x)^);
+    Result.y := Trunc(pFloat(@p.y)^);
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    Result.x := Trunc(pDouble(@p.x)^);
+    Result.y := Trunc(pDouble(@p.y)^);
+  end
+  else
+    Assert(False,'Point type must be Single(Float) or Double');
+end;
+
 class function TPoint_<T>.Point(_x, _y: T): TPoint_<T>;
 begin
   Result.x := _x;
@@ -4098,6 +4655,41 @@ end;
 function CV_8UC(n: Int): Int;
 begin
   Result := CV_MAKETYPE(CV_8U, n);
+end;
+
+function CV_8SC(n: Int): Int;
+begin
+  Result := CV_MAKETYPE(CV_8S, n);
+end;
+
+function CV_16UC(n: Int): Int;
+begin
+  Result := CV_MAKETYPE(CV_16U, n);
+end;
+
+function CV_16SC(n: Int): Int;
+begin
+  Result := CV_MAKETYPE(CV_16S, n);
+end;
+
+function CV_32SC(n: Int): Int;
+begin
+  Result := CV_MAKETYPE(CV_32S, n);
+end;
+
+function CV_32FC(n: Int): Int;
+begin
+  Result := CV_MAKETYPE(CV_32F, n);
+end;
+
+function CV_64FC(n: Int): Int;
+begin
+  Result := CV_MAKETYPE(CV_64F, n);
+end;
+
+function CV_16FC(n: Int): Int;
+begin
+  Result := CV_MAKETYPE(CV_16F, n);
 end;
 
 { TMatHelper }
@@ -4218,6 +4810,32 @@ begin
   Result := uniform_RNG(@Self, a, b);
 end;
 
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil };
+  const mask: TInputArray { = noArray() } ); overload;
+begin
+  minMaxLoc(Src, minVal, @maxVal, @minLoc, @maxLoc, mask);
+end;
+
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil } ); overload;
+begin
+  minMaxLoc(Src, minVal, @maxVal, @minLoc, @maxLoc, noArray);
+end;
+
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil } ); overload;
+begin
+  minMaxLoc(Src, minVal, @maxVal, @minLoc, nil, noArray);
+end;
+
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil } ); overload;
+begin
+  minMaxLoc(Src, minVal, @maxVal, nil, nil, noArray);
+end;
+
+procedure minMaxLoc(const Src: TInputArray; Var minVal: double); overload;
+begin
+  minMaxLoc(Src, minVal, nil, nil, nil, noArray);
+end;
+
 { TCommandLineParser }
 
 procedure TCommandLineParser.about(const message: String);
@@ -4275,6 +4893,11 @@ begin
   Result := Has_CommandLineParser(@Self, @CvStdString(Name));
 end;
 
+class operator TCommandLineParser.Implicit(const keys: String): TCommandLineParser;
+begin
+  Result.CommandLineParser(keys);
+end;
+
 procedure TCommandLineParser.printErrors;
 begin
   printErrors_CommandLineParser(@Self);
@@ -4317,12 +4940,18 @@ begin
       Exit(Param_UCHAR)
     else if SameText('TScalar', s) then
       Exit(Param_SCALAR)
+    else if SameText('string', s) then
+      Exit(Param_STRING)
     else
       Assert(false, 'TODO Supplement types');
 end;
 
 { TStdVector<T> }
 
+function TStdVector<T>.empty: BOOL;
+begin
+  Result := StdEmpty(@Self, vt);
+end;
 
 class operator TStdVector<T>.Finalize(var Dest: TStdVector<T>);
 begin
@@ -4336,8 +4965,13 @@ end;
 
 class operator TStdVector<T>.Initialize(out Dest: TStdVector<T>);
 begin
-  FillChar(Dest,SizeOf(Dest),0);
+  FillChar(Dest, SizeOf(Dest), 0);
   CreateStdVector(@Dest, vt);
+end;
+
+procedure TStdVector<T>.push_back(const Value: T);
+begin
+  StdPushBack(@Self, @Value, vt);
 end;
 
 function TStdVector<T>.size: { UInt64 } Int64;
@@ -4350,12 +4984,80 @@ Var
   TypeName: String;
 begin
   TypeName := GetTypeName(TypeInfo(T));
-  if SameText('TMat', TypeName) then
+  if TypeInfo(T) = TypeInfo(TMat) then
     vt := vtMat
-  else if SameText('TRect_<System.Integer>', TypeName) then
+  else if TypeInfo(T) = TypeInfo(TRect) then
     vt := vtRect
+  else if TypeInfo(T) = TypeInfo(TPoint) then
+    vt := vtPoint
+  else if TypeInfo(T) = TypeInfo(TStdVector<TPoint>) then
+    vt := vtVectorPoint
+  else if TypeInfo(T) = TypeInfo(TPoint2f) then
+    vt := vtPoint2f
   else
     Assert(false);
+end;
+
+{ TQRCodeDetector }
+
+function TQRCodeDetector.detectAndDecode(const img: TInputArray; const points, straight_qrcode: TOutputArray): CppString;
+begin
+  Result := detectAndDecode_QRCodeDetector(@Self, @img, @points, @straight_qrcode);
+end;
+
+function TQRCodeDetector.detectAndDecode(const img: TInputArray; const points: TOutputArray): CppString;
+begin
+  Result := detectAndDecode(img, points, TOutputArray.noArray);
+end;
+
+function TQRCodeDetector.decodeMulti(const img, points: TInputArray; const decoded_info: TStdVectorCppString): BOOL;
+begin
+  Result := decodeMulti(img, points, decoded_info, TOutputArrayOfArrays.noArray);
+end;
+
+function TQRCodeDetector.decodeMulti(const img, points: TInputArray; const decoded_info: TStdVectorCppString; const straight_qrcode: TOutputArrayOfArrays): BOOL;
+begin
+  Result := decodeMulti_QRCodeDetector(@Self, @img, @points, @decoded_info, @straight_qrcode);
+end;
+
+function TQRCodeDetector.detect(const img: TInputArray; const points: TOutputArray): BOOL;
+begin
+  Result := detect_QRCodeDetector(@Self, @img, @points);
+end;
+
+function TQRCodeDetector.detectAndDecode(const img: TInputArray): CppString;
+begin
+  Result := detectAndDecode(img, TOutputArray.noArray);
+end;
+
+function TQRCodeDetector.detectAndDecodeMulti(const img: TInputArray; const decoded_info: TStdVectorCppString; const points: TOutputArray; const straight_qrcode: TOutputArrayOfArrays): BOOL;
+begin
+  Result := DetectAndDecodeMulti_QRCodeDetector(@Self, @img, @decoded_info, @points, @straight_qrcode);
+end;
+
+function TQRCodeDetector.detectAndDecodeMulti(const img: TInputArray; const decoded_info: TStdVectorCppString; const points: TOutputArray): BOOL;
+begin
+  Result := detectAndDecodeMulti(img, decoded_info, points, TOutputArrayOfArrays.noArray);
+end;
+
+function TQRCodeDetector.detectAndDecodeMulti(const img: TInputArray; const decoded_info: TStdVectorCppString): BOOL;
+begin
+  Result := detectAndDecodeMulti(img, decoded_info, TOutputArrayOfArrays.noArray);
+end;
+
+function TQRCodeDetector.detectMulti(const img: TInputArray; const points: TOutputArray): BOOL;
+begin
+  Result := detectMulti_QRCodeDetector(@Self, @img, @points);
+end;
+
+class operator TQRCodeDetector.Finalize(var Dest: TQRCodeDetector);
+begin
+  Constructor_QRCodeDetector(@Dest);
+end;
+
+class operator TQRCodeDetector.Initialize(out Dest: TQRCodeDetector);
+begin
+  Destructor_QRCodeDetector(@Dest);
 end;
 
 initialization
@@ -4365,6 +5067,41 @@ initialization
 CV_8UC2 := CV_MAKETYPE(CV_8U, 2);
 CV_8UC3 := CV_MAKETYPE(CV_8U, 3);
 CV_8UC4 := CV_MAKETYPE(CV_8U, 4);
+
+CV_8SC1 := CV_MAKETYPE(CV_8S, 1);
+CV_8SC2 := CV_MAKETYPE(CV_8S, 2);
+CV_8SC3 := CV_MAKETYPE(CV_8S, 3);
+CV_8SC4 := CV_MAKETYPE(CV_8S, 4);
+
+CV_16UC1 := CV_MAKETYPE(CV_16U, 1);
+CV_16UC2 := CV_MAKETYPE(CV_16U, 2);
+CV_16UC3 := CV_MAKETYPE(CV_16U, 3);
+CV_16UC4 := CV_MAKETYPE(CV_16U, 4);
+
+CV_16SC1 := CV_MAKETYPE(CV_16S, 1);
+CV_16SC2 := CV_MAKETYPE(CV_16S, 2);
+CV_16SC3 := CV_MAKETYPE(CV_16S, 3);
+CV_16SC4 := CV_MAKETYPE(CV_16S, 4);
+
+CV_32SC1 := CV_MAKETYPE(CV_32S, 1);
+CV_32SC2 := CV_MAKETYPE(CV_32S, 2);
+CV_32SC3 := CV_MAKETYPE(CV_32S, 3);
+CV_32SC4 := CV_MAKETYPE(CV_32S, 4);
+
+CV_32FC1 := CV_MAKETYPE(CV_32F, 1);
+CV_32FC2 := CV_MAKETYPE(CV_32F, 2);
+CV_32FC3 := CV_MAKETYPE(CV_32F, 3);
+CV_32FC4 := CV_MAKETYPE(CV_32F, 4);
+
+CV_64FC1 := CV_MAKETYPE(CV_64F, 1);
+CV_64FC2 := CV_MAKETYPE(CV_64F, 2);
+CV_64FC3 := CV_MAKETYPE(CV_64F, 3);
+CV_64FC4 := CV_MAKETYPE(CV_64F, 4);
+
+CV_16FC1 := CV_MAKETYPE(CV_16F, 1);
+CV_16FC2 := CV_MAKETYPE(CV_16F, 2);
+CV_16FC3 := CV_MAKETYPE(CV_16F, 3);
+CV_16FC4 := CV_MAKETYPE(CV_16F, 4);
 {$ENDREGION}
 
 end.

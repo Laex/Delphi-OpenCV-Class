@@ -209,8 +209,12 @@ function size_CppString(Obj: pCppString): UInt64; overload; external opencv_delp
 // ?CreateStdVector@@YAXPEAXH@Z	void __cdecl CreateStdVector(void * __ptr64,int)
 procedure CreateStdVector(Obj: TStdPointer; vt: TVectorType); external opencv_delphi_dll name '?CreateStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?DestroyStdVector@@YAXPEAXH@Z	void __cdecl DestroyStdVector(void * __ptr64,int)
-procedure DestroyStdVector(obj: TStdPointer; vt: TVectorType); external opencv_delphi_dll name '?DestroyStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure DestroyStdVector(Obj: TStdPointer; vt: TVectorType); external opencv_delphi_dll name '?DestroyStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdItem@@YAXPEAXH_K0@Z	void __cdecl StdItem(void * __ptr64,int,unsigned __int64,void * __ptr64)
 procedure StdItem(const Obj: TStdPointer; vt: TVectorType; index: UInt64; p: TStdPointer); external opencv_delphi_dll name '?StdItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdSize@@YA_KPEAXH@Z	unsigned __int64 __cdecl StdSize(void * __ptr64,int)
 function StdSize(Obj: TStdPointer; vt: TVectorType): UInt64; external opencv_delphi_dll name '?StdSize@@YA_KPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// ?StdEmpty@@YA_NPEAXH@Z	bool __cdecl StdEmpty(void * __ptr64,int)
+function StdEmpty(Obj: TStdPointer; vt: TVectorType): bool; external opencv_delphi_dll name '?StdEmpty@@YA_NPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// ?StdPushBack@@YAXPEAX0H@Z	void __cdecl StdPushBack(void * __ptr64,void * __ptr64,int)
+function StdPushBack(Obj: TStdPointer; p: TStdPointer; vt: TVectorType): bool; external opencv_delphi_dll name '?StdPushBack@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};

@@ -27,6 +27,12 @@
         <Projects Include="cpp\edge\edge.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="cpp\tutorial_code\TrackingMotion\cornerDetector_Demo\cornerDetector_Demo.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="cpp\tutorial_code\TrackingMotion\goodFeaturesToTrack_Demo\goodFeaturesToTrack_Demo.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -107,14 +113,32 @@
     <Target Name="edge:Make">
         <MSBuild Projects="cpp\edge\edge.dproj" Targets="Make"/>
     </Target>
+    <Target Name="cornerDetector_Demo">
+        <MSBuild Projects="cpp\tutorial_code\TrackingMotion\cornerDetector_Demo\cornerDetector_Demo.dproj"/>
+    </Target>
+    <Target Name="cornerDetector_Demo:Clean">
+        <MSBuild Projects="cpp\tutorial_code\TrackingMotion\cornerDetector_Demo\cornerDetector_Demo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="cornerDetector_Demo:Make">
+        <MSBuild Projects="cpp\tutorial_code\TrackingMotion\cornerDetector_Demo\cornerDetector_Demo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="goodFeaturesToTrack_Demo">
+        <MSBuild Projects="cpp\tutorial_code\TrackingMotion\goodFeaturesToTrack_Demo\goodFeaturesToTrack_Demo.dproj"/>
+    </Target>
+    <Target Name="goodFeaturesToTrack_Demo:Clean">
+        <MSBuild Projects="cpp\tutorial_code\TrackingMotion\goodFeaturesToTrack_Demo\goodFeaturesToTrack_Demo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="goodFeaturesToTrack_Demo:Make">
+        <MSBuild Projects="cpp\tutorial_code\TrackingMotion\goodFeaturesToTrack_Demo\goodFeaturesToTrack_Demo.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge"/>
+        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean"/>
+        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make"/>
+        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
