@@ -30,13 +30,15 @@ const
   *)
 procedure goodFeaturesToTrackProc(a: int; p: Pointer);
 
-Var pp:TPoint2f;
+Var
+  pp: TOutputArray;
+  o: int;
 
 begin
   /// Parameters for Shi-Tomasi algorithm
   maxCorners := MAX(maxCorners, 1);
   Var
-    corners: TStdVector<TPoint2f>;
+    corners: Vector<TPoint2f>;
   Var
     qualityLevel: double := 0.01;
   Var
@@ -54,7 +56,7 @@ begin
   Var
     cpy: TMat := src.clone();
 
-    /// Apply corner detection
+  /// Apply corner detection
   goodFeaturesToTrack(src_gray, corners, maxCorners, qualityLevel, minDistance, TMat.Mat, blockSize, gradientSize, useHarrisDetector, k);
 
   /// Draw corners detected
@@ -62,7 +64,7 @@ begin
   Var
     radius: int := 4;
   for Var i := 0 to corners.size() - 1 do
-    circle(cpy, corners[i], radius, Scalar(rng.uniform(0, 255), rng.uniform(0, 256), rng.uniform(0, 256)), Int(FILLED));
+    circle(cpy, corners[i], radius, Scalar(rng.uniform(0, 255), rng.uniform(0, 256), rng.uniform(0, 256)), int(FILLED));
 
   /// Show what you got
   namedWindow(source_window);

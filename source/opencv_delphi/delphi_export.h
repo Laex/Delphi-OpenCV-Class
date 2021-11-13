@@ -13,17 +13,66 @@ using namespace std;
 class BODY_API ExportString : public String {};
 
 enum VectorType {
-	vtMat = 1,			// vector<Mat>
-	vtRect = 2,			// vector<Rect>
-	vtPoint = 3,		// vector<Point>
-	vtVectorMat = 4,	// vector<vector<Mat>>
-	vtVectorRect = 5,	// vector<vector<Rect>>
-	vtVectorPoint = 6,	// vector<vector<Point>>
-	vtPoint2f = 7 // vector<Point2f>
+	vtMat           = 1,	// vector<Mat>
+	vtRect			= 2,	// vector<Rect>
+	vtPoint			= 3,	// vector<Point>
+	vtVectorMat		= 4,	// vector<vector<Mat>>
+	vtVectorRect	= 5,	// vector<vector<Rect>>
+	vtVectorPoint	= 6,	// vector<vector<Point>>
+	vtPoint2f		= 7,    // vector<Point2f>
+	vtScalar		= 8,    // vector<Scalar>
+	vtUchar			= 9,    // vector<uchar>
+	vtFloat			= 10,   // vector<float>
 };
+
+BODY_API void CopyStdVector(void* obj, void* src, int vt)
+{
+
+#define DefCopyStdVector(T) *(static_cast<vector<T>*>(obj))=*(static_cast<vector<T>*>(src));
+
+	if (vt)
+	{
+		switch (vt)
+		{
+		case vtMat:
+			DefCopyStdVector(Mat)
+			break;
+		case vtRect:			
+			DefCopyStdVector(Rect)
+			break;
+		case vtPoint:
+			DefCopyStdVector(Point)
+			break;
+		case vtVectorMat:
+			DefCopyStdVector(vector<Mat>)
+			break;
+		case vtVectorRect:
+			DefCopyStdVector(vector<Rect>)		
+			break;
+		case vtVectorPoint:
+			DefCopyStdVector(vector<Point>)
+			break;
+		case vtPoint2f:
+			DefCopyStdVector(Point2f)			
+			break;
+		case vtScalar:
+			DefCopyStdVector(Scalar)
+			break;
+		case vtUchar:
+			DefCopyStdVector(uchar)			
+			break;
+		case vtFloat:
+			DefCopyStdVector(float)
+			break;
+		}
+	}
+}
 
 BODY_API void CreateStdVector(void* obj, int vt)
 {
+
+#define DefCreateStdVector(T) *(static_cast<vector<T>*>(obj)) = vector<T>();
+
 	if (vt)
 	{
 		switch (vt)
@@ -49,12 +98,24 @@ BODY_API void CreateStdVector(void* obj, int vt)
 		case vtPoint2f:
 			*(static_cast<vector<Point2f>*>(obj)) = vector<Point2f>();
 			break;
+		case vtScalar:
+			DefCreateStdVector(Scalar)
+			break;
+		case vtUchar:
+			DefCreateStdVector(uchar)
+			break;
+		case vtFloat:
+			DefCreateStdVector(float)
+			break;
 		}
 	}
 }
 
 BODY_API void DestroyStdVector(void* p, int vt)
 {
+
+#define DefDestroyStdVector(T) static_cast<vector<T>*>(p)->~vector();
+
 	if (p && vt)
 	{
 		switch (vt)
@@ -80,6 +141,15 @@ BODY_API void DestroyStdVector(void* p, int vt)
 		case vtPoint2f:
 			static_cast<vector<Point2f>*>(p)->~vector();
 			break;
+		case vtScalar:
+			DefDestroyStdVector(Scalar)
+			break;
+		case vtUchar:
+			DefDestroyStdVector(uchar)
+			break;
+		case vtFloat:
+			DefDestroyStdVector(float)
+			break;
 		}
 	}
 }
@@ -95,31 +165,43 @@ BODY_API void StdPushBack(void* p, void* o, int vt)
 		{
 		case vtMat:
 			defpush_back(Mat)
-				break;
+			break;
 		case vtRect:
 			defpush_back(Rect)
-				break;
+			break;
 		case vtPoint:
 			defpush_back(Point)
-				break;
+			break;
 		case vtVectorMat:
 			defpush_back(vector<Mat>)
-				break;
+			break;
 		case vtVectorRect:
 			defpush_back(vector<Rect>)
-				break;
+			break;
 		case vtVectorPoint:
 			defpush_back(vector<Point>)
-				break;
+			break;
 		case vtPoint2f:
 			defpush_back(Point2f)
-				break;
+			break;
+		case vtScalar:
+			defpush_back(Scalar)
+			break;
+		case vtUchar:
+			defpush_back(uchar)
+			break;
+		case vtFloat:
+			defpush_back(float)
+			break;
 		}
 	}
 }
 
 BODY_API bool StdEmpty(void* p, int vt)
 {
+	
+#define DefStdEmpty(T) static_cast<vector<T>*>(p)->empty();
+
 	if (p)
 	{
 		switch (vt)
@@ -138,7 +220,12 @@ BODY_API bool StdEmpty(void* p, int vt)
 			return static_cast<vector<vector<Point>>*>(p)->empty();
 		case vtPoint2f:
 			return static_cast<vector<Point2f>*>(p)->empty();
-			
+		case vtScalar:
+			return DefStdEmpty(Scalar)
+		case vtUchar:
+			return DefStdEmpty(uchar)			
+		case vtFloat:
+			return DefStdEmpty(float)
 		}
 	}
 	return true;
@@ -146,6 +233,9 @@ BODY_API bool StdEmpty(void* p, int vt)
 
 BODY_API void StdItem(void* p, int vt, unsigned __int64 index, void* dst)
 {
+
+#define DefStdItem(T) *(static_cast<T*>(dst)) = (*(static_cast<vector<T>*>(p)))[index];
+
 	if (p && dst)
 	{
 		switch (vt)
@@ -171,12 +261,24 @@ BODY_API void StdItem(void* p, int vt, unsigned __int64 index, void* dst)
 		case vtPoint2f:
 			*(static_cast<Point2f*>(dst)) = (*(static_cast<vector<Point2f>*>(p)))[index];
 			break;
+		case vtScalar:
+			DefStdItem(Scalar)
+			break;
+		case vtUchar:
+			DefStdItem(uchar)
+				break;
+		case vtFloat:
+			DefStdItem(float)
+				break;
 		}
 	}
 }
 
 BODY_API unsigned __int64 StdSize(void* p, int vt)
 {
+
+#define DefStdSize(T) static_cast<vector<T>*>(p)->size();
+
 	if (p)
 	{
 		switch (vt)
@@ -195,6 +297,12 @@ BODY_API unsigned __int64 StdSize(void* p, int vt)
 			return static_cast<vector<vector<Point>>*>(p)->size();
 		case vtPoint2f:
 			return static_cast<vector<Point2f>*>(p)->size();
+		case vtScalar:
+			return DefStdSize(Scalar)
+		case vtUchar:
+			return DefStdSize(uchar)
+		case vtFloat:
+			return DefStdSize(float)
 		}
 	}
 	return 0;

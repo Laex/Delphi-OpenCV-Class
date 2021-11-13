@@ -80,9 +80,21 @@ Type
 
   TStdPointer = type Pointer;
 
-  TVectorType = (vtMat = 1, vtRect = 2, vtPoint = 3, vtVectorMat = 4, vtVectorRect = 5, vtVectorPoint = 6, vtPoint2f = 7);
+  TVectorType =        //
+    (                  //
+    vtMat = 1,         // vector<Mat>
+    vtRect = 2,        // vector<Rect>
+    vtPoint = 3,       // vector<Point>
+    vtVectorMat = 4,   // vector<vector<Mat>>
+    vtVectorRect = 5,  // vector<vector<Rect>>
+    vtVectorPoint = 6, // vector<vector<Point>>
+    vtPoint2f = 7,     // vector<Point2f>
+    vtScalar = 8,      // vector<Scalar>
+    vtUchar = 9,       // vector<uchar>
+    vtFloat = 10       // vector<float>
+    );
 
-  TStdVector<T> = record
+  Vector<T> = record
   private
 {$HINTS OFF}
     Data: array [0 .. 31] of Byte;
@@ -90,8 +102,9 @@ Type
     class function vt: TVectorType; static;
     function GetItems(const index: UInt64): T; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
-    class operator Initialize(out Dest: TStdVector<T>);
-    class operator Finalize(var Dest: TStdVector<T>);
+    class operator Initialize(out Dest: Vector<T>);
+    class operator Finalize(var Dest: Vector<T>);
+    class operator assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
 
     function size: { UInt64 } Int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function empty: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -99,7 +112,7 @@ Type
     property Items[const index: UInt64]: T read GetItems; default;
   end;
 
-  TStdVectorCppString = TStdVector<CvStdString>;
+  TStdVectorCppString = Vector<CvStdString>;
   pStdVectorCppString = ^TStdVectorCppString;
 
 {$ENDREGION 'std::'}
@@ -190,6 +203,30 @@ function CV_16FC(n: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_MAKETYP
 
 {$ENDREGION 'Interface.h'}
 //
+{$REGION 'traits.hpp'}
+
+Type
+  TDataType<T> = record
+  private
+    class operator Initialize(out Dest: TDataType<T>);
+  public
+    generic_type: Int; // = 1,
+    depth: Int;        // = -1,
+    channels: Int;     // = 1,
+    fmt: Int;          // = 0,
+    &type: Int;        // = CV_MAKETYPE(depth, channels)
+  end;
+
+  TDepth<T> = record // Need refactoring as TTraitsType<T>
+    class function Value: Int; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+  TTraitsType<T> = record
+    class function Value: Int; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+{$ENDREGION 'traits.hpp'}
+  //
 {$REGION 'base.hpp'}
 
 type
@@ -331,7 +368,7 @@ type
   TRect = TRect2i;
   pRect = ^TRect;
 
-  TStdVectorRect = TStdVector<TRect>;
+  TStdVectorRect = Vector<TRect>;
   pStdVectorRect = ^TStdVectorRect;
 
 {$ENDREGION 'cvdef.h'}
@@ -363,6 +400,8 @@ Type
     //
     // //! conversion of another data type.
     // template<typename _Tp2> operator Size_<_Tp2>() const;
+    //
+    class operator Implicit(const m: TSize_<T>): UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     width: T;  // _Tp width;  // !< the width
     height: T; // _Tp height; // !< the height
@@ -427,8 +466,48 @@ type
   TPoint2f = TPoint_<float>;
 
 function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
-{$ENDREGION 'types.hpp'}
+
 //
+(* * @brief The class defining termination criteria for iterative algorithms.
+
+  You can initialize it by default constructor and then override any parameters, or the structure may
+  be fully initialized using the advanced variant of the constructor.
+*)
+type
+  TTermCriteria = record
+  public
+  (* *
+    Criteria type, can be one of: COUNT, EPS or COUNT + EPS
+  *)
+    const
+    COUNT    = 1;     // !< the maximum number of iterations or elements to compute
+    MAX_ITER = COUNT; // !< ditto
+    EPS      = 2;     // !< the desired accuracy or change in parameters at which the iterative algorithm stops
+  public
+    // ! default constructor
+    // TermCriteria();
+    (* *
+      @param type The type of termination criteria, one of TermCriteria::Type
+      @param maxCount The maximum number of iterations or elements to compute.
+      @param epsilon The desired accuracy or change in parameters at which the iterative algorithm stops.
+    *)
+    // TermCriteria(int &type, int maxCount, double epsilon);
+    class function TermCriteria(const &type, maxCount: Int; const epsilon: double): TTermCriteria; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // inline bool isValid() const
+    {
+      const bool isCount = (type & COUNT) && maxCount > 0;
+      const bool isEps = (type & EPS) && !cvIsNaN(epsilon);
+      return isCount || isEps;
+    }
+    function isValid(): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  public
+    &type: Int;      // !< the type of termination criteria: COUNT, EPS or COUNT + EPS
+    maxCount: Int;   // !< the maximum number of iterations/elements
+    epsilon: double; // !< the desired accuracy
+  end;
+
+{$ENDREGION 'types.hpp'}
+  //
 {$REGION 'mat.hpp'}
 
 Type
@@ -666,7 +745,7 @@ Type
     step: TMatStep; // MatStep step;
   end;
 
-  TStdVectorMat = TStdVector<TMat>;
+  TStdVectorMat = Vector<TMat>;
   pStdVectorMat = ^TStdVectorMat;
 
   pScalar = ^TScalar;
@@ -699,6 +778,7 @@ Type
 function Scalar(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 type
+
   pInputArray = ^TInputArray;
 
   TInputArray = record
@@ -785,11 +865,14 @@ type
     // bool isGpuMat() const;
     // bool isGpuMatVector() const;
     class operator Finalize(var Dest: TInputArray); // ~_InputArray();
-
+    //
+    class function noArray: TInputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TMat): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TMatExpr): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const IA: TInputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: TStdVector < TStdVector < TPoint >> ): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: Vector < Vector < TPoint >> ): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: Vector<TPoint2f>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: Vector<uchar>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   private
 {$HINTS OFF}
     flags: Int;   // int flags;
@@ -798,13 +881,14 @@ type
 {$HINTS ON}
   end;
 
-  TInputArrayOfArrays = TInputArray;
+  TInputArrayOfArrays = type TInputArray;
 
+  TOutputArray = type TInputArray;
   pOutputArray = ^TOutputArray;
 
-  TOutputArray = record
-  private
-    InputArray: TInputArray;
+  TOutputArrayHelper = record helper for TOutputArray
+    // private
+    // InputArray: TInputArray;
   public type
     DepthMask = (                                  //
       DEPTH_MASK_8U = 1 shl CV_8U,                 //
@@ -820,7 +904,7 @@ type
       DEPTH_MASK_ALL_16F = (DEPTH_MASK_16F shl 1) - 1, //
       DEPTH_MASK_FLT = DEPTH_MASK_32F + DEPTH_MASK_64F);
   public
-    class operator Initialize(out Dest: TOutputArray); // _OutputArray();
+    // class operator Initialize(out Dest: TOutputArray); // _OutputArray();
     // _OutputArray(int _flags, void* _obj);
     class function OutputArray(const m: TMat): TOutputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // _OutputArray(Mat& m);
     class function OutputArray(const vec: TStdVectorMat): TOutputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// _OutputArray(std::vector<Mat>& vec);
@@ -832,7 +916,7 @@ type
     // _OutputArray(std::vector<std::vector<bool> >&) = delete;  // not supported
     // _OutputArray(UMat& m);
     // _OutputArray(std::vector<UMat>& vec);
-    class operator Finalize(var Dest: TOutputArray); // destructor
+    // class operator Finalize(var Dest: TOutputArray); // destructor
 
     // bool fixedSize() const;
     // bool fixedType() const;
@@ -864,22 +948,25 @@ type
     class operator Implicit(const m: TMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TStdVectorMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const OA: TOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: TStdVector<TPoint>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: TStdVector<TPoint2f>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: Vector<TPoint>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: Vector<TPoint2f>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: Vector<uchar>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: Vector<float>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   TOutputArrayOfArrays = TOutputArray;
   pOutputArrayOfArrays = ^TOutputArrayOfArrays;
 
+  TInputOutputArray = type TOutputArray;
   pInputOutputArray = ^TInputOutputArray;
 
-  TInputOutputArray = record
-  private
-{$HINTS OFF}
-    OutputArray: TOutputArray;
-{$HINTS ON}
+  TInputOutputArrayHelper = record helper for TInputOutputArray
+    // private
+    // {$HINTS OFF}
+    // OutputArray: TOutputArray;
+    // {$HINTS ON}
   public
-    class operator Initialize(out Dest: TInputOutputArray); // _InputOutputArray();
+    // class operator Initialize(out Dest: TInputOutputArray); // _InputOutputArray();
     // _InputOutputArray(int _flags, void* _obj);
     procedure InputOutputArray(const m: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}// _InputOutputArray(Mat& m);
     // _InputOutputArray(std::vector<Mat>& vec);
@@ -896,7 +983,7 @@ type
     // template<typename _Tp, int m, int n> _InputOutputArray(Matx<_Tp, m, n>& matx);
     // _InputOutputArray(UMat& m);
     // _InputOutputArray(std::vector<UMat>& vec);
-    class operator Finalize(var Dest: TInputOutputArray); // destructor
+    // class operator Finalize(var Dest: TInputOutputArray); // destructor
     //
     // _InputOutputArray(const Mat& m);
     // _InputOutputArray(const std::vector<Mat>& vec);
@@ -926,11 +1013,12 @@ type
     class operator Implicit(const m: TMat): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const IOA: TInputOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const IOA: TInputOutputArray): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const V: Vector<TPoint2f>): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
-function noArray(): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  // function noArray(): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'mat.hpp'}
-//
+  //
 {$REGION 'matx.hpp'}
 
 type
@@ -1366,8 +1454,8 @@ Type
   // 5673
   // ?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z
   // void cv::minMaxLoc(class cv::_InputArray const &,double *,double *,class cv::Point_<int> *,class cv::Point_<int> *,class cv::_InputArray const &)
-procedure minMaxLoc(const Src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil }; const minLoc: pPoint { = nil }; const maxLoc: pPoint { = nil };
-  const mask: TInputArray { = noArray() } ); overload; external opencv_world_dll
+procedure minMaxLoc(Src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil }; const minLoc: pPoint { = nil }; const maxLoc: pPoint { = nil }; mask: TInputArray { = noArray() }
+  ); overload; external opencv_world_dll
 // name '?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z'
   index 5673
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
@@ -1383,6 +1471,53 @@ procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: doub
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure minMaxLoc(const Src: TInputArray; Var minVal: double); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @brief Calculates the per-element sum of two arrays or an array and a scalar.
+
+  The function add calculates:
+  - Sum of two arrays when both input arrays have the same size and the same number of channels:
+  \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) +  \texttt{src2}(I)) \quad \texttt{if mask}(I) \ne0\f]
+  - Sum of an array and a scalar when src2 is constructed from Scalar or has the same number of
+  elements as `src1.channels()`:
+  \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) +  \texttt{src2} ) \quad \texttt{if mask}(I) \ne0\f]
+  - Sum of a scalar and an array when src1 is constructed from Scalar or has the same number of
+  elements as `src2.channels()`:
+  \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1} +  \texttt{src2}(I) ) \quad \texttt{if mask}(I) \ne0\f]
+  where `I` is a multi-dimensional index of array elements. In case of multi-channel arrays, each
+  channel is processed independently.
+
+  The first function in the list above can be replaced with matrix expressions:
+  @code{.cpp}
+  dst = src1 + src2;
+  dst += src1; // equivalent to add(dst, src1, dst);
+  @endcode
+  The input arrays and the output array can all have the same or different depths. For example, you
+  can add a 16-bit unsigned array to a 8-bit signed array and store the sum as a 32-bit
+  floating-point array. Depth of the output array is determined by the dtype parameter. In the second
+  and third cases above, as well as in the first case, when src1.depth() == src2.depth(), dtype can
+  be set to the default -1. In this case, the output array will have the same depth as the input
+  array, be it src1, src2 or both.
+  @note Saturation is not applied when the output array has the depth CV_32S. You may even get
+  result of an incorrect sign in the case of overflow.
+  @param src1 first input array or a scalar.
+  @param src2 second input array or a scalar.
+  @param dst output array that has the same size and number of channels as the input array(s); the
+  depth is defined by dtype or src1/src2.
+  @param mask optional operation mask - 8-bit single channel array, that specifies elements of the
+  output array to be changed.
+  @param dtype optional depth of the output array (see the discussion below).
+  @sa subtract, addWeighted, scaleAdd, Mat::convertTo
+*)
+// CV_EXPORTS_W void add(InputArray src1, InputArray src2, OutputArray dst,
+// InputArray mask = noArray(), int dtype = -1);
+// 3488
+// ?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z
+// void cv::add(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
+procedure add(src1: TInputArray; src2: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() }; dtype: Int { = -1 } ); overload; external opencv_world_dll
+// name '?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
+  index 3488{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
 {$ENDREGION 'core.hpp'}
 //
@@ -1644,7 +1779,7 @@ procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTO
 // int cv::createTrackbar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int *,int,void (*)(int,void *),void *)
 Type
   TTrackbarCallback = procedure(pos: Int; userdata: Pointer);
-function createTrackbar(const trackbarname: CppString; const winname: CppString; Value: pInt; Count: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
+function createTrackbar(const trackbarname: CppString; const winname: CppString; Value: pInt; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
   external opencv_world_dll index 4302{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Moves the window to the specified position
@@ -2920,7 +3055,7 @@ procedure drawContours(const image: TInputOutputArray; const contours: TInputArr
 // 5269
 // ?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z
 // bool cv::imwrite(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &,class std::vector<int,class std::allocator<int> > const &)
-function imwrite(const filename: CppString; img: TInputArray; const params: TStdVector<Int> { = std::vector<int>() }
+function imwrite(const filename: CppString; img: TInputArray; const params: Vector<Int> { = std::vector<int>() }
   ): BOOL; overload; external opencv_world_dll name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
 // index 5269
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
@@ -3435,7 +3570,7 @@ type
       The method first calls VideoCapture::release to close the already opened file or camera.
     *)
     // CV_WRAP virtual Bool open(const String & filename, int apiPreference = CAP_ANY);
-
+    function open(const filename: String; const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* * @brief  Opens a camera for video capturing
 
       @overload
@@ -3448,7 +3583,7 @@ type
       The method first calls VideoCapture::release to close the already opened file or camera.
     *)
     // CV_WRAP virtual Bool open(const String & filename, int apiPreference, const std: : vector<int> & params);
-
+    function open(const filename: String; const apiPreference: VideoCaptureAPIs { = CAP_ANY }; const params: Vector<Int>): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* * @brief  Opens a camera for video capturing
 
       @overload
@@ -3458,7 +3593,7 @@ type
 
       The method first calls VideoCapture::release to close the already opened file or camera.
     *)
-    function open(const index: Int; const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function open(const index: Int; const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // CV_WRAP virtual Bool open(int index, int apiPreference = CAP_ANY);
 
     (* * @brief Returns true if video capturing has been initialized already.
@@ -3615,7 +3750,8 @@ type
       After this call use VideoCapture::retrieve() to decode and fetch frame data.
     *)
     // static (* CV_WRAP *) Bool waitAny(const std: : vector<VideoCapture> & streams, CV_OUT std: : vector<int> & readyIndex, int64 timeoutNs = 0);
-
+    //
+    class operator Implicit(const filename: string): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
   private
 {$HINTS OFF}
     Dummy: array [0 .. 47] of Byte;
@@ -3629,6 +3765,81 @@ type
 
 {$ENDREGION 'videoio.hpp'}
   //
+{$REGION 'tracking.hpp'}
+
+  (* * @brief Calculates an optical flow for a sparse feature set using the iterative Lucas-Kanade method with
+    pyramids.
+
+    @param prevImg first 8-bit input image or pyramid constructed by buildOpticalFlowPyramid.
+    @param nextImg second input image or pyramid of the same size and the same type as prevImg.
+    @param prevPts vector of 2D points for which the flow needs to be found; point coordinates must be
+    single-precision floating-point numbers.
+    @param nextPts output vector of 2D points (with single-precision floating-point coordinates)
+    containing the calculated new positions of input features in the second image; when
+    OPTFLOW_USE_INITIAL_FLOW flag is passed, the vector must have the same size as in the input.
+    @param status output status vector (of unsigned chars); each element of the vector is set to 1 if
+    the flow for the corresponding features has been found, otherwise, it is set to 0.
+    @param err output vector of errors; each element of the vector is set to an error for the
+    corresponding feature, type of the error measure can be set in flags parameter; if the flow wasn't
+    found then the error is not defined (use the status parameter to find such cases).
+    @param winSize size of the search window at each pyramid level.
+    @param maxLevel 0-based maximal pyramid level number; if set to 0, pyramids are not used (single
+    level), if set to 1, two levels are used, and so on; if pyramids are passed to input then
+    algorithm will use as many levels as pyramids have but no more than maxLevel.
+    @param criteria parameter, specifying the termination criteria of the iterative search algorithm
+    (after the specified maximum number of iterations criteria.maxCount or when the search window
+    moves by less than criteria.epsilon.
+    @param flags operation flags:
+    -   **OPTFLOW_USE_INITIAL_FLOW** uses initial estimations, stored in nextPts; if the flag is
+    not set, then prevPts is copied to nextPts and is considered the initial estimate.
+    -   **OPTFLOW_LK_GET_MIN_EIGENVALS** use minimum eigen values as an error measure (see
+    minEigThreshold description); if the flag is not set, then L1 distance between patches
+    around the original and a moved point, divided by number of pixels in a window, is used as a
+    error measure.
+    @param minEigThreshold the algorithm calculates the minimum eigen value of a 2x2 normal matrix of
+    optical flow equations (this matrix is called a spatial gradient matrix in @cite Bouguet00), divided
+    by number of pixels in a window; if this value is less than minEigThreshold, then a corresponding
+    feature is filtered out and its flow is not processed, so it allows to remove bad points and get a
+    performance boost.
+
+    The function implements a sparse iterative version of the Lucas-Kanade optical flow in pyramids. See
+    @cite Bouguet00 . The function is parallelized with the TBB library.
+
+    @note
+
+    -   An example using the Lucas-Kanade optical flow algorithm can be found at
+    opencv_source_code/samples/cpp/lkdemo.cpp
+    -   (Python) An example using the Lucas-Kanade optical flow algorithm can be found at
+    opencv_source_code/samples/python/lk_track.py
+    -   (Python) An example using the Lucas-Kanade tracker for homography matching can be found at
+    opencv_source_code/samples/python/lk_homography.py
+  *)
+  // CV_EXPORTS_W void calcOpticalFlowPyrLK( InputArray prevImg, InputArray nextImg,
+  // InputArray prevPts, InputOutputArray nextPts,
+  // OutputArray status, OutputArray err,
+  // Size winSize = Size(21,21), int maxLevel = 3,
+  // TermCriteria criteria = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01),
+  // int flags = 0, double minEigThreshold = 1e-4 );
+  // 3724
+  // ?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z
+  // void cv::calcOpticalFlowPyrLK(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,int,class cv::TermCriteria,int,double)
+procedure calcOpticalFlowPyrLK(prevImg: TInputArray; nextImg: TInputArray; prevPts: TInputArray; nextPts: TInputOutputArray; status: TOutputArray; err: TOutputArray;
+  winSize: UInt64 { TSize = Size(21,21) }; maxLevel: Int { = 3 }; criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0;
+  minEigThreshold: double = 1E-4); overload; external opencv_world_dll
+// name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
+  index 3724
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
+  const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int = 3); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+// ; criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
+  const err: TOutputArray); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+// ; winSize:  TSize {= Size(21,21) }; maxLevel: Int { = 3 }
+// ; criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4
+
+{$ENDREGION 'tracking.hpp'}
+//
 {$REGION 'utility.hpp'}
 
 type
@@ -3976,7 +4187,7 @@ end;
 // hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: TPoint { = Point() } );
 procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8);
 begin
-  drawContours(image, contours, contourIdx, color, thickness, lineType, noArray());
+  drawContours(image, contours, contourIdx, color, thickness, lineType, TInputArray.noArray);
 end;
 
 procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
@@ -4000,7 +4211,7 @@ end;
 function imwrite(const filename: CppString; const img: TInputArray): BOOL;
 begin
   Var
-    a: TStdVector<Int>;
+    a: Vector<Int>;
   Result := imwrite(filename, img, a);
 end;
 
@@ -4027,10 +4238,10 @@ begin
   _ellipse(img, UInt64(center), UInt64(axes), angle, startAngle, endAngle, color, thickness, Int(lineType), shift);
 end;
 
-function noArray(): TInputOutputArray;
-begin
-  Result := TInputOutputArray.noArray;
-end;
+// function noArray(): TInputOutputArray;
+// begin
+// Result := TInputOutputArray.noArray;
+// end;
 
 procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: Int { = 1 };
   const borderType: BorderTypes { = BORDER_CONSTANT }; const borderValue: TScalar { = morphologyDefaultBorderValue() } );
@@ -4150,7 +4361,7 @@ end;
 
 procedure bitwise_not(Src: TInputArray; dst: TOutputArray);
 begin
-  _bitwise_not(Src, dst, noArray());
+  _bitwise_not(Src, dst, TInputArray.noArray());
 end;
 
 procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 }; dtype: Int { = -1 };
@@ -4161,7 +4372,7 @@ end;
 
 procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: Int = -1);
 begin
-  normalize(Src, dst, alpha, beta, norm_type, dtype, noArray);
+  normalize(Src, dst, alpha, beta, norm_type, dtype, TInputArray.noArray);
 end;
 
 { TMat }
@@ -4421,72 +4632,91 @@ begin
   Result := isMat_InputArray(@Self);
 end;
 
-class operator TInputArray.Implicit(const V: TStdVector < TStdVector < TPoint >> ): TInputArray;
+class function TInputArray.noArray: TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + 12 { + traits::Type<Point>::value } + Int(ACCESS_READ); // -2130444276;
+  noArray_InputOutputArray(@Result);
+end;
+
+class operator TInputArray.Implicit(const V: Vector < Vector < TPoint >> ): TInputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_READ); // -2130444276;
+  Result.Obj := @V;
+  Result.sz := size(0, 0);
+end;
+
+class operator TInputArray.Implicit(const V: Vector<TPoint2f>): TInputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ); // -2130444276;
+  Result.Obj := @V;
+  Result.sz := size(0, 0);
+end;
+
+class operator TInputArray.Implicit(const V: Vector<uchar>): TInputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_READ); // -2130444276;
   Result.Obj := @V;
   Result.sz := size(0, 0);
 end;
 
 { TOutputArray }
 
-class operator TOutputArray.Initialize(out Dest: TOutputArray);
-begin
-  Constructor_OutputArray(@Dest);
-end;
-
-class function TOutputArray.noArray: TOutputArray;
+class function TOutputArrayHelper.noArray: TOutputArray;
 begin
   noArray_InputOutputArray(@Result);
 end;
 
-class function TOutputArray.OutputArray(const vec: TStdVectorMat): TOutputArray;
+class function TOutputArrayHelper.OutputArray(const vec: TStdVectorMat): TOutputArray;
 begin
   Constructor_OutputArray(@Result, @vec);
 end;
 
-class function TOutputArray.OutputArray(const m: TMat): TOutputArray;
+class function TOutputArrayHelper.OutputArray(const m: TMat): TOutputArray;
 begin
   Constructor_OutputArray(@Result, pMat(@m));
 end;
 
-class operator TOutputArray.Finalize(var Dest: TOutputArray);
-begin
-  Destructor_OutputArray(@Dest);
-end;
-
-class operator TOutputArray.Implicit(const m: TMat): TOutputArray;
+class operator TOutputArrayHelper.Implicit(const m: TMat): TOutputArray;
 begin
   Result := TOutputArray.OutputArray(m);
 end;
 
-class operator TOutputArray.Implicit(const OA: TOutputArray): TMat;
+class operator TOutputArrayHelper.Implicit(const OA: TOutputArray): TMat;
 begin
-  Assert(OA.InputArray.isMat);
-  Result := pMat(OA.InputArray.getObj)^;
+  Assert(OA.isMat);
+  Result := pMat(OA.getObj)^;
 end;
 
-class operator TOutputArray.Implicit(const m: TStdVectorMat): TOutputArray;
+class operator TOutputArrayHelper.Implicit(const m: TStdVectorMat): TOutputArray;
 begin
   Result := TOutputArray.OutputArray(m);
 end;
 
-class operator TOutputArray.Implicit(const V: TStdVector<TPoint>): TOutputArray;
+class operator TOutputArrayHelper.Implicit(const V: Vector<TPoint>): TOutputArray;
 begin
-  Result.InputArray.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(STD_VECTOR) + 12 { traits::Type<Point>::value } + Int(ACCESS_WRITE);
-  Result.InputArray.Obj := @V;
-  Result.InputArray.sz := size(0, 0);
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_WRITE);
+  Result.Obj := @V;
+  Result.sz := size(0, 0);
 end;
 
-class operator TOutputArray.Implicit(const V: TStdVector<TPoint2f>): TOutputArray;
+class operator TOutputArrayHelper.Implicit(const V: Vector<TPoint2f>): TOutputArray;
 begin
-  // Result.InputArray.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(STD_VECTOR) + traits::Type<Point2f>::value + Int(ACCESS_WRITE);
-  // -858993460
-  // -1640896696
-  // 1740368104
-  Result.InputArray.flags := -2113732595;
-  Result.InputArray.Obj := @V;
-  Result.InputArray.sz := size(0, 0);
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_WRITE);
+  Result.Obj := @V;
+  Result.sz := size(0, 0);
+end;
+
+class operator TOutputArrayHelper.Implicit(const V: Vector<uchar>): TOutputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_WRITE);
+  Result.Obj := @V;
+  Result.sz := size(0, 0);
+end;
+
+class operator TOutputArrayHelper.Implicit(const V: Vector<float>): TOutputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<float>.Value + Int(ACCESS_WRITE);
+  Result.Obj := @V;
+  Result.sz := size(0, 0);
 end;
 
 { TScalar }
@@ -4522,6 +4752,12 @@ begin
 end;
 
 { TSize_<T> }
+
+class operator TSize_<T>.Implicit(const m: TSize_<T>): UInt64;
+begin
+  Assert(SizeOf(m) = 8);
+  Move(m, Result, 8);
+end;
 
 class function TSize_<T>.size(const _width, _height: T): TSize_<T>;
 begin
@@ -4566,40 +4802,37 @@ end;
 
 { TInputOutputArray }
 
-class operator TInputOutputArray.Finalize(var Dest: TInputOutputArray);
+class operator TInputOutputArrayHelper.Implicit(const IOA: TInputOutputArray): TMat;
 begin
-  Destructor_InputOutputArray(@Dest);
+  Assert(IOA.isMat);
+  Result := pMat(IOA.getObj)^;
 end;
 
-class operator TInputOutputArray.Implicit(const IOA: TInputOutputArray): TMat;
-begin
-  Assert(IOA.OutputArray.InputArray.isMat);
-  Result := pMat(IOA.OutputArray.InputArray.getObj)^;
-end;
-
-class operator TInputOutputArray.Implicit(const m: TMat): TInputOutputArray;
+class operator TInputOutputArrayHelper.Implicit(const m: TMat): TInputOutputArray;
 begin
   Result.InputOutputArray(m);
 end;
 
-class operator TInputOutputArray.Initialize(out Dest: TInputOutputArray);
-begin
-  Constructor_InputOutputArray(@Dest);
-end;
-
-procedure TInputOutputArray.InputOutputArray(const m: TMat);
+procedure TInputOutputArrayHelper.InputOutputArray(const m: TMat);
 begin
   Constructor_InputOutputArray(@Self, @m);
 end;
 
-class function TInputOutputArray.noArray: TInputOutputArray;
+class function TInputOutputArrayHelper.noArray: TInputOutputArray;
 begin
   noArray_InputOutputArray(@Result);
 end;
 
-class operator TInputOutputArray.Implicit(const IOA: TInputOutputArray): TInputArray;
+class operator TInputOutputArrayHelper.Implicit(const IOA: TInputOutputArray): TInputArray;
 begin
-  Result := IOA.OutputArray.InputArray;
+  Move(IOA, Result, SizeOf(IOA));
+end;
+
+class operator TInputOutputArrayHelper.Implicit(const V: Vector<TPoint2f>): TInputOutputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ);
+  Result.Obj := @V;
+  Result.sz := size(0, 0);
 end;
 
 { TPoint_<T> }
@@ -4623,7 +4856,7 @@ begin
     Result.y := Trunc(pDouble(@p.y)^);
   end
   else
-    Assert(False,'Point type must be Single(Float) or Double');
+    Assert(false, 'Point type must be Single(Float) or Double');
 end;
 
 class function TPoint_<T>.Point(_x, _y: T): TPoint_<T>;
@@ -4763,6 +4996,11 @@ begin
   destructor_VideoCapture(@Dest);
 end;
 
+class operator TVideoCapture.Implicit(const filename: string): TVideoCapture;
+begin
+  Result.open(filename);
+end;
+
 class operator TVideoCapture.Initialize(out Dest: TVideoCapture);
 begin
   constructor_VideoCapture(@Dest);
@@ -4771,6 +5009,16 @@ end;
 function TVideoCapture.isOpened: BOOL;
 begin
   Result := isOpened_VideoCapture(@Self);
+end;
+
+function TVideoCapture.open(const filename: String; const apiPreference: VideoCaptureAPIs; const params: Vector<Int>): BOOL;
+begin
+  Result := open_VideoCapture(@Self, filename, Int(apiPreference), params);
+end;
+
+function TVideoCapture.open(const filename: String; const apiPreference: VideoCaptureAPIs): BOOL;
+begin
+  Result := open_VideoCapture(@Self, filename, Int(apiPreference));
 end;
 
 function TVideoCapture.open(const index: Int; const apiPreference: VideoCaptureAPIs): BOOL;
@@ -4818,22 +5066,32 @@ end;
 
 procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil } ); overload;
 begin
-  minMaxLoc(Src, minVal, @maxVal, @minLoc, @maxLoc, noArray);
+  minMaxLoc(Src, minVal, @maxVal, @minLoc, @maxLoc, TInputArray.noArray);
 end;
 
 procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil } ); overload;
 begin
-  minMaxLoc(Src, minVal, @maxVal, @minLoc, nil, noArray);
+  minMaxLoc(Src, minVal, @maxVal, @minLoc, nil, TInputArray.noArray);
 end;
 
 procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil } ); overload;
 begin
-  minMaxLoc(Src, minVal, @maxVal, nil, nil, noArray);
+  minMaxLoc(Src, minVal, @maxVal, nil, nil, TInputArray.noArray);
 end;
 
 procedure minMaxLoc(const Src: TInputArray; Var minVal: double); overload;
 begin
-  minMaxLoc(Src, minVal, nil, nil, nil, noArray);
+  minMaxLoc(Src, minVal, nil, nil, nil, TInputArray.noArray);
+end;
+
+procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
+begin
+  add(src1, src2, dst, TInputArray.noArray);
+end;
+
+procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray);
+begin
+  add(src1, src2, dst, mask, -1);
 end;
 
 { TCommandLineParser }
@@ -4948,54 +5206,67 @@ end;
 
 { TStdVector<T> }
 
-function TStdVector<T>.empty: BOOL;
+class operator Vector<T>.assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
+begin
+  CopyStdVector(@Dest, @Src, vt);
+end;
+
+function Vector<T>.empty: BOOL;
 begin
   Result := StdEmpty(@Self, vt);
 end;
 
-class operator TStdVector<T>.Finalize(var Dest: TStdVector<T>);
+class operator Vector<T>.Finalize(var Dest: Vector<T>);
 begin
   DestroyStdVector(@Dest, vt);
 end;
 
-function TStdVector<T>.GetItems(const index: UInt64): T;
+function Vector<T>.GetItems(const index: UInt64): T;
 begin
   StdItem(@Self, vt, index, @Result);
 end;
 
-class operator TStdVector<T>.Initialize(out Dest: TStdVector<T>);
+class operator Vector<T>.Initialize(out Dest: Vector<T>);
 begin
   FillChar(Dest, SizeOf(Dest), 0);
   CreateStdVector(@Dest, vt);
 end;
 
-procedure TStdVector<T>.push_back(const Value: T);
+procedure Vector<T>.push_back(const Value: T);
 begin
   StdPushBack(@Self, @Value, vt);
 end;
 
-function TStdVector<T>.size: { UInt64 } Int64;
+function Vector<T>.size: { UInt64 } Int64;
 begin
   Result := StdSize(@Self, vt);
 end;
 
-class function TStdVector<T>.vt: TVectorType;
+class function Vector<T>.vt: TVectorType;
 Var
-  TypeName: String;
+  TypeName: string;
 begin
-  TypeName := GetTypeName(TypeInfo(T));
   if TypeInfo(T) = TypeInfo(TMat) then
     vt := vtMat
   else if TypeInfo(T) = TypeInfo(TRect) then
     vt := vtRect
   else if TypeInfo(T) = TypeInfo(TPoint) then
     vt := vtPoint
-  else if TypeInfo(T) = TypeInfo(TStdVector<TPoint>) then
+  else if TypeInfo(T) = TypeInfo(Vector<TPoint>) then
     vt := vtVectorPoint
   else if TypeInfo(T) = TypeInfo(TPoint2f) then
     vt := vtPoint2f
+  else if TypeInfo(T) = TypeInfo(TScalar) then
+    vt := vtScalar
+  else if TypeInfo(T) = TypeInfo(uchar) then // vector<uchar>
+    vt := vtUchar
+  else if TypeInfo(T) = TypeInfo(float) then // vector<float>
+    vt := vtFloat
   else
-    Assert(false);
+  begin
+    TypeName := GetTypeName(TypeInfo(T));
+    Assert(false, 'Can''t define type "' + TypeName + '"');
+  end;
 end;
 
 { TQRCodeDetector }
@@ -5059,6 +5330,215 @@ class operator TQRCodeDetector.Initialize(out Dest: TQRCodeDetector);
 begin
   Destructor_QRCodeDetector(@Dest);
 end;
+
+{ TTermCriteria }
+
+function TTermCriteria.isValid: BOOL;
+begin
+  Var
+    isCount: BOOL := ((&type and COUNT) <> 0) and (maxCount > 0);
+  var
+    isEps: BOOL := ((&type and EPS) <> 0) and (not IsNaN(epsilon));
+  Result := isCount or isEps;
+end;
+
+class function TTermCriteria.TermCriteria(const &type, maxCount: Int; const epsilon: double): TTermCriteria;
+begin
+  Result.&type := &type;
+  Result.maxCount := maxCount;
+  Result.epsilon := epsilon;
+end;
+
+{$REGION 'tracking.hpp'}
+
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
+  const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int { = 3 } );
+begin
+  calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, winSize, maxLevel, TTermCriteria.TermCriteria(TTermCriteria.COUNT + TTermCriteria.EPS, 30, 0.01));
+end;
+
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
+  const err: TOutputArray); overload;
+begin
+  calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, size(21, 21));
+  // ; winSize:  TSize {= Size(21,21) }; maxLevel: Int { = 3 }
+  // ; criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4
+end;
+{$ENDREGION 'tracking.hpp'}
+//
+{$REGION 'traits.hpp'}
+{ TDataType<T> }
+
+class operator TDataType<T>.Initialize(out Dest: TDataType<T>);
+begin
+  if TypeInfo(T) = TypeInfo(BOOL) then
+    with Dest do
+    begin
+      generic_type := 0;
+      depth := CV_8U;
+      channels := 1;
+      fmt := Int('u');
+      &type := CV_MAKETYPE(depth, channels)
+    end
+  else if TypeInfo(T) = TypeInfo(uchar) then
+    with Dest do
+    begin
+      generic_type := 0;
+      depth := CV_8U;
+      channels := 1;
+      fmt := Int('u');
+      &type := CV_MAKETYPE(depth, channels)
+    end
+  else
+    // template<> class DataType<schar>
+    // {
+    // public:
+    // typedef schar       value_type;
+    // typedef int         work_type;
+    // typedef value_type  channel_type;
+    // typedef value_type  vec_type;
+    // enum { generic_type = 0,
+    // depth        = CV_8S,
+    // channels     = 1,
+    // fmt          = (int)'c',
+    // type         = CV_MAKETYPE(depth, channels)
+    // };
+    // };
+    // template<> class DataType<char>
+    // {
+    // public:
+    // typedef schar       value_type;
+    // typedef int         work_type;
+    // typedef value_type  channel_type;
+    // typedef value_type  vec_type;
+    // enum { generic_type = 0,
+    // depth        = CV_8S,
+    // channels     = 1,
+    // fmt          = (int)'c',
+    // type         = CV_MAKETYPE(depth, channels)
+    // };
+    // };
+    //
+    // template<> class DataType<ushort>
+    // {
+    // public:
+    // typedef ushort      value_type;
+    // typedef int         work_type;
+    // typedef value_type  channel_type;
+    // typedef value_type  vec_type;
+    // enum { generic_type = 0,
+    // depth        = CV_16U,
+    // channels     = 1,
+    // fmt          = (int)'w',
+    // type         = CV_MAKETYPE(depth, channels)
+    // };
+    // };
+    //
+    // template<> class DataType<short>
+    // {
+    // public:
+    // typedef short       value_type;
+    // typedef int         work_type;
+    // typedef value_type  channel_type;
+    // typedef value_type  vec_type;
+    // enum { generic_type = 0,
+    // depth        = CV_16S,
+    // channels     = 1,
+    // fmt          = (int)'s',
+    // type         = CV_MAKETYPE(depth, channels)
+    // };
+    // };
+    if TypeInfo(T) = TypeInfo(Int) then
+      with Dest do
+      begin
+        generic_type := 0;
+        depth := CV_32S;
+        channels := 1;
+        fmt := Int('i');
+        &type := CV_MAKETYPE(depth, channels)
+      end
+    else if TypeInfo(T) = TypeInfo(float) then
+      with Dest do
+      begin
+        generic_type := 0;
+        depth := CV_32F;
+        channels := 1;
+        fmt := Int('f');
+        &type := CV_MAKETYPE(depth, channels)
+      end
+    else
+      // template<> class DataType<double>
+      // {
+      // public:
+      // typedef double      value_type;
+      // typedef value_type  work_type;
+      // typedef value_type  channel_type;
+      // typedef value_type  vec_type;
+      // enum { generic_type = 0,
+      // depth        = CV_64F,
+      // channels     = 1,
+      // fmt          = (int)'d',
+      // type         = CV_MAKETYPE(depth, channels)
+      // };
+      // };
+      //
+      // template<> class DataType<float16_t>
+      // {
+      // public:
+      // typedef float16_t   value_type;
+      // typedef float       work_type;
+      // typedef value_type  channel_type;
+      // typedef value_type  vec_type;
+      // enum { generic_type = 0,
+      // depth        = CV_16F,
+      // channels     = 1,
+      // fmt          = (int)'h',
+      // type         = CV_MAKETYPE(depth, channels)
+      // };
+      // };
+      Assert(false, 'Define more types');
+end;
+
+{ TDepth<T> }
+
+class function TDepth<T>.Value: Int;
+var
+  a: TDataType<T>;
+begin
+  Result := a.depth;
+end;
+
+{ TTraitsType<T> }
+
+class function TTraitsType<T>.Value: Int;
+var
+  TypeName1, TypeName2: String;
+begin
+  // if TypeInfo(T) = TypeInfo(TPoint_<T>) then // ??
+  // Result := CV_MAKETYPE(a.Value, 2) else
+  if TypeInfo(T) = TypeInfo(TPoint2f) then
+    Result := CV_MAKETYPE(TDepth<float>.Value, 2)
+  else if TypeInfo(T) = TypeInfo(uchar) then
+  begin
+    Var
+      a: TDataType<uchar>;
+    Result := a.&type;
+  end
+  else if TypeInfo(T) = TypeInfo(float) then
+  begin
+    Var
+      a: TDataType<float>;
+    Result := a.&type;
+  end
+  else
+  begin
+    TypeName1 := GetTypeName(TypeInfo(T));
+    TypeName2 := GetTypeName(TypeInfo(TPoint_<T>));
+    Assert(false, 'Define more types');
+  end;
+end;
+
+{$ENDREGION 'traits.hpp'}
 
 initialization
 

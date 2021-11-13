@@ -218,3 +218,5 @@ function StdSize(Obj: TStdPointer; vt: TVectorType): UInt64; external opencv_del
 function StdEmpty(Obj: TStdPointer; vt: TVectorType): bool; external opencv_delphi_dll name '?StdEmpty@@YA_NPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdPushBack@@YAXPEAX0H@Z	void __cdecl StdPushBack(void * __ptr64,void * __ptr64,int)
 function StdPushBack(Obj: TStdPointer; p: TStdPointer; vt: TVectorType): bool; external opencv_delphi_dll name '?StdPushBack@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// ?CopyStdVector@@YAXPEAX0H@Z	void __cdecl CopyStdVector(void * __ptr64,void * __ptr64,int)
+procedure CopyStdVector(Obj, Src: TStdPointer; vt: TVectorType); external opencv_delphi_dll name '?CopyStdVector@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};

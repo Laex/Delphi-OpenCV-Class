@@ -33,12 +33,20 @@ procedure destructor_VideoCapture(Obj: pVideoCapture); external opencv_world_dll
 // ?isOpened@VideoCapture@cv@@UEBA_NXZ
 // public: virtual bool __cdecl cv::VideoCapture::isOpened(void)const __ptr64
 function isOpened_VideoCapture(Obj: pVideoCapture): Bool; external opencv_world_dll index 5396 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// ?open@VideoCapture@cv@@UEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z	public: virtual bool __cdecl cv::VideoCapture::open(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & __ptr64,int) __ptr64
-// ?open@VideoCapture@cv@@UEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HAEBV?$vector@HV?$allocator@H@std@@@4@@Z	public: virtual bool __cdecl cv::VideoCapture::open(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & __ptr64,int,class std::vector<int,class std::allocator<int> > const & __ptr64) __ptr64
+// 5786
+// ?open@VideoCapture@cv@@UEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
+//public: virtual bool __cdecl cv::VideoCapture::open(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & __ptr64,int) __ptr64
+function open_VideoCapture(Obj: pVideoCapture; filename: CppString; apiPreference: int): Bool; overload; external opencv_world_dll index 5786
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// 5787
+// ?open@VideoCapture@cv@@UEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HAEBV?$vector@HV?$allocator@H@std@@@4@@Z
+// public: virtual bool __cdecl cv::VideoCapture::open(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & __ptr64,int,class std::vector<int,class std::allocator<int> > const & __ptr64) __ptr64
+function open_VideoCapture(Obj: pVideoCapture; filename: CppString; apiPreference: int; params: Vector<int>): Bool; overload; external opencv_world_dll index 5787
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // 5788
 // ?open@VideoCapture@cv@@UEAA_NHH@Z
 // public: virtual bool __cdecl cv::VideoCapture::open(int,int) __ptr64
-function open_VideoCapture(Obj: pVideoCapture; a: int; b: int): Bool; external opencv_world_dll index 5788 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function open_VideoCapture(Obj: pVideoCapture; a: int; b: int): Bool; overload; external opencv_world_dll index 5788 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?open@VideoCapture@cv@@UEAA_NHHAEBV?$vector@HV?$allocator@H@std@@@std@@@Z	public: virtual bool __cdecl cv::VideoCapture::open(int,int,class std::vector<int,class std::allocator<int> > const & __ptr64) __ptr64
 // 6005
 // ?read@VideoCapture@cv@@UEAA_NAEBV_OutputArray@2@@Z
