@@ -23,6 +23,7 @@ enum VectorType {
 	vtScalar		= 8,    // vector<Scalar>
 	vtUchar			= 9,    // vector<uchar>
 	vtFloat			= 10,   // vector<float>
+	vtInt			= 11,   // vector<int>
 };
 
 BODY_API void CopyStdVector(void* obj, void* src, int vt)
@@ -63,6 +64,9 @@ BODY_API void CopyStdVector(void* obj, void* src, int vt)
 			break;
 		case vtFloat:
 			DefCopyStdVector(float)
+			break;
+		case vtInt:
+			DefCopyStdVector(int)
 			break;
 		}
 	}
@@ -107,6 +111,9 @@ BODY_API void CreateStdVector(void* obj, int vt)
 		case vtFloat:
 			DefCreateStdVector(float)
 			break;
+		case vtInt:
+			DefCreateStdVector(int)
+			break;
 		}
 	}
 }
@@ -149,6 +156,9 @@ BODY_API void DestroyStdVector(void* p, int vt)
 			break;
 		case vtFloat:
 			DefDestroyStdVector(float)
+			break;
+		case vtInt:
+			DefDestroyStdVector(int)
 			break;
 		}
 	}
@@ -193,6 +203,9 @@ BODY_API void StdPushBack(void* p, void* o, int vt)
 		case vtFloat:
 			defpush_back(float)
 			break;
+		case vtInt:
+			defpush_back(int)
+			break;
 		}
 	}
 }
@@ -226,6 +239,8 @@ BODY_API bool StdEmpty(void* p, int vt)
 			return DefStdEmpty(uchar)			
 		case vtFloat:
 			return DefStdEmpty(float)
+		case vtInt:
+			return DefStdEmpty(int)
 		}
 	}
 	return true;
@@ -266,10 +281,13 @@ BODY_API void StdItem(void* p, int vt, unsigned __int64 index, void* dst)
 			break;
 		case vtUchar:
 			DefStdItem(uchar)
-				break;
+			break;
 		case vtFloat:
 			DefStdItem(float)
-				break;
+			break;
+		case vtInt:
+			DefStdItem(int)
+			break;
 		}
 	}
 }
@@ -303,6 +321,8 @@ BODY_API unsigned __int64 StdSize(void* p, int vt)
 			return DefStdSize(uchar)
 		case vtFloat:
 			return DefStdSize(float)
+		case vtInt:
+			return DefStdSize(int)
 		}
 	}
 	return 0;

@@ -1,7 +1,7 @@
 unit opencv_world;
 
 // {$IFDEF RELEASE}
-// {$DEFINE DELAYED_LOAD_DLL}
+{ .$DEFINE DELAYED_LOAD_DLL }
 // {$DEFINE USE_INLINE}
 // {$ENDIF}
 {$DEFINE UseSystemMath}
@@ -13,6 +13,7 @@ unit opencv_world;
 {$WRITEABLECONST ON}
 {$POINTERMATH ON}
 {$Z4}
+{$T+}
 
 interface
 
@@ -28,6 +29,8 @@ const
   cvversion         = '454';
   opencv_delphi_dll = 'opencv_delphi' + cvversion + {$IFDEF DEBUG} 'd' + {$ENDIF} '.dll';
   opencv_world_dll  = 'opencv_world' + cvversion + {$IFDEF DEBUG} 'd' + {$ENDIF} '.dll';
+
+{$REGION 'std::'}
 
 Type
   BOOL = LongBool;
@@ -46,8 +49,6 @@ Type
   pUMatData = type Pointer;
   pUCharConst = pUChar;
   PointerConst = type Pointer;
-  //
-{$REGION 'std::'}
 
 type
   // cv::std::String
@@ -76,6 +77,17 @@ type
   pCvStdString = ^CvStdString;
 
 Type
+  TPtr<T> = record
+  public type
+    pT = ^T;
+  public
+    _Ptr: pT;
+    _Ref: Pointer;
+    function v: pT; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Finalize(var Dest: TPtr<T>);
+  end;
+
+Type
   // std::vector<T>
 
   TStdPointer = type Pointer;
@@ -91,7 +103,8 @@ Type
     vtPoint2f = 7,     // vector<Point2f>
     vtScalar = 8,      // vector<Scalar>
     vtUchar = 9,       // vector<uchar>
-    vtFloat = 10       // vector<float>
+    vtFloat = 10,      // vector<float>
+    vtInt = 11         // vector<int>
     );
 
   Vector<T> = record
@@ -116,6 +129,7 @@ Type
   pStdVectorCppString = ^TStdVectorCppString;
 
 {$ENDREGION 'std::'}
+
   //
 {$REGION 'CV const'}
 
@@ -131,13 +145,13 @@ const
   CV_CN_SHIFT  = 3;
   CV_DEPTH_MAX = (1 shl CV_CN_SHIFT);
 
-  CV_8U  = 0;
-  CV_8S  = 1;
-  CV_16U = 2;
-  CV_16S = 3;
-  CV_32S = 4;
-  CV_32F = 5;
-  CV_64F = 6;
+  CV_8U  = 0; // UInt8
+  CV_8S  = 1; // Int8
+  CV_16U = 2; // UInt16
+  CV_16S = 3; // Int16
+  CV_32S = 4; // Int32
+  CV_32F = 5; // float(single)
+  CV_64F = 6; // double
   CV_16F = 7;
 
   CV_MAT_DEPTH_MASK = (CV_DEPTH_MAX - 1);
@@ -474,12 +488,14 @@ function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
   be fully initialized using the advanced variant of the constructor.
 *)
 type
+  pTermCriteria = ^TTermCriteria;
+
   TTermCriteria = record
-  public
-  (* *
-    Criteria type, can be one of: COUNT, EPS or COUNT + EPS
-  *)
-    const
+  public const
+    (* *
+      Criteria type, can be one of: COUNT, EPS or COUNT + EPS
+    *)
+
     COUNT    = 1;     // !< the maximum number of iterations or elements to compute
     MAX_ITER = COUNT; // !< ditto
     EPS      = 2;     // !< the desired accuracy or change in parameters at which the iterative algorithm stops
@@ -591,6 +607,15 @@ Type
   pMat = ^TMat;
 
   TMat = record // 96 bytes, v4.5.4
+  public const
+    MAGIC_VAL       = $42FF0000;
+    AUTO_STEP       = 0;
+    CONTINUOUS_FLAG = CV_MAT_CONT_FLAG;
+    SUBMATRIX_FLAG  = CV_SUBMAT_FLAG;
+
+    MAGIC_MASK = $FFFF0000;
+    TYPE_MASK  = $00000FFF;
+    DEPTH_MASK = 7;
   public
     // default constructor
     class operator Initialize(out Dest: TMat); // Mat();
@@ -604,7 +629,11 @@ Type
     // Mat(int ndims, const int* sizes, int type, const Scalar& s);
     // Mat(const std::vector<int>& sizes, int type, const Scalar& s);
     // Mat(const Mat& m);
+    class function Mat(rows, cols: Int; &type: Int; Data: Pointer; step: size_t = AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function Mat<T>(rows, cols: Int; Data: TArray<T>; step: size_t = AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function Mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t = AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(int rows, int cols, int type, void* data, size_t step=AUTO_STEP);
+
     // Mat(Size size, int type, void* data, size_t step=AUTO_STEP);
     // Mat(int ndims, const int* sizes, int type, void* data, const size_t* steps=0);
     // Mat(const std::vector<int>& sizes, int type, void* data, const size_t* steps=0);
@@ -702,17 +731,9 @@ Type
     class operator LogicalNot(const m: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function at<T>(const i0: Int): T; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function at<T>(const i0, i1: Int): T; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function pt<T>(const i0, i1: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure st<T>(const i0, i1: Int; const V: T); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  public const
-    MAGIC_VAL       = $42FF0000;
-    AUTO_STEP       = 0;
-    CONTINUOUS_FLAG = CV_MAT_CONT_FLAG;
-    SUBMATRIX_FLAG  = CV_SUBMAT_FLAG;
-
-    MAGIC_MASK = $FFFF0000;
-    TYPE_MASK  = $00000FFF;
-    DEPTH_MASK = 7;
+    function pT<T>(const i0: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function pT<T>(const i0, i1: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure st<T>(const i0, i1: Int; const v: T); overload;
   public
     // CVMat: TCVMat;
     flags: Int; // int flags;
@@ -753,7 +774,7 @@ Type
   TScalar = record
   private
 {$HINTS OFF}
-    V: array [0 .. 3] of double;
+    v: array [0 .. 3] of double;
 {$HINTS ON}
   public
     class operator Initialize(out Dest: TScalar); // Scalar_();
@@ -825,7 +846,7 @@ type
     // _InputArray(const UMat& um);
     // _InputArray(const std::vector<UMat>& umv);
     //
-    // Mat getMat(int idx=-1) const;
+    function getMat(idx: Int = -1): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}     // Mat getMat(int idx=-1) const;
     // Mat getMat_(int idx=-1) const;
     // UMat getUMat(int idx=-1) const;
     // void getMatVector(std::vector<Mat>& mv) const;
@@ -869,11 +890,12 @@ type
     class function noArray: TInputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TMat): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TMatExpr): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const IA: TInputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: Vector < Vector < TPoint >> ): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: Vector<TPoint2f>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: Vector<uchar>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  private
+    // class operator Implicit(const IA: TInputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<uchar>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // private
+  public
 {$HINTS OFF}
     flags: Int;   // int flags;
     Obj: Pointer; // void* obj;
@@ -948,10 +970,10 @@ type
     class operator Implicit(const m: TMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TStdVectorMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const OA: TOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: Vector<TPoint>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: Vector<TPoint2f>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: Vector<uchar>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: Vector<float>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<uchar>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<float>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   TOutputArrayOfArrays = TOutputArray;
@@ -1013,7 +1035,7 @@ type
     class operator Implicit(const m: TMat): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const IOA: TInputOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const IOA: TInputOutputArray): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const V: Vector<TPoint2f>): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   // function noArray(): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1029,14 +1051,30 @@ type
   Vec6f = array [0 .. 5] of float;
   pVec6f = ^Vec6f;
 
+  Vec3b = record
+  private
+    _Data: array [0 .. 2] of uchar;
+    function getItem(const index: integer): uchar; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure setItem(const index: integer; const Value: uchar); {$IFDEF USE_INLINE}inline; {$ENDIF}
+  public
+    property Items[const Index: integer]: uchar read getItem write setItem; default;
+    class operator Implicit(const a: TArray<uchar>): Vec3b; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+  pVec3b = ^Vec3b;
+
+  Vec2f = array [0 .. 1] of float;
+  pVec2f = ^Vec2f;
+
 {$ENDREGION 'matx.hpp'}
   //
 {$REGION 'core.hpp'}
   (* * @brief Swaps two matrices *)
   // CV_EXPORTS void swap(Mat& a, Mat& b);
+  // 6587
   // ?swap@cv@@YAXAEAVMat@1@0@Z
   // void cv::swap(class cv::Mat &,class cv::Mat &)
-procedure swap(Var a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEAVMat@1@0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure swap(a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEAVMat@1@0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // CV_EXPORTS void swap( UMat& a, UMat& b );
 
@@ -1803,6 +1841,23 @@ procedure moveWindow(const winname: CppString; x, y: Int); external opencv_world
 // ?destroyWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
 // void cv::destroyWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
 procedure destroyWindow(const winname: CppString); external opencv_world_dll index 4411{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * @brief Resizes the window to the specified size
+
+  @note
+
+  -   The specified window size is for the image area. Toolbars are not counted.
+  -   Only windows created without cv::WINDOW_AUTOSIZE flag can be resized.
+
+  @param winname Window name.
+  @param width The new window width.
+  @param height The new window height.
+*)
+// CV_EXPORTS_W void resizeWindow(const String& winname, int width, int height);
+// 6154
+// ?resizeWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z
+// dvoid cv::resizeWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,int)
+procedure resizeWindow(const winname: CppString; width, height: Int); external opencv_world_dll index 6154{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {$ENDREGION 'highgui.hpp'}
 //
@@ -3056,8 +3111,9 @@ procedure drawContours(const image: TInputOutputArray; const contours: TInputArr
 // ?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z
 // bool cv::imwrite(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &,class std::vector<int,class std::allocator<int> > const &)
 function imwrite(const filename: CppString; img: TInputArray; const params: Vector<Int> { = std::vector<int>() }
-  ): BOOL; overload; external opencv_world_dll name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
-// index 5269
+  ): BOOL; overload; external opencv_world_dll
+// name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
+  index 5269
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function imwrite(const filename: CppString; const img: TInputArray): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
@@ -4016,7 +4072,353 @@ function typeToString(&type: Int): CppString; external opencv_world_dll name '?t
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 {$ENDREGION 'check.hpp'}
 //
-{$REGION 'opencv_word helpers'}
+{$REGION 'ml.hpp'}
+
+(* ***************************************************************************************\
+  *                                   Support Vector Machines                              *
+  \*************************************************************************************** *)
+type
+
+  (* * @brief Sample types *)
+  SampleTypes = (   //
+    ROW_SAMPLE = 0, // !< each training sample is a row of samples
+    COL_SAMPLE = 1  // !< each training sample occupies a column of samples
+    );
+
+  (* * @brief Support Vector Machines.
+    @sa @ref ml_intro_svm
+  *)
+
+  pSVM = ^TSVM;
+
+  TSVM = record
+  private type
+    vftable_func = type Pointer;
+    pvftable = ^vftable_func;
+  public type
+    TPtrSVM = TPtr<TSVM>;
+  public
+    _vftable: vftable_func; // ppvftable_SVM;
+    class function vftable(const s: TSVM; const index: integer): Pointer; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Finalize(var Dest: TSVM);
+  public
+    // class CV_EXPORTS Kernel : public Algorithm
+    // {
+    // public:
+    // virtual int getType() const = 0;
+    // virtual void calc( int vcount, int n, const float* vecs, const float* another, float* results ) = 0;
+    // };
+
+    (* * Type of a %SVM formulation.
+      See SVM::Types. Default value is SVM::C_SVC. *)
+    (* * @see setType *)
+    // CV_WRAP virtual int getType() const = 0;
+    function getType: Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    //
+    (* * @copybrief getType @see getType *)
+    // CV_WRAP virtual void setType(int val) = 0;
+    procedure setType(val: Int); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    //
+    (* * Parameter \f$\gamma\f$ of a kernel function.
+      For SVM::POLY, SVM::RBF, SVM::SIGMOID or SVM::CHI2. Default value is 1. *)
+    (* * @see setGamma *)
+    // CV_WRAP virtual double getGamma() const = 0;
+
+    (* * @copybrief getGamma @see getGamma *)
+    // CV_WRAP virtual void setGamma(double val) = 0;
+
+    (* * Parameter _coef0_ of a kernel function.
+      For SVM::POLY or SVM::SIGMOID. Default value is 0. *)
+    (* * @see setCoef0 *)
+    // CV_WRAP virtual double getCoef0() const = 0;
+
+    (* * @copybrief getCoef0 @see getCoef0 *)
+    // CV_WRAP virtual void setCoef0(double val) = 0;
+
+    (* * Parameter _degree_ of a kernel function.
+      For SVM::POLY. Default value is 0. *)
+    (* * @see setDegree *)
+    // CV_WRAP virtual double getDegree() const = 0;
+
+    (* * @copybrief getDegree @see getDegree *)
+    // CV_WRAP virtual void setDegree(double val) = 0;
+
+    (* * Parameter _C_ of a %SVM optimization problem.
+      For SVM::C_SVC, SVM::EPS_SVR or SVM::NU_SVR. Default value is 0. *)
+    (* * @see setC *)
+    // CV_WRAP virtual double getC() const = 0;
+
+    (* * @copybrief getC @see getC *)
+    // CV_WRAP virtual void setC(double val) = 0;
+
+    (* * Parameter \f$\nu\f$ of a %SVM optimization problem.
+      For SVM::NU_SVC, SVM::ONE_CLASS or SVM::NU_SVR. Default value is 0. *)
+    (* * @see setNu *)
+    // CV_WRAP virtual double getNu() const = 0;
+
+    (* * @copybrief getNu @see getNu *)
+    // CV_WRAP virtual void setNu(double val) = 0;
+
+    (* * Parameter \f$\epsilon\f$ of a %SVM optimization problem.
+      For SVM::EPS_SVR. Default value is 0. *)
+    (* * @see setP *)
+    // CV_WRAP virtual double getP() const = 0;
+
+    (* * @copybrief getP @see getP *)
+    // CV_WRAP virtual void setP(double val) = 0;
+
+    (* * Optional weights in the SVM::C_SVC problem, assigned to particular classes.
+      They are multiplied by _C_ so the parameter _C_ of class _i_ becomes `classWeights(i) * C`. Thus
+      these weights affect the misclassification penalty for different classes. The larger weight,
+      the larger penalty on misclassification of data from the corresponding class. Default value is
+      empty Mat. *)
+    (* * @see setClassWeights *)
+    // CV_WRAP virtual cv::Mat getClassWeights() const = 0;
+
+    (* * @copybrief getClassWeights @see getClassWeights *)
+    // CV_WRAP virtual void setClassWeights(const cv::Mat &val) = 0;
+
+    (* * Termination criteria of the iterative %SVM training procedure which solves a partial
+      case of constrained quadratic optimization problem.
+      You can specify tolerance and/or the maximum number of iterations. Default value is
+      `TermCriteria( TermCriteria::MAX_ITER + TermCriteria::EPS, 1000, FLT_EPSILON )`; *)
+    (* * @see setTermCriteria *)
+    // CV_WRAP virtual cv::TermCriteria getTermCriteria() const = 0;
+
+    (* * @copybrief getTermCriteria @see getTermCriteria *)
+    // CV_WRAP virtual void setTermCriteria(const cv::TermCriteria &val) = 0;
+    procedure setTermCriteria(const val: TTermCriteria); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * Type of a %SVM kernel.
+      See SVM::KernelTypes. Default value is SVM::RBF. *)
+    // CV_WRAP virtual int getKernelType() const = 0;
+
+    (* * Initialize with one of predefined kernels.
+      See SVM::KernelTypes. *)
+    // CV_WRAP virtual void setKernel(int kernelType) = 0;
+    procedure setKernel(kernelType: Int); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    //
+    (* * Initialize with custom kernel.
+      See SVM::Kernel class for implementation details *)
+    // virtual void setCustomKernel(const Ptr<Kernel> &_kernel) = 0;
+
+  public const
+    // ! %SVM type
+    // SVMTypes
+    (* * C-Support Vector Classification. n-class classification (n \f$\geq\f$ 2), allows
+      imperfect separation of classes with penalty multiplier C for outliers. *)
+    C_SVC = 100;
+    (* * \f$\nu\f$-Support Vector Classification. n-class classification with possible
+      imperfect separation. Parameter \f$\nu\f$ (in the range 0..1, the larger the value, the smoother
+      the decision boundary) is used instead of C. *)
+    NU_SVC = 101;
+    (* * Distribution Estimation (One-class %SVM). All the training data are from
+      the same class, %SVM builds a boundary that separates the class from the rest of the feature
+      space. *)
+    ONE_CLASS = 102;
+    (* * \f$\epsilon\f$-Support Vector Regression. The distance between feature vectors
+      from the training set and the fitting hyper-plane must be less than p. For outliers the
+      penalty multiplier C is used. *)
+    EPS_SVR = 103;
+    (* * \f$\nu\f$-Support Vector Regression. \f$\nu\f$ is used instead of p.
+      See @cite LibSVM for details. *)
+    NU_SVR = 104;
+
+    (* * @brief %SVM kernel type
+
+      A comparison of different kernels on the following 2D test case with four classes. Four
+      SVM::C_SVC SVMs have been trained (one against rest) with auto_train. Evaluation on three
+      different kernels (SVM::CHI2, SVM::INTER, SVM::RBF). The color depicts the class with max score.
+      Bright means max-score \> 0, dark means max-score \< 0.
+      ![image](pics/SVM_Comparison.png)
+    *)
+    // KernelTypes
+    (* * Returned by SVM::getKernelType in case when custom kernel has been set *)
+    CUSTOM = -1;
+    (* * Linear kernel. No mapping is done, linear discrimination (or regression) is
+      done in the original feature space. It is the fastest option. \f$K(x_i, x_j) = x_i^T x_j\f$. *)
+    LINEAR = 0;
+    (* * Polynomial kernel:
+      \f$K(x_i, x_j) = (\gamma x_i^T x_j + coef0)^{degree}, \gamma > 0\f$. *)
+    POLY = 1;
+    (* * Radial basis function (RBF), a good choice in most cases.
+      \f$K(x_i, x_j) = e^{-\gamma ||x_i - x_j||^2}, \gamma > 0\f$. *)
+    RBF = 2;
+    (* * Sigmoid kernel: \f$K(x_i, x_j) = \tanh(\gamma x_i^T x_j + coef0)\f$. *)
+    SIGMOID = 3;
+    (* * Exponential Chi2 kernel, similar to the RBF kernel:
+      \f$K(x_i, x_j) = e^{-\gamma \chi^2(x_i,x_j)}, \chi^2(x_i,x_j) = (x_i-x_j)^2/(x_i+x_j), \gamma > 0\f$. *)
+    CHI2 = 4;
+    (* * Histogram intersection kernel. A fast kernel. \f$K(x_i, x_j) = min(x_i,x_j)\f$. *)
+    INTER = 5;
+
+    // ! %SVM params type
+    // enum ParamTypes {
+    c      = 0;
+    gamma  = 1;
+    p      = 2;
+    NU     = 3;
+    COEF   = 4;
+    DEGREE = 5;
+  public
+    (* * @brief Trains an %SVM with optimal parameters.
+
+      @param data the training data that can be constructed using TrainData::create or
+      TrainData::loadFromCSV.
+      @param kFold Cross-validation parameter. The training set is divided into kFold subsets. One
+      subset is used to test the model, the others form the train set. So, the %SVM algorithm is
+      executed kFold times.
+      @param Cgrid grid for C
+      @param gammaGrid grid for gamma
+      @param pGrid grid for p
+      @param nuGrid grid for nu
+      @param coeffGrid grid for coeff
+      @param degreeGrid grid for degree
+      @param balanced If true and the problem is 2-class classification then the method creates more
+      balanced cross-validation subsets that is proportions between classes in subsets are close
+      to such proportion in the whole train dataset.
+
+      The method trains the %SVM model automatically by choosing the optimal parameters C, gamma, p,
+      nu, coef0, degree. Parameters are considered optimal when the cross-validation
+      estimate of the test set error is minimal.
+
+      If there is no need to optimize a parameter, the corresponding grid step should be set to any
+      value less than or equal to 1. For example, to avoid optimization in gamma, set `gammaGrid.step
+      = 0`, `gammaGrid.minVal`, `gamma_grid.maxVal` as arbitrary numbers. In this case, the value
+      `Gamma` is taken for gamma.
+
+      And, finally, if the optimization in a parameter is required but the corresponding grid is
+      unknown, you may call the function SVM::getDefaultGrid. To generate a grid, for example, for
+      gamma, call `SVM::getDefaultGrid(SVM::GAMMA)`.
+
+      This function works for the classification (SVM::C_SVC or SVM::NU_SVC) as well as for the
+      regression (SVM::EPS_SVR or SVM::NU_SVR). If it is SVM::ONE_CLASS, no optimization is made and
+      the usual %SVM with parameters specified in params is executed.
+    *)
+    // virtual bool trainAuto( const Ptr<TrainData>& data, int kFold = 10,
+    // ParamGrid Cgrid = getDefaultGrid(C),
+    // ParamGrid gammaGrid  = getDefaultGrid(GAMMA),
+    // ParamGrid pGrid      = getDefaultGrid(P),
+    // ParamGrid nuGrid     = getDefaultGrid(NU),
+    // ParamGrid coeffGrid  = getDefaultGrid(COEF),
+    // ParamGrid degreeGrid = getDefaultGrid(DEGREE),
+    // bool balanced=false) = 0;
+
+    (* * @brief Trains an %SVM with optimal parameters
+
+      @param samples training samples
+      @param layout See ml::SampleTypes.
+      @param responses vector of responses associated with the training samples.
+      @param kFold Cross-validation parameter. The training set is divided into kFold subsets. One
+      subset is used to test the model, the others form the train set. So, the %SVM algorithm is
+      @param Cgrid grid for C
+      @param gammaGrid grid for gamma
+      @param pGrid grid for p
+      @param nuGrid grid for nu
+      @param coeffGrid grid for coeff
+      @param degreeGrid grid for degree
+      @param balanced If true and the problem is 2-class classification then the method creates more
+      balanced cross-validation subsets that is proportions between classes in subsets are close
+      to such proportion in the whole train dataset.
+
+      The method trains the %SVM model automatically by choosing the optimal parameters C, gamma, p,
+      nu, coef0, degree. Parameters are considered optimal when the cross-validation
+      estimate of the test set error is minimal.
+
+      This function only makes use of SVM::getDefaultGrid for parameter optimization and thus only
+      offers rudimentary parameter options.
+
+      This function works for the classification (SVM::C_SVC or SVM::NU_SVC) as well as for the
+      regression (SVM::EPS_SVR or SVM::NU_SVR). If it is SVM::ONE_CLASS, no optimization is made and
+      the usual %SVM with parameters specified in params is executed.
+    *)
+    // CV_WRAP virtual bool trainAuto(InputArray samples,
+    // int layout,
+    // InputArray responses,
+    // int kFold = 10,
+    // Ptr<ParamGrid> Cgrid = SVM::getDefaultGridPtr(SVM::C),
+    // Ptr<ParamGrid> gammaGrid  = SVM::getDefaultGridPtr(SVM::GAMMA),
+    // Ptr<ParamGrid> pGrid      = SVM::getDefaultGridPtr(SVM::P),
+    // Ptr<ParamGrid> nuGrid     = SVM::getDefaultGridPtr(SVM::NU),
+    // Ptr<ParamGrid> coeffGrid  = SVM::getDefaultGridPtr(SVM::COEF),
+    // Ptr<ParamGrid> degreeGrid = SVM::getDefaultGridPtr(SVM::DEGREE),
+    // bool balanced=false) = 0;
+
+    (* * @brief Retrieves all the support vectors
+
+      The method returns all the support vectors as a floating-point matrix, where support vectors are
+      stored as matrix rows.
+    *)
+    // CV_WRAP virtual Mat getSupportVectors() const = 0;
+
+    (* * @brief Retrieves all the uncompressed support vectors of a linear %SVM
+
+      The method returns all the uncompressed support vectors of a linear %SVM that the compressed
+      support vector, used for prediction, was derived from. They are returned in a floating-point
+      matrix, where the support vectors are stored as matrix rows.
+    *)
+    // CV_WRAP virtual Mat getUncompressedSupportVectors() const = 0;
+    function getUncompressedSupportVectors(): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * @brief Retrieves the decision function
+
+      @param i the index of the decision function. If the problem solved is regression, 1-class or
+      2-class classification, then there will be just one decision function and the index should
+      always be 0. Otherwise, in the case of N-class classification, there will be \f$N(N-1)/2\f$
+      decision functions.
+      @param alpha the optional output vector for weights, corresponding to different support vectors.
+      In the case of linear %SVM all the alpha's will be 1's.
+      @param svidx the optional output vector of indices of support vectors within the matrix of
+      support vectors (which can be retrieved by SVM::getSupportVectors). In the case of linear
+      %SVM each decision function consists of a single "compressed" support vector.
+
+      The method returns rho parameter of the decision function, a scalar subtracted from the weighted
+      sum of kernel responses.
+    *)
+    // CV_WRAP virtual double getDecisionFunction(int i, OutputArray alpha, OutputArray svidx) const = 0;
+
+    (* * @brief Generates a grid for %SVM parameters.
+
+      @param param_id %SVM parameters IDs that must be one of the SVM::ParamTypes. The grid is
+      generated for the parameter with this ID.
+
+      The function generates a grid for the specified parameter of the %SVM algorithm. The grid may be
+      passed to the function SVM::trainAuto.
+    *)
+    // static ParamGrid getDefaultGrid( int param_id );
+
+    (* * @brief Generates a grid for %SVM parameters.
+
+      @param param_id %SVM parameters IDs that must be one of the SVM::ParamTypes. The grid is
+      generated for the parameter with this ID.
+
+      The function generates a grid pointer for the specified parameter of the %SVM algorithm.
+      The grid may be passed to the function SVM::trainAuto.
+    *)
+    // CV_WRAP static Ptr<ParamGrid> getDefaultGridPtr( int param_id );
+
+    (* * Creates empty model.
+      Use StatModel::train to train the model. Since %SVM has several parameters, you may want to
+      find the best parameters for your problem, it can be done with SVM::trainAuto. *)
+    class function Create: TPtr<TSVM>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // CV_WRAP static Ptr<SVM> create();
+
+    (* * @brief Loads and creates a serialized svm from a file
+      *
+      * Use SVM::save to serialize and store an SVM to disk.
+      * Load the SVM from this file again, by calling this function with the path to the file.
+      *
+      * @param filepath path to serialized svm
+    *)
+    // CV_WRAP static Ptr<SVM> load(const String& filepath);
+    //
+    // Frm SVM
+    //
+    function train(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function predict(const samples: TInputArray; const results: TOutputArray; flags: Int = 0): float; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function predict(const samples: TInputArray): float; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+{$ENDREGION 'ml.hpp'}
+  //
+{$REGION 'helpers'}
 
 Type
   TMatHelper = record helper for TMat
@@ -4028,16 +4430,11 @@ Type
     class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const Scalar& s);
   end;
 
-  // TPoint2fHelper = record helper for TPoint2f
-  // public
-  // class operator Implicit(const p: TPoint2f): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  // end;
-
-{$ENDREGION 'opencv_word helpers'}
+{$ENDREGION 'helpers'}
   //
-{$REGION 'Import'}
+{$REGION 'import'}
   // Std
-{$I opencv.std.import.inc} // std::
+{$I cpp.std.import.inc} // std::
   // OpenCV
 {$I opencv.mat.import.inc}
 {$I opencv.InputArray.import.inc}
@@ -4052,14 +4449,18 @@ Type
 {$I opencv.rng.import.inc}
 {$I opencv.CommandLineParser.import.inc}
 {$I opencv.QRCodeDetector.import.inc}
-{$ENDREGION 'Import'}
+{$I opencv.SVM.import.inc}
+{$ENDREGION 'import'}
 
+  //
 implementation
 
 Uses
+{$IFDEF LOADSTUPID}
+  WinApi.Windows,
+{$ENDIF}
   System.Rtti;
 
-//
 {$REGION 'Std'}
 { CppString }
 
@@ -4115,6 +4516,86 @@ end;
 function CvStdString.size: UInt64;
 begin
   Result := size_CppString(@Self);
+end;
+
+{ TPtr<T> }
+
+class operator TPtr<T>.Finalize(var Dest: TPtr<T>);
+begin
+  // Assert(false);
+  Finalize(Dest._Ptr^);
+end;
+
+function TPtr<T>.v: pT;
+begin
+  Result := _Ptr;
+end;
+
+{ TStdVector<T> }
+
+class operator Vector<T>.assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
+begin
+  CopyStdVector(@Dest, @Src, vt);
+end;
+
+function Vector<T>.empty: BOOL;
+begin
+  Result := StdEmpty(@Self, vt);
+end;
+
+class operator Vector<T>.Finalize(var Dest: Vector<T>);
+begin
+  DestroyStdVector(@Dest, vt);
+end;
+
+function Vector<T>.GetItems(const index: UInt64): T;
+begin
+  StdItem(@Self, vt, index, @Result);
+end;
+
+class operator Vector<T>.Initialize(out Dest: Vector<T>);
+begin
+  FillChar(Dest, SizeOf(Dest), 0);
+  CreateStdVector(@Dest, vt);
+end;
+
+procedure Vector<T>.push_back(const Value: T);
+begin
+  StdPushBack(@Self, @Value, vt);
+end;
+
+function Vector<T>.size: { UInt64 } Int64;
+begin
+  Result := StdSize(@Self, vt);
+end;
+
+class function Vector<T>.vt: TVectorType;
+Var
+  TypeName: string;
+begin
+  if TypeInfo(T) = TypeInfo(TMat) then
+    vt := vtMat
+  else if TypeInfo(T) = TypeInfo(TRect) then
+    vt := vtRect
+  else if TypeInfo(T) = TypeInfo(TPoint) then
+    vt := vtPoint
+  else if TypeInfo(T) = TypeInfo(Vector<TPoint>) then
+    vt := vtVectorPoint
+  else if TypeInfo(T) = TypeInfo(TPoint2f) then
+    vt := vtPoint2f
+  else if TypeInfo(T) = TypeInfo(TScalar) then
+    vt := vtScalar
+  else if TypeInfo(T) = TypeInfo(uchar) then // vector<uchar>
+    vt := vtUchar
+  else if TypeInfo(T) = TypeInfo(float) then // vector<float>
+    vt := vtFloat
+  else if TypeInfo(T) = TypeInfo(Int) then // vector<float>
+    vt := vtInt
+  else
+  begin
+    TypeName := GetTypeName(TypeInfo(T));
+    Assert(false, 'Can''t define type "' + TypeName + '"');
+  end;
 end;
 
 {$ENDREGION 'std'}
@@ -4392,6 +4873,12 @@ begin
   Destructor_Mat(@Dest);
 end;
 
+class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
+begin
+  // Operator_Mat_Assign_Const_Mat(@Dest, @Src);
+  Operator_Mat_Assign_Const_Mat(@Dest, @Src);
+end;
+
 function TMat.clone: TMat;
 begin
   clone_Mat(@Self, @Result);
@@ -4432,6 +4919,36 @@ begin
   Result := TMat.Mat(Self, roi);
 end;
 
+class function TMat.Mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t): TMat;
+Type
+  pType = ^T;
+Var
+  d: TDataType<T>;
+  p: pType;
+begin
+  p := AllocMem(rows * cols * SizeOf(T));
+  try
+    for Var i := 0 to cols - 1 do
+      for Var j := 0 to rows - 1 do
+        p[j * cols + i] := Data[j, i];
+    Result := TMat.Mat(rows, cols, d.&type, p, step);
+  finally
+    FreeMem(p);
+  end;
+end;
+
+class function TMat.Mat<T>(rows, cols: Int; Data: TArray<T>; step: size_t): TMat;
+Var
+  d: TDataType<T>;
+begin
+  Result := TMat.Mat(rows, cols, d.&type, @Data[0], step);
+end;
+
+class function TMat.Mat(rows, cols, &type: Int; Data: Pointer; step: size_t): TMat;
+begin
+  Constructor_Mat(@Result, rows, cols, &type, Data, step);
+end;
+
 class function TMat.Mat: TMat;
 begin
   Constructor_Mat(@Result);
@@ -4452,7 +4969,17 @@ begin
   ones_Mat(@Result, ndims, sz, &type);
 end;
 
-function TMat.pt<T>(const i0, i1: Int): Pointer;
+function TMat.pT<T>(const i0: Int): Pointer;
+Type
+  pType = ^T;
+begin
+  // CV_DbgAssert( y == 0 || (data && dims >= 1 && (unsigned)y < (unsigned)size.p[0]) );
+{$WARNINGS OFF}
+  Result := (Data + step.p[0] * i0);
+{$WARNINGS ON}
+end;
+
+function TMat.pT<T>(const i0, i1: Int): Pointer;
 Type
   pType = ^T;
 begin
@@ -4466,7 +4993,7 @@ begin
   release_Mat(@Self);
 end;
 
-procedure TMat.st<T>(const i0, i1: Int; const V: T);
+procedure TMat.st<T>(const i0, i1: Int; const v: T);
 Type
   pType = ^T;
 var
@@ -4474,7 +5001,7 @@ var
 begin
 {$WARNINGS OFF}
   p := pType(Data + step.p[0] * i0);
-  p[i1] := V;
+  p[i1] := v;
 {$WARNINGS ON}
 end;
 
@@ -4486,12 +5013,6 @@ end;
 procedure TMat.addref;
 begin
   addref_Mat(@Self);
-end;
-
-class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
-begin
-  Finalize(Dest);
-  clone_Mat(@Src, @Dest);
 end;
 
 function TMat.at<T>(const i0, i1: Int): T;
@@ -4591,9 +5112,20 @@ end;
 
 { TInputArray }
 
+class function TInputArray.InputArray(const m: TMat): TInputArray;
+begin
+  Constructor_InputArray(@Result, pMat(@m));
+end;
+
 class operator TInputArray.Implicit(const m: TMat): TInputArray;
 begin
   Result := TInputArray.InputArray(m);
+end;
+
+function TInputArray.getMat(idx: Int): TMat;
+begin
+  // Result := default (TMat);
+  getMat_InputArray(@Self, Result, idx);
 end;
 
 function TInputArray.getObj: Pointer;
@@ -4601,11 +5133,17 @@ begin
   Result := getObj_InputArray(@Self);
 end;
 
-class operator TInputArray.Implicit(const IA: TInputArray): TMat;
-begin
-  Assert(IA.isMat);
-  Result := pMat(IA.getObj)^.clone;
-end;
+// class operator TInputArray.Implicit(const IA: TInputArray): TMat;
+// begin
+// // 1//  getMat_InputArray(@IA, @Result);
+// // 2//   Result := pMat(IA.Obj)^;
+// // 3
+// Var
+// R: pMat;
+// Var
+// p: TMat;
+// R := getMat_InputArray(@IA, @p);
+// end;
 
 class operator TInputArray.Implicit(const m: TMatExpr): TInputArray;
 begin
@@ -4615,11 +5153,6 @@ end;
 class operator TInputArray.Initialize(out Dest: TInputArray);
 begin
   Constructor_InputArray(@Dest);
-end;
-
-class function TInputArray.InputArray(const m: TMat): TInputArray;
-begin
-  Constructor_InputArray(@Result, pMat(@m));
 end;
 
 class operator TInputArray.Finalize(var Dest: TInputArray);
@@ -4634,27 +5167,27 @@ end;
 
 class function TInputArray.noArray: TInputArray;
 begin
-  noArray_InputOutputArray(@Result);
+  noArray_InputOutputArray(@TInputOutputArray(Result));
 end;
 
-class operator TInputArray.Implicit(const V: Vector < Vector < TPoint >> ): TInputArray;
+class operator TInputArray.Implicit(const v: Vector < Vector < TPoint >> ): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_READ); // -2130444276;
-  Result.Obj := @V;
+  Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
-class operator TInputArray.Implicit(const V: Vector<TPoint2f>): TInputArray;
+class operator TInputArray.Implicit(const v: Vector<TPoint2f>): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ); // -2130444276;
-  Result.Obj := @V;
+  Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
-class operator TInputArray.Implicit(const V: Vector<uchar>): TInputArray;
+class operator TInputArray.Implicit(const v: Vector<uchar>): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_READ); // -2130444276;
-  Result.Obj := @V;
+  Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
@@ -4662,7 +5195,7 @@ end;
 
 class function TOutputArrayHelper.noArray: TOutputArray;
 begin
-  noArray_InputOutputArray(@Result);
+  noArray_InputOutputArray(@TInputOutputArray(Result));
 end;
 
 class function TOutputArrayHelper.OutputArray(const vec: TStdVectorMat): TOutputArray;
@@ -4691,31 +5224,31 @@ begin
   Result := TOutputArray.OutputArray(m);
 end;
 
-class operator TOutputArrayHelper.Implicit(const V: Vector<TPoint>): TOutputArray;
+class operator TOutputArrayHelper.Implicit(const v: Vector<TPoint>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_WRITE);
-  Result.Obj := @V;
+  Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
-class operator TOutputArrayHelper.Implicit(const V: Vector<TPoint2f>): TOutputArray;
+class operator TOutputArrayHelper.Implicit(const v: Vector<TPoint2f>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_WRITE);
-  Result.Obj := @V;
+  Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
-class operator TOutputArrayHelper.Implicit(const V: Vector<uchar>): TOutputArray;
+class operator TOutputArrayHelper.Implicit(const v: Vector<uchar>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_WRITE);
-  Result.Obj := @V;
+  Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
-class operator TOutputArrayHelper.Implicit(const V: Vector<float>): TOutputArray;
+class operator TOutputArrayHelper.Implicit(const v: Vector<float>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<float>.Value + Int(ACCESS_WRITE);
-  Result.Obj := @V;
+  Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
@@ -4828,10 +5361,10 @@ begin
   Move(IOA, Result, SizeOf(IOA));
 end;
 
-class operator TInputOutputArrayHelper.Implicit(const V: Vector<TPoint2f>): TInputOutputArray;
+class operator TInputOutputArrayHelper.Implicit(const v: Vector<TPoint2f>): TInputOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ);
-  Result.Obj := @V;
+  Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
@@ -5204,71 +5737,6 @@ begin
       Assert(false, 'TODO Supplement types');
 end;
 
-{ TStdVector<T> }
-
-class operator Vector<T>.assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
-begin
-  CopyStdVector(@Dest, @Src, vt);
-end;
-
-function Vector<T>.empty: BOOL;
-begin
-  Result := StdEmpty(@Self, vt);
-end;
-
-class operator Vector<T>.Finalize(var Dest: Vector<T>);
-begin
-  DestroyStdVector(@Dest, vt);
-end;
-
-function Vector<T>.GetItems(const index: UInt64): T;
-begin
-  StdItem(@Self, vt, index, @Result);
-end;
-
-class operator Vector<T>.Initialize(out Dest: Vector<T>);
-begin
-  FillChar(Dest, SizeOf(Dest), 0);
-  CreateStdVector(@Dest, vt);
-end;
-
-procedure Vector<T>.push_back(const Value: T);
-begin
-  StdPushBack(@Self, @Value, vt);
-end;
-
-function Vector<T>.size: { UInt64 } Int64;
-begin
-  Result := StdSize(@Self, vt);
-end;
-
-class function Vector<T>.vt: TVectorType;
-Var
-  TypeName: string;
-begin
-  if TypeInfo(T) = TypeInfo(TMat) then
-    vt := vtMat
-  else if TypeInfo(T) = TypeInfo(TRect) then
-    vt := vtRect
-  else if TypeInfo(T) = TypeInfo(TPoint) then
-    vt := vtPoint
-  else if TypeInfo(T) = TypeInfo(Vector<TPoint>) then
-    vt := vtVectorPoint
-  else if TypeInfo(T) = TypeInfo(TPoint2f) then
-    vt := vtPoint2f
-  else if TypeInfo(T) = TypeInfo(TScalar) then
-    vt := vtScalar
-  else if TypeInfo(T) = TypeInfo(uchar) then // vector<uchar>
-    vt := vtUchar
-  else if TypeInfo(T) = TypeInfo(float) then // vector<float>
-    vt := vtFloat
-  else
-  begin
-    TypeName := GetTypeName(TypeInfo(T));
-    Assert(false, 'Can''t define type "' + TypeName + '"');
-  end;
-end;
-
 { TQRCodeDetector }
 
 function TQRCodeDetector.detectAndDecode(const img: TInputArray; const points, straight_qrcode: TOutputArray): CppString;
@@ -5512,7 +5980,7 @@ end;
 
 class function TTraitsType<T>.Value: Int;
 var
-  TypeName1, TypeName2: String;
+  TypeName: String;
 begin
   // if TypeInfo(T) = TypeInfo(TPoint_<T>) then // ??
   // Result := CV_MAKETYPE(a.Value, 2) else
@@ -5532,13 +6000,110 @@ begin
   end
   else
   begin
-    TypeName1 := GetTypeName(TypeInfo(T));
-    TypeName2 := GetTypeName(TypeInfo(TPoint_<T>));
-    Assert(false, 'Define more types');
+    TypeName := GetTypeName(TypeInfo(T));
+    Assert(false, 'Define type "' + TypeName + '"');
   end;
 end;
 
 {$ENDREGION 'traits.hpp'}
+{$REGION 'ml.hpp'}
+{ TSVM }
+
+class function TSVM.Create: TPtr<TSVM>;
+begin
+  create_SVM(Result._Ptr);
+end;
+
+class operator TSVM.Finalize(var Dest: TSVM);
+Type
+  TVirtualDestructor = procedure(Obj: Pointer);
+begin
+  TVirtualDestructor(vftable(Dest, 0))(@Dest);
+end;
+
+function TSVM.getType: Int;
+Type
+  TgetType = function(Obj: Pointer): Int;
+begin
+  Result := TgetType(vftable(Self, 14))(@Self);
+end;
+
+function TSVM.getUncompressedSupportVectors: TMat;
+Type
+  TgetUncompressedSupportVectors = procedure(Obj: Pointer; m: pMat);
+begin
+  TgetUncompressedSupportVectors(vftable(Self, $130 div SizeOf(Pointer)))(@Self, @Result);
+end;
+
+function TSVM.predict(const samples: TInputArray): float;
+begin
+  Result := predict(samples, TOutputArray.noArray);
+end;
+
+function TSVM.predict(const samples: TInputArray; const results: TOutputArray; flags: Int): float;
+Type
+  Tpredict = function(Obj: Pointer; samples: TInputArray; results: TOutputArray; flags: Int): float;
+begin
+  Result := Tpredict(vftable(Self, $68 div SizeOf(Pointer)))(@Self, samples, results, flags);
+end;
+
+procedure TSVM.setKernel(kernelType: Int);
+Type
+  TsetKernel = procedure(Obj: Pointer; kernelType: Int);
+begin
+  TsetKernel(vftable(Self, $108 div SizeOf(Pointer)))(@Self, kernelType);
+end;
+
+procedure TSVM.setTermCriteria(const val: TTermCriteria);
+Type
+  TsetTermCriteria = procedure(Obj: Pointer; val: pTermCriteria);
+begin
+  TsetTermCriteria(vftable(Self, $0F8 div SizeOf(Pointer)))(@Self, @val);
+end;
+
+procedure TSVM.setType(val: Int);
+Type
+  TsetType = procedure(Obj: Pointer; val: Int);
+begin
+  TsetType(vftable(Self, 15))(@Self, val);
+end;
+
+function TSVM.train(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray): BOOL;
+Type
+  Ttrain = function(Obj: Pointer; const samples: TInputArray; layout: Int; const responses: TInputArray): BOOL;
+begin
+  Result := Ttrain(vftable(Self, $50 div SizeOf(Pointer)))(@Self, samples, Int(layout), responses);
+end;
+
+class function TSVM.vftable(const s: TSVM; const index: integer): Pointer;
+begin
+  Result := pvftable(s._vftable)[index];
+end;
+
+{$ENDREGION 'ml.hpp'}
+{$REGION 'matx.hpp'}
+{ Vec3b }
+
+function Vec3b.getItem(const index: integer): uchar;
+begin
+  Assert((index >= 0) and (index < 3));
+  Result := _Data[index];
+end;
+
+class operator Vec3b.Implicit(const a: TArray<uchar>): Vec3b;
+begin
+  Assert(length(a) > 2);
+  // slow
+  for Var i := 0 to High(Result._Data) do
+    Result._Data[i] := a[i];
+end;
+
+procedure Vec3b.setItem(const index: integer; const Value: uchar);
+begin
+  Assert((index >= 0) and (index < 3));
+  _Data[index] := Value;
+end;
+{$ENDREGION 'matx.hpp'}
 
 initialization
 

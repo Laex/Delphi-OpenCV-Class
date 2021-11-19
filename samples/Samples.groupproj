@@ -36,6 +36,9 @@
         <Projects Include="cpp\tutorial_code\video\optical_flow\optical_flow.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="cpp\tutorial_code\ml\introduction_to_svm\introduction_to_svm.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -143,14 +146,23 @@
     <Target Name="optical_flow:Make">
         <MSBuild Projects="cpp\tutorial_code\video\optical_flow\optical_flow.dproj" Targets="Make"/>
     </Target>
+    <Target Name="introduction_to_svm">
+        <MSBuild Projects="cpp\tutorial_code\ml\introduction_to_svm\introduction_to_svm.dproj"/>
+    </Target>
+    <Target Name="introduction_to_svm:Clean">
+        <MSBuild Projects="cpp\tutorial_code\ml\introduction_to_svm\introduction_to_svm.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="introduction_to_svm:Make">
+        <MSBuild Projects="cpp\tutorial_code\ml\introduction_to_svm\introduction_to_svm.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow"/>
+        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean"/>
+        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make"/>
+        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

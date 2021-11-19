@@ -49,11 +49,15 @@ procedure Destructor_InputArray(Obj: pInputArray); overload; external opencv_wor
 // ?getFlags@_InputArray@cv@@QEBAHXZ	public: int __cdecl cv::_InputArray::getFlags(void)const __ptr64
 // ?getGpuMat@_InputArray@cv@@QEBA?AVGpuMat@cuda@2@XZ	public: class cv::cuda::GpuMat __cdecl cv::_InputArray::getGpuMat(void)const __ptr64
 // ?getGpuMatVector@_InputArray@cv@@QEBAXAEAV?$vector@VGpuMat@cuda@cv@@V?$allocator@VGpuMat@cuda@cv@@@std@@@std@@@Z	public: void __cdecl cv::_InputArray::getGpuMatVector(class std::vector<class cv::cuda::GpuMat,class std::allocator<class cv::cuda::GpuMat> > & __ptr64)const __ptr64
-// ?getMat@_InputArray@cv@@QEBA?AVMat@2@H@Z	public: class cv::Mat __cdecl cv::_InputArray::getMat(int)const __ptr64
+// 5011
+// ?getMat@_InputArray@cv@@QEBA?AVMat@2@H@Z
+// public: class cv::Mat __cdecl cv::_InputArray::getMat(int)const __ptr64
+procedure getMat_InputArray(Obj: pInputArray; Var m: TMat; idx:int); external opencv_world_dll index 5011 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?getMatVector@_InputArray@cv@@QEBAXAEAV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@@Z	public: void __cdecl cv::_InputArray::getMatVector(class std::vector<class cv::Mat,class std::allocator<class cv::Mat> > & __ptr64)const __ptr64
 // ?getMat_@_InputArray@cv@@QEBA?AVMat@2@H@Z	public: class cv::Mat __cdecl cv::_InputArray::getMat_(int)const __ptr64
 // ?getOGlBuffer@_InputArray@cv@@QEBA?AVBuffer@ogl@2@XZ	public: class cv::ogl::Buffer __cdecl cv::_InputArray::getOGlBuffer(void)const __ptr64
 
+// 5051
 // ?getObj@_InputArray@cv@@QEBAPEAXXZ
 // public: void * __ptr64 __cdecl cv::_InputArray::getObj(void)const __ptr64
 function getObj_InputArray(Obj: pInputArray): Pointer; external opencv_world_dll index 5051 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
