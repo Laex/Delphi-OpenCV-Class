@@ -1,9 +1,9 @@
 unit opencv_world;
 
-// {$IFDEF RELEASE}
-{ .$DEFINE DELAYED_LOAD_DLL }
-// {$DEFINE USE_INLINE}
-// {$ENDIF}
+{$IFDEF RELEASE}
+{$DEFINE DELAYED_LOAD_DLL}
+{$DEFINE USE_INLINE}
+{$ENDIF}
 {$DEFINE UseSystemMath}
 {$IF CompilerVersion >= 21.0}
 {$WEAKLINKRTTI ON}
@@ -12,8 +12,8 @@ unit opencv_world;
 {$WARN SYMBOL_PLATFORM OFF}
 {$WRITEABLECONST ON}
 {$POINTERMATH ON}
-{$Z4}
-{$T+}
+{$MINENUMSIZE 4}
+{$TYPEDADDRESS ON}
 
 interface
 
@@ -77,7 +77,7 @@ type
   pCvStdString = ^CvStdString;
 
 Type
-  TPtr<T> = record
+  TPtr<T: record > = record
   public type
     pT = ^T;
   public
@@ -478,6 +478,7 @@ type
   rPoint = UInt64;
 
   TPoint2f = TPoint_<float>;
+  TPoint2d = TPoint_<double>;
 
 function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
@@ -3247,9 +3248,76 @@ procedure goodFeaturesToTrack(image: TInputArray; corners: TOutputArray; maxCorn
   useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
 // name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z'
   index 5199 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
 //
+(* * @brief The function is used to detect translational shifts that occur between two images.
+
+  The operation takes advantage of the Fourier shift theorem for detecting the translational shift in
+  the frequency domain. It can be used for fast image registration as well as motion estimation. For
+  more information please see <http://en.wikipedia.org/wiki/Phase_correlation>
+
+  Calculates the cross-power spectrum of two supplied source arrays. The arrays are padded if needed
+  with getOptimalDFTSize.
+
+  The function performs the following equations:
+  - First it applies a Hanning window (see <http://en.wikipedia.org/wiki/Hann_function>) to each
+  image to remove possible edge effects. This window is cached until the array size changes to speed
+  up processing time.
+  - Next it computes the forward DFTs of each source array:
+  \f[\mathbf{G}_a = \mathcal{F}\{src_1\}, \; \mathbf{G}_b = \mathcal{F}\{src_2\}\f]
+  where \f$\mathcal{F}\f$ is the forward DFT.
+  - It then computes the cross-power spectrum of each frequency domain array:
+  \f[R = \frac{ \mathbf{G}_a \mathbf{G}_b^*}{|\mathbf{G}_a \mathbf{G}_b^*|}\f]
+  - Next the cross-correlation is converted back into the time domain via the inverse DFT:
+  \f[r = \mathcal{F}^{-1}\{R\}\f]
+  - Finally, it computes the peak location and computes a 5x5 weighted centroid around the peak to
+  achieve sub-pixel accuracy.
+  \f[(\Delta x, \Delta y) = \texttt{weightedCentroid} \{\arg \max_{(x, y)}\{r\}\}\f]
+  - If non-zero, the response parameter is computed as the sum of the elements of r within the 5x5
+  centroid around the peak location. It is normalized to a maximum of 1 (meaning there is a single
+  peak) and will be smaller when there are multiple peaks.
+
+  @param src1 Source floating point array (CV_32FC1 or CV_64FC1)
+  @param src2 Source floating point array (CV_32FC1 or CV_64FC1)
+  @param window Floating point array with windowing coefficients to reduce edge effects (optional).
+  @param response Signal power within the 5x5 centroid around the peak, between 0 and 1 (optional).
+  @returns detected phase shift (sub-pixel) between the two arrays.
+
+  @sa dft, getOptimalDFTSize, idft, mulSpectrums createHanningWindow
+*)
+// CV_EXPORTS_W Point2d phaseCorrelate(InputArray src1, InputArray src2,
+// InputArray window = noArray(), CV_OUT double* response = 0);
+// 5846
+// ?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@1@00PEAN@Z
+// class cv::Point_<double> cv::phaseCorrelate(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,double *)
+function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() }; response: pDouble { = 0 } ): TPoint2d; overload; external opencv_world_dll index 5846
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() }; Var response: double { = 0 } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function phaseCorrelate(src1: TInputArray; src2: TInputArray): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'imgproc.hpp'}
+//
+(* * @brief This function computes a Hanning window coefficients in two dimensions.
+
+  See (http://en.wikipedia.org/wiki/Hann_function) and (http://en.wikipedia.org/wiki/Window_function)
+  for more information.
+
+  An example is shown below:
+  @code
+  // create hanning window of size 100x100 and type CV_32F
+  Mat hann;
+  createHanningWindow(hann, Size(100, 100), CV_32F);
+  @endcode
+  @param dst Destination array to place Hann coefficients in
+  @param winSize The window size specifications (both width and height must be > 1)
+  @param type Created array type
+*)
+// CV_EXPORTS_W void createHanningWindow(OutputArray dst, Size winSize, int type);
+// 4283
+// ?createHanningWindow@cv@@YAXAEBV_OutputArray@1@V?$Size_@H@1@H@Z
+// void cv::createHanningWindow(class cv::_OutputArray const &,class cv::Size_<int>,int)
+procedure createHanningWindow(dst: TOutputArray; winSize: UInt64 { TSize }; &type: Int); overload; external opencv_world_dll index 4283
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure createHanningWindow(const dst: TOutputArray; const winSize: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
 {$REGION 'objectdetect.hpp'}
 
@@ -3497,18 +3565,105 @@ Type
 
 {$ENDREGION 'objectdetect.hpp'}
   //
-{$REGION 'fast_math.hpp'}
+{$REGION 'photo.hpp'}
 
-  (* * @brief Rounds floating-point number to the nearest integer
+  (* * @brief Transforms a color image to a grayscale image. It is a basic tool in digital printing, stylized
+    black-and-white photograph rendering, and in many single channel image processing applications
+    @cite CL12 .
 
-    @param value floating-point number. If the value is outside of INT_MIN ... INT_MAX range, the
-    result is not defined.
+    @param src Input 8-bit 3-channel image.
+    @param grayscale Output 8-bit 1-channel image.
+    @param color_boost Output 8-bit 3-channel image.
+
+    This function is to be applied on color images.
   *)
-  // CV_INLINE int cvRound( double value )
-  // 4320
-  // ?cvRound@@YAHAEBUsoftdouble@cv@@@Z
-  // int cvRound(struct cv::softdouble const &)
-  // function cvRound(value: double): int; external opencv_world_dll index 4320 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  // CV_EXPORTS_W void decolor( InputArray src, OutputArray grayscale, OutputArray color_boost);
+  // 4365
+  // ?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z
+  // void cv::decolor(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
+procedure decolor(Src: TInputArray; grayscale: TOutputArray; color_boost: TOutputArray); external opencv_world_dll
+// name '?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
+  index 4365
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief Filtering is the fundamental operation in image and video processing. Edge-preserving smoothing
+  filters are used in many different applications @cite EM11 .
+
+  @param src Input 8-bit 3-channel image.
+  @param dst Output 8-bit 3-channel image.
+  @param flags Edge preserving filters: cv::RECURS_FILTER or cv::NORMCONV_FILTER
+  @param sigma_s %Range between 0 to 200.
+  @param sigma_r %Range between 0 to 1.
+*)
+// CV_EXPORTS_W void edgePreservingFilter(InputArray src, OutputArray dst, int flags = 1,
+// float sigma_s = 60, float sigma_r = 0.4f);
+// 4555
+// ?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z
+// void cv::edgePreservingFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,float,float)
+procedure edgePreservingFilter(Src: TInputArray; dst: TOutputArray; flags: Int = 1; sigma_s: float = 60; sigma_r: float = 0.4); external opencv_world_dll index 4555
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief This filter enhances the details of a particular image.
+
+  @param src Input 8-bit 3-channel image.
+  @param dst Output image with the same size and type as src.
+  @param sigma_s %Range between 0 to 200.
+  @param sigma_r %Range between 0 to 1.
+*)
+// CV_EXPORTS_W void detailEnhance(InputArray src, OutputArray dst, float sigma_s = 10,
+// float sigma_r = 0.15f);
+// 4415
+// ?detailEnhance@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z
+// void cv::detailEnhance(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
+procedure detailEnhance(Src: TInputArray; dst: TOutputArray; sigma_s: float = 10; sigma_r: float = 0.15); external opencv_world_dll index 4415
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief Pencil-like non-photorealistic line drawing
+  @param src Input 8-bit 3-channel image.
+  @param dst1 Output 8-bit 1-channel image.
+  @param dst2 Output image with the same size and type as src.
+  @param sigma_s %Range between 0 to 200.
+  @param sigma_r %Range between 0 to 1.
+  @param shade_factor %Range between 0 to 0.1.
+*)
+// CV_EXPORTS_W void pencilSketch(InputArray src, OutputArray dst1, OutputArray dst2,
+// float sigma_s = 60, float sigma_r = 0.07f, float shade_factor = 0.02f);
+// 5841
+// ?pencilSketch@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1MMM@Z
+// void cv::pencilSketch(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,float,float,float)
+procedure pencilSketch(Src: TInputArray; dst1: TOutputArray; dst2: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.07; shade_factor: float = 0.02); external opencv_world_dll index 5841
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief Stylization aims to produce digital imagery with a wide variety of effects not focused on
+  photorealism. Edge-aware filters are ideal for stylization, as they can abstract regions of low
+  contrast while preserving, or enhancing, high-contrast features.
+
+  @param src Input 8-bit 3-channel image.
+  @param dst Output image with the same size and type as src.
+  @param sigma_s %Range between 0 to 200.
+  @param sigma_r %Range between 0 to 1.
+*)
+// CV_EXPORTS_W void stylization(InputArray src, OutputArray dst, float sigma_s = 60,
+// float sigma_r = 0.45f);
+// 6561
+// ?stylization@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z
+// void cv::stylization(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
+procedure stylization(Src: TInputArray; dst: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.45); external opencv_world_dll index 6561
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+{$ENDREGION 'photo.hpp'}
+//
+{$REGION 'fast_math.hpp'}
+(* * @brief Rounds floating-point number to the nearest integer
+
+  @param value floating-point number. If the value is outside of INT_MIN ... INT_MAX range, the
+  result is not defined.
+*)
+// CV_INLINE int cvRound( double value )
+// 4320
+// ?cvRound@@YAHAEBUsoftdouble@cv@@@Z
+// int cvRound(struct cv::softdouble const &)
+// function cvRound(value: double): int; external opencv_world_dll index 4320 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function cvRound(Value: double): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'fast_math.hpp'}
 //
@@ -3563,6 +3718,7 @@ type
       destructor.
     *)
     class operator Initialize(out Dest: TVideoCapture); // CV_WRAP VideoCapture();
+    class operator assign(var Dest: TVideoCapture; const [ref] Src: TVideoCapture);
 
     (* * @overload
       @brief  Opens a video file or a capturing device or an IP video stream for video capturing with API Preference
@@ -3649,9 +3805,8 @@ type
 
       The method first calls VideoCapture::release to close the already opened file or camera.
     *)
-    function open(const index: Int; const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // CV_WRAP virtual Bool open(int index, int apiPreference = CAP_ANY);
-
+    function open(const index: Int; const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* * @brief Returns true if video capturing has been initialized already.
 
       @overload
@@ -3808,6 +3963,8 @@ type
     // static (* CV_WRAP *) Bool waitAny(const std: : vector<VideoCapture> & streams, CV_OUT std: : vector<int> & readyIndex, int64 timeoutNs = 0);
     //
     class operator Implicit(const filename: string): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const index: Int): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator GreaterThan(const VideoCapture: TVideoCapture; Var frame: TMat): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
   private
 {$HINTS OFF}
     Dummy: array [0 .. 47] of Byte;
@@ -4426,6 +4583,7 @@ Type
     class function Mat(rows, cols, &type: Int; const s: TScalar): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}  // Mat(int rows, int cols, int type, const Scalar& s);
     procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
     procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
+    procedure convertTo(const m: TOutputArray; rtype: Int; alpha: double = 1; beta: double = 0); // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
     class operator Subtract(const m: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const Scalar& s);
   end;
@@ -4694,6 +4852,26 @@ begin
   Var
     a: Vector<Int>;
   Result := imwrite(filename, img, a);
+end;
+
+function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() }; Var response: double { = 0 } ): TPoint2d;
+begin
+  Result := phaseCorrelate(src1, src2, window, @response);
+end;
+
+function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() } ): TPoint2d;
+begin
+  Result := phaseCorrelate(src1, src2, window, nil);
+end;
+
+function phaseCorrelate(src1: TInputArray; src2: TInputArray): TPoint2d;
+begin
+  Result := phaseCorrelate(src1, src2, TInputArray.noArray);
+end;
+
+procedure createHanningWindow(const dst: TOutputArray; const winSize: TSize; &type: Int);
+begin
+  createHanningWindow(dst, UInt64(winSize), &type);
 end;
 
 procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
@@ -5465,6 +5643,11 @@ begin
   copyTo_Mat(@Self, @m);
 end;
 
+procedure TMatHelper.convertTo(const m: TOutputArray; rtype: Int; alpha, beta: double);
+begin
+  convertTo_Mat(@Self, @m, rtype, alpha, beta);
+end;
+
 procedure TMatHelper.copyTo(m: TOutputArray; mask: TInputArray);
 begin
   copyTo_Mat(@Self, @m, @mask);
@@ -5524,6 +5707,13 @@ end;
 
 { TVideoCapture }
 
+class operator TVideoCapture.assign(var Dest: TVideoCapture; const [ref] Src: TVideoCapture);
+begin
+  Move(Src, Dest, SizeOf(Dest));
+  if Src.isOpened then
+    FillChar((@Src.Dummy)^, SizeOf(Dest.Dummy), 0);
+end;
+
 class operator TVideoCapture.Finalize(var Dest: TVideoCapture);
 begin
   destructor_VideoCapture(@Dest);
@@ -5532,6 +5722,16 @@ end;
 class operator TVideoCapture.Implicit(const filename: string): TVideoCapture;
 begin
   Result.open(filename);
+end;
+
+class operator TVideoCapture.GreaterThan(const VideoCapture: TVideoCapture; var frame: TMat): BOOL;
+begin
+  Result := VideoCapture.read(frame);
+end;
+
+class operator TVideoCapture.Implicit(const index: Int): TVideoCapture;
+begin
+  Result.open(Index);
 end;
 
 class operator TVideoCapture.Initialize(out Dest: TVideoCapture);
@@ -5982,8 +6182,6 @@ class function TTraitsType<T>.Value: Int;
 var
   TypeName: String;
 begin
-  // if TypeInfo(T) = TypeInfo(TPoint_<T>) then // ??
-  // Result := CV_MAKETYPE(a.Value, 2) else
   if TypeInfo(T) = TypeInfo(TPoint2f) then
     Result := CV_MAKETYPE(TDepth<float>.Value, 2)
   else if TypeInfo(T) = TypeInfo(uchar) then

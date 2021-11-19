@@ -32,7 +32,6 @@ procedure goodFeaturesToTrackProc(a: int; p: Pointer);
 
 Var
   pp: TOutputArray;
-  o: int;
 
 begin
   /// Parameters for Shi-Tomasi algorithm

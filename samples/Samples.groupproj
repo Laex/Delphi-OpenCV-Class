@@ -39,6 +39,15 @@
         <Projects Include="cpp\tutorial_code\ml\introduction_to_svm\introduction_to_svm.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="cpp\tutorial_code\photo\decolorization\cvdecolor.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="cpp\tutorial_code\photo\non_photorealistic_rendering\npr_demo.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="cpp\phase_corr\phase_corr.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -155,14 +164,41 @@
     <Target Name="introduction_to_svm:Make">
         <MSBuild Projects="cpp\tutorial_code\ml\introduction_to_svm\introduction_to_svm.dproj" Targets="Make"/>
     </Target>
+    <Target Name="cvdecolor">
+        <MSBuild Projects="cpp\tutorial_code\photo\decolorization\cvdecolor.dproj"/>
+    </Target>
+    <Target Name="cvdecolor:Clean">
+        <MSBuild Projects="cpp\tutorial_code\photo\decolorization\cvdecolor.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="cvdecolor:Make">
+        <MSBuild Projects="cpp\tutorial_code\photo\decolorization\cvdecolor.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="npr_demo">
+        <MSBuild Projects="cpp\tutorial_code\photo\non_photorealistic_rendering\npr_demo.dproj"/>
+    </Target>
+    <Target Name="npr_demo:Clean">
+        <MSBuild Projects="cpp\tutorial_code\photo\non_photorealistic_rendering\npr_demo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="npr_demo:Make">
+        <MSBuild Projects="cpp\tutorial_code\photo\non_photorealistic_rendering\npr_demo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="phase_corr">
+        <MSBuild Projects="cpp\phase_corr\phase_corr.dproj"/>
+    </Target>
+    <Target Name="phase_corr:Clean">
+        <MSBuild Projects="cpp\phase_corr\phase_corr.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="phase_corr:Make">
+        <MSBuild Projects="cpp\phase_corr\phase_corr.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm"/>
+        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm;cvdecolor;npr_demo;phase_corr"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean"/>
+        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean;cvdecolor:Clean;npr_demo:Clean;phase_corr:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make"/>
+        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make;cvdecolor:Make;npr_demo:Make;phase_corr:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
