@@ -69,9 +69,9 @@ __recovery/
 # Boss dependency manager vendor folder https://github.com/HashLoad/boss
 modules/
 
-# Resource from OpenCV
-resource/*.jpg
-resource/*.png
+# Resource
+*.jpg
+*.png
 
 # opencv_delphi
 x64/
