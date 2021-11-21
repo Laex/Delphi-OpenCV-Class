@@ -15,7 +15,8 @@ Copy dynamic libraries files from `<opencv>\build\x64\vc15\bin\` to `<project>\b
 3. Set Delphi environment setting
 > Add the Library path for the modules of the project in Delphi IDE:<br>
 `Tools-Options` -> `Language-Delphi-Library-"Windows 64-bit"-Library path` add path to `<project>\source\`
-4. Open `<project>\samples\Samples.groupproj`
+4. Change path `OpenCVRootPath` in module` CVResource.pas` to path to unpacked OpenCV `<opencv>`
+5. Open `<project>\samples\Samples.groupproj`
 ---------------------------
 **Donate**<br>
 [PayPal USD](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5Z5JQ7C9JCJQN)<br>
