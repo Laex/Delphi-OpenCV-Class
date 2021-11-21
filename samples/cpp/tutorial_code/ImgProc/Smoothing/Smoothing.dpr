@@ -132,7 +132,10 @@ begin
 
   except
     on E: Exception do
+    begin
       WriteLn(E.ClassName, ': ', E.Message);
+      Readln;
+    end;
   end;
 
 end.

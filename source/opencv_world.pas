@@ -33,7 +33,7 @@ const
 {$REGION 'std::'}
 
 Type
-  BOOL = LongBool;
+  BOOL = ByteBool;
   size_t = NativeUInt;
   psize_t = ^size_t;
   Int = integer;
@@ -49,6 +49,9 @@ Type
   pUMatData = type Pointer;
   pUCharConst = pUChar;
   PointerConst = type Pointer;
+  //
+  vftable_func = type Pointer;
+  pvftable = ^vftable_func;
 
 type
   // cv::std::String
@@ -3967,7 +3970,8 @@ type
     class operator GreaterThan(const VideoCapture: TVideoCapture; Var frame: TMat): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
   private
 {$HINTS OFF}
-    Dummy: array [0 .. 47] of Byte;
+    _vftable: vftable_func;
+    Dummy: array [0 .. 39] of Byte;
     // Ptr<CvCapture> cap;
     // Ptr<IVideoCapture> icap;
     // bool throwOnFail;
@@ -4249,13 +4253,10 @@ type
   pSVM = ^TSVM;
 
   TSVM = record
-  private type
-    vftable_func = type Pointer;
-    pvftable = ^vftable_func;
   public type
     TPtrSVM = TPtr<TSVM>;
   public
-    _vftable: vftable_func; // ppvftable_SVM;
+    _vftable: vftable_func;
     class function vftable(const s: TSVM; const index: integer): Pointer; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Finalize(var Dest: TSVM);
   public
@@ -4629,7 +4630,7 @@ end;
 
 class operator CvStdString.assign(var Dest: CvStdString; const [ref] Src: CvStdString);
 begin
-  Finalize(Dest);
+//  Finalize(Dest);
   assign_CppString(pCppString(@Dest), pCppString(@Src));
 end;
 
