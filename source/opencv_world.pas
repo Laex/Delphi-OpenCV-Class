@@ -1,14 +1,41 @@
+(*
+  This file is part of Delphi-OpenCV-Class project.
+  https://github.com/Laex/Delphi-OpenCV-Class
+
+  It is subject to the license terms in the LICENSE file found in the top-level directory
+  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+
+  Copyright 2021, Laentir Valetov, laex@bk.ru
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*)
+
 unit opencv_world;
 
 {$IFDEF RELEASE}
-{$DEFINE DELAYED_LOAD_DLL}
-{$DEFINE USE_INLINE}
+{ }{$DEFINE DELAYED_LOAD_DLL}
+{ }{$DEFINE USE_INLINE}
+{$ELSE}
+{ }{$DEFINE USE_TYPEINFO}
 {$ENDIF}
-{$DEFINE UseSystemMath}
+//
+{$DEFINE USE_SYSTEMMATH}
+//
 {$IF CompilerVersion >= 21.0}
 {$WEAKLINKRTTI ON}
 {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
 {$IFEND}
+//
 {$WARN SYMBOL_PLATFORM OFF}
 {$WRITEABLECONST ON}
 {$POINTERMATH ON}
@@ -17,13 +44,17 @@ unit opencv_world;
 
 interface
 
+{$IF DEFINED(USE_TYPEINFO) or DEFINED(USE_SYSTEMMATH)}
+
 Uses
-  System.TypInfo,
-  System.SysUtils
-{$IFDEF UseSystemMath}
+{$IFDEF USE_TYPEINFO}
+  System.TypInfo
+{$ENDIF}
+{$IFDEF USE_SYSTEMMATH}
     , System.Math
 {$ENDIF}
     ;
+{$IFEND}
 
 const
   cvversion         = '454';
@@ -155,7 +186,7 @@ const
   CV_32S = 4; // Int32
   CV_32F = 5; // float(single)
   CV_64F = 6; // double
-  CV_16F = 7;
+  CV_16F = 7; // unsigned short - type float16_t
 
   CV_MAT_DEPTH_MASK = (CV_DEPTH_MAX - 1);
 function CV_MAT_DEPTH(flags: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}     // #define CV_MAT_DEPTH(flags)     ((flags) & CV_MAT_DEPTH_MASK)
@@ -544,7 +575,7 @@ Type
     // explicit MatSize(int* _p) CV_NOEXCEPT;
     // int dims() const CV_NOEXCEPT;
     class operator Implicit(const m: TMatSize): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}// Size operator()() const;
-    class operator Implicit(const m: TMatSize): String; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // class operator Implicit(const m: TMatSize): String; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // const int& operator[](int i) const;
     // int& operator[](int i);
     // operator const int*() const CV_NOEXCEPT;  // TODO OpenCV 4.0: drop this
@@ -4630,7 +4661,7 @@ end;
 
 class operator CvStdString.assign(var Dest: CvStdString; const [ref] Src: CvStdString);
 begin
-//  Finalize(Dest);
+  // Finalize(Dest);
   assign_CppString(pCppString(@Dest), pCppString(@Src));
 end;
 
@@ -4729,8 +4760,6 @@ begin
 end;
 
 class function Vector<T>.vt: TVectorType;
-Var
-  TypeName: string;
 begin
   if TypeInfo(T) = TypeInfo(TMat) then
     vt := vtMat
@@ -4752,8 +4781,13 @@ begin
     vt := vtInt
   else
   begin
-    TypeName := GetTypeName(TypeInfo(T));
-    Assert(false, 'Can''t define type "' + TypeName + '"');
+    Var
+    AssertMsg := 'VectorType - not defined type'
+{$IFDEF USE_TYPEINFO}
+      + ' "' + GetTypeName(TypeInfo(T)) + '"'
+{$ENDIF}
+      ;
+    Assert(false, AssertMsg);
   end;
 end;
 
@@ -4761,7 +4795,7 @@ end;
 
 function MIN(a, b: Int): Int;
 begin
-{$IFDEF UseSystemMath}
+{$IFDEF USE_SYSTEMMATH}
   Result := System.Math.MIN(a, b);
 {$ELSE}
   // ((a) > (b) ? (b) : (a))
@@ -4774,7 +4808,7 @@ end;
 
 function MAX(a, b: Int): Int;
 begin
-{$IFDEF UseSystemMath}
+{$IFDEF USE_SYSTEMMATH}
   Result := System.Math.MAX(a, b);
 {$ELSE}
   // ((a) < (b) ? (b) : (a))
@@ -5506,11 +5540,11 @@ begin
   operator_MatSize_MatSizeToSize(@m, @Result);
 end;
 
-class operator TMatSize.Implicit(const m: TMatSize): String;
-begin
-  With TSize(m) do
-    Result := '(' + width.ToString + ',' + height.ToString + ')';
-end;
+// class operator TMatSize.Implicit(const m: TMatSize): String;
+// begin
+// With TSize(m) do
+// Result := '(' + width.ToString + ',' + height.ToString + ')';
+// end;
 
 { TInputOutputArray }
 
@@ -5901,41 +5935,44 @@ begin
 end;
 
 function TCommandLineParser.TypeToTParam<T>: TParam;
-Var
-  s: string;
 begin
-  //
-  // (INTp = 0, BOOLEANp = 1, REAL = 2, STRINGp = 3, MATp = 4, MAT_VECTOR = 5, ALGORITHM = 6, FLOATp = 7, UNSIGNED_INT = 8, UInt64p = 9, UCHAR = 11, SCALARp = 12);
-  s := GetTypeName(TypeInfo(T));
-  if SameText('Integer', s) then
+  if TypeInfo(T) = TypeInfo(Int) then
     Exit(Param_INT)
-  else if SameText('LongBool', s) then
+  else if TypeInfo(T) = TypeInfo(BOOL) then
     Exit(Param_BOOLEAN)
-  else if SameText('Double', s) then
+  else if TypeInfo(T) = TypeInfo(double) then
     Exit(Param_REAL)
-  else if SameText('CvStdString', s) then
+  else if TypeInfo(T) = TypeInfo(CvStdString) then
     Exit(Param_STRING)
-  else if SameText('TMat', s) then
+  else if TypeInfo(T) = TypeInfo(TMat) then
     Exit(Param_MAT)
-  else if SameText('StdVectorRect', s) then
+  else if TypeInfo(T) = TypeInfo(Vector<TMat>) then
     Exit(Param_MAT_VECTOR)
   else
     // if SameText('TAlgorithm', s) then
     // Exit(Param_ALGORITHM) else
-    if SameText('Single', s) then
+    if TypeInfo(T) = TypeInfo(float) then
       Exit(Param_FLOAT)
-    else if SameText('Cardinal', s) then
+    else if TypeInfo(T) = TypeInfo(Cardinal) then
       Exit(Param_UNSIGNED_INT)
-    else if SameText('UInt64', s) then
+    else if TypeInfo(T) = TypeInfo(UInt64) then
       Exit(Param_UInt64)
-    else if SameText('Byte', s) then
+    else if TypeInfo(T) = TypeInfo(uchar) then
       Exit(Param_UCHAR)
-    else if SameText('TScalar', s) then
+    else if TypeInfo(T) = TypeInfo(TScalar) then
       Exit(Param_SCALAR)
-    else if SameText('string', s) then
+    else if TypeInfo(T) = TypeInfo(String) then
       Exit(Param_STRING)
     else
-      Assert(false, 'TODO Supplement types');
+    begin
+      Var
+      AssertMsg := 'TypeToTParam - not defined type'
+{$IFDEF USE_TYPEINFO}
+        + ' "' + GetTypeName(TypeInfo(T)) + '"'
+{$ENDIF}
+        ;
+      Assert(false, AssertMsg);
+    end;
 end;
 
 { TQRCodeDetector }
@@ -6180,8 +6217,6 @@ end;
 { TTraitsType<T> }
 
 class function TTraitsType<T>.Value: Int;
-var
-  TypeName: String;
 begin
   if TypeInfo(T) = TypeInfo(TPoint2f) then
     Result := CV_MAKETYPE(TDepth<float>.Value, 2)
@@ -6199,8 +6234,13 @@ begin
   end
   else
   begin
-    TypeName := GetTypeName(TypeInfo(T));
-    Assert(false, 'Define type "' + TypeName + '"');
+    Var
+    AssertMsg := 'TTraitsType - not defined type'
+{$IFDEF USE_TYPEINFO}
+      + ' "' + GetTypeName(TypeInfo(T)) + '"'
+{$ENDIF}
+      ;
+    Assert(false, AssertMsg);
   end;
 end;
 

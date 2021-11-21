@@ -1,5 +1,4 @@
-﻿// dllmain.cpp : Определяет точку входа для приложения DLL.
-#include "delphi_export.h"
+﻿#include "delphi_export.h"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
