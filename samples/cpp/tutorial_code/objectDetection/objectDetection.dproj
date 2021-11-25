@@ -3,7 +3,7 @@
         <ProjectGuid>{3B20DF9A-849F-4D89-84C6-C04750E00BB1}</ProjectGuid>
         <MainSource>objectDetection.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Console</AppType>
         <FrameworkType>None</FrameworkType>

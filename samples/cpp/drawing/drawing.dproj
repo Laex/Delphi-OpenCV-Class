@@ -3,7 +3,7 @@
         <ProjectGuid>{4AD7B31B-8F51-495C-923E-4E24C2B9BB19}</ProjectGuid>
         <MainSource>drawing.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Console</AppType>
         <FrameworkType>None</FrameworkType>

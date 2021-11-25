@@ -29,8 +29,6 @@ unit opencv_world;
 { }{$DEFINE USE_TYPEINFO}
 {$ENDIF}
 //
-{$DEFINE USE_SYSTEMMATH}
-//
 {$IF CompilerVersion >= 21.0}
 {$WEAKLINKRTTI ON}
 {$RTTI EXPLICIT METHODS([]) PROPERTIES([]) FIELDS([])}
@@ -44,23 +42,23 @@ unit opencv_world;
 
 interface
 
-{$IF DEFINED(USE_TYPEINFO) or DEFINED(USE_SYSTEMMATH)}
-
 Uses
+  System.Math
 {$IFDEF USE_TYPEINFO}
-  System.TypInfo
-{$ENDIF}
-{$IFDEF USE_SYSTEMMATH}
-    , System.Math
+    , System.TypInfo
 {$ENDIF}
     ;
-{$IFEND}
+
+{$I version.inc}
 
 const
   cvversion         = '454';
   opencv_delphi_dll = 'opencv_delphi' + cvversion + {$IFDEF DEBUG} 'd' + {$ENDIF} '.dll';
   opencv_world_dll  = 'opencv_world' + cvversion + {$IFDEF DEBUG} 'd' + {$ENDIF} '.dll';
-
+{$IFDEF DEBUG}
+  DEBUG_BUILD_GUARD = '@debug_build_guard';
+{$ENDIF}
+  //
 {$REGION 'std::'}
 
 Type
@@ -77,7 +75,6 @@ Type
   pUChar = type pByte;
   pMatOp = type Pointer;
   pMatAllocator = type Pointer;
-  pUMatData = type Pointer;
   pUCharConst = pUChar;
   PointerConst = type Pointer;
   //
@@ -565,9 +562,6 @@ Type
 
   AccessFlag = (ACCESS_READ = 1 shl 24, ACCESS_WRITE = 1 shl 25, ACCESS_RW = 3 shl 24, ACCESS_MASK = ACCESS_RW, ACCESS_FAST = 1 shl 26);
 
-  TCVMat = array [0 .. 95] of Byte;    // forward declaration
-  TCVScalar = array [0 .. 31] of Byte; // forward declaration
-
   pMatSize = ^TMatSize;
 
   TMatSize = record
@@ -598,45 +592,49 @@ Type
     buf: array [0 .. 1] of size_t; // size_t buf[2];
   end;
 
-  pMatExpr = ^TMatExpr;
+  // note that umatdata might be allocated together
+  // with the matrix data, not as a separate object.
+  // therefore, it does not have constructor or destructor;
+  // it should be explicitly initialized using init().
+  pUMatData = ^TUMatData;
 
-  TMatExpr = record
+  TUMatData = record
+  public Type
+    TMemoryFlag = (COPY_ON_MAP = 1, HOST_COPY_OBSOLETE = 2, DEVICE_COPY_OBSOLETE = 4, TEMP_UMAT = 8, //
+      TEMP_COPIED_UMAT = 24, USER_ALLOCATED = 32, DEVICE_MEM_MAPPED = 64, ASYNC_CLEANUP = 128);
   public
-    class operator Initialize(out Dest: TMatExpr); // MatExpr();
-    // explicit MatExpr(const Mat& m);
-    //
-    // MatExpr(const MatOp* _op, int _flags, const Mat& _a = Mat(), const Mat& _b = Mat(),
-    // const Mat& _c = Mat(), double _alpha = 1, double _beta = 1, const Scalar& _s = Scalar());
-    //
-    // operator Mat() const;
-    //
-    function size: TSize; {$IFDEF USE_INLINE}inline; {$ENDIF} // Size size() const;
-    // int type() const;
-    //
-    // MatExpr row(int y) const;
-    // MatExpr col(int x) const;
-    // MatExpr diag(int d = 0) const;
-    // MatExpr operator()( const Range& rowRange, const Range& colRange ) const;
-    // MatExpr operator()( const Rect& roi ) const;
-    //
-    // MatExpr t() const;
-    // MatExpr inv(int method = DECOMP_LU) const;
-    // MatExpr mul(const MatExpr& e, double scale=1) const;
-    // MatExpr mul(const Mat& m, double scale=1) const;
-    //
-    // Mat cross(const Mat& m) const;
-    // double dot(const Mat& m) const;
-    //
-    // void swap(MatExpr& b);
-    //
-    class operator Finalize(var Dest: TMatExpr);
-  public
-    op: pMatOp; // pMatOp; // const MatOp* op;
-    flags: Int; // int flags;
-    //
-    a, b, c: TCVMat;     // Mat a, b, c;
-    alpha, beta: double; // double alpha, beta;
-    s: TCVScalar;        // Scalar s;
+    // UMatData(const MatAllocator* allocator);
+    // ~UMatData();
+
+    // provide atomic access to the structure
+    // void lock();
+    // void unlock();
+
+    // bool hostCopyObsolete() const;
+    // bool deviceCopyObsolete() const;
+    // bool deviceMemMapped() const;
+    // bool copyOnMap() const;
+    // bool tempUMat() const;
+    // bool tempCopiedUMat() const;
+    // void markHostCopyObsolete(bool flag);
+    // void markDeviceCopyObsolete(bool flag);
+    // void markDeviceMemMapped(bool flag);
+
+    prevAllocator: pMatAllocator; // const MatAllocator* prevAllocator;
+    currAllocator: pMatAllocator; // const MatAllocator* currAllocator;
+    urefcount: Int;
+    refcount: Int;
+    Data: pUChar;     // uchar* data;
+    origdata: pUChar; // uchar* origdata;
+    size: size_t;     // size_t size;
+
+    flags: TMemoryFlag; // UMatData::MemoryFlag flags;
+    handle: Pointer;    // void* handle;
+    userdata: Pointer;  // void* userdata;
+    allocatorFlags_: Int;
+    mapcount: Int;
+    originalUMatData: pUMatData; // UMatData* originalUMatData;
+    allocatorContext: Pointer;   // std::shared_ptr<void> allocatorContext;
   end;
 
   pMat = ^TMat;
@@ -657,7 +655,7 @@ Type
     class function Mat(): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // constructors
     class function Mat(const size: TSize; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat(Size size, int type);
-    // Mat(int rows, int cols, int type, const Scalar& s);
+    // TMatHelper // Mat(int rows, int cols, int type, const Scalar& s);
     // Mat(Size size, int type, const Scalar& s);
     // Mat(int ndims, const int* sizes, int type);
     // Mat(const std::vector<int>& sizes, int type);
@@ -682,7 +680,8 @@ Type
     class operator Finalize(var Dest: TMat); // ~Mat();
     class operator assign(var Dest: TMat; const [ref] Src: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat& operator = (const Mat& m);
-    class operator Implicit(const m: TMatExpr): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const MatExpr& expr);
+    { TODO: 'Implicit(const m: TMatExpr) not working inline!!!???' }
+    // TMatHelper // Mat& operator = (const MatExpr& expr);
     // UMat getUMat(AccessFlag accessFlags, UMatUsageFlags usageFlags = USAGE_DEFAULT) const;
     // Mat row(int y) const;
     // Mat col(int x) const;
@@ -707,11 +706,10 @@ Type
     // MatExpr mul(InputArray m, double scale=1) const;
     // Mat cross(InputArray m) const;
     // double dot(InputArray m) const;
-    class function zeros(const rows, cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
-    class function zeros(const size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
+    // TMatHelper // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
+    // TMatHelper  // CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
     // CV_NODISCARD_STD static MatExpr zeros(int ndims, const int* sz, int type);
-    class function ones(rows: Int; cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
+    // TMatHelper // CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
     // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
     class function ones(ndims: Int; const sz: pInt; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
     // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
@@ -763,7 +761,6 @@ Type
     // const uchar* ptr(const int* idx) const;
     // Mat(Mat&& m);
     // Mat& operator = (Mat&& m);
-    class operator LogicalNot(const m: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function at<T>(const i0: Int): T; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function at<T>(const i0, i1: Int): T; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function pT<T>(const i0: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -834,6 +831,55 @@ Type
 function Scalar(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 type
+  pMatExpr = ^TMatExpr;
+
+  TMatExpr = record
+  public
+    class operator Initialize(out Dest: TMatExpr); // MatExpr();
+    // explicit MatExpr(const Mat& m);
+    //
+    // MatExpr(const MatOp* _op, int _flags, const Mat& _a = Mat(), const Mat& _b = Mat(),
+    // const Mat& _c = Mat(), double _alpha = 1, double _beta = 1, const Scalar& _s = Scalar());
+    //
+    // operator Mat() const;
+    //
+    function size: TSize; {$IFDEF USE_INLINE}inline; {$ENDIF} // Size size() const;
+    // int type() const;
+    //
+    // MatExpr row(int y) const;
+    // MatExpr col(int x) const;
+    // MatExpr diag(int d = 0) const;
+    // MatExpr operator()( const Range& rowRange, const Range& colRange ) const;
+    // MatExpr operator()( const Rect& roi ) const;
+    //
+    // MatExpr t() const;
+    // MatExpr inv(int method = DECOMP_LU) const;
+    // MatExpr mul(const MatExpr& e, double scale=1) const;
+    // MatExpr mul(const Mat& m, double scale=1) const;
+    //
+    // Mat cross(const Mat& m) const;
+    // double dot(const Mat& m) const;
+    //
+    // void swap(MatExpr& b);
+    //
+    class operator Finalize(var Dest: TMatExpr);
+    class operator assign(var Dest: TMatExpr; const [ref] Src: TMatExpr);
+{$IFDEF DEBUG}
+  public
+{$ELSE}
+  private
+{$ENDIF}
+{$HINTS OFF}
+    op: pMatOp; // pMatOp; // const MatOp* op;
+    flags: Int; // int flags;
+    //
+    a, b, c: TMat;       // Mat a, b, c;
+    alpha, beta: double; // double alpha, beta;
+    s: TScalar;          // Scalar s;
+{$HINTS ON}
+  end;
+
+type
 
   pInputArray = ^TInputArray;
 
@@ -868,8 +914,8 @@ type
   public
     class operator Initialize(out Dest: TInputArray); // _InputArray();
     // _InputArray(int _flags, void* _obj);
-    class function InputArray(const m: TMat): TInputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// _InputArray(const Mat& m);
-    // _InputArray(const MatExpr& expr);
+    class function InputArray(const m: TMat): TInputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// _InputArray(const Mat& m);
+    class function InputArray(const m: TMatExpr): TInputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// _InputArray(const MatExpr& expr);
     // _InputArray(const std::vector<Mat>& vec);
     // _InputArray(const std::vector<bool>& vec);
     // _InputArray(const std::vector<std::vector<bool> >&) = delete;  // not supported
@@ -1220,9 +1266,18 @@ procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bot
 *)
 // CV_EXPORTS_W void addWeighted(InputArray src1, double alpha, InputArray src2,
 // double beta, double gamma, OutputArray dst, int dtype = -1);
-// ?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z
-// void cv::addWeighted(class cv::_InputArray const &,double,class cv::_InputArray const &,double,double,class cv::_OutputArray const &,int)
-procedure addWeighted(src1: TInputArray; alpha: double; src2: TInputArray; beta, gamma: double; dst: TOutputArray; dtype: Int = -1); external opencv_world_dll index 3519
+{
+  index 3519
+  ?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z
+  ?addWeighted@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0NNAEBV_OutputArray@31@H@Z
+  void cv::addWeighted(class cv::_InputArray const &,double,class cv::_InputArray const &,double,double,class cv::_OutputArray const &,int)
+}
+procedure addWeighted(src1: TInputArray; alpha: double; src2: TInputArray; beta, gamma: double; dst: TOutputArray; dtype: Int = -1); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?addWeighted@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0NNAEBV_OutputArray@31@H@Z'
+{$ELSE}
+  name '?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief  Inverts every bit of an array.
@@ -1241,10 +1296,19 @@ procedure addWeighted(src1: TInputArray; alpha: double; src2: TInputArray; beta,
 *)
 // CV_EXPORTS_W void bitwise_not(InputArray src, OutputArray dst,
 // InputArray mask = noArray());
-// 3629
-// ?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z
-// void cv::bitwise_not(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
-procedure _bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() } ); external opencv_world_dll index 3629 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  3629
+  ?bitwise_not@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z
+  ?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z
+  void cv::bitwise_not(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
+}
+procedure _bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() } ); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?bitwise_not@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
+{$ELSE}
+  name '?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure bitwise_not(Src: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 procedure bitwise_not(Src: TInputArray; dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
@@ -1253,10 +1317,19 @@ procedure bitwise_not(Src: TInputArray; dst: TOutputArray); overload; {$IFDEF US
   @param mv output vector of arrays; the arrays themselves are reallocated, if needed.
 *)
 // CV_EXPORTS_W void split(InputArray m, OutputArrayOfArrays mv);
-// 6515
-// ?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
-// void cv::split(class cv::_InputArray const &,class cv::_OutputArray const &)
-procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); external opencv_world_dll index 6515 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  6515
+  ?split@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
+  ?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
+  void cv::split(class cv::_InputArray const &,class cv::_OutputArray const &)
+}
+procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?split@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+{$ELSE}
+  name '?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Normalizes the norm or value range of an array.
 
@@ -1318,18 +1391,20 @@ procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); external 
 *)
 // CV_EXPORTS_W void normalize( InputArray src, InputOutputArray dst, double alpha = 1, double beta = 0,
 // int norm_type = NORM_L2, int dtype = -1, InputArray mask = noArray());
-// 5761
-// ?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z
-// void cv::normalize(class cv::_InputArray const &,class cv::_InputOutputArray const &,double,double,int,int,class cv::_InputArray const &)
-procedure _normalize(                  //
-  Src: TInputArray;                    //
-  dst: TInputOutputArray;              //
-  alpha: double { = 1 };               //
-  beta: double { = 0 };                //
-  norm_type: Int { = int(NORM_L2) };   //
-  dtype: Int { = -1 };                 //
-  mask: TInputArray { = noArray() } ); //
-  external opencv_world_dll index 5761 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  5761
+  ?normalize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@NNHH0@Z
+  ?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z
+  void cv::normalize(class cv::_InputArray const &,class cv::_InputOutputArray const &,double,double,int,int,class cv::_InputArray const &)
+}
+procedure _normalize(Src: TInputArray; dst: TInputOutputArray; alpha: double { = 1 }; beta: double { = 0 }; norm_type: Int { = int(NORM_L2) }; dtype: Int { = -1 }; mask: TInputArray { = noArray() } );
+  external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?normalize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@NNHH0@Z'
+{$ELSE}
+  name '?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 }; dtype: Int { = -1 };
   const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
@@ -1524,13 +1599,19 @@ Type
   // CV_EXPORTS_W void minMaxLoc(InputArray src, CV_OUT double* minVal,
   // CV_OUT double* maxVal = 0, CV_OUT Point* minLoc = 0,
   // CV_OUT Point* maxLoc = 0, InputArray mask = noArray());
-  // 5673
-  // ?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z
-  // void cv::minMaxLoc(class cv::_InputArray const &,double *,double *,class cv::Point_<int> *,class cv::Point_<int> *,class cv::_InputArray const &)
+  {
+    5673
+    ?minMaxLoc@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAV?$Point_@H@1@20@Z
+    ?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z
+    void cv::minMaxLoc(class cv::_InputArray const &,double *,double *,class cv::Point_<int> *,class cv::Point_<int> *,class cv::_InputArray const &)
+  }
 procedure minMaxLoc(Src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil }; const minLoc: pPoint { = nil }; const maxLoc: pPoint { = nil }; mask: TInputArray { = noArray() }
   ); overload; external opencv_world_dll
-// name '?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z'
-  index 5673
+{$IFDEF DEBUG}
+  name '?minMaxLoc@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAV?$Point_@H@1@20@Z'
+{$ELSE}
+  name '?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil };
@@ -1583,12 +1664,19 @@ procedure minMaxLoc(const Src: TInputArray; Var minVal: double); overload;
 *)
 // CV_EXPORTS_W void add(InputArray src1, InputArray src2, OutputArray dst,
 // InputArray mask = noArray(), int dtype = -1);
-// 3488
-// ?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z
-// void cv::add(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
+{
+  3488
+  ?add@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z
+  ?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z
+  void cv::add(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
+}
 procedure add(src1: TInputArray; src2: TInputArray; dst: TOutputArray; mask: TInputArray { = noArray() }; dtype: Int { = -1 } ); overload; external opencv_world_dll
-// name '?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
-  index 3488{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF DEBUG}
+  name '?add@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z'
+{$ELSE}
+  name '?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
@@ -1665,8 +1753,12 @@ Type
     @param flags Flag that can take values of cv::ImreadModes
   *)
   // CV_EXPORTS_W Mat imread(const String & filename, Int flags = IMREAD_COLOR);
-  // ?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
-  // class cv::Mat cv::imread(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+  {
+    5264
+    ?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
+    ?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
+    class cv::Mat cv::imread(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+  }
 function imread(const filename: CppString; flag: ImreadModes = IMREAD_COLOR): TMat;
   external opencv_world_dll name '?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -1764,9 +1856,18 @@ function waitKey(delay: Int = 0): Int; external opencv_world_dll name '?waitKey@
   @param mat Image to be shown.
 *)
 // CV_EXPORTS_W void imshow(const String & winname, InputArray Mat);
-// ?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@@Z
-// void cv::imshow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &)
-procedure imshow(const winname: CppString; Mat: TInputArray); overload; external opencv_world_dll index 5268
+{
+  5268
+  ?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@@Z
+  ?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@@Z
+  void cv::imshow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &)
+}
+procedure imshow(const winname: CppString; Mat: TInputArray); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@@Z'
+{$ELSE}
+  name '?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {$ENDREGION 'imgcodecs.hpp'}
@@ -1813,9 +1914,14 @@ Type
     @param flags Flags of the window. The supported flags are: (cv::WindowFlags)
   *)
   // CV_EXPORTS_W void namedWindow(const String& winname, int flags = WINDOW_AUTOSIZE);
-  // ?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
-  // void cv::namedWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
-procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTOSIZE); overload; external opencv_world_dll index 5721
+  {
+    5721
+    ?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
+    ?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
+    void cv::namedWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+  }
+procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTOSIZE); overload;
+  external opencv_world_dll name '?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //
@@ -1852,8 +1958,10 @@ procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTO
 // int cv::createTrackbar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int *,int,void (*)(int,void *),void *)
 Type
   TTrackbarCallback = procedure(pos: Int; userdata: Pointer);
-function createTrackbar(const trackbarname: CppString; const winname: CppString; Value: pInt; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
-  external opencv_world_dll index 4302{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function createTrackbar(const trackbarname: CppString; const winname: CppString; Value: pInt; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int; external opencv_world_dll
+// index 4302
+  name '?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Moves the window to the specified position
 
@@ -1865,7 +1973,10 @@ function createTrackbar(const trackbarname: CppString; const winname: CppString;
 // 5691
 // ?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z
 // void cv::moveWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,int)
-procedure moveWindow(const winname: CppString; x, y: Int); external opencv_world_dll index 5691{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure moveWindow(const winname: CppString; x, y: Int); external opencv_world_dll
+// index 5691
+  name '?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Destroys the specified window.
   The function destroyWindow destroys the window with the given name.
@@ -1875,7 +1986,10 @@ procedure moveWindow(const winname: CppString; x, y: Int); external opencv_world
 // 4411
 // ?destroyWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
 // void cv::destroyWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-procedure destroyWindow(const winname: CppString); external opencv_world_dll index 4411{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure destroyWindow(const winname: CppString); external opencv_world_dll
+// index 4411
+  name '?destroyWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Resizes the window to the specified size
 
@@ -1892,7 +2006,9 @@ procedure destroyWindow(const winname: CppString); external opencv_world_dll ind
 // 6154
 // ?resizeWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z
 // dvoid cv::resizeWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,int)
-procedure resizeWindow(const winname: CppString; width, height: Int); external opencv_world_dll index 6154{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure resizeWindow(const winname: CppString; width, height: Int); external opencv_world_dll name '?resizeWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z'
+// index 6154
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {$ENDREGION 'highgui.hpp'}
 //
@@ -2253,11 +2369,20 @@ type
   // int fontFace, double fontScale, Scalar color,
   // int thickness = 1, int lineType = LINE_8,
   // bool bottomLeftOrigin = false );
-  // 5972
-  // ?putText@cv@@YAXAEBV_InputOutputArray@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z
-  // void cv::putText(class cv::_InputOutputArray const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::Point_<int>,int,double,class cv::Scalar_<double>,int,int,bool)
+  {
+    5972
+    ?putText@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z
+    ?putText@cv@@YAXAEBV_InputOutputArray@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z
+    void cv::putText(class cv::_InputOutputArray const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::Point_<int>,int,double,class cv::Scalar_<double>,int,int,bool)
+  }
 procedure _putText(img: TInputOutputArray; const text: CppString; org: UInt64; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
-  bottomLeftOrigin: BOOL = false); external opencv_world_dll index 5972{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  bottomLeftOrigin: BOOL = false); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?putText@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z'
+{$ELSE}
+  name '?putText@cv@@YAXAEBV_InputOutputArray@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
   bottomLeftOrigin: BOOL = false); {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2314,8 +2439,10 @@ procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fo
 // class cv::Size_<int> cv::getTextSize(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,double,int,int *)
 // function _getTextSize(const text: CvStdString; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil): pSize;
 // external opencv_world_dll index 5135{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure _getTextSize(const R: pSize; text: CvStdString; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil);
-  external opencv_world_dll index 5135{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure _getTextSize(const R: pSize; text: CvStdString; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil); external opencv_world_dll
+// index 5135
+  name '?getTextSize@cv@@YA?AV?$Size_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HNHPEAH@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function getTextSize(const text: String; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
 (* * @brief Blurs an image using the normalized box filter.
@@ -2343,7 +2470,12 @@ function getTextSize(const text: String; fontFace: Int; fontScale: double; thick
 // ?blur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@V?$Point_@H@1@H@Z
 // void cv::blur(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,class cv::Point_<int>,int)
 
-procedure _blur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; anchor: UInt64 { TPoint  = Point(-1, -1) }; borderType: Int { = BORDER_DEFAULT } ); external opencv_world_dll index 3649
+procedure _blur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; anchor: UInt64 { TPoint  = Point(-1, -1) }; borderType: Int { = BORDER_DEFAULT } ); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?blur@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@V?$Size_@H@1@V?$Point_@H@1@H@Z'
+{$ELSE}
+  name '?blur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@V?$Point_@H@1@H@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize; anchor: TPoint; borderType: BorderTypes = BORDER_DEFAULT); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2371,11 +2503,20 @@ procedure blur(Src: TInputArray; dst: TOutputArray; ksize: TSize; anchor: TPoint
 // CV_EXPORTS_W void GaussianBlur( InputArray src, OutputArray dst, Size ksize,
 // double sigmaX, double sigmaY = 0,
 // int borderType = BORDER_DEFAULT );
-// 3370
-// ?GaussianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z
-// void cv::GaussianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,double,double,int)
+{
+  3370
+  ?GaussianBlur@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@V?$Size_@H@1@NNH@Z
+  ?GaussianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z
+  void cv::GaussianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,double,double,int)
+}
 procedure _GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: UInt64 { TSize }; sigmaX: double; sigmaY: double { = 0 }; borderType: Int { = BORDER_DEFAULT }
-  ); external opencv_world_dll index 3370 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  ); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?GaussianBlur@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@V?$Size_@H@1@NNH@Z'
+{$ELSE}
+  name '?GaussianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX: double; sigmaY: double = 0; borderType: BorderTypes = BORDER_DEFAULT); {$IFDEF USE_INLINE}inline;
 {$ENDIF}
 //
@@ -2410,10 +2551,18 @@ procedure GaussianBlur(Src: TInputArray; dst: TOutputArray; ksize: TSize; sigmaX
 // CV_EXPORTS_W void bilateralFilter( InputArray src, OutputArray dst, int d,
 // double sigmaColor, double sigmaSpace,
 // int borderType = BORDER_DEFAULT );
-// 3615
-// ?bilateralFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNNH@Z
-// void cv::bilateralFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,int)
-procedure bilateralFilter(Src: TInputArray; dst: TOutputArray; d: Int; sigmaColor, sigmaSpace: double; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll index 3615
+{
+  3615
+  ?bilateralFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNNH@Z
+  ?bilateralFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNNH@Z
+  void cv::bilateralFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,int)
+}
+procedure bilateralFilter(Src: TInputArray; dst: TOutputArray; d: Int; sigmaColor, sigmaSpace: double; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?bilateralFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNNH@Z'
+{$ELSE}
+  name '?bilateralFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNNH@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Blurs an image using the median filter.
@@ -2431,10 +2580,18 @@ procedure bilateralFilter(Src: TInputArray; dst: TOutputArray; d: Int; sigmaColo
   @sa  bilateralFilter, blur, boxFilter, GaussianBlur
 *)
 // CV_EXPORTS_W void medianBlur( InputArray src, OutputArray dst, int ksize );
-// 5628
-// ?medianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
-// void cv::medianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,int)
-procedure medianBlur(Src: TInputArray; dst: TOutputArray; ksize: Int); external opencv_world_dll index 5628
+{
+  5628
+  ?medianBlur@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z
+  ?medianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
+  void cv::medianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,int)
+}
+procedure medianBlur(Src: TInputArray; dst: TOutputArray; ksize: Int); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?medianBlur@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+{$ELSE}
+  name '?medianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Applies a fixed-level threshold to each array element.
@@ -2463,10 +2620,19 @@ procedure medianBlur(Src: TInputArray; dst: TOutputArray; ksize: Int); external 
 *)
 // CV_EXPORTS_W double threshold( InputArray src, OutputArray dst,
 // double thresh, double maxval, int type );
-// 6609
-// ?threshold@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@NNH@Z
-// double cv::threshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int)
-function threshold(Src: TInputArray; dst: TOutputArray; thresh, maxVal: double; &type: Int): double; external opencv_world_dll index 6609 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  6609
+  ?threshold@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NNH@Z
+  ?threshold@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@NNH@Z
+  double cv::threshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int)
+}
+function threshold(Src: TInputArray; dst: TOutputArray; thresh, maxVal: double; &type: Int): double; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?threshold@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NNH@Z'
+{$ELSE}
+  name '?threshold@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@NNH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Applies an adaptive threshold to an array.
 
@@ -2496,12 +2662,20 @@ function threshold(Src: TInputArray; dst: TOutputArray; thresh, maxVal: double; 
 // CV_EXPORTS_W void adaptiveThreshold( InputArray src, OutputArray dst,
 // double maxValue, int adaptiveMethod,
 // int thresholdType, int blockSize, double C );
-// 3475
-// ?adaptiveThreshold@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NHHHN@Z
-// void cv::adaptiveThreshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,int,int,int,double)
-procedure _adaptiveThreshold(Src: TInputArray; dst: TOutputArray; maxValue: double; adaptiveMethod: Int; thresholdType: Int; blockSize: Int; c: double); external opencv_world_dll index 3475
+{
+  3475
+  ?adaptiveThreshold@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NHHHN@Z
+  ?adaptiveThreshold@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NHHHN@Z
+  void cv::adaptiveThreshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,int,int,int,double)
+}
+procedure _adaptiveThreshold(Src: TInputArray; dst: TOutputArray; maxValue: double; adaptiveMethod: Int; thresholdType: Int; blockSize: Int; c: double); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?adaptiveThreshold@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NHHHN@Z'
+{$ELSE}
+  name '?adaptiveThreshold@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NHHHN@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure adaptiveThreshold(Src: TInputArray; dst: TOutputArray; maxValue: double; adaptiveMethod: AdaptiveThresholdTypes; thresholdType: ThresholdTypes; blockSize: Int; c: double);
+procedure adaptiveThreshold(const Src: TInputArray; const dst: TOutputArray; maxValue: double; adaptiveMethod: AdaptiveThresholdTypes; thresholdType: ThresholdTypes; blockSize: Int; c: double);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
 (* * @brief Converts an image from one color space to another.
@@ -2546,10 +2720,19 @@ procedure adaptiveThreshold(Src: TInputArray; dst: TOutputArray; maxValue: doubl
   @see @ref imgproc_color_conversions
 *)
 // CV_EXPORTS_W void cvtColor( InputArray src, OutputArray dst, int code, int dstCn = 0 );
-// 4338
-// ?cvtColor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z
-// void cv::cvtColor(class cv::_InputArray const &,class cv::_OutputArray const &,int,int)
-procedure _cvtColor(Src: TInputArray; dst: TOutputArray; code: Int; dstCn: Int = 0); external opencv_world_dll index 4338 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  4338
+  ?cvtColor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z
+  ?cvtColor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z
+  void cv::cvtColor(class cv::_InputArray const &,class cv::_OutputArray const &,int,int)
+}
+procedure _cvtColor(Src: TInputArray; dst: TOutputArray; code: Int; dstCn: Int = 0); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?cvtColor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'
+{$ELSE}
+  name '?cvtColor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure cvtColor(Src: TInputArray; dst: TOutputArray; code: ColorConversionCodes; dstCn: Int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
@@ -2573,7 +2756,10 @@ function morphologyDefaultBorderValue(): TScalar; {$IFDEF USE_INLINE}inline; {$E
 // 5125
 // ?getStructuringElement@cv@@YA?AVMat@1@HV?$Size_@H@1@V?$Point_@H@1@@Z
 // class cv::Mat cv::getStructuringElement(int,class cv::Size_<int>,class cv::Point_<int>)
-function _getStructuringElement(shape: Int; ksize: UInt64; anchor: UInt64): TMat; external opencv_world_dll index 5125 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function _getStructuringElement(shape: Int; ksize: UInt64; anchor: UInt64): TMat; external opencv_world_dll
+// index 5125
+  name '?getStructuringElement@cv@@YA?AVMat@1@HV?$Size_@H@1@V?$Point_@H@1@@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function getStructuringElement(shape: MorphShapes; ksize: TSize): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 function getStructuringElement(shape: MorphShapes; ksize: TSize; anchor: TPoint): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
@@ -2603,11 +2789,20 @@ function getStructuringElement(shape: MorphShapes; ksize: TSize; anchor: TPoint)
 // Point anchor = Point(-1,-1), int iterations = 1,
 // int borderType = BORDER_CONSTANT,
 // const Scalar& borderValue = morphologyDefaultBorderValue() );
-// 4631
-// ?erode@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
-// void cv::erode(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,class cv::Point_<int>,int,int,class cv::Scalar_<double> const &)
+{
+  4631
+  ?erode@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
+  ?erode@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
+  void cv::erode(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,class cv::Point_<int>,int,int,class cv::Scalar_<double> const &)
+}
 procedure _erode(Src: TInputArray; dst: TOutputArray; kernel: TInputArray; anchor: UInt64 { Point = Point(-1,-1) }; iterations: Int { = 1 }; borderType: Int { = BORDER_CONSTANT };
-  const borderValue: TScalar { = morphologyDefaultBorderValue() } ); external opencv_world_dll index 4631 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  const borderValue: TScalar { = morphologyDefaultBorderValue() } ); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?erode@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
+{$ELSE}
+  name '?erode@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: Int { = 1 };
   const borderType: BorderTypes { = BORDER_CONSTANT }; const borderValue: TScalar { = morphologyDefaultBorderValue() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: Int { = 1 };
@@ -2643,11 +2838,20 @@ procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: T
 // Point anchor = Point(-1,-1), int iterations = 1,
 // int borderType = BORDER_CONSTANT,
 // const Scalar& borderValue = morphologyDefaultBorderValue());
-// 4492
-// ?dilate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
-// void cv::dilate(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,class cv::Point_<int>,int,int,class cv::Scalar_<double> const &)
+{
+  4492
+  ?dilate@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
+  ?dilate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
+  void cv::dilate(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,class cv::Point_<int>,int,int,class cv::Scalar_<double> const &)
+}
 procedure _dilate(Src: TInputArray; dst: TOutputArray; kernel: TInputArray; anchor: UInt64 { Point= Point(-1,-1) }; iterations: Int { = 1 }; borderType: Int { = BORDER_CONSTANT };
-  const borderValue: TScalar { = morphologyDefaultBorderValue() } ); external opencv_world_dll index 4492 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  const borderValue: TScalar { = morphologyDefaultBorderValue() } ); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?dilate@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
+{$ELSE}
+  name '?dilate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: Int { = 1 };
   const borderType: BorderTypes { = BORDER_CONSTANT }; const borderValue: TScalar { = morphologyDefaultBorderValue() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: Int { = 1 };
@@ -2674,10 +2878,19 @@ procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: 
   @param dst Destination image of the same size and type as src .
 *)
 // CV_EXPORTS_W void equalizeHist( InputArray src, OutputArray dst );
-// 4624
-// ?equalizeHist@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
-// void cv::equalizeHist(class cv::_InputArray const &,class cv::_OutputArray const &)
-procedure equalizeHist(Src: TInputArray; dst: TOutputArray); external opencv_world_dll index 4624 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  4624
+  ?equalizeHist@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
+  ?equalizeHist@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
+  void cv::equalizeHist(class cv::_InputArray const &,class cv::_OutputArray const &)
+}
+procedure equalizeHist(Src: TInputArray; dst: TOutputArray); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?equalizeHist@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+{$ELSE}
+  name '?equalizeHist@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Draws a simple or thick elliptic arc or fills an ellipse sector.
 
@@ -2708,11 +2921,20 @@ procedure equalizeHist(Src: TInputArray; dst: TOutputArray); external opencv_wor
 // double angle, double startAngle, double endAngle,
 // const Scalar& color, int thickness = 1,
 // int lineType = LINE_8, int shift = 0);
-// 4580
-// ?ellipse@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@V?$Size_@H@1@NNNAEBV?$Scalar_@N@1@HHH@Z
-// void cv::ellipse(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Size_<int>,double,double,double,class cv::Scalar_<double> const &,int,int,int)
+{
+  4580
+  ?ellipse@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@V?$Size_@H@1@NNNAEBV?$Scalar_@N@1@HHH@Z
+  ?ellipse@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@V?$Size_@H@1@NNNAEBV?$Scalar_@N@1@HHH@Z
+  void cv::ellipse(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Size_<int>,double,double,double,class cv::Scalar_<double> const &,int,int,int)
+}
 procedure _ellipse(img: TInputOutputArray; center: UInt64 { TPoint }; axes: UInt64 { TSize }; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1;
-  lineType: Int = Int(LINE_8); shift: Int = 0); external opencv_world_dll index 4580 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  lineType: Int = Int(LINE_8); shift: Int = 0); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?ellipse@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@V?$Size_@H@1@NNNAEBV?$Scalar_@N@1@HHH@Z'
+{$ELSE}
+  name '?ellipse@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@V?$Size_@H@1@NNNAEBV?$Scalar_@N@1@HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
   shift: Int = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Draws a marker on a predefined position in an image.
@@ -2731,11 +2953,20 @@ procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes
 // CV_EXPORTS_W void drawMarker(InputOutputArray img, Point position, const Scalar& color,
 // int markerType = MARKER_CROSS, int markerSize=20, int thickness=1,
 // int line_type=8);
-// 4534
-// ?drawMarker@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@AEBV?$Scalar_@N@1@HHHH@Z
-// void cv::drawMarker(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int,int)
+{
+  4534
+  ?drawMarker@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@AEBV?$Scalar_@N@1@HHHH@Z
+  ?drawMarker@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@AEBV?$Scalar_@N@1@HHHH@Z
+  void cv::drawMarker(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int,int)
+}
 procedure _drawMarker(img: TInputOutputArray; position: UInt64 { TPoint }; const color: TScalar; markerType: Int = Int(MARKER_CROSS); markerSize: Int = 20; thickness: Int = 1; line_type: Int = 8);
-  external opencv_world_dll index 4534 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?drawMarker@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@AEBV?$Scalar_@N@1@HHHH@Z'
+{$ELSE}
+  name '?drawMarker@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@AEBV?$Scalar_@N@1@HHHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure drawMarker(const img: TInputOutputArray; const position: TPoint; const color: TScalar; const markerType: MarkerTypes = MARKER_CROSS; const markerSize: Int = 20; const thickness: Int = 1;
   const line_type: LineTypes = LineTypes(8)); {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Draws a circle.
@@ -2753,11 +2984,19 @@ procedure drawMarker(const img: TInputOutputArray; const position: TPoint; const
 // CV_EXPORTS_W void circle(InputOutputArray img, Point center, int radius,
 // const Scalar& color, int thickness = 1,
 // int lineType = LINE_8, int shift = 0);
-// 3795
-// ?circle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z
-// void cv::circle(class cv::_InputOutputArray const &,class cv::Point_<int>,int,class cv::Scalar_<double> const &,int,int,int)
-procedure _circle(img: TInputOutputArray; center: UInt64 { TPoint }; radius: Int; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0);
-  external opencv_world_dll index 3795 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  3795
+  ?circle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z
+  ?circle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z
+  void cv::circle(class cv::_InputOutputArray const &,class cv::Point_<int>,int,class cv::Scalar_<double> const &,int,int,int)
+}
+procedure _circle(img: TInputOutputArray; center: UInt64 { TPoint }; radius: Int; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?circle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z'
+{$ELSE}
+  name '?circle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure circle(img: TInputOutputArray; center: TPoint; radius: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Calculates a histogram of a set of arrays.
 
@@ -2796,21 +3035,21 @@ procedure circle(img: TInputOutputArray; center: TPoint; radius: Int; const colo
 // const int* channels, InputArray mask,
 // OutputArray hist, int dims, const int* histSize,
 // const float** ranges, bool uniform = true, bool accumulate = false );
-// 3717
-// ?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@1@AEBV_OutputArray@1@H1PEAPEBM_N5@Z
-// void cv::calcHist(
-// class cv::Mat const *,
-// int,
-// int const *,
-// class cv::_InputArray const &,
-// class cv::_OutputArray const &,
-// int,
-// int const *,
-// float const * *,
-// bool,
-// bool)
+{
+  3717
+  ?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@41@H1PEAPEBM_N5@Z
+  ?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@1@AEBV_OutputArray@1@H1PEAPEBM_N5@Z
+  void cv::calcHist(class cv::Mat const *, int, int const *, class cv::_InputArray const &, class cv::_OutputArray const &,
+  int, int const *, float const * *,bool,bool)
+}
 procedure calcHist(const images: pMat; nimages: Int; channels: pInt; mask: TInputArray; hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; UNIFORM: BOOL = true;
-  accumulate: BOOL = false); external opencv_world_dll index 3717 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  accumulate: BOOL = false); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@41@H1PEAPEBM_N5@Z'
+{$ELSE}
+  name '?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@1@AEBV_OutputArray@1@H1PEAPEBM_N5@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Draws a line segment connecting two points.
 
@@ -2829,11 +3068,20 @@ procedure calcHist(const images: pMat; nimages: Int; channels: pInt; mask: TInpu
 *)
 // CV_EXPORTS_W void line(InputOutputArray img, Point pt1, Point pt2, const Scalar& color,
 // int thickness = 1, int lineType = LINE_8, int shift = 0);
-// 5464
-// ?line@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
-// void cv::line(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int)
+{
+  5464
+  ?line@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
+  ?line@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
+  void cv::line(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int)
+}
 procedure _line(img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0);
-  external opencv_world_dll index 5464{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?line@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
+{$ELSE}
+  name '?line@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure line(img: TInputOutputArray; pt1: TPoint; pt2: TPoint; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Draws an arrow segment pointing from the first point to the second one.
@@ -2851,11 +3099,20 @@ procedure line(img: TInputOutputArray; pt1: TPoint; pt2: TPoint; const color: TS
 *)
 // CV_EXPORTS_W void arrowedLine(InputOutputArray img, Point pt1, Point pt2, const Scalar& color,
 // int thickness=1, int line_type=8, int shift=0, double tipLength=0.1);
-// 3560
-// ?arrowedLine@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z
-// void cv::arrowedLine(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int,double)
+{
+  3560
+  ?arrowedLine@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z
+  ?arrowedLine@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z
+  void cv::arrowedLine(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int,double)
+}
 procedure _arrowedLine(img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; line_type: Int = 8; shift: Int = 0; tipLength: double = 0.1);
-  external opencv_world_dll index 3560{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?arrowedLine@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z'
+{$ELSE}
+  name '?arrowedLine@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
   const shift: Int = 0; const tipLength: double = 0.1); {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Draws a simple, thick, or filled up-right rectangle.
@@ -2875,11 +3132,19 @@ procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2
 // CV_EXPORTS_W void rectangle(InputOutputArray img, Point pt1, Point pt2,
 // const Scalar& color, int thickness = 1,
 // int lineType = LINE_8, int shift = 0);
-// 6066
-// ?rectangle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
-// void cv::rectangle(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int)
-procedure _rectangle(img: TInputOutputArray; pt1, pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0);
-  external opencv_world_dll index 6066{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  6066
+  ?rectangle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
+  ?rectangle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
+  void cv::rectangle(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int)
+}
+procedure _rectangle(img: TInputOutputArray; pt1, pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?rectangle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
+{$ELSE}
+  name '?rectangle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8; const shift: Int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Fills the area bounded by one or more polygons.
@@ -2907,11 +3172,20 @@ procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const 
 // const int* npts, int ncontours,
 // const Scalar& color, int lineType = LINE_8, int shift = 0,
 // Point offset = Point() );
-// 4712
-// ?fillPoly@cv@@YAXAEBV_InputOutputArray@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV31@@Z
-// void cv::fillPoly(class cv::_InputOutputArray const &,class cv::Point_<int> const **,int const *,int,class cv::Scalar_<double> const &,int,int,class cv::Point_<int>)
+{
+  4712
+  ?fillPoly@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV41@@Z
+  ?fillPoly@cv@@YAXAEBV_InputOutputArray@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV31@@Z
+  void cv::fillPoly(class cv::_InputOutputArray const &,class cv::Point_<int> const **,int const *,int,class cv::Scalar_<double> const &,int,int,class cv::Point_<int>)
+}
 procedure _fillPoly(img: TInputOutputArray; const pts: pPoint; const npts: pInt; ncontours: Int; const color: TScalar; lineType: Int = Int(LINE_8); shift: Int = 0;
-  offset: UInt64 { TPoint } { = Point() } = 0); external opencv_world_dll index 4712{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  offset: UInt64 { TPoint } { = Point() } = 0); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?fillPoly@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV41@@Z'
+{$ELSE}
+  name '?fillPoly@cv@@YAXAEBV_InputOutputArray@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV31@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes { = LINE_8 }; const shift: Int { = 0 };
   const offset: TPoint); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2941,11 +3215,20 @@ procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: 
 // CV_EXPORTS void polylines(InputOutputArray img, const Point* const* pts, const int* npts,
 // int ncontours, bool isClosed, const Scalar& color,
 // int thickness = 1, int lineType = LINE_8, int shift = 0 );
-// 5855
-// ?polylines@cv@@YAXAEBV_InputOutputArray@1@PEBQEBV?$Point_@H@1@PEBHH_NAEBV?$Scalar_@N@1@HHH@Z
-// void cv::polylines(class cv::_InputOutputArray const &,class cv::Point_<int> const * const *,int const *,int,bool,class cv::Scalar_<double> const &,int,int,int)
+{
+  5855
+  ?polylines@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@PEBQEBV?$Point_@H@1@PEBHH_NAEBV?$Scalar_@N@1@HHH@Z
+  ?polylines@cv@@YAXAEBV_InputOutputArray@1@PEBQEBV?$Point_@H@1@PEBHH_NAEBV?$Scalar_@N@1@HHH@Z
+  void cv::polylines(class cv::_InputOutputArray const &,class cv::Point_<int> const * const *,int const *,int,bool,class cv::Scalar_<double> const &,int,int,int)
+}
 procedure _polylines(img: TInputOutputArray; const pts: pPoint; const npts: pInt; ncontours: Int; isClosed: BOOL; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8);
-  shift: Int = 0); external opencv_world_dll index 5855{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  shift: Int = 0); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?polylines@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@PEBQEBV?$Point_@H@1@PEBHH_NAEBV?$Scalar_@N@1@HHH@Z'
+{$ELSE}
+  name '?polylines@cv@@YAXAEBV_InputOutputArray@1@PEBQEBV?$Point_@H@1@PEBHH_NAEBV?$Scalar_@N@1@HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const isClosed: BOOL; const color: TScalar; const thickness: Int = 1;
   const lineType: LineTypes = LINE_8; const shift: Int = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
@@ -2973,11 +3256,19 @@ procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts:
 // CV_EXPORTS_W void Canny( InputArray image, OutputArray edges,
 // double threshold1, double threshold2,
 // int apertureSize = 3, bool L2gradient = false );
-// 3355
-// ?Canny@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NNH_N@Z
-// void cv::Canny(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int,bool)
-procedure Canny(image: TInputArray; edges: TOutputArray; threshold1, threshold2: double; apertureSize: Int = 3; L2gradient: BOOL = false); overload;
-  external opencv_world_dll index 3355{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  3355
+  ?Canny@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NNH_N@Z
+  ?Canny@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NNH_N@Z
+  void cv::Canny(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int,bool)
+}
+procedure Canny(image: TInputArray; edges: TOutputArray; threshold1, threshold2: double; apertureSize: Int = 3; L2gradient: BOOL = false); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?Canny@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NNH_N@Z'
+{$ELSE}
+  name '?Canny@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NNH_N@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * \overload
 
@@ -2997,11 +3288,19 @@ procedure Canny(image: TInputArray; edges: TOutputArray; threshold1, threshold2:
 // OutputArray edges,
 // double threshold1, double threshold2,
 // bool L2gradient = false );
-// 3354
-// ?Canny@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NN_N@Z
-// void cv::Canny(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,double,bool)
-procedure Canny(dx: TInputArray; dy: TInputArray; edges: TOutputArray; threshold1, threshold2: double; L2gradient: BOOL = false); overload;
-  external opencv_world_dll index 3354{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  3354
+  ?Canny@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NN_N@Z
+  ?Canny@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NN_N@Z
+  void cv::Canny(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,double,bool)
+}
+procedure Canny(dx: TInputArray; dy: TInputArray; edges: TOutputArray; threshold1, threshold2: double; L2gradient: BOOL = false); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?Canny@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NN_N@Z'
+{$ELSE}
+  name '?Canny@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NN_N@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Calculates the minimal eigenvalue of gradient matrices for corner detection.
 
@@ -3019,12 +3318,18 @@ procedure Canny(dx: TInputArray; dy: TInputArray; edges: TOutputArray; threshold
 // CV_EXPORTS_W void cornerMinEigenVal( InputArray src, OutputArray dst,
 // int blockSize, int ksize = 3,
 // int borderType = BORDER_DEFAULT );
-// 4090
-// ?cornerMinEigenVal@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z
-// void cv::cornerMinEigenVal(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
+{
+  4090
+  ?cornerMinEigenVal@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z
+  ?cornerMinEigenVal@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z
+  void cv::cornerMinEigenVal(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
+}
 procedure cornerMinEigenVal(Src: TInputArray; dst: TOutputArray; blockSize: Int; ksize: Int = 3; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll
-// name '?cornerMinEigenVal@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
-  index 4090
+{$IFDEF DEBUG}
+  name '?cornerMinEigenVal@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z'
+{$ELSE}
+  name '?cornerMinEigenVal@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //
@@ -3053,11 +3358,19 @@ procedure cornerMinEigenVal(Src: TInputArray; dst: TOutputArray; blockSize: Int;
 // CV_EXPORTS_W void Scharr( InputArray src, OutputArray dst, int ddepth,
 // int dx, int dy, double scale = 1, double delta = 0,
 // int borderType = BORDER_DEFAULT );
-// 3441
-// ?Scharr@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHNNH@Z
-// void cv::Scharr(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,double,double,int)
-procedure _Scharr(Src: TInputArray; dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0; borderType: Int = Int(BORDER_DEFAULT));
-  external opencv_world_dll index 3441{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  3441
+  ?Scharr@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHNNH@Z
+  ?Scharr@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHNNH@Z
+  void cv::Scharr(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,double,double,int)
+}
+procedure _Scharr(Src: TInputArray; dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0; borderType: Int = Int(BORDER_DEFAULT)); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?Scharr@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHNNH@Z'
+{$ELSE}
+  name '?Scharr@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHNNH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: Int; const dx, dy: Int; const scale: double = 1; const delta: double = 0;
   const borderType: BorderTypes = BORDER_DEFAULT);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3098,11 +3411,10 @@ procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: I
 // ?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z
 // void cv::drawContours(class cv::_InputOutputArray const &,class cv::_InputArray const &,int,class cv::Scalar_<double> const &,int,int,class cv::_InputArray const &,int,class cv::Point_<int>)
 procedure _drawContours(image: TInputOutputArray; contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes { = LINE_8 };
-  hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: UInt64 { TPoint  = Point() } ); external opencv_world_dll
-// name '?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z'
-  index 4531
+  hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: UInt64 { TPoint  = Point() } );
+  external opencv_world_dll name '?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z'
+// index 4531
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
 procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8);
   overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
@@ -3142,13 +3454,19 @@ procedure drawContours(const image: TInputOutputArray; const contours: TInputArr
 *)
 // CV_EXPORTS_W bool imwrite( const String& filename, InputArray img,
 // const std::vector<int>& params = std::vector<int>());
-// 5269
-// ?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z
-// bool cv::imwrite(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &,class std::vector<int,class std::allocator<int> > const &)
+{
+  5269
+  ?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z
+  ?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z
+  bool cv::imwrite(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &,class std::vector<int,class std::allocator<int> > const &)
+}
 function imwrite(const filename: CppString; img: TInputArray; const params: Vector<Int> { = std::vector<int>() }
   ): BOOL; overload; external opencv_world_dll
-// name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
-  index 5269
+{$IFDEF DEBUG}
+  name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
+{$ELSE}
+  name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function imwrite(const filename: CppString; const img: TInputArray): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
@@ -3181,12 +3499,19 @@ function imwrite(const filename: CppString; const img: TInputArray): BOOL; overl
 // CV_EXPORTS_W void cornerEigenValsAndVecs( InputArray src, OutputArray dst,
 // int blockSize, int ksize,
 // int borderType = BORDER_DEFAULT );
-// 4088
-// ?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z
-// void cv::cornerEigenValsAndVecs(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
+{
+  4088
+  ?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z
+  ?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z
+  void cv::cornerEigenValsAndVecs(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
+}
 procedure cornerEigenValsAndVecs(Src: TInputArray; dst: TOutputArray; blockSize, ksize: Int; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll
-// name '?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
-  index 4088 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF DEBUG}
+  name '?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z'
+{$ELSE}
+  name '?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief Determines strong corners on an image.
 
@@ -3232,56 +3557,41 @@ procedure cornerEigenValsAndVecs(Src: TInputArray; dst: TOutputArray; blockSize,
   @sa  cornerMinEigenVal, cornerHarris, calcOpticalFlowPyrLK, estimateRigidTransform,
 *)
 
-// CV_EXPORTS_W void goodFeaturesToTrack(
-// InputArray image,
-// OutputArray corners,
-// int maxCorners,
-// double qualityLevel,
-// double minDistance,
-// InputArray mask = noArray(),
-// int blockSize = 3,
-// bool useHarrisDetector = false,
-// double k = 0.04);
-// 5200
-// ?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z
-// void cv::goodFeaturesToTrack(
-// class cv::_InputArray const &,
-// class cv::_OutputArray const &,
-// int,
-// double,
-// double,
-// class cv::_InputArray const &,
-// int,
-// bool,
-// double)
+// CV_EXPORTS_W void goodFeaturesToTrack( InputArray image,OutputArray corners, int maxCorners, double qualityLevel,
+// double minDistance, InputArray mask = noArray(), int blockSize = 3, bool useHarrisDetector = false, double k = 0.04);
+{
+  5200
+  ?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNN0H_NN@Z
+  ?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z
+  void cv::goodFeaturesToTrack(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,
+  class cv::_InputArray const &,int,bool,double)
+}
 procedure goodFeaturesToTrack(image: TInputArray; corners: TOutputArray; maxCorners: Int; qualityLevel: double; minDistance: double; mask: TInputArray { = noArray() }; blockSize: Int = 3;
   useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
-// name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z'
-  index 5200 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF DEBUG}
+  name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNN0H_NN@Z'
+{$ELSE}
+  name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-//
-// CV_EXPORTS_W void goodFeaturesToTrack( InputArray image, OutputArray corners,
-// int maxCorners, double qualityLevel, double minDistance,
-// InputArray mask, int blockSize,
-// int gradientSize, bool useHarrisDetector = false,
-// double k = 0.04 );
-// 5199
-// ?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0HH_NN@Z
-// void cv::goodFeaturesToTrack(
-// class cv::_InputArray const &,
-// class cv::_OutputArray const &,
-// int,
-// double,
-// double,
-// class cv::_InputArray const &,
-// int,
-// int,
-// bool,
-// double)
+// CV_EXPORTS_W void goodFeaturesToTrack( InputArray image, OutputArray corners, int maxCorners, double qualityLevel, double minDistance,
+// InputArray mask, int blockSize, int gradientSize, bool useHarrisDetector = false, double k = 0.04 );
+{
+  5199
+  ?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNN0HH_NN@Z
+  ?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0HH_NN@Z
+  void cv::goodFeaturesToTrack(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,
+  class cv::_InputArray const &,int,int,bool,double)
+}
 procedure goodFeaturesToTrack(image: TInputArray; corners: TOutputArray; maxCorners: Int; qualityLevel: double; minDistance: double; mask: TInputArray; blockSize: Int; gradientSize: Int;
   useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
-// name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z'
-  index 5199 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF DEBUG}
+  name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNN0HH_NN@Z'
+{$ELSE}
+  name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 (* * @brief The function is used to detect translational shifts that occur between two images.
 
@@ -3320,10 +3630,18 @@ procedure goodFeaturesToTrack(image: TInputArray; corners: TOutputArray; maxCorn
 *)
 // CV_EXPORTS_W Point2d phaseCorrelate(InputArray src1, InputArray src2,
 // InputArray window = noArray(), CV_OUT double* response = 0);
-// 5846
-// ?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@1@00PEAN@Z
-// class cv::Point_<double> cv::phaseCorrelate(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,double *)
-function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() }; response: pDouble { = 0 } ): TPoint2d; overload; external opencv_world_dll index 5846
+{
+  5846
+  ?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@debug_build_guard@1@00PEAN@Z
+  ?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@1@00PEAN@Z
+  class cv::Point_<double> cv::phaseCorrelate(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,double *)
+}
+function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() }; response: pDouble { = 0 } ): TPoint2d; overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@debug_build_guard@1@00PEAN@Z'
+{$ELSE}
+  name '?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@1@00PEAN@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() }; Var response: double { = 0 } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3346,10 +3664,18 @@ function phaseCorrelate(src1: TInputArray; src2: TInputArray): TPoint2d; overloa
   @param type Created array type
 *)
 // CV_EXPORTS_W void createHanningWindow(OutputArray dst, Size winSize, int type);
-// 4283
-// ?createHanningWindow@cv@@YAXAEBV_OutputArray@1@V?$Size_@H@1@H@Z
-// void cv::createHanningWindow(class cv::_OutputArray const &,class cv::Size_<int>,int)
-procedure createHanningWindow(dst: TOutputArray; winSize: UInt64 { TSize }; &type: Int); overload; external opencv_world_dll index 4283
+{
+  4283
+  ?createHanningWindow@cv@@YAXAEBV_OutputArray@debug_build_guard@1@V?$Size_@H@1@H@Z
+  ?createHanningWindow@cv@@YAXAEBV_OutputArray@1@V?$Size_@H@1@H@Z
+  void cv::createHanningWindow(class cv::_OutputArray const &,class cv::Size_<int>,int)
+}
+procedure createHanningWindow(dst: TOutputArray; winSize: UInt64 { TSize }; &type: Int); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?createHanningWindow@cv@@YAXAEBV_OutputArray@debug_build_guard@1@V?$Size_@H@1@H@Z'
+{$ELSE}
+  name '?createHanningWindow@cv@@YAXAEBV_OutputArray@1@V?$Size_@H@1@H@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure createHanningWindow(const dst: TOutputArray; const winSize: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
@@ -3612,12 +3938,18 @@ Type
     This function is to be applied on color images.
   *)
   // CV_EXPORTS_W void decolor( InputArray src, OutputArray grayscale, OutputArray color_boost);
-  // 4365
-  // ?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z
-  // void cv::decolor(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
+  {
+    4365
+    ?decolor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z
+    ?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z
+    void cv::decolor(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
+  }
 procedure decolor(Src: TInputArray; grayscale: TOutputArray; color_boost: TOutputArray); external opencv_world_dll
-// name '?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
-  index 4365
+{$IFDEF DEBUG}
+  name '?decolor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
+{$ELSE}
+  name '?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Filtering is the fundamental operation in image and video processing. Edge-preserving smoothing
@@ -3631,10 +3963,18 @@ procedure decolor(Src: TInputArray; grayscale: TOutputArray; color_boost: TOutpu
 *)
 // CV_EXPORTS_W void edgePreservingFilter(InputArray src, OutputArray dst, int flags = 1,
 // float sigma_s = 60, float sigma_r = 0.4f);
-// 4555
-// ?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z
-// void cv::edgePreservingFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,float,float)
-procedure edgePreservingFilter(Src: TInputArray; dst: TOutputArray; flags: Int = 1; sigma_s: float = 60; sigma_r: float = 0.4); external opencv_world_dll index 4555
+{
+  4555
+  ?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z
+  ?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z
+  void cv::edgePreservingFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,float,float)
+}
+procedure edgePreservingFilter(Src: TInputArray; dst: TOutputArray; flags: Int = 1; sigma_s: float = 60; sigma_r: float = 0.4); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z'
+{$ELSE}
+  name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief This filter enhances the details of a particular image.
@@ -3646,10 +3986,18 @@ procedure edgePreservingFilter(Src: TInputArray; dst: TOutputArray; flags: Int =
 *)
 // CV_EXPORTS_W void detailEnhance(InputArray src, OutputArray dst, float sigma_s = 10,
 // float sigma_r = 0.15f);
-// 4415
-// ?detailEnhance@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z
-// void cv::detailEnhance(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
-procedure detailEnhance(Src: TInputArray; dst: TOutputArray; sigma_s: float = 10; sigma_r: float = 0.15); external opencv_world_dll index 4415
+{
+  4415
+  ?detailEnhance@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z
+  ?detailEnhance@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z
+  void cv::detailEnhance(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
+}
+procedure detailEnhance(Src: TInputArray; dst: TOutputArray; sigma_s: float = 10; sigma_r: float = 0.15); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?detailEnhance@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z'
+{$ELSE}
+  name '?detailEnhance@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Pencil-like non-photorealistic line drawing
@@ -3662,10 +4010,18 @@ procedure detailEnhance(Src: TInputArray; dst: TOutputArray; sigma_s: float = 10
 *)
 // CV_EXPORTS_W void pencilSketch(InputArray src, OutputArray dst1, OutputArray dst2,
 // float sigma_s = 60, float sigma_r = 0.07f, float shade_factor = 0.02f);
-// 5841
-// ?pencilSketch@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1MMM@Z
-// void cv::pencilSketch(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,float,float,float)
-procedure pencilSketch(Src: TInputArray; dst1: TOutputArray; dst2: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.07; shade_factor: float = 0.02); external opencv_world_dll index 5841
+{
+  5841
+  ?pencilSketch@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1MMM@Z
+  ?pencilSketch@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1MMM@Z
+  void cv::pencilSketch(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,float,float,float)
+}
+procedure pencilSketch(Src: TInputArray; dst1: TOutputArray; dst2: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.07; shade_factor: float = 0.02); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?pencilSketch@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1MMM@Z'
+{$ELSE}
+  name '?pencilSketch@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1MMM@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Stylization aims to produce digital imagery with a wide variety of effects not focused on
@@ -3679,10 +4035,18 @@ procedure pencilSketch(Src: TInputArray; dst1: TOutputArray; dst2: TOutputArray;
 *)
 // CV_EXPORTS_W void stylization(InputArray src, OutputArray dst, float sigma_s = 60,
 // float sigma_r = 0.45f);
-// 6561
-// ?stylization@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z
-// void cv::stylization(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
-procedure stylization(Src: TInputArray; dst: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.45); external opencv_world_dll index 6561
+{
+  6561
+  ?stylization@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z
+  ?stylization@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z
+  void cv::stylization(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
+}
+procedure stylization(Src: TInputArray; dst: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.45); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?stylization@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z'
+{$ELSE}
+  name '?stylization@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {$ENDREGION 'photo.hpp'}
@@ -3694,9 +4058,11 @@ procedure stylization(Src: TInputArray; dst: TOutputArray; sigma_s: float = 60; 
   result is not defined.
 *)
 // CV_INLINE int cvRound( double value )
-// 4320
-// ?cvRound@@YAHAEBUsoftdouble@cv@@@Z
-// int cvRound(struct cv::softdouble const &)
+{
+  4320
+  ?cvRound@@YAHAEBUsoftdouble@cv@@@Z
+  int cvRound(struct cv::softdouble const &)
+}
 // function cvRound(value: double): int; external opencv_world_dll index 4320 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function cvRound(Value: double): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'fast_math.hpp'}
@@ -4068,14 +4434,20 @@ type
   // Size winSize = Size(21,21), int maxLevel = 3,
   // TermCriteria criteria = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01),
   // int flags = 0, double minEigThreshold = 1e-4 );
-  // 3724
-  // ?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z
-  // void cv::calcOpticalFlowPyrLK(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,int,class cv::TermCriteria,int,double)
+  {
+    3724
+    ?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_InputOutputArray@31@AEBV_OutputArray@31@2V?$Size_@H@1@HVTermCriteria@1@HN@Z
+    ?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z
+    void cv::calcOpticalFlowPyrLK(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,int,class cv::TermCriteria,int,double)
+  }
 procedure calcOpticalFlowPyrLK(prevImg: TInputArray; nextImg: TInputArray; prevPts: TInputArray; nextPts: TInputOutputArray; status: TOutputArray; err: TOutputArray;
   winSize: UInt64 { TSize = Size(21,21) }; maxLevel: Int { = 3 }; criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0;
   minEigThreshold: double = 1E-4); overload; external opencv_world_dll
-// name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
-  index 3724
+{$IFDEF DEBUG}
+  name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_InputOutputArray@31@AEBV_OutputArray@31@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
+{$ELSE}
+  name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
   const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int = 3); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -4618,6 +4990,11 @@ Type
     procedure convertTo(const m: TOutputArray; rtype: Int; alpha: double = 1; beta: double = 0); // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
     class operator Subtract(const m: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const Scalar& s);
+    class operator Implicit(const m: TMatExpr): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat& operator = (const MatExpr& expr);
+    class function zeros(const rows, cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}   // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
+    class function zeros(const size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
+    class function ones(rows: Int; cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
+    class operator LogicalNot(const m: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
 {$ENDREGION 'helpers'}
@@ -4633,23 +5010,18 @@ Type
 {$I opencv.InputOutputArray.import.inc}
 {$I opencv.MatExpr.import.inc}
 {$I opencv.MatSize.import.inc}
-{$I opencv.operator.import.inc}
 {$I opencv.CascadeClassifier.import.inc}
 {$I opencv.VideoCapture.import.inc}
 {$I opencv.rng.import.inc}
 {$I opencv.CommandLineParser.import.inc}
 {$I opencv.QRCodeDetector.import.inc}
 {$I opencv.SVM.import.inc}
+  //
+{$I opencv.operator.import.inc}
 {$ENDREGION 'import'}
 
   //
 implementation
-
-Uses
-{$IFDEF LOADSTUPID}
-  WinApi.Windows,
-{$ENDIF}
-  System.Rtti;
 
 {$REGION 'Std'}
 { CppString }
@@ -4795,28 +5167,12 @@ end;
 
 function MIN(a, b: Int): Int;
 begin
-{$IFDEF USE_SYSTEMMATH}
   Result := System.Math.MIN(a, b);
-{$ELSE}
-  // ((a) > (b) ? (b) : (a))
-  if a > b then
-    Result := b
-  else
-    Result := a;
-{$ENDIF}
 end;
 
 function MAX(a, b: Int): Int;
 begin
-{$IFDEF USE_SYSTEMMATH}
   Result := System.Math.MAX(a, b);
-{$ELSE}
-  // ((a) < (b) ? (b) : (a))
-  if a < b then
-    Result := b
-  else
-    Result := a;
-{$ENDIF}
 end;
 
 function cvRound(Value: double): Int;
@@ -5005,7 +5361,7 @@ begin
   Result := _getStructuringElement(Int(shape), UInt64(ksize), UInt64(anchor));
 end;
 
-procedure adaptiveThreshold(Src: TInputArray; dst: TOutputArray; maxValue: double; adaptiveMethod: AdaptiveThresholdTypes; thresholdType: ThresholdTypes; blockSize: Int; c: double);
+procedure adaptiveThreshold(const Src: TInputArray; const dst: TOutputArray; maxValue: double; adaptiveMethod: AdaptiveThresholdTypes; thresholdType: ThresholdTypes; blockSize: Int; c: double);
 begin
   _adaptiveThreshold(Src, dst, maxValue, Int(adaptiveMethod), Int(thresholdType), blockSize, c);
 end;
@@ -5071,9 +5427,9 @@ end;
 
 { TMat }
 
-class operator TMat.Implicit(const m: TMatExpr): TMat;
+class operator TMatHelper.Implicit(const m: TMatExpr): TMat;
 begin
-  Operator_Mat_Assign_MatExpr(@Result, @m);
+  Result := Operator_Mat_Assign_MatExpr(@Result, @m)^;
 end;
 
 class operator TMat.Initialize(out Dest: TMat);
@@ -5088,8 +5444,8 @@ end;
 
 class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
 begin
-  // Operator_Mat_Assign_Const_Mat(@Dest, @Src);
-  Operator_Mat_Assign_Const_Mat(@Dest, @Src);
+  if @Dest <> @Src then
+    Operator_Mat_Assign_Const_Mat(@Dest, @Src);
 end;
 
 function TMat.clone: TMat;
@@ -5117,9 +5473,9 @@ begin
   Result := isSubmatrix_Mat(@Self);
 end;
 
-class operator TMat.LogicalNot(const m: TMat): TMatExpr;
+class operator TMatHelper.LogicalNot(const m: TMat): TMatExpr;
 begin
-  MatExpr_LogicalNot_Mat(@Result, @m);
+  Result := MatExpr_LogicalNot_Mat(@Result, @m)^;
 end;
 
 class function TMat.Mat(const size: TSize; &type: Int): TMat;
@@ -5172,7 +5528,7 @@ begin
   Constructor_Mat(@Result, @m, @roi);
 end;
 
-class function TMat.ones(rows, cols, &type: Int): TMatExpr;
+class function TMatHelper.ones(rows, cols, &type: Int): TMatExpr;
 begin
   ones_Mat(@Result, rows, cols, &type);
 end;
@@ -5313,12 +5669,12 @@ begin
   Result := type_Mat(@Self);
 end;
 
-class function TMat.zeros(const rows, cols: Int; &type: Int): TMatExpr;
+class function TMatHelper.zeros(const rows, cols: Int; &type: Int): TMatExpr;
 begin
-  zeros_Mat(@Result, rows, cols, &type);
+  Result := zeros_Mat(@Result, rows, cols, &type)^;
 end;
 
-class function TMat.zeros(const size: TSize; &type: Int): TMatExpr;
+class function TMatHelper.zeros(const size: TSize; &type: Int): TMatExpr;
 begin
   zeros_Mat(@Result, UInt64(size), &type);
 end;
@@ -5327,40 +5683,35 @@ end;
 
 class function TInputArray.InputArray(const m: TMat): TInputArray;
 begin
+  // m.addref;
   Constructor_InputArray(@Result, pMat(@m));
 end;
 
 class operator TInputArray.Implicit(const m: TMat): TInputArray;
 begin
+  // Constructor_InputArray(@Result, pMat(@m));
+  Result := TInputArray.InputArray(m);
+end;
+
+class function TInputArray.InputArray(const m: TMatExpr): TInputArray;
+begin
+  Constructor_InputArray(@Result, pMatExpr(@m));
+end;
+
+class operator TInputArray.Implicit(const m: TMatExpr): TInputArray;
+begin
+  // Constructor_InputArray(@Result, pMatExpr(@m));
   Result := TInputArray.InputArray(m);
 end;
 
 function TInputArray.getMat(idx: Int): TMat;
 begin
-  // Result := default (TMat);
   getMat_InputArray(@Self, Result, idx);
 end;
 
 function TInputArray.getObj: Pointer;
 begin
   Result := getObj_InputArray(@Self);
-end;
-
-// class operator TInputArray.Implicit(const IA: TInputArray): TMat;
-// begin
-// // 1//  getMat_InputArray(@IA, @Result);
-// // 2//   Result := pMat(IA.Obj)^;
-// // 3
-// Var
-// R: pMat;
-// Var
-// p: TMat;
-// R := getMat_InputArray(@IA, @p);
-// end;
-
-class operator TInputArray.Implicit(const m: TMatExpr): TInputArray;
-begin
-  Constructor_InputArray(@Result, pMatExpr(@m));
 end;
 
 class operator TInputArray.Initialize(out Dest: TInputArray);
@@ -5370,6 +5721,7 @@ end;
 
 class operator TInputArray.Finalize(var Dest: TInputArray);
 begin
+  // if Dest.isMat and (Dest.getMat.u^.refcount = 1) then
   Destructor_InputArray(@Dest);
 end;
 
@@ -5517,6 +5869,11 @@ begin
 end;
 
 { TMatExpr }
+
+class operator TMatExpr.assign(var Dest: TMatExpr; const [ref] Src: TMatExpr);
+begin
+  Operator_MatExpr_Assign_Const_MatExpr(@Dest, @Src);
+end;
 
 class operator TMatExpr.Finalize(var Dest: TMatExpr);
 begin

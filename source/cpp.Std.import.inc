@@ -9,7 +9,8 @@
 
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@QEBD@Z
 // std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(char const * const)
-procedure Constructor_CppString(Obj: pCppString; pac: pAnsiChar); overload; external opencv_delphi_dll name '??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@QEBD@Z'
+procedure Constructor_CppString(Obj: pCppString; pac: pAnsiChar); overload; external opencv_delphi_dll
+name '??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@QEBD@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@QEBDAEBV?$allocator@D@1@@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(char const * const,class std::allocator<char> const &)
@@ -19,7 +20,8 @@ procedure Constructor_CppString(Obj: pCppString; pac: pAnsiChar); overload; exte
 
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ
 // std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(void)
-procedure Constructor_CppString(Obj: pCppString); overload; external opencv_delphi_dll name '??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ'
+procedure Constructor_CppString(Obj: pCppString); overload; external opencv_delphi_dll
+name '??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@_KD@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(unsigned __int64,char)
@@ -27,7 +29,8 @@ procedure Constructor_CppString(Obj: pCppString); overload; external opencv_delp
 
 // ??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ
 // std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::~basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(void)
-procedure Destructor_CppString(Obj: pCppString); overload; external opencv_delphi_dll name '??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ'
+procedure Destructor_CppString(Obj: pCppString); overload; external opencv_delphi_dll
+name '??1?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@XZ'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ??4?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV01@$$QEAV01@@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::operator=(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &&)
@@ -84,7 +87,7 @@ procedure Destructor_CppString(Obj: pCppString); overload; external opencv_delph
 
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@AEBV12@@Z
 // class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-procedure assign_CppString(Obj: pCppString; a: pCppString) { : pCppString }; overload;
+procedure assign_CppString(Obj: pCppString; a: pCppString); overload;
   external opencv_delphi_dll name '?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@AEBV12@@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -92,7 +95,8 @@ procedure assign_CppString(Obj: pCppString; a: pCppString) { : pCppString }; ove
 
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@QEBD@Z
 // class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(char const * const)
-procedure assign_CppString(Obj: pCppString; pac: pAnsiChar); overload; external opencv_delphi_dll name '?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@QEBD@Z'
+procedure assign_CppString(Obj: pCppString; pac: pAnsiChar); overload; external opencv_delphi_dll
+name '?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@QEBD@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?assign@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@QEBD_K@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::assign(char const * const,unsigned __int64)
@@ -107,7 +111,8 @@ procedure assign_CppString(Obj: pCppString; pac: pAnsiChar); overload; external 
 
 // ?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAPEBDXZ
 // char const * std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::c_str(void)
-function c_str_CppString(Obj: pCppString { ; r: pAnsiChar } ): pAnsiChar; external opencv_delphi_dll name '?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAPEBDXZ'
+function c_str_CppString(Obj: pCppString { ; r: pAnsiChar } ): pAnsiChar; external opencv_delphi_dll
+name '?c_str@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBAPEBDXZ'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?capacity@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ	unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::capacity(void)
@@ -132,7 +137,8 @@ function c_str_CppString(Obj: pCppString { ; r: pAnsiChar } ): pAnsiChar; extern
 
 // ?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@_K@Z
 // class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::erase(unsigned __int64)
-procedure erase_CppString(Obj: pCppString; _Off: UInt64 = 0); overload; external opencv_delphi_dll name '?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@_K@Z'
+procedure erase_CppString(Obj: pCppString; _Off: UInt64 = 0); overload; external opencv_delphi_dll
+name '?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@_K@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?erase@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAAEAV12@_K_K@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > & std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::erase(unsigned __int64,unsigned __int64)
@@ -170,7 +176,8 @@ procedure erase_CppString(Obj: pCppString; _Off: UInt64 = 0); overload; external
 
 // ?length@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ
 // unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::length(void)
-function length_CppString(Obj: pCppString): UInt64; overload; external opencv_delphi_dll name '?length@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ'
+function length_CppString(Obj: pCppString): UInt64; overload; external opencv_delphi_dll
+name '?length@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?max_size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ	unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::max_size(void)
@@ -199,7 +206,8 @@ function length_CppString(Obj: pCppString): UInt64; overload; external opencv_de
 // ?shrink_to_fit@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAXXZ	void std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::shrink_to_fit(void)
 
 // ?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ unsigned __int64 std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::size(void)
-function size_CppString(Obj: pCppString): UInt64; overload; external opencv_delphi_dll name '?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ'
+function size_CppString(Obj: pCppString): UInt64; overload; external opencv_delphi_dll
+name '?size@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA_KXZ'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?substr@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEBA?AV12@_K0@Z	class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::substr(unsigned __int64,unsigned __int64)
 // ?swap@?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAAXAEAV12@@Z	void std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::swap(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &)
@@ -207,16 +215,23 @@ function size_CppString(Obj: pCppString): UInt64; overload; external opencv_delp
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ?CreateStdVector@@YAXPEAXH@Z	void __cdecl CreateStdVector(void * __ptr64,int)
-procedure CreateStdVector(Obj: TStdPointer; vt: TVectorType); external opencv_delphi_dll name '?CreateStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure CreateStdVector(Obj: TStdPointer; vt: TVectorType); external opencv_delphi_dll
+name '?CreateStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?DestroyStdVector@@YAXPEAXH@Z	void __cdecl DestroyStdVector(void * __ptr64,int)
-procedure DestroyStdVector(Obj: TStdPointer; vt: TVectorType); external opencv_delphi_dll name '?DestroyStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure DestroyStdVector(Obj: TStdPointer; vt: TVectorType); external opencv_delphi_dll
+name '?DestroyStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdItem@@YAXPEAXH_K0@Z	void __cdecl StdItem(void * __ptr64,int,unsigned __int64,void * __ptr64)
-procedure StdItem(const Obj: TStdPointer; vt: TVectorType; index: UInt64; p: TStdPointer); external opencv_delphi_dll name '?StdItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure StdItem(const Obj: TStdPointer; vt: TVectorType; index: UInt64; p: TStdPointer); external opencv_delphi_dll
+name '?StdItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdSize@@YA_KPEAXH@Z	unsigned __int64 __cdecl StdSize(void * __ptr64,int)
-function StdSize(Obj: TStdPointer; vt: TVectorType): UInt64; external opencv_delphi_dll name '?StdSize@@YA_KPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function StdSize(Obj: TStdPointer; vt: TVectorType): UInt64; external opencv_delphi_dll
+name '?StdSize@@YA_KPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdEmpty@@YA_NPEAXH@Z	bool __cdecl StdEmpty(void * __ptr64,int)
-function StdEmpty(Obj: TStdPointer; vt: TVectorType): bool; external opencv_delphi_dll name '?StdEmpty@@YA_NPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function StdEmpty(Obj: TStdPointer; vt: TVectorType): bool; external opencv_delphi_dll
+name '?StdEmpty@@YA_NPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdPushBack@@YAXPEAX0H@Z	void __cdecl StdPushBack(void * __ptr64,void * __ptr64,int)
-function StdPushBack(Obj: TStdPointer; p: TStdPointer; vt: TVectorType): bool; external opencv_delphi_dll name '?StdPushBack@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function StdPushBack(Obj: TStdPointer; p: TStdPointer; vt: TVectorType): bool; external opencv_delphi_dll
+name '?StdPushBack@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?CopyStdVector@@YAXPEAX0H@Z	void __cdecl CopyStdVector(void * __ptr64,void * __ptr64,int)
-procedure CopyStdVector(Obj, Src: TStdPointer; vt: TVectorType); external opencv_delphi_dll name '?CopyStdVector@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure CopyStdVector(Obj, Src: TStdPointer; vt: TVectorType); external opencv_delphi_dll
+name '?CopyStdVector@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};

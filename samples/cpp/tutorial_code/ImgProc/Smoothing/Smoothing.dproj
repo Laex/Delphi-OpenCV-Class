@@ -3,7 +3,7 @@
         <ProjectGuid>{05E6B199-C12E-4956-8279-2A0438A83C2D}</ProjectGuid>
         <MainSource>Smoothing.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Console</AppType>
         <FrameworkType>None</FrameworkType>

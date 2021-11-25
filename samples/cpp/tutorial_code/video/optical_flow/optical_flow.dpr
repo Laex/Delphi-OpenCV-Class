@@ -129,30 +129,6 @@ begin
       Var
       criteria := TTermCriteria.TermCriteria(TTermCriteria.COUNT + TTermCriteria.EPS, 10, 0.03);
 
-      // Var
-      // prevImg: TInputArray := old_gray;
-      // Var
-      // nextImg: TInputArray := frame_gray;
-      // Var
-      // prevPts: TInputArray := p0;
-      // Var
-      // nextPts: TInputOutputArray := p1;
-      // Var
-      // _status: TOutputArray := status;
-      // Var
-      // _err: TOutputArray := err;
-
-      {
-        winSize: UInt64;
-        maxLevel: Int;
-        criteria: TTermCriteria;
-        flags: Int = 0;
-        minEigThreshold: double = 1E-4
-      }
-      // if j = 1 then
-      // Writeln;
-      // Writeln(j);
-      // Inc(j);
       calcOpticalFlowPyrLK(old_gray, frame_gray, p0, p1, status, err, size(15, 15), 2, criteria);
 
       Var

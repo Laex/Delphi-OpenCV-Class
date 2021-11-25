@@ -3,7 +3,7 @@
         <ProjectGuid>{793AEB67-E383-4377-B3C9-66E79ECDEDD4}</ProjectGuid>
         <MainSource>goodFeaturesToTrack_Demo.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Console</AppType>
         <FrameworkType>None</FrameworkType>
