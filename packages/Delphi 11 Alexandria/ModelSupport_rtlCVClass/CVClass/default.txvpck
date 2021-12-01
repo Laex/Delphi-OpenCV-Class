@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nodeSet version="1.0">
+  <view uin="xw9kcqa0ut6ds1gvh_v">
+    <property name="$defaultDiagram" value="true" />
+    <property name="$metaclass" value="Package Diagram" />
+    <property name="$name" value="default" />
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TOnCVAfterPaint">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="798,1001,193,36" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TocvCaptureThread">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="768,1002,174,237" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TocvCaptureThread.FOnNotifyData" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TocvCaptureThread.FOnNoData" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TocvCaptureThread.FThreadDelay" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TocvCaptureThread.FCapture" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TocvCaptureThread.Execute()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TocvCaptureThread.OnNoData" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TocvCaptureThread.OnNotifyData" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TocvCaptureThread.ThreadDelay" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TocvCaptureThread.FOnNotifyData">
+        <property name="sourceAnchor" value="908,1002" />
+        <property name="targetAnchor" value="1125,512" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TocvCaptureThread.OnNotifyData">
+        <property name="sourceAnchor" value="874,1002" />
+        <property name="targetAnchor" value="1107,512" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TocvCaptureThread.Create(System.string,,System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TocvCaptureThread.Create(System.Cardinal,opencv_world.VideoCaptureAPIs)" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVReceiverList">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="460,281,298,36" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVView">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1131,668,190,702" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVView.FMat" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVView.FCVSource" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVView.FOnAfterPaint" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVView.FOnBeforePaint" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVView.FCanvas" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVView.FStretch" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVView.FProportional" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVView.FCenter" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.WMEraseBkgnd(ref@Winapi.Messages.TWMEraseBkgnd)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.WMPaint(ref@Winapi.Messages.TWMPaint)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.SetSource(System.TObject)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.SetCVSource(CVClass.ICVDataSource)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.TakeMat(opencv_world.TMat)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.isSourceEnabled()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.MatIsEmpty()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.PaintRect()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.ReleaseMat()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.Create(System.Classes.TComponent)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.Destroy()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVView.DrawMat(opencv_world.TMat)" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.Canvas" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.Source" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.Proportional" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.Stretch" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.Center" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.Align" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnAfterPaint" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnBeforePaint" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnEnter" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnExit" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnKeyDown" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnKeyPress" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnKeyUp" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnMouseDown" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnMouseUp" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnMouseMove" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnMouseEnter" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnMouseLeave" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnMouseWheel" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnMouseWheelUp" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVView.OnMouseWheelDown" />
+      <reference referencedUin="delphi:l_impl:src:rtlCVClass:CVClass.TCVView:CVClass.ICVDataReceiver">
+        <property name="sourceAnchor" value="1191,1370" />
+        <property name="targetAnchor" value="1013,1623" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVView.FCVSource">
+        <property name="sourceAnchor" value="1171,1370" />
+        <property name="targetAnchor" value="882,1611" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVView.FOnAfterPaint">
+        <property name="sourceAnchor" value="1131,1025" />
+        <property name="targetAnchor" value="991,1025" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVView.FOnBeforePaint">
+        <property name="sourceAnchor" value="1241,1370" />
+        <property name="targetAnchor" value="1241,1653" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVView.Source">
+        <property name="sourceAnchor" value="1151,1370" />
+        <property name="targetAnchor" value="882,1608" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVView.OnAfterPaint">
+        <property name="sourceAnchor" value="1131,1013" />
+        <property name="targetAnchor" value="991,1013" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVView.OnBeforePaint">
+        <property name="sourceAnchor" value="1211,1370" />
+        <property name="targetAnchor" value="1211,1653" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TArrayInteger">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="2099,2035,191,36" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVWebCameraResolution">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1752,902,173,233" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r160x120" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r320x240" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r424x240" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r640x360" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r800x448" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r960x544" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r1280x720" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.rCustom" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r176x144" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r352x288" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r640x480" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolution.r800x600" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.@unitclass">
+      <property name="$shortcutReference" value="true" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.@unitclass.GetRegisteredImageOperations()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.@unitclass.ipDraw(Winapi.Windows.HDC,opencv_world.TMat,System.Types.TRect,System.Boolean)" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.@unitclass._RegisteredImageOperations" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.@unitclass._RegisteredImageOperations" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.@unitclass.CVWebCameraResolutionValue" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.@unitclass.GetRegisteredCaptureSource()" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.@unitclass._RegisteredCaptureSource" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.@unitclass.CVWebCameraResolutionValue" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.@unitclass._RegisteredCaptureSource" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVDataProxy">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="592,937,166,163" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataProxy.FCVSource" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataProxy.SetSource(System.TObject)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataProxy.SetCVSource(CVClass.ICVDataSource)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataProxy.TakeMat(opencv_world.TMat)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataProxy.Destroy()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVDataProxy.Source" />
+      <reference referencedUin="delphi:l_impl:src:rtlCVClass:CVClass.TCVDataProxy:CVClass.ICVDataReceiver">
+        <property name="sourceAnchor" value="716,1100" />
+        <property name="targetAnchor" value="960,1623" />
+        <property name="bendpoints" value="" />
+        <property name="bounds_setted_by_user" value="True" />
+      </reference>
+      <reference referencedUin="delphi:l_gnt:src:rtlCVClass:CVClass.TCVDataProxy:CVClass.TCVDataSource">
+        <property name="sourceAnchor" value="592,1018" />
+        <property name="targetAnchor" value="472,1018" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVDataProxy.FCVSource">
+        <property name="sourceAnchor" value="674,1100" />
+        <property name="targetAnchor" value="813,1599" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVDataProxy.Source">
+        <property name="sourceAnchor" value="633,1100" />
+        <property name="targetAnchor" value="790,1599" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVWebCameraSource">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1362,862,250,223" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraSource.FResolution" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraSource.FCameraIndex" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVWebCameraSource.setCameraIndex(System.Cardinal)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVWebCameraSource.SetResolution(CVClass.TCVWebCameraResolution)" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVWebCameraSource.CameraIndex" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVWebCameraSource.Resolution" />
+      <reference referencedUin="delphi:l_gnt:src:rtlCVClass:CVClass.TCVWebCameraSource:CVClass.TCVCustomSourceType">
+        <property name="sourceAnchor" value="2525,1032" />
+        <property name="targetAnchor" value="1971,695" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVWebCameraSource.FResolution">
+        <property name="sourceAnchor" value="1612,1057" />
+        <property name="targetAnchor" value="1752,1057" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVWebCameraSource.Resolution">
+        <property name="sourceAnchor" value="1612,979" />
+        <property name="targetAnchor" value="1752,979" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraSource.FCustomResolution" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVWebCameraSource.setCameraIndex(System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVWebCameraSource.Create(System.Classes.TPersistent)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVWebCameraSource.Destroy()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVWebCameraSource.CustomResolution" />
+      <reference referencedUin="delphi:l_gnt:src:rtlCVClass:CVClass.TCVWebCameraSource:CVClass.TCVCustomSource">
+        <property name="sourceAnchor" value="1542,1085" />
+        <property name="targetAnchor" value="1620,1243" />
+        <property name="bendpoints" value="" />
+        <property name="bounds_setted_by_user" value="True" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVWebCameraSource.FCustomResolution">
+        <property name="sourceAnchor" value="1431,862" />
+        <property name="targetAnchor" value="1431,387" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVWebCameraSource.CustomResolution">
+        <property name="sourceAnchor" value="1396,862" />
+        <property name="targetAnchor" value="1396,387" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.ICVEditorPropertiesContainer">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="2150,243,259,111" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVEditorPropertiesContainer.GetProperties()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVEditorPropertiesContainer.GetPropertiesClass()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVEditorPropertiesContainer.SetPropertiesClass(CVClass.TCVSourceTypeClass)" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVCaptureSource">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1995,780,249,478" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.FPS">
+        <property name="bounds" value="59,31,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.Height">
+        <property name="bounds" value="59,46,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.Width">
+        <property name="bounds" value="59,76,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.Enabled">
+        <property name="bounds" value="59,16,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.StopCapture()">
+        <property name="bounds" value="74,88,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.StartCapture()">
+        <property name="bounds" value="74,73,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.Destroy()">
+        <property name="bounds" value="74,58,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.TerminateSourceThread()">
+        <property name="bounds" value="74,163,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.OnNotifyData(System.TObject,opencv_world.TMat)">
+        <property name="bounds" value="74,133,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.Loaded()">
+        <property name="bounds" value="74,118,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCaptureSource.FEnabled">
+        <property name="bounds" value="62,33,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCaptureSource.FSourceThread">
+        <property name="bounds" value="62,63,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCaptureSource.FOperation" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCaptureSource.FOperationClass" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.GetPropertiesClassName()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.SetProperties(CVClass.TCVCustomSourceType)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.SetPropertiesClassName(System.string)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.RecreateProperties()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.CreateProperties()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.DestroyProperties()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.GetProperties()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.GetPropertiesClass()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.SetPropertiesClass(CVClass.TCVSourceTypeClass)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.Create(System.Classes.TComponent)" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.OperationClass" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.OperationClassName" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.Operation" />
+      <reference referencedUin="delphi:l_impl:src:rtlCVClass:CVClass.TCVCaptureSource:CVClass.ICVEditorPropertiesContainer">
+        <property name="sourceAnchor" value="2197,780" />
+        <property name="targetAnchor" value="2197,354" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCaptureSource.FOperation">
+        <property name="sourceAnchor" value="1995,1239" />
+        <property name="targetAnchor" value="1840,1239" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCaptureSource.FOperationClass">
+        <property name="sourceAnchor" value="2071,780" />
+        <property name="targetAnchor" value="2071,332" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCaptureSource.OperationClass">
+        <property name="sourceAnchor" value="1412,908" />
+        <property name="targetAnchor" value="1605,1822" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCaptureSource.Operation">
+        <property name="sourceAnchor" value="1489,539" />
+        <property name="targetAnchor" value="1841,539" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCaptureSource.FSourceThread">
+        <property name="sourceAnchor" value="2172,1258" />
+        <property name="targetAnchor" value="2172,1514" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.setEnabled(System.Boolean)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.getEnabled()" />
+      <reference referencedUin="delphi:l_gnt:src:rtlCVClass:CVClass.TCVCaptureSource:CVClass.TCVDataSource">
+        <property name="sourceAnchor" value="1995,829" />
+        <property name="targetAnchor" value="472,929" />
+        <property name="bendpoints" value="1332,658,1120,658" />
+        <property name="bounds_setted_by_user" value="True" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.SetProperties(CVClass.TCVCustomSource)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.OnNotifyDataCaptureThread(System.TObject,opencv_world.TMat)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.OnNoDataCaptureThread(System.TObject)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.OnTerminateCaptureThread(System.TObject)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureSource.OnNotifyChange(System.TObject)" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.SourceTypeClass" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.SourceTypeClassName" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureSource.SourceType" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCaptureSource.SourceTypeClass">
+        <property name="sourceAnchor" value="2033,780" />
+        <property name="targetAnchor" value="2033,332" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCaptureSource.SourceType">
+        <property name="sourceAnchor" value="1995,1231" />
+        <property name="targetAnchor" value="1840,1231" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVFileSource">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1893,1942,137,163" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVFileSource.FFileName" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVFileSource.FLoop" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVFileSource.SetDelay(System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVFileSource.SetFileName(System.SysUtils.@unitclass.TFileName)" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVFileSource.FileName" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVFileSource.Loop" />
+      <reference referencedUin="delphi:l_gnt:src:rtlCVClass:CVClass.TCVFileSource:CVClass.TCVCustomSourceType">
+        <property name="sourceAnchor" value="1962,233" />
+        <property name="targetAnchor" value="1962,293" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_gnt:src:rtlCVClass:CVClass.TCVFileSource:CVClass.TCVCustomSource">
+        <property name="sourceAnchor" value="1927,1942" />
+        <property name="targetAnchor" value="1832,1712" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVFileSource.Create(System.Classes.TPersistent)" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.ICVDataReceiver">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="922,1623,114,96" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataReceiver.TakeMat(opencv_world.TMat)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataReceiver.SetSource(System.TObject)" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVCustomSourceType">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1841,293,173,402" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.AssignTo(System.Classes.TPersistent)" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSourceType.FLock" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSourceType.FOwner" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSourceType.FFloatParams" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSourceType.FIntParams" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSourceType.FBoolParams" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.GetFloatParam(System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.GetIntParam(System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.GetBoolParam(System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.SetFloatParam(System.Integer,System.Double)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.SetIntParam(System.Integer,System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.SetBoolParam(System.Integer,System.Boolean)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.LockTransform()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.UnlockTransform()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.GetOwner()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSourceType.FloatParams[System.Integer]" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSourceType.IntParams[System.Integer]" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSourceType.BoolParams[System.Integer]" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.Create(System.Classes.TPersistent)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSourceType.GetNamePath()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSourceType.Name" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCustomSourceType.FLock">
+        <property name="sourceAnchor" value="1929,695" />
+        <property name="targetAnchor" value="1929,1118" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCustomSourceType.FFloatParams">
+        <property name="sourceAnchor" value="1863,293" />
+        <property name="targetAnchor" value="1627,139" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCustomSourceType.FIntParams">
+        <property name="sourceAnchor" value="2014,409" />
+        <property name="targetAnchor" value="2237,139" />
+        <property name="bendpoints" value="2237,194" />
+        <property name="bounds_setted_by_user" value="True" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCustomSourceType.FBoolParams">
+        <property name="sourceAnchor" value="1841,494" />
+        <property name="targetAnchor" value="1741,494" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVSourceTypeClass">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1969,265,141,67" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVDataSource">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="174,870,298,297" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataSource.FMat" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataSource.FCVReceivers" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataSource.FName" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataSource.FWidth" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataSource.FHeight" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataSource.FFPS" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.NotifyReceiver(opencv_world.TMat)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.getMat()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.setMat(opencv_world.TMat)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.GetName()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.getHeight()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.getWidth()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.GetFPS()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.Create(System.Classes.TComponent)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.Destroy()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.AddReceiver(CVClass.ICVDataReceiver)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.RemoveReceiver(CVClass.ICVDataReceiver)" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVDataSource.Mat" />
+      <reference referencedUin="delphi:l_impl:src:rtlCVClass:CVClass.TCVDataSource:CVClass.ICVDataSource">
+        <property name="sourceAnchor" value="323,1167" />
+        <property name="targetAnchor" value="767,1599" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVDataSource.FCVReceivers">
+        <property name="sourceAnchor" value="427,870" />
+        <property name="targetAnchor" value="609,317" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.getEnabled()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.setEnabled()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVDataSource.Enabled" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataSource.FOnBeforeNotifyReceiver" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataSource.FOnCVNotify" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataSource.setEnabled(System.Boolean)" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVDataSource.OnBeforeNotifyReceiver" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVDataSource.OnCVNotify" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVDataSource.FOnBeforeNotifyReceiver">
+        <property name="sourceAnchor" value="238,870" />
+        <property name="targetAnchor" value="238,317" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVDataSource.FOnCVNotify">
+        <property name="sourceAnchor" value="383,870" />
+        <property name="targetAnchor" value="383,317" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVDataSource.OnBeforeNotifyReceiver">
+        <property name="sourceAnchor" value="206,870" />
+        <property name="targetAnchor" value="206,317" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVDataSource.OnCVNotify">
+        <property name="sourceAnchor" value="346,870" />
+        <property name="targetAnchor" value="346,317" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1506,10,146,578" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.ANY" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.VFW" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.V4L" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.V4L2" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.FIREWIRE" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.FIREWARE" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.IEEE1394" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.DC1394" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.CMU1394" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.QT" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.UNICAP" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.DSHOW" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.PVAPI" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.OPENNI" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.OPENNI_ASUS" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.ANDROID" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.XIAPI" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.AVFOUNDATION" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.GIGANETIX" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.MSMF" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.WINRT" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.INTELPERC" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.REALSENSE" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.OPENNI2" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.OPENNI2_ASUS" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.OPENNI2_ASTRA" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.GPHOTO2" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.GSTREAMER" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.FFMPEG" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.IMAGES" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.ARAVIS" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.OPENCV_MJPEG" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.INTEL_MFX" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.XINE" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVVideoCaptureAPIs.UEYE" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TRegisteredImageOperations">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="2353,10,255,143" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TRegisteredImageOperations.FindByClassName(System.string)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TRegisteredImageOperations.FindByName(System.string)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TRegisteredImageOperations.GetNameByClass(System.TClass)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TRegisteredImageOperations.RegisterIOClass(System.TClass,System.string)" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.ICVDataSource">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="744,1599,138,143" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataSource.AddReceiver(CVClass.ICVDataReceiver)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataSource.RemoveReceiver(CVClass.ICVDataReceiver)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataSource.getMat()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataSource.GetName()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataSource.getHeight()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataSource.getWidth()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataSource.GetFPS()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.ICVDataSource.Enabled" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.ICVDataSource.Mat" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.ICVDataSource.Name" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.ICVDataSource.Width" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.ICVDataSource.Height" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.ICVDataSource.FPS" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataSource.getEnabled()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.ICVDataSource.setEnabled(System.Boolean)" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TArrayDouble">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1487,2035,192,36" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TArrayBoolean">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="2344,1653,205,36" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TOnCVNotify">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1181,1653,90,36" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVDataReceiver">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="784,1957,169,192" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVDataReceiver.FCVSource" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataReceiver.SetSource(System.TObject)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataReceiver.SetCVSource(CVClass.ICVDataSource)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataReceiver.TakeMat(opencv_world.TMat)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataReceiver.Destroy()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVDataReceiver.isSourceEnabled()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVDataReceiver.Source" />
+      <reference referencedUin="delphi:l_impl:src:rtlCVClass:CVClass.TCVDataReceiver:CVClass.ICVDataReceiver">
+        <property name="sourceAnchor" value="937,1957" />
+        <property name="targetAnchor" value="937,1719" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVDataReceiver.FCVSource">
+        <property name="sourceAnchor" value="832,1957" />
+        <property name="targetAnchor" value="832,1742" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVDataReceiver.Source">
+        <property name="sourceAnchor" value="808,1957" />
+        <property name="targetAnchor" value="808,1742" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TOCVLock">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="2172,10,194,36" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TOnCVNotifyVar">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="310,281,110,36" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TRegisteredCaptureSource">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1897,10,255,143" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TRegisteredCaptureSource.FindByClassName(System.string)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TRegisteredCaptureSource.FindByName(System.string)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TRegisteredCaptureSource.GetNameByClass(System.TClass)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TRegisteredCaptureSource.RegisterIOClass(System.TClass,System.string)" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVCustomSource">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1620,1220,220,492" />
+      <property name="location_set_by_user" value="True" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSource.Delay">
+        <property name="bounds" value="50,13,0,0" />
+      </reference>
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.AssignTo(System.Classes.TPersistent)" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSource.FOwner" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSource.FFloatParams" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSource.FIntParams" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSource.FBoolParams" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSource.FNotifyChange" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.GetFloatParam(System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.GetIntParam(System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.GetBoolParam(System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.SetFloatParam(System.Integer,System.Double)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.SetIntParam(System.Integer,System.Integer)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.SetBoolParam(System.Integer,System.Boolean)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.GetOwner()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.DoNotifyChange()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSource.FloatParams[System.Integer]" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSource.IntParams[System.Integer]" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSource.BoolParams[System.Integer]" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.Create(System.Classes.TPersistent)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.GetNamePath()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSource.OnNotifyChange" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSource.Name" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCustomSource.FFloatParams">
+        <property name="sourceAnchor" value="1649,1712" />
+        <property name="targetAnchor" value="1649,2035" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCustomSource.FIntParams">
+        <property name="sourceAnchor" value="1840,1598" />
+        <property name="targetAnchor" value="2179,2035" />
+        <property name="bendpoints" value="" />
+        <property name="bounds_setted_by_user" value="True" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCustomSource.FBoolParams">
+        <property name="sourceAnchor" value="1840,1671" />
+        <property name="targetAnchor" value="2344,1671" />
+        <property name="bendpoints" value="" />
+        <property name="bounds_setted_by_user" value="True" />
+      </reference>
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSource.FThreadDelay" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.setThreadDelay(System.Cardinal)" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomSource.FCaptureAPIs" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomSource.setCaptureAPIs(CVClass.TCVVideoCaptureAPIs)" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomSource.CaptureAPIs" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCustomSource.FCaptureAPIs">
+        <property name="sourceAnchor" value="1636,1220" />
+        <property name="targetAnchor" value="1636,588" />
+        <property name="bendpoints" value="" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCustomSource.CaptureAPIs">
+        <property name="sourceAnchor" value="1628,1220" />
+        <property name="targetAnchor" value="1628,588" />
+        <property name="bendpoints" value="" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVCustomResolution">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1321,210,145,177" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomResolution.FWidth" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCustomResolution.FHeight" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomResolution.AssignTo(System.Classes.TPersistent)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCustomResolution.Create()" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomResolution.Width" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCustomResolution.Height" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVCaptureThread">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="2100,1514,174,314" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCaptureThread.FSourceType" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCaptureThread.FCapture" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCaptureThread.FOnNotifyData" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCaptureThread.FOnNoData" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVCaptureThread.FThreadDelay" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureThread.TerminatedSet()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureThread.Execute()" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureThread.Create(System.string,System.Cardinal,opencv_world.VideoCaptureAPIs)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureThread.Create(System.Integer,System.Cardinal,opencv_world.VideoCaptureAPIs)" />
+      <reference referencedUin="delphi:e_method:src:rtlCVClass:CVClass.TCVCaptureThread.SetResolution(System.Double,System.Double)" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureThread.OnNoData" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureThread.OnNotifyData" />
+      <reference referencedUin="delphi:e_property:src:rtlCVClass:CVClass.TCVCaptureThread.ThreadDelay" />
+      <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVCaptureThread.TSourceType" />
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCaptureThread.FOnNotifyData">
+        <property name="sourceAnchor" value="2100,1582" />
+        <property name="targetAnchor" value="1271,1673" />
+        <property name="bendpoints" value="1982,1450,1803,1450" />
+        <property name="bounds_setted_by_user" value="True" />
+      </reference>
+      <reference referencedUin="delphi:l_ast:src:rtlCVClass:CVClass.TCVCaptureThread.OnNotifyData">
+        <property name="sourceAnchor" value="2100,1548" />
+        <property name="targetAnchor" value="1271,1663" />
+        <property name="bendpoints" value="1993,1440,1792,1440" />
+        <property name="bounds_setted_by_user" value="True" />
+      </reference>
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TOnBeforeNotifyReceiver">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="10,281,260,36" />
+    </reference>
+    <reference referencedUin="delphi:e_class:src:rtlCVClass:CVClass.TCVWebCameraResolutionValue">
+      <property name="$shortcutReference" value="true" />
+      <property name="bounds" value="1672,10,205,113" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolutionValue.W" />
+      <reference referencedUin="delphi:e_field:src:rtlCVClass:CVClass.TCVWebCameraResolutionValue.H" />
+    </reference>
+  </view>
+</nodeSet>

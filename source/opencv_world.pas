@@ -62,24 +62,24 @@ const
 {$REGION 'std::'}
 
 Type
-  BOOL = ByteBool;
-  size_t = NativeUInt;
-  psize_t = ^size_t;
-  Int = integer;
-  pInt = ^Int;
-  unsigned = UInt32;
-  float = Single;
-  pFloat = ^float;
-  ppAnsiChar = ^pAnsiChar;
-  uchar = Byte;
-  pUChar = type pByte;
-  pMatOp = type Pointer;
+  BOOL          = ByteBool;
+  size_t        = NativeUInt;
+  psize_t       = ^size_t;
+  Int           = integer;
+  pInt          = ^Int;
+  unsigned      = UInt32;
+  float         = Single;
+  pFloat        = ^float;
+  ppAnsiChar    = ^pAnsiChar;
+  uchar         = Byte;
+  pUChar        = type pByte;
+  pMatOp        = type Pointer;
   pMatAllocator = type Pointer;
-  pUCharConst = pUChar;
-  PointerConst = type Pointer;
+  pUCharConst   = pUChar;
+  PointerConst  = type Pointer;
   //
   vftable_func = type Pointer;
-  pvftable = ^vftable_func;
+  pvftable     = ^vftable_func;
 
 type
   // cv::std::String
@@ -104,7 +104,7 @@ type
 
   CppString = CvStdString;
 
-  pCppString = ^CvStdString;
+  pCppString   = ^CvStdString;
   pCvStdString = ^CvStdString;
 
 Type
@@ -113,8 +113,10 @@ Type
     pT = ^T;
   public
     _Ptr: pT;
-    _Ref: Pointer;
+    _Rep: Pointer;
+    _Ref: integer;
     function v: pT; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator assign(var Dest: TPtr<T>; const [ref] Src: TPtr<T>);
     class operator Finalize(var Dest: TPtr<T>);
   end;
 
@@ -160,7 +162,6 @@ Type
   pStdVectorCppString = ^TStdVectorCppString;
 
 {$ENDREGION 'std::'}
-
   //
 {$REGION 'CV const'}
 
@@ -410,8 +411,8 @@ type
   end;
 
   TRect2i = TRect_<Int>;
-  TRect = TRect2i;
-  pRect = ^TRect;
+  TRect   = TRect2i;
+  pRect   = ^TRect;
 
   TStdVectorRect = Vector<TRect>;
   pStdVectorRect = ^TStdVectorRect;
@@ -453,9 +454,9 @@ Type
   end;
 
   TSize2i = TSize_<Int>;
-  TSize = TSize2i;
-  pSize = ^TSize;
-  rSize = UInt64;
+  TSize   = TSize2i;
+  pSize   = ^TSize;
+  rSize   = UInt64;
 
 function size(const _width, _height: Int): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
@@ -504,9 +505,9 @@ type
   end;
 
   TPoint2i = TPoint_<Int>;
-  TPoint = TPoint2i;
-  pPoint = ^TPoint;
-  rPoint = UInt64;
+  TPoint   = TPoint2i;
+  pPoint   = ^TPoint;
+  rPoint   = UInt64;
 
   TPoint2f = TPoint_<float>;
   TPoint2d = TPoint_<double>;
@@ -710,10 +711,10 @@ Type
     // TMatHelper  // CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
     // CV_NODISCARD_STD static MatExpr zeros(int ndims, const int* sz, int type);
     // TMatHelper // CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
-    // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
-    class function ones(ndims: Int; const sz: pInt; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
-    // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
-    // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
+    // TMatHelper // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
+    // TMatHelper // CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
+    // TMatHelper // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
+    // TMatHelper // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
     procedure Create(rows, cols, &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} // void create(int rows, int cols, int type);
     procedure Create(size: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void create(Size size, int type);
     // void create(int ndims, const int* sizes, int type);
@@ -975,7 +976,7 @@ type
     class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<TPoint2f>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<uchar>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    // private
+    class operator Implicit(const v: double): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
 {$HINTS OFF}
     flags: Int;   // int flags;
@@ -1129,7 +1130,7 @@ type
 
   end;
 
-  Vec6f = array [0 .. 5] of float;
+  Vec6f  = array [0 .. 5] of float;
   pVec6f = ^Vec6f;
 
   Vec3b = record
@@ -1144,7 +1145,7 @@ type
 
   pVec3b = ^Vec3b;
 
-  Vec2f = array [0 .. 1] of float;
+  Vec2f  = array [0 .. 1] of float;
   pVec2f = ^Vec2f;
 
 {$ENDREGION 'matx.hpp'}
@@ -1323,13 +1324,22 @@ procedure bitwise_not(Src: TInputArray; dst: TOutputArray); overload; {$IFDEF US
   ?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
   void cv::split(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
-procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); external opencv_world_dll
+procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?split@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
   name '?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  6514
+  ?split@cv@@YAXAEBVMat@1@PEAV21@@Z
+  ?split@cv@@YAXAEBVMat@1@PEAV21@@Z
+  void cv::split(class cv::Mat const &,class cv::Mat *)
+}
+procedure split(const m: TMat; const mv: pMat); overload; external opencv_world_dll name '?split@cv@@YAXAEBVMat@1@PEAV21@@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure split(const m: TMat; const mv: TArray<TMat>); overload;
 
 (* * @brief Normalizes the norm or value range of an array.
 
@@ -1679,6 +1689,114 @@ procedure add(src1: TInputArray; src2: TInputArray; dst: TOutputArray; mask: TIn
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @brief Calculates the per-element scaled product of two arrays.
+
+  The function multiply calculates the per-element product of two arrays:
+
+  \f[\texttt{dst} (I)= \texttt{saturate} ( \texttt{scale} \cdot \texttt{src1} (I)  \cdot \texttt{src2} (I))\f]
+
+  There is also a @ref MatrixExpressions -friendly variant of the first function. See Mat::mul .
+
+  For a not-per-element matrix product, see gemm .
+
+  @note Saturation is not applied when the output array has the depth
+  CV_32S. You may even get result of an incorrect sign in the case of
+  overflow.
+  @param src1 first input array.
+  @param src2 second input array of the same size and the same type as src1.
+  @param dst output array of the same size and type as src1.
+  @param scale optional scale factor.
+  @param dtype optional depth of the output array
+  @sa add, subtract, divide, scaleAdd, addWeighted, accumulate, accumulateProduct, accumulateSquare,
+  Mat::convertTo
+*)
+// CV_EXPORTS_W void multiply(InputArray src1, InputArray src2,
+// OutputArray dst, double scale = 1, int dtype = -1);
+{
+  5714
+  ?multiply@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z
+  ?multiply@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z
+  void cv::multiply(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,int)
+}
+procedure multiply(src1: TInputArray; src2: TInputArray; dst: TOutputArray; scale: double = 1; dtype: Int = -1); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?multiply@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
+{$ELSE}
+  name '?multiply@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * @brief Calculates the magnitude and angle of 2D vectors.
+
+  The function cv::cartToPolar calculates either the magnitude, angle, or both
+  for every 2D vector (x(I),y(I)):
+  \f[\begin{array}{l} \texttt{magnitude} (I)= \sqrt{\texttt{x}(I)^2+\texttt{y}(I)^2} , \\ \texttt{angle} (I)= \texttt{atan2} ( \texttt{y} (I), \texttt{x} (I))[ \cdot180 / \pi ] \end{array}\f]
+
+  The angles are calculated with accuracy about 0.3 degrees. For the point
+  (0,0), the angle is set to 0.
+  @param x array of x-coordinates; this must be a single-precision or
+  double-precision floating-point array.
+  @param y array of y-coordinates, that must have the same size and same type as x.
+  @param magnitude output array of magnitudes of the same size and type as x.
+  @param angle output array of angles that has the same size and type as
+  x; the angles are measured in radians (from 0 to 2\*Pi) or in degrees (0 to 360 degrees).
+  @param angleInDegrees a flag, indicating whether the angles are measured
+  in radians (which is by default), or in degrees.
+  @sa Sobel, Scharr
+*)
+// CV_EXPORTS_W void cartToPolar(InputArray x, InputArray y,
+// OutputArray magnitude, OutputArray angle,
+// bool angleInDegrees = false)
+{
+  3751
+  ?cartToPolar@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@1_N@Z
+  ?cartToPolar@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z
+  void cv::cartToPolar(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,bool)
+}
+procedure cartToPolar(x: TInputArray; y: TInputArray; magnitude: TOutputArray; angle: TOutputArray; angleInDegrees: BOOL = false); external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?cartToPolar@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@1_N@Z'
+{$ELSE}
+  name '?cartToPolar@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+
+(* * @brief Creates one multi-channel array out of several single-channel ones.
+
+  The function cv::merge merges several arrays to make a single multi-channel array. That is, each
+  element of the output array will be a concatenation of the elements of the input arrays, where
+  elements of i-th input array are treated as mv[i].channels()-element vectors.
+
+  The function cv::split does the reverse operation. If you need to shuffle channels in some other
+  advanced way, use cv::mixChannels.
+
+  The following example shows how to merge 3 single channel matrices into a single 3-channel matrix.
+  @snippet snippets/core_merge.cpp example
+
+  @param mv input array of matrices to be merged; all the matrices in mv must have the same
+  size and the same depth.
+  @param count number of input matrices when mv is a plain C array; it must be greater than zero.
+  @param dst output array of the same size and the same depth as mv[0]; The number of channels will
+  be equal to the parameter count.
+  @sa  mixChannels, split, Mat::reshape
+*)
+// CV_EXPORTS void merge(const Mat* mv, size_t count, OutputArray dst);
+{
+  5642
+  ?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z
+  ?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z
+  void cv::merge(class cv::Mat const *,unsigned __int64,class cv::_OutputArray const &)
+}
+procedure merge(const mv: pMat; COUNT: size_t; dst: TOutputArray); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z'
+{$ELSE}
+  name '?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure merge(const mv: TArray<TMat>; dst: TOutputArray); overload;
 //
 {$ENDREGION 'core.hpp'}
 //
@@ -3646,7 +3764,6 @@ function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArra
 function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() }; Var response: double { = 0 } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 function phaseCorrelate(src1: TInputArray; src2: TInputArray; window: TInputArray { = noArray() } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 function phaseCorrelate(src1: TInputArray; src2: TInputArray): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-{$ENDREGION 'imgproc.hpp'}
 //
 (* * @brief This function computes a Hanning window coefficients in two dimensions.
 
@@ -3679,6 +3796,156 @@ procedure createHanningWindow(dst: TOutputArray; winSize: UInt64 { TSize }; &typ
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure createHanningWindow(const dst: TOutputArray; const winSize: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
+{$ENDREGION 'imgproc.hpp'}
+{$REGION 'tracking.hpp'}
+
+Type
+  (* *
+    Base class for dense optical flow algorithms
+  *)
+  pDenseOpticalFlow = ^TDenseOpticalFlow;
+
+  TDenseOpticalFlow = record
+{$IFDEF DEBUG}
+  public
+{$ELSE}
+  private
+{$ENDIF}
+    _vftable: vftable_func;
+    class function vftable(const s: TDenseOpticalFlow; const index: integer): Pointer; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  public
+    class operator Finalize(var Dest: TDenseOpticalFlow);
+    (* * @brief Calculates an optical flow.
+
+      @param I0 first 8-bit single-channel input image.
+      @param I1 second input image of the same size and the same type as prev.
+      @param flow computed flow image that has the same size as prev and type CV_32FC2.
+    *)
+    // CV_WRAP virtual void calc( InputArray I0, InputArray I1, InputOutputArray flow ) = 0;
+    procedure calc(const i0: TInputArray; const i1: TInputArray; const flow: TInputOutputArray); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * @brief Releases all inner buffers.
+    *)
+    // CV_WRAP virtual void collectGarbage() = 0;
+
+  end;
+
+  (* * @brief DIS optical flow algorithm.
+
+    This class implements the Dense Inverse Search (DIS) optical flow algorithm. More
+    details about the algorithm can be found at @cite Kroeger2016 . Includes three presets with preselected
+    parameters to provide reasonable trade-off between speed and quality. However, even the slowest preset is
+    still relatively fast, use DeepFlow if you need better quality and don't care about speed.
+
+    This implementation includes several additional features compared to the algorithm described in the paper,
+    including spatial propagation of flow vectors (@ref getUseSpatialPropagation), as well as an option to
+    utilize an initial flow approximation passed to @ref calc (which is, essentially, temporal propagation,
+    if the previous frame's flow field is passed).
+  *)
+
+  TDISOpticalFlow = type TDenseOpticalFlow;
+
+  pDISOpticalFlow = ^TDISOpticalFlow;
+
+  TDISOpticalFlowHelper = record helper for TDISOpticalFlow
+  public
+    // _vftable: vftable_func;
+    // class function vftable(const s: TDISOpticalFlow; const index: integer): Pointer; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // class operator Finalize(var Dest: TDISOpticalFlow);
+  public const
+    PRESET_ULTRAFAST = 0;
+    PRESET_FAST      = 1;
+    PRESET_MEDIUM    = 2;
+  public
+    (* * @brief Finest level of the Gaussian pyramid on which the flow is computed (zero level
+      corresponds to the original image resolution). The final flow is obtained by bilinear upscaling.
+      @see setFinestScale *)
+    // CV_WRAP virtual int getFinestScale() const = 0;
+
+    (* * @copybrief getFinestScale @see getFinestScale *)
+    // CV_WRAP virtual void setFinestScale(int val) = 0;
+
+    (* * @brief Size of an image patch for matching (in pixels). Normally, default 8x8 patches work well
+      enough in most cases.
+      @see setPatchSize *)
+    // CV_WRAP virtual int getPatchSize() const = 0;
+
+    (* * @copybrief getPatchSize @see getPatchSize *)
+    // CV_WRAP virtual void setPatchSize(int val) = 0;
+
+    (* * @brief Stride between neighbor patches. Must be less than patch size. Lower values correspond
+      to higher flow quality.
+      @see setPatchStride *)
+    // CV_WRAP virtual int getPatchStride() const = 0;
+
+    (* * @copybrief getPatchStride @see getPatchStride *)
+    // CV_WRAP virtual void setPatchStride(int val) = 0;
+
+    (* * @brief Maximum number of gradient descent iterations in the patch inverse search stage. Higher values
+      may improve quality in some cases.
+      @see setGradientDescentIterations *)
+    // CV_WRAP virtual int getGradientDescentIterations() const = 0;
+
+    (* * @copybrief getGradientDescentIterations @see getGradientDescentIterations *)
+    // CV_WRAP virtual void setGradientDescentIterations(int val) = 0;
+
+    (* * @brief Number of fixed point iterations of variational refinement per scale. Set to zero to
+      disable variational refinement completely. Higher values will typically result in more smooth and
+      high-quality flow.
+      @see setGradientDescentIterations *)
+    // CV_WRAP virtual int getVariationalRefinementIterations() const = 0;
+
+    (* * @copybrief getGradientDescentIterations @see getGradientDescentIterations *)
+    // CV_WRAP virtual void setVariationalRefinementIterations(int val) = 0;
+
+    (* * @brief Weight of the smoothness term
+      @see setVariationalRefinementAlpha *)
+    // CV_WRAP virtual float getVariationalRefinementAlpha() const = 0;
+
+    (* * @copybrief getVariationalRefinementAlpha @see getVariationalRefinementAlpha *)
+    // CV_WRAP virtual void setVariationalRefinementAlpha(float val) = 0;
+
+    (* * @brief Weight of the color constancy term
+      @see setVariationalRefinementDelta *)
+    // CV_WRAP virtual float getVariationalRefinementDelta() const = 0;
+
+    (* * @copybrief getVariationalRefinementDelta @see getVariationalRefinementDelta *)
+    // CV_WRAP virtual void setVariationalRefinementDelta(float val) = 0;
+
+    (* * @brief Weight of the gradient constancy term
+      @see setVariationalRefinementGamma *)
+    // CV_WRAP virtual float getVariationalRefinementGamma() const = 0;
+
+    (* * @copybrief getVariationalRefinementGamma @see getVariationalRefinementGamma *)
+    // CV_WRAP virtual void setVariationalRefinementGamma(float val) = 0;
+
+    (* * @brief Whether to use mean-normalization of patches when computing patch distance. It is turned on
+      by default as it typically provides a noticeable quality boost because of increased robustness to
+      illumination variations. Turn it off if you are certain that your sequence doesn't contain any changes
+      in illumination.
+      @see setUseMeanNormalization *)
+    // CV_WRAP virtual bool getUseMeanNormalization() const = 0;
+
+    (* * @copybrief getUseMeanNormalization @see getUseMeanNormalization *)
+    // CV_WRAP virtual void setUseMeanNormalization(bool val) = 0;
+
+    (* * @brief Whether to use spatial propagation of good optical flow vectors. This option is turned on by
+      default, as it tends to work better on average and can sometimes help recover from major errors
+      introduced by the coarse-to-fine scheme employed by the DIS optical flow algorithm. Turning this
+      option off can make the output flow field a bit smoother, however.
+      @see setUseSpatialPropagation *)
+    // CV_WRAP virtual bool getUseSpatialPropagation() const = 0;
+
+    (* * @copybrief getUseSpatialPropagation @see getUseSpatialPropagation *)
+    // CV_WRAP virtual void setUseSpatialPropagation(bool val) = 0;
+
+    (* * @brief Creates an instance of DISOpticalFlow
+      @param preset one of PRESET_ULTRAFAST, PRESET_FAST and PRESET_MEDIUM
+    *)
+    // CV_WRAP static Ptr<DISOpticalFlow> create(int preset = DISOpticalFlow::PRESET_FAST);
+    class function Create<T: record >(preset: Int = PRESET_FAST): TPtr<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+{$ENDREGION 'tracking.hpp'}
 {$REGION 'objectdetect.hpp'}
 
 Type
@@ -4108,6 +4375,79 @@ type
     CAP_UEYE = 2500              // !< uEye Camera API
     );
 
+  (* * @brief cv::VideoCapture generic properties identifier.
+
+    Reading / writing properties involves many layers. Some unexpected result might happens along this chain.
+    Effective behaviour depends from device hardware, driver and API Backend.
+    @sa videoio_flags_others, VideoCapture::get(), VideoCapture::set()
+  *)
+  VideoCaptureProperties = (    //
+    CAP_PROP_POS_MSEC = 0,      // !< Current position of the video file in milliseconds.
+    CAP_PROP_POS_FRAMES = 1,    // !< 0-based index of the frame to be decoded/captured next.
+    CAP_PROP_POS_AVI_RATIO = 2, // !< Relative position of the video file: 0=start of the film, 1=end of the film.
+    CAP_PROP_FRAME_WIDTH = 3,   // !< Width of the frames in the video stream.
+    CAP_PROP_FRAME_HEIGHT = 4,  // !< Height of the frames in the video stream.
+    CAP_PROP_FPS = 5,           // !< Frame rate.
+    CAP_PROP_FOURCC = 6,        // !< 4-character code of codec. see VideoWriter::fourcc .
+    CAP_PROP_FRAME_COUNT = 7,   // !< Number of frames in the video file.
+    CAP_PROP_FORMAT = 8,        // !< Format of the %Mat objects (see Mat::type()) returned by VideoCapture::retrieve().
+    // !< Set value -1 to fetch undecoded RAW video streams (as Mat 8UC1).
+    CAP_PROP_MODE = 9,         // !< Backend-specific value indicating the current capture mode.
+    CAP_PROP_BRIGHTNESS = 10,  // !< Brightness of the image (only for those cameras that support).
+    CAP_PROP_CONTRAST = 11,    // !< Contrast of the image (only for cameras).
+    CAP_PROP_SATURATION = 12,  // !< Saturation of the image (only for cameras).
+    CAP_PROP_HUE = 13,         // !< Hue of the image (only for cameras).
+    CAP_PROP_GAIN = 14,        // !< Gain of the image (only for those cameras that support).
+    CAP_PROP_EXPOSURE = 15,    // !< Exposure (only for those cameras that support).
+    CAP_PROP_CONVERT_RGB = 16, // !< Boolean flags indicating whether images should be converted to RGB. <br/>
+    // !< *GStreamer note*: The flag is ignored in case if custom pipeline is used. It's user responsibility to interpret pipeline output.
+    CAP_PROP_WHITE_BALANCE_BLUE_U = 17, // !< Currently unsupported.
+    CAP_PROP_RECTIFICATION = 18,        // !< Rectification flag for stereo cameras (note: only supported by DC1394 v 2.x backend currently).
+    CAP_PROP_MONOCHROME = 19,           //
+    CAP_PROP_SHARPNESS = 20,            //
+    CAP_PROP_AUTO_EXPOSURE = 21,        // !< DC1394: exposure control done by camera, user can adjust reference level using this feature.
+    CAP_PROP_GAMMA = 22,                //
+    CAP_PROP_TEMPERATURE = 23,          //
+    CAP_PROP_TRIGGER = 24,              //
+    CAP_PROP_TRIGGER_DELAY = 25,        //
+    CAP_PROP_WHITE_BALANCE_RED_V = 26,  //
+    CAP_PROP_ZOOM = 27,                 //
+    CAP_PROP_FOCUS = 28,                //
+    CAP_PROP_GUID = 29,                 //
+    CAP_PROP_ISO_SPEED = 30,            //
+    CAP_PROP_BACKLIGHT = 32,            //
+    CAP_PROP_PAN = 33,                  //
+    CAP_PROP_TILT = 34,                 //
+    CAP_PROP_ROLL = 35,                 //
+    CAP_PROP_IRIS = 36,                 //
+    CAP_PROP_SETTINGS = 37,             // !< Pop up video/camera filter dialog (note: only supported by DSHOW backend currently. The property value is ignored)
+    CAP_PROP_BUFFERSIZE = 38,           //
+    CAP_PROP_AUTOFOCUS = 39,            //
+    CAP_PROP_SAR_NUM = 40,              // !< Sample aspect ratio: num/den (num)
+    CAP_PROP_SAR_DEN = 41,              // !< Sample aspect ratio: num/den (den)
+    CAP_PROP_BACKEND = 42,              // !< Current backend (enum VideoCaptureAPIs). Read-only property
+    CAP_PROP_CHANNEL = 43,              // !< Video input or Channel Number (only for those cameras that support)
+    CAP_PROP_AUTO_WB = 44,              // !< enable/ disable auto white-balance
+    CAP_PROP_WB_TEMPERATURE = 45,       // !< white-balance color temperature
+    CAP_PROP_CODEC_PIXEL_FORMAT = 46,
+    // !< (read-only) codec's pixel format. 4-character code - see VideoWriter::fourcc . Subset of [AV_PIX_FMT_*](https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/raw.c) or -1 if unknown
+    CAP_PROP_BITRATE = 47,          // !< (read-only) Video bitrate in kbits/s
+    CAP_PROP_ORIENTATION_META = 48, // !< (read-only) Frame rotation defined by stream meta (applicable for FFmpeg back-end only)
+    CAP_PROP_ORIENTATION_AUTO = 49,
+    // !< if true - rotates output frames of CvCapture considering video file's metadata  (applicable for FFmpeg back-end only) (https://github.com/opencv/opencv/issues/15499)
+    CAP_PROP_HW_ACCELERATION = 50,
+    // !< (**open-only**) Hardware acceleration type (see #VideoAccelerationType). Setting supported only via `params` parameter in cv::VideoCapture constructor / .open() method. Default value is backend-specific.
+    CAP_PROP_HW_DEVICE = 51, // !< (**open-only**) Hardware device index (select GPU if multiple available). Device enumeration is acceleration type specific.
+    CAP_PROP_HW_ACCELERATION_USE_OPENCL = 52,
+    // !< (**open-only**) If non-zero, create new OpenCL context and bind it to current thread. The OpenCL context created with Video Acceleration context attached it (if not attached yet) for optimized GPU data copy between HW accelerated decoder and cv::UMat.
+    CAP_PROP_OPEN_TIMEOUT_MSEC = 53,     // !< (**open-only**) timeout in milliseconds for opening a video capture (applicable for FFmpeg back-end only)
+    CAP_PROP_READ_TIMEOUT_MSEC = 54,     // !< (**open-only**) timeout in milliseconds for reading from a video capture (applicable for FFmpeg back-end only)
+    CAP_PROP_STREAM_OPEN_TIME_USEC = 55, // <! (read-only) time in microseconds since Jan 1 1970 when stream was opened. Applicable for FFmpeg backend only. Useful for RTSP and other live streams
+{$IFNDEF CV_DOXYGEN}
+    CV__CAP_PROP_LATEST = 56
+{$ENDIF}
+    );
+
   pVideoCapture = ^TVideoCapture;
 
   TVideoCapture = record
@@ -4137,7 +4477,7 @@ type
     *)
 
     // CV_WRAP explicit VideoCapture(const String & filename, int apiPreference = CAP_ANY);
-
+    class operator Implicit(const filename: string): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* * @overload
       @brief Opens a video file or a capturing device or an IP video stream for video capturing with API Preference and parameters
 
@@ -4157,7 +4497,7 @@ type
       @sa cv::VideoCaptureAPIs
     *)
     // CV_WRAP explicit VideoCapture(int index, int apiPreference = CAP_ANY);
-
+    class operator Implicit(const index: Int): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* * @overload
       @brief Opens a camera for video capturing with API Preference and parameters
 
@@ -4235,7 +4575,7 @@ type
       The C function also deallocates memory and clears \*capture pointer.
     *)
     // CV_WRAP virtual void release();
-
+    procedure release; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* * @brief Grabs the next frame from video file or capturing device.
 
       @return `true` (non-zero) in the case of success.
@@ -4311,7 +4651,7 @@ type
       value has been accepted by the capture device. See note in VideoCapture::get()
     *)
     // CV_WRAP virtual Bool set (int propId, double value);
-
+    function &set(propId: VideoCaptureProperties; Value: double): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* * @brief Returns the specified VideoCapture property
 
       @param propId Property identifier from cv::VideoCaptureProperties (eg. cv::CAP_PROP_POS_MSEC, cv::CAP_PROP_POS_FRAMES, ...)
@@ -4330,7 +4670,8 @@ type
 
     *)
     // CV_WRAP virtual double get(int propId)  const;
-
+    function get(propId: Int): double; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    //
     (* * @brief Returns used backend API name
 
       @note Stream should be opened.
@@ -4362,8 +4703,6 @@ type
     *)
     // static (* CV_WRAP *) Bool waitAny(const std: : vector<VideoCapture> & streams, CV_OUT std: : vector<int> & readyIndex, int64 timeoutNs = 0);
     //
-    class operator Implicit(const filename: string): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const index: Int): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator GreaterThan(const VideoCapture: TVideoCapture; Var frame: TMat): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
   private
 {$HINTS OFF}
@@ -4656,8 +4995,6 @@ type
   pSVM = ^TSVM;
 
   TSVM = record
-  public type
-    TPtrSVM = TPtr<TSVM>;
   public
     _vftable: vftable_func;
     class function vftable(const s: TSVM; const index: integer): Pointer; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -4959,8 +5296,7 @@ type
     (* * Creates empty model.
       Use StatModel::train to train the model. Since %SVM has several parameters, you may want to
       find the best parameters for your problem, it can be done with SVM::trainAuto. *)
-    class function Create: TPtr<TSVM>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    // CV_WRAP static Ptr<SVM> create();
+    class function Create: TPtr<TSVM>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}  // CV_WRAP static Ptr<SVM> create();
 
     (* * @brief Loads and creates a serialized svm from a file
       *
@@ -4993,7 +5329,14 @@ Type
     class operator Implicit(const m: TMatExpr): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat& operator = (const MatExpr& expr);
     class function zeros(const rows, cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}   // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
     class function zeros(const size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
+
     class function ones(rows: Int; cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
+    class function ones(ndims: Int; const sz: pInt; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
+    class function ones(size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
+
+    class function eye(rows, cols, &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
+    class function eye(size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
+
     class operator LogicalNot(const m: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
@@ -5016,12 +5359,16 @@ Type
 {$I opencv.CommandLineParser.import.inc}
 {$I opencv.QRCodeDetector.import.inc}
 {$I opencv.SVM.import.inc}
+{$I opencv.OpticalFlow.import.inc}
   //
 {$I opencv.operator.import.inc}
 {$ENDREGION 'import'}
 
   //
 implementation
+
+Uses
+  WinApi.Windows;
 
 {$REGION 'Std'}
 { CppString }
@@ -5061,7 +5408,7 @@ class operator CvStdString.Implicit(const s: CvStdString): string;
 var
   R: pAnsiChar;
 begin
-  R := c_str_CppString(@s);
+  R      := c_str_CppString(@s);
   Result := string(R);
 end;
 
@@ -5082,10 +5429,21 @@ end;
 
 { TPtr<T> }
 
+class operator TPtr<T>.assign(var Dest: TPtr<T>; const [ref] Src: TPtr<T>);
+Var
+  p: ^TPtr<T>;
+begin
+  Move(Src, Dest, SizeOf(Dest));
+  p := @Src;
+  Inc(p^._Ref);
+end;
+
 class operator TPtr<T>.Finalize(var Dest: TPtr<T>);
 begin
-  // Assert(false);
-  Finalize(Dest._Ptr^);
+  if Dest._Ref = 0 then
+    Finalize(pT(Dest._Ptr)^)
+  else
+    Dec(Dest._Ref);
 end;
 
 function TPtr<T>.v: pT;
@@ -5414,6 +5772,11 @@ begin
   _bitwise_not(Src, dst, TInputArray.noArray());
 end;
 
+procedure split(const m: TMat; const mv: TArray<TMat>);
+begin
+  split(m, @mv[0]);
+end;
+
 procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 }; dtype: Int { = -1 };
   const mask: TInputArray { = noArray() } );
 begin
@@ -5497,10 +5860,10 @@ Var
 begin
   p := AllocMem(rows * cols * SizeOf(T));
   try
-    for Var i := 0 to cols - 1 do
-      for Var j := 0 to rows - 1 do
+    for Var i           := 0 to cols - 1 do
+      for Var j         := 0 to rows - 1 do
         p[j * cols + i] := Data[j, i];
-    Result := TMat.Mat(rows, cols, d.&type, p, step);
+    Result              := TMat.Mat(rows, cols, d.&type, p, step);
   finally
     FreeMem(p);
   end;
@@ -5526,16 +5889,6 @@ end;
 class function TMat.Mat(const m: TMat; const roi: TRect): TMat;
 begin
   Constructor_Mat(@Result, @m, @roi);
-end;
-
-class function TMatHelper.ones(rows, cols, &type: Int): TMatExpr;
-begin
-  ones_Mat(@Result, rows, cols, &type);
-end;
-
-class function TMat.ones(ndims: Int; const sz: pInt; &type: Int): TMat;
-begin
-  ones_Mat(@Result, ndims, sz, &type);
 end;
 
 function TMat.pT<T>(const i0: Int): Pointer;
@@ -5569,7 +5922,7 @@ var
   p: pType;
 begin
 {$WARNINGS OFF}
-  p := pType(Data + step.p[0] * i0);
+  p     := pType(Data + step.p[0] * i0);
   p[i1] := v;
 {$WARNINGS ON}
 end;
@@ -5738,22 +6091,22 @@ end;
 class operator TInputArray.Implicit(const v: Vector < Vector < TPoint >> ): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_READ); // -2130444276;
-  Result.Obj := @v;
-  Result.sz := size(0, 0);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<TPoint2f>): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ); // -2130444276;
-  Result.Obj := @v;
-  Result.sz := size(0, 0);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<uchar>): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_READ); // -2130444276;
-  Result.Obj := @v;
-  Result.sz := size(0, 0);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
 end;
 
 { TOutputArray }
@@ -5792,29 +6145,36 @@ end;
 class operator TOutputArrayHelper.Implicit(const v: Vector<TPoint>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_WRITE);
-  Result.Obj := @v;
-  Result.sz := size(0, 0);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<TPoint2f>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_WRITE);
-  Result.Obj := @v;
-  Result.sz := size(0, 0);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<uchar>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_WRITE);
-  Result.Obj := @v;
-  Result.sz := size(0, 0);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<float>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<float>.Value + Int(ACCESS_WRITE);
-  Result.Obj := @v;
-  Result.sz := size(0, 0);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
+end;
+
+class operator TInputArray.Implicit(const v: double): TInputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(MATX) + Int(CV_64F) + Int(ACCESS_READ);
+  Result.Obj   := @v;
+  Result.sz    := size(1, 1);
 end;
 
 { TScalar }
@@ -5859,7 +6219,7 @@ end;
 
 class function TSize_<T>.size(const _width, _height: T): TSize_<T>;
 begin
-  Result.width := _width;
+  Result.width  := _width;
   Result.height := _height;
 end;
 
@@ -5934,8 +6294,8 @@ end;
 class operator TInputOutputArrayHelper.Implicit(const v: Vector<TPoint2f>): TInputOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ);
-  Result.Obj := @v;
-  Result.sz := size(0, 0);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
 end;
 
 { TPoint_<T> }
@@ -6045,9 +6405,34 @@ begin
   copyTo_Mat(@Self, @m, @mask);
 end;
 
+class function TMatHelper.eye(rows, cols, &type: Int): TMatExpr;
+begin
+  eye_Mat(@Result, rows, cols, &type);
+end;
+
+class function TMatHelper.eye(size: TSize; &type: Int): TMatExpr;
+begin
+  eye_Mat(@Result, size, &type);
+end;
+
+class function TMatHelper.ones(rows, cols, &type: Int): TMatExpr;
+begin
+  ones_Mat(@Result, rows, cols, &type);
+end;
+
 class function TMatHelper.Mat(rows, cols, &type: Int; const s: TScalar): TMat;
 begin
   Constructor_Mat(@Result, rows, cols, &type, @s);
+end;
+
+class function TMatHelper.ones(ndims: Int; const sz: pInt; &type: Int): TMatExpr;
+begin
+  ones_Mat(@Result, ndims, sz, &type);
+end;
+
+class function TMatHelper.ones(size: TSize; &type: Int): TMatExpr;
+begin
+  ones_Mat(@Result, size, &type);
 end;
 
 class operator TMatHelper.Implicit(const s: TScalar): TMat;
@@ -6099,6 +6484,11 @@ end;
 
 { TVideoCapture }
 
+function TVideoCapture.&set(propId: VideoCaptureProperties; Value: double): BOOL;
+begin
+  Result := set_VideoCapture(@Self, Int(propId), Value);
+end;
+
 class operator TVideoCapture.assign(var Dest: TVideoCapture; const [ref] Src: TVideoCapture);
 begin
   Move(Src, Dest, SizeOf(Dest));
@@ -6109,6 +6499,11 @@ end;
 class operator TVideoCapture.Finalize(var Dest: TVideoCapture);
 begin
   destructor_VideoCapture(@Dest);
+end;
+
+function TVideoCapture.get(propId: Int): double;
+begin
+  Result := get_VideoCapture(@Self, propId);
 end;
 
 class operator TVideoCapture.Implicit(const filename: string): TVideoCapture;
@@ -6154,6 +6549,11 @@ end;
 function TVideoCapture.read(const image: TOutputArray): BOOL;
 begin
   Result := read_VideoCapture(@Self, @image);
+end;
+
+procedure TVideoCapture.release;
+begin
+  release_VideoCapture(@Self);
 end;
 
 { TRNG }
@@ -6219,6 +6619,11 @@ begin
   add(src1, src2, dst, mask, -1);
 end;
 
+procedure merge(const mv: TArray<TMat>; dst: TOutputArray);
+begin
+  merge(@mv[0], length(mv), dst);
+end;
+
 { TCommandLineParser }
 
 procedure TCommandLineParser.about(const message: String);
@@ -6243,8 +6648,8 @@ Var
   argv: ppAnsiChar;
   argc: Int;
 begin
-  argc := ParamCount + 1;
-  argv := AllocMem(SizeOf(pAnsiChar) * argc);
+  argc      := ParamCount + 1;
+  argv      := AllocMem(SizeOf(pAnsiChar) * argc);
   for Var i := 0 to argc - 1 do
   begin
     argv[i] := pAnsiChar(AllocMem(SizeOf(AnsiChar) * length(ParamStr(i)) + 1));
@@ -6402,14 +6807,14 @@ begin
     isCount: BOOL := ((&type and COUNT) <> 0) and (maxCount > 0);
   var
     isEps: BOOL := ((&type and EPS) <> 0) and (not IsNaN(epsilon));
-  Result := isCount or isEps;
+  Result        := isCount or isEps;
 end;
 
 class function TTermCriteria.TermCriteria(const &type, maxCount: Int; const epsilon: double): TTermCriteria;
 begin
-  Result.&type := &type;
+  Result.&type    := &type;
   Result.maxCount := maxCount;
-  Result.epsilon := epsilon;
+  Result.epsilon  := epsilon;
 end;
 
 {$REGION 'tracking.hpp'}
@@ -6438,19 +6843,19 @@ begin
     with Dest do
     begin
       generic_type := 0;
-      depth := CV_8U;
-      channels := 1;
-      fmt := Int('u');
-      &type := CV_MAKETYPE(depth, channels)
+      depth        := CV_8U;
+      channels     := 1;
+      fmt          := Int('u');
+      &type        := CV_MAKETYPE(depth, channels)
     end
   else if TypeInfo(T) = TypeInfo(uchar) then
     with Dest do
     begin
       generic_type := 0;
-      depth := CV_8U;
-      channels := 1;
-      fmt := Int('u');
-      &type := CV_MAKETYPE(depth, channels)
+      depth        := CV_8U;
+      channels     := 1;
+      fmt          := Int('u');
+      &type        := CV_MAKETYPE(depth, channels)
     end
   else
     // template<> class DataType<schar>
@@ -6515,19 +6920,19 @@ begin
       with Dest do
       begin
         generic_type := 0;
-        depth := CV_32S;
-        channels := 1;
-        fmt := Int('i');
-        &type := CV_MAKETYPE(depth, channels)
+        depth        := CV_32S;
+        channels     := 1;
+        fmt          := Int('i');
+        &type        := CV_MAKETYPE(depth, channels)
       end
     else if TypeInfo(T) = TypeInfo(float) then
       with Dest do
       begin
         generic_type := 0;
-        depth := CV_32F;
-        channels := 1;
-        fmt := Int('f');
-        &type := CV_MAKETYPE(depth, channels)
+        depth        := CV_32F;
+        channels     := 1;
+        fmt          := Int('f');
+        &type        := CV_MAKETYPE(depth, channels)
       end
     else
       // template<> class DataType<double>
@@ -6690,7 +7095,7 @@ class operator Vec3b.Implicit(const a: TArray<uchar>): Vec3b;
 begin
   Assert(length(a) > 2);
   // slow
-  for Var i := 0 to High(Result._Data) do
+  for Var i         := 0 to High(Result._Data) do
     Result._Data[i] := a[i];
 end;
 
@@ -6700,14 +7105,44 @@ begin
   _Data[index] := Value;
 end;
 {$ENDREGION 'matx.hpp'}
+{ TDISOpticalFlow }
+
+class function TDISOpticalFlowHelper.Create<T>(preset: Int): TPtr<T>;
+begin
+  create_DISOpticalFlow(Pointer(@Result), preset);
+end;
+
+// class operator TDISOpticalFlow.Finalize(var Dest: TDISOpticalFlow);
+// begin
+// Destructor_DISOpticalFlow(@Dest);
+// end;
+
+{ TDenseOpticalFlow }
+
+procedure TDenseOpticalFlow.calc(const i0, i1: TInputArray; const flow: TInputOutputArray);
+Type
+  Tcalc = procedure(Obj: Pointer; i0, i1: TInputArray; flow: TInputOutputArray);
+begin
+  Tcalc(vftable(Self, $38 div SizeOf(Pointer)))(@Self, i0, i1, flow);
+end;
+
+class operator TDenseOpticalFlow.Finalize(var Dest: TDenseOpticalFlow);
+begin
+  Destructor_DenseOpticalFlow(@Dest);
+end;
+
+class function TDenseOpticalFlow.vftable(const s: TDenseOpticalFlow; const index: integer): Pointer;
+begin
+  Result := pvftable(s._vftable)[index];
+end;
 
 initialization
 
 {$REGION 'Interface.h'}
   CV_8UC1 := CV_MAKETYPE(CV_8U, 1);
-CV_8UC2 := CV_MAKETYPE(CV_8U, 2);
-CV_8UC3 := CV_MAKETYPE(CV_8U, 3);
-CV_8UC4 := CV_MAKETYPE(CV_8U, 4);
+CV_8UC2   := CV_MAKETYPE(CV_8U, 2);
+CV_8UC3   := CV_MAKETYPE(CV_8U, 3);
+CV_8UC4   := CV_MAKETYPE(CV_8U, 4);
 
 CV_8SC1 := CV_MAKETYPE(CV_8S, 1);
 CV_8SC2 := CV_MAKETYPE(CV_8S, 2);

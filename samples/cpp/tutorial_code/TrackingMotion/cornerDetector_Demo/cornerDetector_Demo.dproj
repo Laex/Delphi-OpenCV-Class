@@ -3,7 +3,7 @@
         <ProjectGuid>{F2557728-5BA0-4567-98B9-91AA26E2EDE4}</ProjectGuid>
         <MainSource>cornerDetector_Demo.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Console</AppType>
         <FrameworkType>None</FrameworkType>

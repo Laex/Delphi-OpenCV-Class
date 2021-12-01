@@ -5,7 +5,7 @@
 + Laentir Valetov (email: laex@bk.ru)
 ## Usage:
 1. Download the current state of the project as [zip][1] or as [git][2]
-2. Download [OpenCV 4.5.4][3], run and unpack to the selected directory
+2. Download [OpenCV 4.5.4][3], run and unpack to the selected directory.
 Copy dynamic libraries files from `<opencv>\build\x64\vc15\bin\` to `<project>\bin\`
 > opencv_videoio_ffmpeg454_64.dll - `release`<br>
 > opencv_videoio_msmf454_64.dll   - `release`<br>
@@ -15,7 +15,7 @@ Copy dynamic libraries files from `<opencv>\build\x64\vc15\bin\` to `<project>\b
 3. Set Delphi environment setting
 > Add the Library path for the modules of the project in Delphi IDE:<br>
 `Tools-Options` -> `Language-Delphi-Library-"Windows 64-bit"-Library path` add path to `<project>\source\`
-4. Change path `OpenCVRootPath` in module` CVResource.pas` to path to unpacked OpenCV `<opencv>`
+4. Change path `OpenCVRootPath` in module` CVResource.pas` to path to unpacked OpenCV `<opencv>`. This is only needed to run examples from samples.
 5. Open `<project>\samples\Samples.groupproj`
 ---------------------------
 **Donate**<br>

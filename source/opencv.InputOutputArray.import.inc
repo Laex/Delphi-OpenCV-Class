@@ -3,7 +3,20 @@
 // ??0_InputOutputArray@cv@@QEAA@AEAVBuffer@ogl@1@@Z       public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::ogl::Buffer & __ptr64) __ptr64
 // ??0_InputOutputArray@cv@@QEAA@AEAVGpuMat@cuda@1@@Z      public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::cuda::GpuMat & __ptr64) __ptr64
 // ??0_InputOutputArray@cv@@QEAA@AEAVHostMem@cuda@1@@Z     public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::cuda::HostMem & __ptr64) __ptr64
-// ??0_InputOutputArray@cv@@QEAA@AEAVMat@1@@Z      public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::Mat & __ptr64) __ptr64
+{
+  1357
+  ??0_InputOutputArray@debug_build_guard@cv@@QEAA@AEAVMat@2@@Z
+  ??0_InputOutputArray@cv@@QEAA@AEAVMat@1@@Z
+  public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::Mat & __ptr64) __ptr64
+}
+procedure Constructor_InputOutputArray(Obj: pInputOutputArray; m: pMat); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '??0_InputOutputArray@debug_build_guard@cv@@QEAA@AEAVMat@2@@Z'
+{$ELSE}
+  name '??0_InputOutputArray@cv@@QEAA@AEAVMat@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 // ??0_InputOutputArray@cv@@QEAA@AEAVUMat@1@@Z     public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::UMat & __ptr64) __ptr64
 // ??0_InputOutputArray@cv@@QEAA@AEBV?$vector@VGpuMat@cuda@cv@@V?$allocator@VGpuMat@cuda@cv@@@std@@@std@@@Z        public: __cdecl cv::_InputOutputArray::_InputOutputArray(class std::vector<class cv::cuda::GpuMat,class std::allocator<class cv::cuda::GpuMat> > const & __ptr64) __ptr64
 // ??0_InputOutputArray@cv@@QEAA@AEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@@Z        public: __cdecl cv::_InputOutputArray::_InputOutputArray(class std::vector<class cv::Mat,class std::allocator<class cv::Mat> > const & __ptr64) __ptr64
@@ -11,14 +24,13 @@
 // ??0_InputOutputArray@cv@@QEAA@AEBVBuffer@ogl@1@@Z       public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::ogl::Buffer const & __ptr64) __ptr64
 // ??0_InputOutputArray@cv@@QEAA@AEBVGpuMat@cuda@1@@Z      public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::cuda::GpuMat const & __ptr64) __ptr64
 // ??0_InputOutputArray@cv@@QEAA@AEBVHostMem@cuda@1@@Z     public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::cuda::HostMem const & __ptr64) __ptr64
-
 {
   1365
   ??0_InputOutputArray@debug_build_guard@cv@@QEAA@AEBVMat@2@@Z
   ??0_InputOutputArray@cv@@QEAA@AEBVMat@1@@Z
   public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::Mat const & __ptr64) __ptr64
 }
-procedure Constructor_InputOutputArray(Obj: pInputOutputArray; m: pMat); overload; external opencv_world_dll
+procedure Constructor_InputOutputArray_const(Obj: pInputOutputArray; m: pMat); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '??0_InputOutputArray@debug_build_guard@cv@@QEAA@AEBVMat@2@@Z'
 {$ELSE}

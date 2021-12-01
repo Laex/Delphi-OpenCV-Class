@@ -3,7 +3,7 @@
         <ProjectGuid>{5BD66456-BA0B-4E5D-A5F7-71B3FA48260A}</ProjectGuid>
         <MainSource>optical_flow.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>2</TargetedPlatforms>
         <AppType>Console</AppType>
         <FrameworkType>None</FrameworkType>
