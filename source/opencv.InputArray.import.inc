@@ -42,21 +42,32 @@ procedure Constructor_InputArray(Obj: pInputArray; m: pMatExpr); overload; exter
 // ??0_InputArray@cv@@QEAA@AEBVUMat@1@@Z	public: __cdecl cv::_InputArray::_InputArray(class cv::UMat const & __ptr64) __ptr64
 // ??0_InputArray@cv@@QEAA@HPEAX@Z	public: __cdecl cv::_InputArray::_InputArray(int,void * __ptr64) __ptr64
 
-// ??0_InputArray@cv@@QEAA@XZ
-// public: __cdecl cv::_InputArray::_InputArray(void) __ptr64
+{
+  1351
+  ??0_InputArray@debug_build_guard@cv@@QEAA@XZ
+  ??0_InputArray@cv@@QEAA@XZ
+  cv::_InputArray::_InputArray(void)
+}
 procedure Constructor_InputArray(Obj: pInputArray); overload; external opencv_world_dll
-// index 1351
-  name '??0_InputArray'{$IFDEF DEBUG} + DEBUG_BUILD_GUARD{$ENDIF} + '@cv@@QEAA@XZ'
+{$IFDEF DEBUG}
+  name '??0_InputArray@debug_build_guard@cv@@QEAA@XZ'
+{$ELSE}
+  name '??0_InputArray@cv@@QEAA@XZ'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-// ??1_InputArray@cv@@QEAA@XZ
-// public: __cdecl cv::_InputArray::~_InputArray(void) __ptr64
+{
+  1812
+  ??1_InputArray@debug_build_guard@cv@@QEAA@XZ
+  ??1_InputArray@cv@@QEAA@XZ
+  cv::_InputArray::~_InputArray(void)
+}
 procedure Destructor_InputArray(Obj: pInputArray); overload; external opencv_world_dll
-// index 1812
-  name '??1_InputArray'{$IFDEF DEBUG} + DEBUG_BUILD_GUARD{$ENDIF} + '@cv@@QEAA@XZ'
+{$IFDEF DEBUG}
+  name '??1_InputArray@debug_build_guard@cv@@QEAA@XZ'
+{$ELSE}
+  name '??1_InputArray@cv@@QEAA@XZ'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// name '??1_InputArray@cv@@QEAA@XZ' {{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF}};
-
 // ??4_InputArray@cv@@QEAAAEAV01@AEBV01@@Z	public: class cv::_InputArray & __ptr64 __cdecl cv::_InputArray::operator=(class cv::_InputArray const & __ptr64) __ptr64
 // ?channels@_InputArray@cv@@QEBAHH@Z	public: int __cdecl cv::_InputArray::channels(int)const __ptr64
 // ?cols@_InputArray@cv@@QEBAHH@Z	public: int __cdecl cv::_InputArray::cols(int)const __ptr64
@@ -84,13 +95,18 @@ procedure getMat_InputArray(Obj: pInputArray; Var m: TMat; idx: int); external o
 // ?getMatVector@_InputArray@cv@@QEBAXAEAV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@@Z	public: void __cdecl cv::_InputArray::getMatVector(class std::vector<class cv::Mat,class std::allocator<class cv::Mat> > & __ptr64)const __ptr64
 // ?getMat_@_InputArray@cv@@QEBA?AVMat@2@H@Z	public: class cv::Mat __cdecl cv::_InputArray::getMat_(int)const __ptr64
 // ?getOGlBuffer@_InputArray@cv@@QEBA?AVBuffer@ogl@2@XZ	public: class cv::ogl::Buffer __cdecl cv::_InputArray::getOGlBuffer(void)const __ptr64
-
-// 5051
-// ?getObj@_InputArray@cv@@QEBAPEAXXZ
-// public: void * __ptr64 __cdecl cv::_InputArray::getObj(void)const __ptr64
+{
+  5051
+  ?getObj@_InputArray@debug_build_guard@cv@@QEBAPEAXXZ
+  ?getObj@_InputArray@cv@@QEBAPEAXXZ
+  void * cv::_InputArray::getObj(void)
+}
 function getObj_InputArray(Obj: pInputArray): Pointer; external opencv_world_dll
-// index 5051
-  name '?getObj@_InputArray'{$IFDEF DEBUG} + DEBUG_BUILD_GUARD{$ENDIF} + '@cv@@QEBAPEAXXZ'
+{$IFDEF DEBUG}
+  name '?getObj@_InputArray@debug_build_guard@cv@@QEBAPEAXXZ'
+{$ELSE}
+  name '?getObj@_InputArray@cv@@QEBAPEAXXZ'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?getSz@_InputArray@cv@@QEBA?AV?$Size_@H@2@XZ	public: class cv::Size_<int> __cdecl cv::_InputArray::getSz(void)const __ptr64
@@ -101,12 +117,18 @@ function getObj_InputArray(Obj: pInputArray): Pointer; external opencv_world_dll
 // ?isContinuous@_InputArray@cv@@QEBA_NH@Z	public: bool __cdecl cv::_InputArray::isContinuous(int)const __ptr64
 // ?isGpuMat@_InputArray@cv@@QEBA_NXZ	public: bool __cdecl cv::_InputArray::isGpuMat(void)const __ptr64
 // ?isGpuMatVector@_InputArray@cv@@QEBA_NXZ	public: bool __cdecl cv::_InputArray::isGpuMatVector(void)const __ptr64
-
-// ?isMat@_InputArray@cv@@QEBA_NXZ
-// public: bool __cdecl cv::_InputArray::isMat(void)const __ptr64
+{
+  5383
+  ?isMat@_InputArray@debug_build_guard@cv@@QEBA_NXZ
+  ?isMat@_InputArray@cv@@QEBA_NXZ
+  bool cv::_InputArray::isMat(void)
+}
 function isMat_InputArray(Obj: pInputArray): BOOL; external opencv_world_dll
-// index 5383
-  name '?isMat@_InputArray'{$IFDEF DEBUG} + DEBUG_BUILD_GUARD{$ENDIF} + '@cv@@QEBA_NXZ'
+{$IFDEF DEBUG}
+  name '?isMat@_InputArray@debug_build_guard@cv@@QEBA_NXZ'
+{$ELSE}
+  name '?isMat@_InputArray@cv@@QEBA_NXZ'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // ?isMatVector@_InputArray@cv@@QEBA_NXZ	public: bool __cdecl cv::_InputArray::isMatVector(void)const __ptr64

@@ -17,11 +17,16 @@ procedure Constructor_OutputArray(Obj: pOutputArray; m: TStdPointer); overload; 
 // ??0_OutputArray@cv@@QEAA@AEAVGpuMat@cuda@1@@Z	public: __cdecl cv::_OutputArray::_OutputArray(class cv::cuda::GpuMat & __ptr64) __ptr64
 // ??0_OutputArray@cv@@QEAA@AEAVHostMem@cuda@1@@Z	public: __cdecl cv::_OutputArray::_OutputArray(class cv::cuda::HostMem & __ptr64) __ptr64
 {
-  ??0_OutputArray@cv@@QEAA@AEAVMat@1@@Z
   ??0_OutputArray@debug_build_guard@cv@@QEAA@AEAVMat@2@@Z
+  ??0_OutputArray@cv@@QEAA@AEAVMat@1@@Z
   public: __cdecl cv::_OutputArray::_OutputArray(class cv::Mat & __ptr64) __ptr64
 }
-procedure Constructor_OutputArray(Obj: pOutputArray; m: pMat); overload; external opencv_world_dll name '??0_OutputArray'{$IFDEF DEBUG} + DEBUG_BUILD_GUARD{$ENDIF} + '@cv@@QEAA@AEAVMat@'{$IFDEF DEBUG} + '2' {$ELSE} + '1' {$ENDIF} + '@@Z'
+procedure Constructor_OutputArray(Obj: pOutputArray; m: pMat); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '??0_OutputArray@debug_build_guard@cv@@QEAA@AEAVMat@2@@Z'
+{$ELSE}
+  name '??0_OutputArray@cv@@QEAA@AEAVMat@1@@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ??0_OutputArray@cv@@QEAA@AEAVUMat@1@@Z	public: __cdecl cv::_OutputArray::_OutputArray(class cv::UMat & __ptr64) __ptr64
 // ??0_OutputArray@cv@@QEAA@AEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@@Z	public: __cdecl cv::_OutputArray::_OutputArray(class std::vector<class cv::Mat,class std::allocator<class cv::Mat> > const & __ptr64) __ptr64

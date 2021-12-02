@@ -28,16 +28,38 @@ procedure Destructor_CascadeClassifier(Obj: pCascadeClassifier); external opencv
   ?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NHHV?$Size_@H@2@2@Z
   ?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NHHV?$Size_@H@2@2@Z
   public: void __cdecl cv::CascadeClassifier::detectMultiScale(class cv::_InputArray const & __ptr64,class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > & __ptr64,double,int,int,class cv::Size_<int>,class cv::Size_<int>) __ptr64
+  //
+  CV_WRAP void detectMultiScale(
+  InputArray image,
+  CV_OUT std::vector<Rect>& objects,
+  double scaleFactor = 1.1,
+  int minNeighbors = 3,
+  int flags = 0,
+  Size minSize = Size(),
+  Size maxSize = Size() );
 }
-procedure detectMultiScale_CascadeClassifier(Obj: pCascadeClassifier; image: pInputArray; objects: TStdPointer; scaleFactor: double; minNeighbors: int; flags: int; minSize: UInt64 { TCVSizePointer };
-  maxSize: UInt64 { TCVSizePointer } ); external opencv_world_dll
+procedure detectMultiScale_CascadeClassifier(Obj: pCascadeClassifier; //
+  image: TInputArray; //
+  objects: TStdVectorRect; //
+  scaleFactor: double;  //
+  minNeighbors: int;    //
+  flags: int;           //
+  minSize: UInt64 { TCVSizePointer }; maxSize: UInt64 { TCVSizePointer } ); //
+  external opencv_world_dll
 {$IFDEF DEBUG}
   name '?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NHHV?$Size_@H@2@2@Z'
 {$ELSE}
   name '?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NHHV?$Size_@H@2@2@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// ?empty@CascadeClassifier@cv@@QEBA_NXZ   public: bool __cdecl cv::CascadeClassifier::empty(void)const __ptr64
+{
+  4584
+  ?empty@CascadeClassifier@cv@@QEBA_NXZ
+  ?empty@CascadeClassifier@cv@@QEBA_NXZ
+  bool cv::CascadeClassifier::empty(void)
+}
+function empty_CascadeClassifier(Obj: pCascadeClassifier): Bool; external opencv_world_dll name '?empty@CascadeClassifier@cv@@QEBA_NXZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?getFeatureType@CascadeClassifier@cv@@QEBAHXZ   public: int __cdecl cv::CascadeClassifier::getFeatureType(void)const __ptr64
 // ?getMaskGenerator@CascadeClassifier@cv@@QEAA?AU?$Ptr@VMaskGenerator@BaseCascadeClassifier@cv@@@2@XZ     public: struct cv::Ptr<class cv::BaseCascadeClassifier::MaskGenerator> __cdecl cv::CascadeClassifier::getMaskGenerator(void) __ptr64
 // ?getOldCascade@CascadeClassifier@cv@@QEAAPEAXXZ public: void * __ptr64 __cdecl cv::CascadeClassifier::getOldCascade(void) __ptr64
@@ -49,8 +71,8 @@ procedure detectMultiScale_CascadeClassifier(Obj: pCascadeClassifier; image: pIn
   ?load@CascadeClassifier@cv@@QEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
   public: bool __cdecl cv::CascadeClassifier::load(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & __ptr64) __ptr64
 }
-function load_CascadeClassifier(Obj: pCascadeClassifier; s: pCvStdString): Bool; external opencv_world_dll
-  name '?load@CascadeClassifier@cv@@QEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
+function load_CascadeClassifier(Obj: pCascadeClassifier; s: pCvStdString): Bool;
+  external opencv_world_dll name '?load@CascadeClassifier@cv@@QEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?read@CascadeClassifier@cv@@QEAA_NAEBVFileNode@2@@Z     public: bool __cdecl cv::CascadeClassifier::read(class cv::FileNode const & __ptr64) __ptr64
 // ?setMaskGenerator@CascadeClassifier@cv@@QEAAXAEBU?$Ptr@VMaskGenerator@BaseCascadeClassifier@cv@@@2@@Z   public: void __cdecl cv::CascadeClassifier::setMaskGenerator(struct cv::Ptr<class cv::BaseCascadeClassifier::MaskGenerator> const & __ptr64) __ptr64
