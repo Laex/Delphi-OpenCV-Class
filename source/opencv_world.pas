@@ -134,7 +134,8 @@ Type
     vtScalar = 8,      // vector<Scalar>
     vtUchar = 9,       // vector<uchar>
     vtFloat = 10,      // vector<float>
-    vtInt = 11         // vector<int>
+    vtInt = 11,        // vector<int>
+    vtVec4i = 12       // vector<Vec4i>
     );
 
   Vector<T> = record
@@ -143,7 +144,7 @@ Type
     Data: array [0 .. 31] of Byte;
 {$HINTS ON}
     class function vt: TVectorType; static;
-    function GetItems(const index: UInt64): T; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function GetItems(const index: UInt64): T;
   public
     class operator Initialize(out Dest: Vector<T>);
     class operator Finalize(var Dest: Vector<T>);
@@ -152,7 +153,9 @@ Type
     function size: { UInt64 } Int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function empty: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure push_back(const Value: T); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    property Items[const index: UInt64]: T read GetItems; default;
+    //
+    function pT(const index: UInt64): Pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    property v[const index: UInt64]: T read GetItems; default;
   end;
 
   TStdVectorCppString = Vector<CvStdString>;
@@ -341,6 +344,30 @@ type
     NORM_MINMAX = 32                       // !< flag
     );
 {$ENDREGION 'base.hpp'}
+  //
+{$REGION 'matx.hpp'}
+
+type
+  Vec2f  = array [0 .. 1] of float;
+  pVec2f = ^Vec2f;
+  Vec4i  = array [0 .. 3] of Int;
+  pVec4i = ^Vec4i;
+  Vec6f  = array [0 .. 5] of float;
+  pVec6f = ^Vec6f;
+
+  Vec3b = record
+  private
+    _Data: array [0 .. 2] of uchar;
+    function getItem(const index: integer): uchar; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure setItem(const index: integer; const Value: uchar); {$IFDEF USE_INLINE}inline; {$ENDIF}
+  public
+    property Items[const Index: integer]: uchar read getItem write setItem; default;
+    class operator Implicit(const a: TArray<uchar>): Vec3b; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+  pVec3b = ^Vec3b;
+
+{$ENDREGION 'matx.hpp'}
   //
 {$REGION 'cvdef.h'}
 
@@ -586,12 +613,18 @@ Type
   end;
 
   TMatStep = record
+  private
+    function GetItems(const index: Int): Int;
+    procedure setItems(const index, Value: Int);
+  public
     // MatStep() CV_NOEXCEPT;
     // explicit MatStep(size_t s) CV_NOEXCEPT;
     // const size_t& operator[](int i) const CV_NOEXCEPT;
     // size_t& operator[](int i) CV_NOEXCEPT;
+    property Items[const index: Int]: Int read GetItems write setItems; default;
     // operator size_t() const;
     // MatStep& operator = (size_t s);
+  public
     p: psize_t;                    // size_t* p;
     buf: array [0 .. 1] of size_t; // size_t buf[2];
   end;
@@ -669,6 +702,7 @@ Type
     class function Mat(rows, cols: Int; &type: Int; Data: Pointer; step: size_t = AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function Mat<T>(rows, cols: Int; Data: TArray<T>; step: size_t = AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function Mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t = AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function Mat<T>(const vec: Vector<T>; copyData: BOOL = false): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(int rows, int cols, int type, void* data, size_t step=AUTO_STEP);
 
     // Mat(Size size, int type, void* data, size_t step=AUTO_STEP);
@@ -684,7 +718,6 @@ Type
     class operator Finalize(var Dest: TMat); // ~Mat();
     class operator assign(var Dest: TMat; const [ref] Src: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat& operator = (const Mat& m);
-    { TODO: 'Implicit(const m: TMatExpr) not working inline!!!???' }
     // TMatHelper // Mat& operator = (const MatExpr& expr);
     // UMat getUMat(AccessFlag accessFlags, UMatUsageFlags usageFlags = USAGE_DEFAULT) const;
     // Mat row(int y) const;
@@ -975,11 +1008,11 @@ type
     class function noArray: TInputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TMat): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TMatExpr): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    // class operator Implicit(const IA: TInputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<TPoint2f>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<uchar>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: double): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<Vec4i>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
 {$HINTS OFF}
     flags: Int;   // int flags;
@@ -989,6 +1022,11 @@ type
   end;
 
   TInputArrayOfArrays = type TInputArray;
+
+  TInputArrayOfArraysHelper = record helper for TInputArrayOfArrays
+  public
+    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
 
   TOutputArray = type TInputArray;
   pOutputArray = ^TOutputArray;
@@ -1059,6 +1097,8 @@ type
     class operator Implicit(const v: Vector<TPoint2f>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<uchar>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<float>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<Vec4i>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector < Vector < TPoint >> ): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   TOutputArrayOfArrays = TOutputArray;
@@ -1126,34 +1166,8 @@ type
   // function noArray(): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
 {$ENDREGION 'mat.hpp'}
   //
-{$REGION 'matx.hpp'}
-
-type
-  TMatX<T> = record
-
-  end;
-
-  Vec6f  = array [0 .. 5] of float;
-  pVec6f = ^Vec6f;
-
-  Vec3b = record
-  private
-    _Data: array [0 .. 2] of uchar;
-    function getItem(const index: integer): uchar; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure setItem(const index: integer; const Value: uchar); {$IFDEF USE_INLINE}inline; {$ENDIF}
-  public
-    property Items[const Index: integer]: uchar read getItem write setItem; default;
-    class operator Implicit(const a: TArray<uchar>): Vec3b; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  end;
-
-  pVec3b = ^Vec3b;
-
-  Vec2f  = array [0 .. 1] of float;
-  pVec2f = ^Vec2f;
-
-{$ENDREGION 'matx.hpp'}
-  //
 {$REGION 'core.hpp'}
+
   (* * @brief Swaps two matrices *)
   // CV_EXPORTS void swap(Mat& a, Mat& b);
   // 6587
@@ -2085,9 +2099,12 @@ Type
     ?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
     void cv::namedWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
   }
-procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTOSIZE); overload;
+procedure namedWindow(const winname: CppString; flags: Int = Int(WINDOW_AUTOSIZE)); overload;
   external opencv_world_dll name '?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTOSIZE); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure namedWindow(const winname: String; flags: WindowFlags = WINDOW_AUTOSIZE); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 //
 (* * @brief Creates a trackbar and attaches it to the specified window.
@@ -2545,6 +2562,38 @@ type
     WARP_INVERSE_MAP = 16 //
     );
 
+  // ! mode of the contour retrieval algorithm
+  RetrievalModes = ( //
+    (* * retrieves only the extreme outer contours. It sets `hierarchy[i][2]=hierarchy[i][3]=-1` for
+      all the contours. *)
+    RETR_EXTERNAL = 0,
+    (* * retrieves all of the contours without establishing any hierarchical relationships. *)
+    RETR_LIST = 1,
+    (* * retrieves all of the contours and organizes them into a two-level hierarchy. At the top
+      level, there are external boundaries of the components. At the second level, there are
+      boundaries of the holes. If there is another contour inside a hole of a connected component, it
+      is still put at the top level. *)
+    RETR_CCOMP = 2,
+    (* * retrieves all of the contours and reconstructs a full hierarchy of nested contours. *)
+    RETR_TREE = 3,     //
+    RETR_FLOODFILL = 4 // !<
+    );
+
+  // ! the contour approximation algorithm
+  ContourApproximationModes = (
+    (* * stores absolutely all the contour points. That is, any 2 subsequent points (x1,y1) and
+      (x2,y2) of the contour will be either horizontal, vertical or diagonal neighbors, that is,
+      max(abs(x1-x2),abs(y2-y1))==1. *)
+    CHAIN_APPROX_NONE = 1,
+    (* * compresses horizontal, vertical, and diagonal segments and leaves only their end points.
+      For example, an up-right rectangular contour is encoded with 4 points. *)
+    CHAIN_APPROX_SIMPLE = 2,
+    (* * applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *)
+    CHAIN_APPROX_TC89_L1 = 3,
+    (* * applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *)
+    CHAIN_APPROX_TC89_KCOS = 4 //
+    );
+
   (* * @brief Draws a text string.
 
     The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered
@@ -2640,7 +2689,8 @@ procedure getTextSize(const R: pSize; text: CvStdString; fontFace: Int; fontScal
 // index 5135
   name '?getTextSize@cv@@YA?AV?$Size_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HNHPEAH@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function getTextSize(const text: String; fontFace: HersheyFonts; fontScale: double; thickness: Int; baseLine: pInt = nil): TSize; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function getTextSize(const text: String; fontFace: HersheyFonts; fontScale: double; thickness: Int; baseLine: pInt = nil): TSize; overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 //
 (* * @brief Blurs an image using the normalized box filter.
 
@@ -3307,9 +3357,8 @@ procedure line(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoin
   ?arrowedLine@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z
   void cv::arrowedLine(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int,double)
 }
-procedure arrowedLine(const img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64 { TPoint };
-const color: TScalar; thickness: Int = 1; line_type: Int = 8; shift: Int = 0; tipLength: double = 0.1); overload;
-  external opencv_world_dll
+procedure arrowedLine(const img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; line_type: Int = 8; shift: Int = 0;
+  tipLength: double = 0.1); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?arrowedLine@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z'
 {$ELSE}
@@ -3317,7 +3366,7 @@ const color: TScalar; thickness: Int = 1; line_type: Int = 8; shift: Int = 0; ti
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
-  const shift: Int = 0; const tipLength: double = 0.1);overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  const shift: Int = 0; const tipLength: double = 0.1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Draws a simple, thick, or filled up-right rectangle.
 
   The function cv::rectangle draws a rectangle outline or a filled rectangle whose two opposite corners
@@ -3341,15 +3390,15 @@ procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2
   ?rectangle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z
   void cv::rectangle(class cv::_InputOutputArray const &,class cv::Point_<int>,class cv::Point_<int>,class cv::Scalar_<double> const &,int,int,int)
 }
-procedure rectangle(const img: TInputOutputArray; pt1, pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0); overload; external opencv_world_dll
+procedure rectangle(const img: TInputOutputArray; pt1, pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0); overload;
+  external opencv_world_dll
 {$IFDEF DEBUG}
   name '?rectangle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
 {$ELSE}
   name '?rectangle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const color: TScalar; const thickness: Int = 1;
-const lineType: LineTypes = LINE_8; const shift: Int = 0);overload;
+procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8; const shift: Int = 0); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Fills the area bounded by one or more polygons.
 
@@ -3568,16 +3617,25 @@ procedure cornerMinEigenVal(const Src: TInputArray; const dst: TOutputArray; blo
   ?Scharr@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHNNH@Z
   void cv::Scharr(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,double,double,int)
 }
-procedure Scharr(const Src: TInputArray; const dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0; borderType: Int = Int(BORDER_DEFAULT));
-overload; external opencv_world_dll
+procedure Scharr(const Src: TInputArray; const dst: TOutputArray;
+depth: Int; dx, dy: Int;
+scale: double {= 1};
+delta: double {= 0};
+borderType: Int {= Int(BORDER_DEFAULT)}
+); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?Scharr@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHNNH@Z'
 {$ELSE}
   name '?Scharr@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHNNH@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: Int; const dx, dy: Int; const scale: double = 1; const delta: double = 0;
-  const borderType: BorderTypes = BORDER_DEFAULT);overload;
+procedure Scharr(const Src: TInputArray; const dst: TOutputArray;
+depth: Int;
+dx, dy: Int;
+scale: double = 1;
+delta: double = 0;
+borderType: BorderTypes = BORDER_DEFAULT
+); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Draws contours outlines or filled contours.
 
@@ -3613,23 +3671,30 @@ procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: I
 // InputArray hierarchy = noArray(),
 // int maxLevel = INT_MAX, Point offset = Point() );
 {
- 4531
- ?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z
- void cv::drawContours(class cv::_InputOutputArray const &,class cv::_InputArray const &,int,class cv::Scalar_<double> const &,int,int,class cv::_InputArray const &,int,class cv::Point_<int>)
- }
- procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays;
-contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes { = LINE_8 };
-  const hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: UInt64 { TPoint  = Point() } ); overload;
-  external opencv_world_dll name '?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z'
+  4531
+  ?drawContours@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z
+  ?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z
+  void cv::drawContours(class cv::_InputOutputArray const &,class cv::_InputArray const &,int,class cv::Scalar_<double> const &,int,int,class cv::_InputArray const &,int,class cv::Point_<int>)
+}
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: Int { = LINE_8 };
+  const hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: UInt64 = 0 { TPoint  = Point() } ); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?drawContours@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z'
+{$ELSE}
+  name '?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8);
-  overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
-  const hierarchy: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
-  const hierarchy: TInputArray; const maxLevel: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
-  const hierarchy: TInputArray; const maxLevel: Int; const offset: TPoint); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes;
+  const hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: TPoint { = Point() } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes;
+  const hierarchy: TInputArray { = noArray() }; maxLevel: Int); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes;
+  const hierarchy: TInputArray { = noArray() } ); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Saves an image to a specified file.
 
   The function imwrite saves the image to the specified file. The image format is chosen based on the
@@ -3773,9 +3838,8 @@ procedure cornerEigenValsAndVecs(const Src: TInputArray; const dst: TOutputArray
   void cv::goodFeaturesToTrack(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,
   class cv::_InputArray const &,int,bool,double)
 }
-procedure goodFeaturesToTrack(const image: TInputArray; const corners: TOutputArray; maxCorners: Int; qualityLevel: double; minDistance: double;
-const mask: TInputArray { = noArray() }; blockSize: Int = 3;
-  useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
+procedure goodFeaturesToTrack(const image: TInputArray; const corners: TOutputArray; maxCorners: Int; qualityLevel: double; minDistance: double; const mask: TInputArray { = noArray() };
+  blockSize: Int = 3; useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNN0H_NN@Z'
 {$ELSE}
@@ -3792,9 +3856,8 @@ const mask: TInputArray { = noArray() }; blockSize: Int = 3;
   void cv::goodFeaturesToTrack(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,
   class cv::_InputArray const &,int,int,bool,double)
 }
-procedure goodFeaturesToTrack(const image: TInputArray; const corners: TOutputArray; maxCorners: Int;
-qualityLevel: double; minDistance: double; const mask: TInputArray; blockSize: Int; gradientSize: Int;
-  useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
+procedure goodFeaturesToTrack(const image: TInputArray; const corners: TOutputArray; maxCorners: Int; qualityLevel: double; minDistance: double; const mask: TInputArray; blockSize: Int;
+  gradientSize: Int; useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNN0HH_NN@Z'
 {$ELSE}
@@ -3845,15 +3908,15 @@ qualityLevel: double; minDistance: double; const mask: TInputArray; blockSize: I
   ?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@1@00PEAN@Z
   class cv::Point_<double> cv::phaseCorrelate(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,double *)
 }
-function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() };
-response: pDouble { = 0 } ): TPoint2d; overload; external opencv_world_dll
+function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() }; response: pDouble { = 0 } ): TPoint2d; overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@debug_build_guard@1@00PEAN@Z'
 {$ELSE}
   name '?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@1@00PEAN@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() }; Var response: double { = 0 } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() }; Var response: double { = 0 } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline;
+{$ENDIF}
 function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 function phaseCorrelate(const src1: TInputArray; const src2: TInputArray): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
@@ -3931,12 +3994,126 @@ procedure createHanningWindow(const dst: TOutputArray; const winSize: TSize; &ty
   ?resize@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z
   void cv::resize(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,double,double,int)
 }
-procedure resize(const Src: TInputArray; const dst: TOutputArray; dsize: UInt64 { TSize };
-fx: double = 0; fy: double = 0; interpolation: InterpolationFlags = INTER_LINEAR); overload; external opencv_world_dll
+procedure resize(const Src: TInputArray; const dst: TOutputArray; dsize: UInt64 { TSize }; fx: double = 0; fy: double = 0; interpolation: InterpolationFlags = INTER_LINEAR); overload;
+  external opencv_world_dll
 {$IFDEF DEBUG}
   name '?resize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@V?$Size_@H@1@NNH@Z'
 {$ELSE}
   name '?resize@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+(* * @brief Finds contours in a binary image.
+
+  The function retrieves contours from the binary image using the algorithm @cite Suzuki85 . The contours
+  are a useful tool for shape analysis and object detection and recognition. See squares.cpp in the
+  OpenCV sample directory.
+  @note Since opencv 3.2 source image is not modified by this function.
+
+  @param image Source, an 8-bit single-channel image. Non-zero pixels are treated as 1's. Zero
+  pixels remain 0's, so the image is treated as binary . You can use #compare, #inRange, #threshold ,
+  #adaptiveThreshold, #Canny, and others to create a binary image out of a grayscale or color one.
+  If mode equals to #RETR_CCOMP or #RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
+  @param contours Detected contours. Each contour is stored as a vector of points (e.g.
+  std::vector<std::vector<cv::Point> >).
+  @param hierarchy Optional output vector (e.g. std::vector<cv::Vec4i>), containing information about the image topology. It has
+  as many elements as the number of contours. For each i-th contour contours[i], the elements
+  hierarchy[i][0] , hierarchy[i][1] , hierarchy[i][2] , and hierarchy[i][3] are set to 0-based indices
+  in contours of the next and previous contours at the same hierarchical level, the first child
+  contour and the parent contour, respectively. If for the contour i there are no next, previous,
+  parent, or nested contours, the corresponding elements of hierarchy[i] will be negative.
+  @note In Python, hierarchy is nested inside a top level array. Use hierarchy[0][i] to access hierarchical elements of i-th contour.
+  @param mode Contour retrieval mode, see #RetrievalModes
+  @param method Contour approximation method, see #ContourApproximationModes
+  @param offset Optional offset by which every contour point is shifted. This is useful if the
+  contours are extracted from the image ROI and then they should be analyzed in the whole image
+  context.
+*)
+// CV_EXPORTS_W void findContours( InputArray image, OutputArrayOfArrays contours,
+// OutputArray hierarchy, int mode,
+// int method, Point offset = Point());
+{
+  4736
+  ?findContours@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1HHV?$Point_@H@1@@Z
+  ?findContours@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1HHV?$Point_@H@1@@Z
+  void cv::findContours(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,int,int,class cv::Point_<int>)
+}
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: Int; method: Int; const offset: UInt64 = 0 { = Point() } ); overload;
+  external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?findContours@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1HHV?$Point_@H@1@@Z'
+{$ELSE}
+  name '?findContours@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1HHV?$Point_@H@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: RetrievalModes; method: ContourApproximationModes;
+  const offset: TPoint); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: RetrievalModes; method: ContourApproximationModes); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @overload *)
+// CV_EXPORTS void findContours( InputArray image, OutputArrayOfArrays contours,
+// int mode, int method, Point offset = Point())
+{
+  4737
+  ?findContours@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHV?$Point_@H@1@@Z
+  ?findContours@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHV?$Point_@H@1@@Z
+  void cv::findContours(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,class cv::Point_<int>)
+}
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: Int; method: Int; const offset: UInt64 = 0 { = Point() } ); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?findContours@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHV?$Point_@H@1@@Z'
+{$ELSE}
+  name '?findContours@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHV?$Point_@H@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: RetrievalModes; method: ContourApproximationModes); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: RetrievalModes; method: ContourApproximationModes; const offset: TPoint); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//
+(* * @brief Calculates a contour area.
+
+  The function computes a contour area. Similarly to moments , the area is computed using the Green
+  formula. Thus, the returned area and the number of non-zero pixels, if you draw the contour using
+  #drawContours or #fillPoly , can be different. Also, the function will most certainly give a wrong
+  results for contours with self-intersections.
+
+  Example:
+  @code
+  vector<Point> contour;
+  contour.push_back(Point2f(0, 0));
+  contour.push_back(Point2f(10, 0));
+  contour.push_back(Point2f(10, 10));
+  contour.push_back(Point2f(5, 4));
+
+  double area0 = contourArea(contour);
+  vector<Point> approx;
+  approxPolyDP(contour, approx, 5, true);
+  double area1 = contourArea(approx);
+
+  cout << "area0 =" << area0 << endl <<
+  "area1 =" << area1 << endl <<
+  "approx poly vertices" << approx.size() << endl;
+  @endcode
+  @param contour Input vector of 2D points (contour vertices), stored in std::vector or Mat.
+  @param oriented Oriented area flag. If it is true, the function returns a signed area value,
+  depending on the contour orientation (clockwise or counter-clockwise). Using this feature you can
+  determine orientation of a contour by taking the sign of an area. By default, the parameter is
+  false, which means that the absolute value is returned.
+*)
+// CV_EXPORTS_W double contourArea(InputArray contour, bool oriented = false );
+{
+  4023
+  ?contourArea@cv@@YANAEBV_InputArray@debug_build_guard@1@_N@Z
+  ?contourArea@cv@@YANAEBV_InputArray@1@_N@Z
+  double cv::contourArea(class cv::_InputArray const &,bool)
+}
+function contourArea(const contour: TInputArray; oriented: BOOL = false): double; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?contourArea@cv@@YANAEBV_InputArray@debug_build_guard@1@_N@Z'
+{$ELSE}
+  name '?contourArea@cv@@YANAEBV_InputArray@1@_N@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
@@ -4391,8 +4568,7 @@ procedure decolor(const Src: TInputArray; const grayscale: TOutputArray; const c
   ?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z
   void cv::edgePreservingFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,float,float)
 }
-procedure edgePreservingFilter(const Src: TInputArray; const dst: TOutputArray; flags: Int = 1;
-sigma_s: float = 60; sigma_r: float = 0.4); external opencv_world_dll
+procedure edgePreservingFilter(const Src: TInputArray; const dst: TOutputArray; flags: Int = 1; sigma_s: float = 60; sigma_r: float = 0.4); external opencv_world_dll
 {$IFDEF DEBUG}
   name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z'
 {$ELSE}
@@ -4439,8 +4615,7 @@ procedure detailEnhance(const Src: TInputArray; const dst: TOutputArray; sigma_s
   ?pencilSketch@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1MMM@Z
   void cv::pencilSketch(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,float,float,float)
 }
-procedure pencilSketch(const Src: TInputArray; const dst1: TOutputArray; const dst2: TOutputArray; sigma_s: float = 60;
-sigma_r: float = 0.07; shade_factor: float = 0.02); external opencv_world_dll
+procedure pencilSketch(const Src: TInputArray; const dst1: TOutputArray; const dst2: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.07; shade_factor: float = 0.02); external opencv_world_dll
 {$IFDEF DEBUG}
   name '?pencilSketch@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1MMM@Z'
 {$ELSE}
@@ -4936,10 +5111,9 @@ type
     ?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z
     void cv::calcOpticalFlowPyrLK(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,int,class cv::TermCriteria,int,double)
   }
-procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
-const status: TOutputArray; const err: TOutputArray;
-  winSize: UInt64 { TSize = Size(21,21) }; maxLevel: Int { = 3 }; const criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0;
-  minEigThreshold: double = 1E-4); overload; external opencv_world_dll
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
+  const err: TOutputArray; winSize: UInt64 { TSize = Size(21,21) }; maxLevel: Int { = 3 }; const criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) };
+  flags: Int = 0; minEigThreshold: double = 1E-4); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_InputOutputArray@31@AEBV_OutputArray@31@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
 {$ELSE}
@@ -5189,9 +5363,10 @@ type
   pSVM = ^TSVM;
 
   TSVM = record
-  public
+  private
     _vftable: vftable_func;
     class function vftable(const s: TSVM; const index: integer): Pointer; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  public
     class operator Finalize(var Dest: TSVM);
   public
     // class CV_EXPORTS Kernel : public Algorithm
@@ -5509,6 +5684,165 @@ type
   end;
 {$ENDREGION 'ml.hpp'}
   //
+{$REGION 'background_segm.hpp'}
+
+Type
+  (* * @brief Gaussian Mixture-based Background/Foreground Segmentation Algorithm.
+    The class implements the Gaussian mixture model background subtraction described in @cite Zivkovic2004
+    and @cite Zivkovic2006 .
+  *)
+  pBackgroundSubtractorMOG2 = ^TBackgroundSubtractorMOG2;
+
+  TBackgroundSubtractorMOG2 = record
+  private
+    _vftable: vftable_func;
+    class function vftable(const s: TBackgroundSubtractorMOG2; const index: integer): Pointer; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  public
+    class operator Finalize(var Dest: TBackgroundSubtractorMOG2);
+  public
+    (* * @brief Returns the number of last frames that affect the background model
+    *)
+    // CV_WRAP virtual int getHistory() const = 0;
+    (* * @brief Sets the number of last frames that affect the background model
+    *)
+    // CV_WRAP virtual void setHistory(int history) = 0;
+
+    (* * @brief Returns the number of gaussian components in the background model
+    *)
+    // CV_WRAP virtual int getNMixtures() const = 0;
+    (* * @brief Sets the number of gaussian components in the background model.
+
+      The model needs to be reinitalized to reserve memory.
+    *)
+    // CV_WRAP virtual void setNMixtures(int nmixtures) = 0;//needs reinitialization!
+
+    (* * @brief Returns the "background ratio" parameter of the algorithm
+
+      If a foreground pixel keeps semi-constant value for about backgroundRatio\*history frames, it's
+      considered background and added to the model as a center of a new component. It corresponds to TB
+      parameter in the paper.
+    *)
+    // CV_WRAP virtual double getBackgroundRatio() const = 0;
+    (* * @brief Sets the "background ratio" parameter of the algorithm
+    *)
+    // CV_WRAP virtual void setBackgroundRatio(double ratio) = 0;
+
+    (* * @brief Returns the variance threshold for the pixel-model match
+
+      The main threshold on the squared Mahalanobis distance to decide if the sample is well described by
+      the background model or not. Related to Cthr from the paper.
+    *)
+    // CV_WRAP virtual double getVarThreshold() const = 0;
+    (* * @brief Sets the variance threshold for the pixel-model match
+    *)
+    // CV_WRAP virtual void setVarThreshold(double varThreshold) = 0;
+    procedure setVarThreshold(varThreshold: double); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * @brief Returns the variance threshold for the pixel-model match used for new mixture component generation
+
+      Threshold for the squared Mahalanobis distance that helps decide when a sample is close to the
+      existing components (corresponds to Tg in the paper). If a pixel is not close to any component, it
+      is considered foreground or added as a new component. 3 sigma =\> Tg=3\*3=9 is default. A smaller Tg
+      value generates more components. A higher Tg value may result in a small number of components but
+      they can grow too large.
+    *)
+    // CV_WRAP virtual double getVarThresholdGen() const = 0;
+    (* * @brief Sets the variance threshold for the pixel-model match used for new mixture component generation
+    *)
+    // CV_WRAP virtual void setVarThresholdGen(double varThresholdGen) = 0;
+
+    (* * @brief Returns the initial variance of each gaussian component
+    *)
+    // CV_WRAP virtual double getVarInit() const = 0;
+    (* * @brief Sets the initial variance of each gaussian component
+    *)
+    // CV_WRAP virtual void setVarInit(double varInit) = 0;
+
+    // CV_WRAP virtual double getVarMin() const = 0;
+    // CV_WRAP virtual void setVarMin(double varMin) = 0;
+
+    // CV_WRAP virtual double getVarMax() const = 0;
+    // CV_WRAP virtual void setVarMax(double varMax) = 0;
+
+    (* * @brief Returns the complexity reduction threshold
+
+      This parameter defines the number of samples needed to accept to prove the component exists. CT=0.05
+      is a default value for all the samples. By setting CT=0 you get an algorithm very similar to the
+      standard Stauffer&Grimson algorithm.
+    *)
+    // CV_WRAP virtual double getComplexityReductionThreshold() const = 0;
+    (* * @brief Sets the complexity reduction threshold
+    *)
+    // CV_WRAP virtual void setComplexityReductionThreshold(double ct) = 0;
+
+    (* * @brief Returns the shadow detection flag
+
+      If true, the algorithm detects shadows and marks them. See createBackgroundSubtractorMOG2 for
+      details.
+    *)
+    // CV_WRAP virtual bool getDetectShadows() const = 0;
+    (* * @brief Enables or disables shadow detection
+    *)
+    // CV_WRAP virtual void setDetectShadows(bool detectShadows) = 0;
+
+    (* * @brief Returns the shadow value
+
+      Shadow value is the value used to mark shadows in the foreground mask. Default value is 127. Value 0
+      in the mask always means background, 255 means foreground.
+    *)
+    // CV_WRAP virtual int getShadowValue() const = 0;
+    (* * @brief Sets the shadow value
+    *)
+    // CV_WRAP virtual void setShadowValue(int value) = 0;
+
+    (* * @brief Returns the shadow threshold
+
+      A shadow is detected if pixel is a darker version of the background. The shadow threshold (Tau in
+      the paper) is a threshold defining how much darker the shadow can be. Tau= 0.5 means that if a pixel
+      is more than twice darker then it is not shadow. See Prati, Mikic, Trivedi and Cucchiara,
+      *Detecting Moving Shadows...*, IEEE PAMI,2003.
+    *)
+    // CV_WRAP virtual double getShadowThreshold() const = 0;
+    (* * @brief Sets the shadow threshold
+    *)
+    // CV_WRAP virtual void setShadowThreshold(double threshold) = 0;
+
+    (* * @brief Computes a foreground mask.
+
+      @param image Next video frame. Floating point frame will be used without scaling and should be in range \f$[0,255]\f$.
+      @param fgmask The output foreground mask as an 8-bit binary image.
+      @param learningRate The value between 0 and 1 that indicates how fast the background model is
+      learnt. Negative parameter value makes the algorithm to use some automatically chosen learning
+      rate. 0 means that the background model is not updated at all, 1 means that the background model
+      is completely reinitialized from the last frame.
+    *)
+    // CV_WRAP virtual void apply(InputArray image, OutputArray fgmask, double learningRate=-1) CV_OVERRIDE = 0;
+    procedure apply(const image: TInputArray; const fgmask: TOutputArray; learningRate: double = -1); {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+  (* * @brief Creates MOG2 Background Subtractor
+
+    @param history Length of the history.
+    @param varThreshold Threshold on the squared Mahalanobis distance between the pixel and the model
+    to decide whether a pixel is well described by the background model. This parameter does not
+    affect the background update.
+    @param detectShadows If true, the algorithm will detect shadows and mark them. It decreases the
+    speed a bit, so if you do not need this feature, set the parameter to false.
+  *)
+  // CV_EXPORTS_W Ptr<BackgroundSubtractorMOG2>
+  // createBackgroundSubtractorMOG2(int history=500, double varThreshold=16,
+  // bool detectShadows=true);
+  {
+    4264
+    ?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z
+    ?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z
+    struct cv::Ptr<class cv::BackgroundSubtractorMOG2> cv::createBackgroundSubtractorMOG2(int,double,bool)
+  }
+function createBackgroundSubtractorMOG2(history: Int = 500; varThreshold: double = 16; detectShadows: BOOL = true): TPtr<TBackgroundSubtractorMOG2>;
+  external opencv_world_dll name '?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//
+{$ENDREGION 'background_segm.hpp'}
+//
 {$REGION 'helpers'}
 
 Type
@@ -5521,6 +5855,7 @@ Type
     class operator Subtract(const m: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const Scalar& s);
     class operator Implicit(const m: TMatExpr): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat& operator = (const MatExpr& expr);
+    class operator Implicit(const v: Vector<TPoint>): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} //
     class function zeros(const rows, cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}   // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
     class function zeros(const size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
 
@@ -5554,6 +5889,7 @@ Type
 {$I opencv.QRCodeDetector.import.inc}
 {$I opencv.SVM.import.inc}
 {$I opencv.OpticalFlow.import.inc}
+{$I opencv.BackgroundSubtractorMOG2.import.inc}
   //
 {$I opencv.operator.import.inc}
 {$ENDREGION 'import'}
@@ -5561,8 +5897,7 @@ Type
   //
 implementation
 
-Uses
-  WinApi.Windows;
+Uses WinApi.Windows;
 
 {$REGION 'Std'}
 { CppString }
@@ -5673,6 +6008,11 @@ begin
   CreateStdVector(@Dest, vt);
 end;
 
+function Vector<T>.pT(const index: UInt64): Pointer;
+begin
+  StdPItem(@Self, vt, index, TStdPointer(Result));
+end;
+
 procedure Vector<T>.push_back(const Value: T);
 begin
   StdPushBack(@Self, @Value, vt);
@@ -5703,6 +6043,8 @@ begin
     vt := vtFloat
   else if TypeInfo(T) = TypeInfo(Int) then // vector<float>
     vt := vtInt
+  else if TypeInfo(T) = TypeInfo(Vec4i) then // vector<float>
+    vt := vtVec4i
   else
   begin
     Var
@@ -5759,35 +6101,33 @@ begin
   polylines(img, pts, npts, ncontours, isClosed, color, thickness, Int(lineType), shift);
 end;
 
-procedure Scharr(const Src: TInputArray; const dst: TOutputArray; const depth: Int; const dx, dy: Int; const scale: double = 1; const delta: double = 0;
-  const borderType: BorderTypes = BORDER_DEFAULT);
+procedure Scharr(const Src: TInputArray; const dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0;
+  borderType: BorderTypes = BORDER_DEFAULT);
 begin
   Scharr(Src, dst, depth, dx, dy, scale, delta, Int(borderType));
 end;
 
-// procedure _drawContours(image: TInputOutputArray; contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
-// hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: TPoint { = Point() } );
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8);
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes { = LINE_8 };
+  const hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: TPoint { = Point() } );
 begin
-  drawContours(image, contours, contourIdx, color, thickness, lineType, TInputArray.noArray);
+  drawContours(image, contours, contourIdx, color, thickness, Int(lineType), hierarchy, maxLevel, UInt64(offset));
 end;
 
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
-  const hierarchy: TInputArray);
-begin
-  drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, INT_MAX);
-end;
-
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
-  const hierarchy: TInputArray; const maxLevel: Int);
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes;
+  const hierarchy: TInputArray { = noArray() }; maxLevel: Int);
 begin
   drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, maxLevel, Point(0, 0));
 end;
 
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; const contourIdx: Int; const color: TScalar; const thickness: Int; const lineType: LineTypes;
-  const hierarchy: TInputArray; const maxLevel: Int; const offset: TPoint);
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes;
+  const hierarchy: TInputArray { = noArray() } );
 begin
-  drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, maxLevel, UInt64(offset));
+  drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, INT_MAX);
+end;
+
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes);
+begin
+  drawContours(image, contours, contourIdx, color, thickness, lineType, TInputArray.noArray);
 end;
 
 function imwrite(const filename: CppString; const img: TInputArray): BOOL;
@@ -5815,6 +6155,26 @@ end;
 procedure createHanningWindow(const dst: TOutputArray; const winSize: TSize; &type: Int);
 begin
   createHanningWindow(dst, UInt64(winSize), &type);
+end;
+
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: RetrievalModes; method: ContourApproximationModes; const offset: TPoint);
+begin
+  findContours(image, contours, hierarchy, Int(mode), Int(method), offset);
+end;
+
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: RetrievalModes; method: ContourApproximationModes);
+begin
+  findContours(image, contours, hierarchy, mode, method, Point(0, 0));
+end;
+
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: RetrievalModes; method: ContourApproximationModes);
+begin
+  findContours(image, contours, mode, method, Point(0, 0));
+end;
+
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: RetrievalModes; method: ContourApproximationModes; const offset: TPoint);
+begin
+  findContours(image, contours, mode, method, offset);
 end;
 
 procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
@@ -5936,6 +6296,16 @@ end;
 procedure blur(const Src: TInputArray; const dst: TOutputArray; const ksize: TSize; const anchor: TPoint; borderType: BorderTypes);
 begin
   blur(Src, dst, ksize, anchor, Int(borderType));
+end;
+
+procedure namedWindow(const winname: CppString; flags: WindowFlags);
+begin
+  namedWindow(winname, Int(flags));
+end;
+
+procedure namedWindow(const winname: String; flags: WindowFlags);
+begin
+  namedWindow(CppString(winname), Int(flags));
 end;
 
 procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
@@ -6221,6 +6591,28 @@ begin
   zeros_Mat(@Result, UInt64(size), &type);
 end;
 
+class function TMat.Mat<T>(const vec: Vector<T>; copyData: BOOL): TMat;
+begin
+  // : flags(MAGIC_VAL + traits::Type<_Tp>::value + CV_MAT_CONT_FLAG), dims(2), rows((int)vec.size()),
+  // cols(1), data(0), datastart(0), dataend(0), datalimit(0), allocator(0), u(0), size(&rows), step(0)
+
+  Result.Create(vec.size, 1, TTraitsType<T>.Value);
+
+  if (vec.empty()) then
+    Exit(TMat.Mat);
+  if (not copyData) then
+  begin
+    Result.step[0]   := SizeOf(T);
+    Result.step[1]   := SizeOf(T);
+    Result.datastart := vec.pT(0);
+    Result.Data      := vec.pT(0);
+    Result.datalimit := Result.datastart + Result.rows * Result.step[0];
+    Result.dataend   := Result.datastart + Result.rows * Result.step[0];
+  end
+  else
+    TMat.Mat(vec.size, 1, TTraitsType<T>.Value, vec.pT(0)).copyTo(Result);
+end;
+
 { TInputArray }
 
 class function TInputArray.InputArray(const m: TMat): TInputArray;
@@ -6279,21 +6671,21 @@ end;
 
 class operator TInputArray.Implicit(const v: Vector < Vector < TPoint >> ): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_READ); // -2130444276;
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_READ);
   Result.Obj   := @v;
   Result.sz    := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<TPoint2f>): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ); // -2130444276;
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ);
   Result.Obj   := @v;
   Result.sz    := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<uchar>): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_READ); // -2130444276;
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_READ);
   Result.Obj   := @v;
   Result.sz    := size(0, 0);
 end;
@@ -6364,6 +6756,13 @@ begin
   Result.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(MATX) + Int(CV_64F) + Int(ACCESS_READ);
   Result.Obj   := @v;
   Result.sz    := size(1, 1);
+end;
+
+class operator TInputArray.Implicit(const v: Vector<Vec4i>): TInputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<Vec4i>.Value + Int(ACCESS_READ);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
 end;
 
 { TScalar }
@@ -6608,6 +7007,11 @@ end;
 class function TMatHelper.eye(size: TSize; &type: Int): TMatExpr;
 begin
   eye_Mat(@Result, size, &type);
+end;
+
+class operator TMatHelper.Implicit(const v: Vector<TPoint>): TMat;
+begin
+  Result := TMat.Mat<TPoint>(v);
 end;
 
 class function TMatHelper.ones(rows, cols, &type: Int): TMatExpr;
@@ -7180,7 +7584,11 @@ end;
 
 class function TTraitsType<T>.Value: Int;
 begin
-  if TypeInfo(T) = TypeInfo(TPoint2f) then
+  if TypeInfo(T) = TypeInfo(Vec4i) then
+    Result := CV_MAKETYPE(TDepth<Int>.Value, 4)
+  else if TypeInfo(T) = TypeInfo(TPoint) then
+    Result := CV_MAKETYPE(TDepth<Int>.Value, 2)
+  else if TypeInfo(T) = TypeInfo(TPoint2f) then
     Result := CV_MAKETYPE(TDepth<float>.Value, 2)
   else if TypeInfo(T) = TypeInfo(uchar) then
   begin
@@ -7349,6 +7757,65 @@ end;
 function Rect(const _x: Int; _y: Int; _width: Int; _height: Int): TRect;
 begin
   Result := TRect_<Int>.Rect(_x, _y, _width, _height);
+end;
+
+class operator TOutputArrayHelper.Implicit(const v: Vector<Vec4i>): TOutputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<Vec4i>.Value + Int(ACCESS_WRITE);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
+end;
+
+class operator TOutputArrayHelper.Implicit(const v: Vector < Vector < TPoint >> ): TOutputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_WRITE);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
+end;
+
+{ TMatStep }
+
+function TMatStep.GetItems(const index: Int): Int;
+begin
+  Result := p[index];
+end;
+
+procedure TMatStep.setItems(const index, Value: Int);
+begin
+  p[index] := Value;
+end;
+
+{ TInputArrayOfArraysHelper }
+
+class operator TInputArrayOfArraysHelper.Implicit(const v: Vector < Vector < TPoint >> ): TInputArrayOfArrays;
+begin
+  Result := TInputArrayOfArrays(TInputArray(v));
+end;
+
+{ TBackgroundSubtractorMOG2 }
+
+procedure TBackgroundSubtractorMOG2.apply(const image: TInputArray; const fgmask: TOutputArray; learningRate: double);
+Type
+  Tapply = procedure(Obj: Pointer; const image: TInputArray; const fgmask: TOutputArray; learningRate: double);
+begin
+  Tapply(vftable(Self, $38 div SizeOf(Pointer)))(@Self, image, fgmask, learningRate);
+end;
+
+class operator TBackgroundSubtractorMOG2.Finalize(var Dest: TBackgroundSubtractorMOG2);
+begin
+  destructor_BackgroundSubtractorMOG2(@Dest);
+end;
+
+procedure TBackgroundSubtractorMOG2.setVarThreshold(varThreshold: double);
+Type
+  TsetVarThreshold = procedure(Obj: Pointer; varThreshold: double);
+begin
+  TsetVarThreshold(vftable(Self, $80 div SizeOf(Pointer)))(@Self, varThreshold);
+end;
+
+class function TBackgroundSubtractorMOG2.vftable(const s: TBackgroundSubtractorMOG2; const index: integer): Pointer;
+begin
+  Result := pvftable(s._vftable)[index];
 end;
 
 initialization

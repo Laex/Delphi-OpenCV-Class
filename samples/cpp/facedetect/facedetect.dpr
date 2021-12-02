@@ -190,7 +190,7 @@ begin
 
     detectAndDraw(frame, cascade, nestedCascade, scale, tryflip);
 
-    if waitKey(10) <> -1 then
+    if waitKey(1) <> -1 then
       break;
   end;
 end;
@@ -208,7 +208,9 @@ begin
     Var
       image: TMat;
     Var
-      inputName: string := OpenCVData + 'Megamind.avi'; // 'lena.jpg';
+      inputName: string := '0';
+      // inputName: string := OpenCVData + 'Megamind.avi';
+      // inputName: string := OpenCVData + 'lena.jpg';
     Var
       tryflip: bool := False;
     Var

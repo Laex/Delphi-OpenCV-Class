@@ -239,7 +239,7 @@ begin
         Halt(0);
     end;
     Var
-      textsize: TSize := getTextSize('OpenCV forever!', Int(FONT_HERSHEY_COMPLEX), 3, 5, nil);
+      textsize: TSize := getTextSize('OpenCV forever!', FONT_HERSHEY_COMPLEX, 3, 5, nil);
 
     Var
       org: TPoint := Point((width - textsize.width) div 2, (height - textsize.height) div 2);

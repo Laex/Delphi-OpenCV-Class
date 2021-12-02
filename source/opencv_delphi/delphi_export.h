@@ -46,6 +46,7 @@ enum VectorType {
 	vtUchar			= 9,    // vector<uchar>
 	vtFloat			= 10,   // vector<float>
 	vtInt			= 11,   // vector<int>
+	vtVec4i			= 12,   // vector<Vec4i>
 };
 
 BODY_API void CopyStdVector(void* obj, void* src, int vt)
@@ -89,6 +90,9 @@ BODY_API void CopyStdVector(void* obj, void* src, int vt)
 			break;
 		case vtInt:
 			DefCopyStdVector(int)
+			break;
+		case vtVec4i:
+			DefCopyStdVector(Vec4i)
 			break;
 		}
 	}
@@ -136,6 +140,9 @@ BODY_API void CreateStdVector(void* obj, int vt)
 		case vtInt:
 			DefCreateStdVector(int)
 			break;
+		case vtVec4i:
+			DefCreateStdVector(Vec4i)
+			break;
 		}
 	}
 }
@@ -181,6 +188,9 @@ BODY_API void DestroyStdVector(void* p, int vt)
 			break;
 		case vtInt:
 			DefDestroyStdVector(int)
+			break;
+		case vtVec4i:
+			DefDestroyStdVector(Vec4i)
 			break;
 		}
 	}
@@ -228,6 +238,9 @@ BODY_API void StdPushBack(void* p, void* o, int vt)
 		case vtInt:
 			defpush_back(int)
 			break;
+		case vtVec4i:
+			defpush_back(Vec4i)
+			break;
 		}
 	}
 }
@@ -263,6 +276,8 @@ BODY_API bool StdEmpty(void* p, int vt)
 			return DefStdEmpty(float)
 		case vtInt:
 			return DefStdEmpty(int)
+		case vtVec4i:
+			return DefStdEmpty(Vec4i)
 		}
 	}
 	return true;
@@ -310,6 +325,58 @@ BODY_API void StdItem(void* p, int vt, unsigned __int64 index, void* dst)
 		case vtInt:
 			DefStdItem(int)
 			break;
+		case vtVec4i:
+			DefStdItem(Vec4i)
+			break;
+		}
+	}
+}
+
+BODY_API void StdPItem(void* p, int vt, unsigned __int64 index, void** dst)
+{
+
+#define DefStdPItem(T) *dst = (void*)&(*(static_cast<vector<T>*>(p)))[index];
+
+	if (p && dst)
+	{
+		switch (vt)
+		{
+		case vtMat:			
+			DefStdPItem(Mat)
+			break;
+		case vtRect:
+			DefStdPItem(Rect)
+			break;
+		case vtPoint:
+			DefStdPItem(Point)
+			break;
+		case vtVectorMat:
+			DefStdPItem(vector<vector<Mat>>)
+			break;
+		case vtVectorRect:
+			DefStdPItem(vector<vector<Rect>>)
+			break;
+		case vtVectorPoint:
+			DefStdPItem(vector<vector<Point>>)
+			break;
+		case vtPoint2f:
+			DefStdPItem(vector<vector<Point2f>>)			
+			break;
+		case vtScalar:
+			DefStdPItem(Scalar)
+				break;
+		case vtUchar:
+			DefStdPItem(uchar)
+				break;
+		case vtFloat:
+			DefStdPItem(float)
+				break;
+		case vtInt:
+			DefStdPItem(int)
+				break;
+		case vtVec4i:
+			DefStdPItem(Vec4i)
+				break;
 		}
 	}
 }
@@ -345,6 +412,8 @@ BODY_API unsigned __int64 StdSize(void* p, int vt)
 			return DefStdSize(float)
 		case vtInt:
 			return DefStdSize(int)
+		case vtVec4i:
+			return DefStdSize(Vec4i)
 		}
 	}
 	return 0;
