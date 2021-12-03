@@ -418,3 +418,52 @@ BODY_API unsigned __int64 StdSize(void* p, int vt)
 	}
 	return 0;
 }
+
+BODY_API void StdSetItem(void* p, int vt, unsigned __int64 index, void* dst)
+{
+
+#define DefStdSetItem(T) (*(static_cast<vector<T>*>(p)))[index] = *(static_cast<T*>(dst))  ;
+
+	if (p && dst)
+	{
+		switch (vt)
+		{
+		case vtMat:
+			DefStdSetItem(Mat)			
+			break;
+		case vtRect:
+			DefStdSetItem(Rect)
+			break;
+		case vtPoint:
+			DefStdSetItem(Point)
+			break;
+		case vtVectorMat:			
+			DefStdSetItem(vector<Mat>)
+			break;
+		case vtVectorRect:
+			DefStdSetItem(vector<Rect>)
+			break;
+		case vtVectorPoint:
+			DefStdSetItem(vector<Point>)
+			break;
+		case vtPoint2f:
+			DefStdSetItem(Point2f)
+			break;
+		case vtScalar:
+			DefStdSetItem(Scalar)
+			break;
+		case vtUchar:
+			DefStdSetItem(uchar)
+			break;
+		case vtFloat:
+			DefStdSetItem(float)
+			break;
+		case vtInt:
+			DefStdSetItem(int)
+			break;
+		case vtVec4i:
+			DefStdSetItem(Vec4i)
+			break;
+		}
+	}
+}

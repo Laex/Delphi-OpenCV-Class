@@ -1,6 +1,6 @@
 # Delphi-OpenCV for C++ classes
 * Experimental Delphi binding for OpenCV 4.5.4
-* Development environment - Delphi 10.4
+* Development environment - Delphi 10.4, 11
 ##### Contributors:
 + Laentir Valetov (email: laex@bk.ru)
 ## Usage:

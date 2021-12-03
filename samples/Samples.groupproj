@@ -63,6 +63,9 @@
         <Projects Include="cpp\segment_objects\segment_objects.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="cpp\tutorial_code\videoio\video-write\video_write.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -251,14 +254,23 @@
     <Target Name="segment_objects:Make">
         <MSBuild Projects="cpp\segment_objects\segment_objects.dproj" Targets="Make"/>
     </Target>
+    <Target Name="video_write">
+        <MSBuild Projects="cpp\tutorial_code\videoio\video-write\video_write.dproj"/>
+    </Target>
+    <Target Name="video_write:Clean">
+        <MSBuild Projects="cpp\tutorial_code\videoio\video-write\video_write.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="video_write:Make">
+        <MSBuild Projects="cpp\tutorial_code\videoio\video-write\video_write.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm;cvdecolor;npr_demo;phase_corr;videocapture_basic;videocapture_image_sequence;dis_opticalflow;facedetect;segment_objects"/>
+        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm;cvdecolor;npr_demo;phase_corr;videocapture_basic;videocapture_image_sequence;dis_opticalflow;facedetect;segment_objects;video_write"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean;cvdecolor:Clean;npr_demo:Clean;phase_corr:Clean;videocapture_basic:Clean;videocapture_image_sequence:Clean;dis_opticalflow:Clean;facedetect:Clean;segment_objects:Clean"/>
+        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean;cvdecolor:Clean;npr_demo:Clean;phase_corr:Clean;videocapture_basic:Clean;videocapture_image_sequence:Clean;dis_opticalflow:Clean;facedetect:Clean;segment_objects:Clean;video_write:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make;cvdecolor:Make;npr_demo:Make;phase_corr:Make;videocapture_basic:Make;videocapture_image_sequence:Make;dis_opticalflow:Make;facedetect:Make;segment_objects:Make"/>
+        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make;cvdecolor:Make;npr_demo:Make;phase_corr:Make;videocapture_basic:Make;videocapture_image_sequence:Make;dis_opticalflow:Make;facedetect:Make;segment_objects:Make;video_write:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

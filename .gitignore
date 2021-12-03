@@ -72,7 +72,7 @@ modules/
 # Resource
 *.jpg
 *.png
-
+*.avi
 # opencv_delphi
 x64/
 .vs/

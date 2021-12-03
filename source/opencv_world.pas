@@ -145,6 +145,7 @@ Type
 {$HINTS ON}
     class function vt: TVectorType; static;
     function GetItems(const index: UInt64): T;
+    procedure setItems(const index: UInt64; const Value: T);
   public
     class operator Initialize(out Dest: Vector<T>);
     class operator Finalize(var Dest: Vector<T>);
@@ -155,7 +156,7 @@ Type
     procedure push_back(const Value: T); {$IFDEF USE_INLINE}inline; {$ENDIF}
     //
     function pT(const index: UInt64): Pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    property v[const index: UInt64]: T read GetItems; default;
+    property v[const index: UInt64]: T read GetItems write setItems; default;
   end;
 
   TStdVectorCppString = Vector<CvStdString>;
@@ -291,11 +292,11 @@ type
     BORDER_ISOLATED = 16                    // !< do not look outside of ROI
     );
 
-  (* * norm types
+  (* norm types
     src1 and src2 denote input arrays.
   *)
   NormTypes = ( //
-    (* *
+    (*
       \f[
       norm =  \forkthree
       {\|\texttt{src1}\|_{L_{\infty}} =  \max _I | \texttt{src1} (I)|}{if  \(\texttt{normType} = \texttt{NORM_INF}\) }
@@ -304,7 +305,7 @@ type
       \f]
     *)
     NORM_INF = 1,
-    (* *
+    (*
       \f[
       norm =  \forkthree
       {\| \texttt{src1} \| _{L_1} =  \sum _I | \texttt{src1} (I)|}{if  \(\texttt{normType} = \texttt{NORM_L1}\)}
@@ -312,7 +313,7 @@ type
       { \frac{\|\texttt{src1}-\texttt{src2}\|_{L_1} }{\|\texttt{src2}\|_{L_1}} }{if  \(\texttt{normType} = \texttt{NORM_RELATIVE | NORM_L1}\) }
       \f] *)
     NORM_L1 = 2,
-    (* *
+    (*
       \f[
       norm =  \forkthree
       { \| \texttt{src1} \| _{L_2} =  \sqrt{\sum_I \texttt{src1}(I)^2} }{if  \(\texttt{normType} = \texttt{NORM_L2}\) }
@@ -321,7 +322,7 @@ type
       \f]
     *)
     NORM_L2 = 4,
-    (* *
+    (*
       \f[
       norm =  \forkthree
       { \| \texttt{src1} \| _{L_2} ^{2} = \sum_I \texttt{src1}(I)^2} {if  \(\texttt{normType} = \texttt{NORM_L2SQR}\)}
@@ -330,12 +331,12 @@ type
       \f]
     *)
     NORM_L2SQR = 5,
-    (* *
+    (*
       In the case of one input array, calculates the Hamming distance of the array from zero,
       In the case of two input arrays, calculates the Hamming distance between the arrays.
     *)
     NORM_HAMMING = 6,
-    (* *
+    (*
       Similar to NORM_HAMMING, but in the calculation, each two bits of the input sequence will
       be added and treated as a single bit to be used in the same calculation as NORM_HAMMING.
     *)
@@ -372,9 +373,9 @@ type
 {$REGION 'cvdef.h'}
 
 const
-  (* ************************************************************************************** *)
+  (* ************************************************************************************* *)
   (* Matrix type (Mat) *)
-  (* ************************************************************************************** *)
+  (* ************************************************************************************* *)
 
   CV_MAT_CN_MASK = ((CV_CN_MAX - 1) shl CV_CN_SHIFT);
   // CV_MAT_CN(flags)       = ((((flags) & CV_MAT_CN_MASK) >> CV_CN_SHIFT) + 1);
@@ -545,7 +546,7 @@ type
 function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 //
-(* * @brief The class defining termination criteria for iterative algorithms.
+(* @brief The class defining termination criteria for iterative algorithms.
 
   You can initialize it by default constructor and then override any parameters, or the structure may
   be fully initialized using the advanced variant of the constructor.
@@ -555,7 +556,7 @@ type
 
   TTermCriteria = record
   public const
-    (* *
+    (*
       Criteria type, can be one of: COUNT, EPS or COUNT + EPS
     *)
 
@@ -565,7 +566,7 @@ type
   public
     // ! default constructor
     // TermCriteria();
-    (* *
+    (*
       @param type The type of termination criteria, one of TermCriteria::Type
       @param maxCount The maximum number of iterations or elements to compute.
       @param epsilon The desired accuracy or change in parameters at which the iterative algorithm stops.
@@ -1013,6 +1014,7 @@ type
     class operator Implicit(const v: Vector<uchar>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: double): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<Vec4i>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TMat>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
 {$HINTS OFF}
     flags: Int;   // int flags;
@@ -1026,6 +1028,7 @@ type
   TInputArrayOfArraysHelper = record helper for TInputArrayOfArrays
   public
     class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TMat>): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   TOutputArray = type TInputArray;
@@ -1168,7 +1171,7 @@ type
   //
 {$REGION 'core.hpp'}
 
-  (* * @brief Swaps two matrices *)
+  (* @brief Swaps two matrices *)
   // CV_EXPORTS void swap(Mat& a, Mat& b);
   // 6587
   // ?swap@cv@@YAXAEAVMat@1@0@Z
@@ -1177,7 +1180,7 @@ procedure swap(a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEAVMat
 
 // CV_EXPORTS void swap( UMat& a, UMat& b );
 
-(* * @brief Computes the source location of an extrapolated pixel.
+(* @brief Computes the source location of an extrapolated pixel.
 
   The function computes and returns the coordinate of a donor pixel corresponding to the specified
   extrapolated pixel when using the specified extrapolation border mode. For example, if you use
@@ -1202,12 +1205,12 @@ procedure swap(a, b: TMat); external opencv_world_dll name '?swap@cv@@YAXAEAVMat
 // ?borderInterpolate@cv@@YAHHHH@Z
 function borderInterpolate(p, len, borderType: Int): Int; external opencv_world_dll name '?borderInterpolate@cv@@YAHHHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @example samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp
+(* @example samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp
   An example using copyMakeBorder function.
   Check @ref tutorial_copyMakeBorder "the corresponding tutorial" for more details
 *)
 
-(* * @brief Forms a border around an image.
+(* @brief Forms a border around an image.
 
   The function copies the source image into the middle of the destination image. The areas to the
   left, to the right, above and below the copied source image will be filled with extrapolated
@@ -1260,7 +1263,7 @@ procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bot
   external opencv_world_dll name '?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: Int); {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
-(* * @brief Calculates the weighted sum of two arrays.
+(* @brief Calculates the weighted sum of two arrays.
 
   The function addWeighted calculates the weighted sum of two arrays as follows:
   \f[\texttt{dst} (I)= \texttt{saturate} ( \texttt{src1} (I)* \texttt{alpha} +  \texttt{src2} (I)* \texttt{beta} +  \texttt{gamma} )\f]
@@ -1298,7 +1301,7 @@ procedure addWeighted(const src1: TInputArray; alpha: double; const src2: TInput
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief  Inverts every bit of an array.
+(* @brief  Inverts every bit of an array.
 
   The function cv::bitwise_not calculates per-element bit-wise inversion of the input
   array:
@@ -1329,7 +1332,7 @@ procedure bitwise_not(const Src: TInputArray; const dst: TOutputArray; mask: TIn
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure bitwise_not(const Src: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
-(* * @overload
+(* @overload
   @param m input multi-channel array.
   @param mv output vector of arrays; the arrays themselves are reallocated, if needed.
 *)
@@ -1357,7 +1360,7 @@ procedure split(const m: TMat; const mv: pMat); overload; external opencv_world_
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure split(const m: TMat; const mv: TArray<TMat>); overload;
 
-(* * @brief Normalizes the norm or value range of an array.
+(* @brief Normalizes the norm or value range of an array.
 
   The function cv::normalize normalizes scale and shift the input array elements so that
   \f[\| \texttt{dst} \| _{L_p}= \texttt{alpha}\f]
@@ -1437,7 +1440,7 @@ procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const 
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 Type
-  (* * @brief Random Number Generator
+  (* @brief Random Number Generator
 
     Random number generator. It encapsulates the state (currently, a 64-bit
     integer) and has methods to return scalar random values and to fill
@@ -1457,7 +1460,7 @@ Type
     RNG_NORMAL  = 1;
   public
 
-    (* * @brief constructor
+    (* @brief constructor
       These are the RNG constructors. The first form sets the state to some
       pre-defined value, equal to 2\*\*32-1 in the current implementation. The
       second form sets the state to the specified value. If you passed state=0
@@ -1465,38 +1468,38 @@ Type
       singular random number sequence, consisting of all zeros.
     *)
     class operator Initialize(out Dest: TRNG); // RNG();
-    (* * @overload
+    (* @overload
       @param state 64-bit value used to initialize the RNG.
     *)
     class function RNG(state: UInt64): TRNG; static; {$IFDEF USE_INLINE}inline; {$ENDIF}    // RNG(UInt64 state);
     class operator Implicit(const u: UInt64): TRNG; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* *The method updates the state using the MWC algorithm and returns the
+    (* The method updates the state using the MWC algorithm and returns the
       next 32-bit random number. *)
     // unsigned next();
 
-    (* *Each of the methods updates the state using the MWC algorithm and
+    (* Each of the methods updates the state using the MWC algorithm and
       returns the next random number of the specified type. In case of integer
       types, the returned number is from the available value range for the
       specified type. In case of floating-point types, the returned value is
       from [0,1) range.
     *)
     // operator uchar();
-    (* * @overload *)
+    (* @overload *)
     // operator schar();
-    (* * @overload *)
+    (* @overload *)
     // operator ushort();
-    (* * @overload *)
+    (* @overload *)
     // operator short();
-    (* * @overload *)
+    (* @overload *)
     class operator Implicit(const p: TRNG): unsigned; {$IFDEF USE_INLINE}inline; {$ENDIF} // operator unsigned();
-    (* * @overload *)
+    (* @overload *)
     // operator Int();
-    (* * @overload *)
+    (* @overload *)
     // operator float();
-    (* * @overload *)
+    (* @overload *)
     // operator double();
 
-    (* * @brief returns a random integer sampled uniformly from [0, N).
+    (* @brief returns a random integer sampled uniformly from [0, N).
 
       The methods transform the state using the MWC algorithm and return the
       next random number. The first form is equivalent to RNG::next . The
@@ -1504,12 +1507,12 @@ Type
       result is in the range [0, N) .
     *)
     // unsigned operator()();
-    (* * @overload
+    (* @overload
       @param N upper non-inclusive boundary of the returned random number.
     *)
     // unsigned operator()(unsigned n);
 
-    (* * @brief returns uniformly distributed integer random number from [a,b) range
+    (* @brief returns uniformly distributed integer random number from [a,b) range
 
       The methods transform the state using the MWC algorithm and return the
       next uniformly-distributed random number of the specified type, deduced
@@ -1546,12 +1549,12 @@ Type
       @param b upper non-inclusive boundary of the returned random number.
     *)
     function UNIFORM(a, b: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}// Int UNIFORM(Int a, Int b);
-    (* * @overload *)
+    (* @overload *)
     // float UNIFORM(float a, float b);
-    (* * @overload *)
+    (* @overload *)
     // double UNIFORM(double a, double b);
 
-    (* * @brief Fills arrays with random numbers.
+    (* @brief Fills arrays with random numbers.
 
       @param mat 2D or N-dimensional matrix; currently matrices with more than
       4 channels are not supported by the methods, use Mat::reshape as a
@@ -1587,7 +1590,7 @@ Type
     *)
     // void fill(InputOutputArray Mat, Int distType, InputArray a, InputArray b, BOOL saturateRange = false);
 
-    (* * @brief Returns the next random number sampled from the Gaussian distribution
+    (* @brief Returns the next random number sampled from the Gaussian distribution
       @param sigma standard deviation of the distribution.
 
       The method transforms the state using the MWC algorithm and returns the
@@ -1602,7 +1605,7 @@ Type
     // BOOL operator==(const RNG & other)  const;
   end;
 
-  (* * @brief Finds the global minimum and maximum in an array.
+  (* @brief Finds the global minimum and maximum in an array.
 
     The function cv::minMaxLoc finds the minimum and maximum element values and their positions. The
     extremums are searched across the whole array or, if mask is not an empty array, in the specified
@@ -1650,7 +1653,7 @@ procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: doub
 procedure minMaxLoc(const Src: TInputArray; Var minVal: double); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Calculates the per-element sum of two arrays or an array and a scalar.
+(* @brief Calculates the per-element sum of two arrays or an array and a scalar.
 
   The function add calculates:
   - Sum of two arrays when both input arrays have the same size and the same number of channels:
@@ -1704,7 +1707,7 @@ procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutp
 procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Calculates the per-element scaled product of two arrays.
+(* @brief Calculates the per-element scaled product of two arrays.
 
   The function multiply calculates the per-element product of two arrays:
 
@@ -1741,7 +1744,7 @@ procedure multiply(const src1: TInputArray; const src2: TInputArray; const dst: 
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief Calculates the magnitude and angle of 2D vectors.
+(* @brief Calculates the magnitude and angle of 2D vectors.
 
   The function cv::cartToPolar calculates either the magnitude, angle, or both
   for every 2D vector (x(I),y(I)):
@@ -1777,7 +1780,7 @@ procedure cartToPolar(const x: TInputArray; const y: TInputArray; const magnitud
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
 
-(* * @brief Creates one multi-channel array out of several single-channel ones.
+(* @brief Creates one multi-channel array out of several single-channel ones.
 
   The function cv::merge merges several arrays to make a single multi-channel array. That is, each
   element of the output array will be a concatenation of the elements of the input arrays, where
@@ -1811,8 +1814,29 @@ procedure merge(const mv: pMat; COUNT: size_t; const dst: TOutputArray); overloa
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure merge(const mv: TArray<TMat>; dst: TOutputArray); overload;
+(* * @overload
+  @param mv input vector of matrices to be merged; all the matrices in mv must have the same
+  size and the same depth.
+  @param dst output array of the same size and the same depth as mv[0]; The number of channels will
+  be the total number of channels in the matrix array.
+*)
+// CV_EXPORTS_W void merge(InputArrayOfArrays mv, OutputArray dst);
+{
+  5641
+  ?merge@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
+  ?merge@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
+  void cv::merge(class cv::_InputArray const &,class cv::_OutputArray const &)
+}
+procedure merge(const mv: TInputArrayOfArrays; const dst: TOutputArray); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?merge@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+{$ELSE}
+  name '?merge@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //
-(* * @brief Flips a 2D array around vertical, horizontal, or both axes.
+(* @brief Flips a 2D array around vertical, horizontal, or both axes.
 
   The function cv::flip flips the array in one of three different ways (row
   and column indices are 0-based):
@@ -1880,7 +1904,7 @@ Type
     IMREAD_IGNORE_ORIENTATION = 128  // !< If set, do not rotate the image according to EXIF's orientation flag.
     );
 
-  (* * @brief Loads an image from a file.
+  (* @brief Loads an image from a file.
 
     @anchor imread
 
@@ -1941,26 +1965,26 @@ Type
 function imread(const filename: CppString; flag: ImreadModes = IMREAD_COLOR): TMat;
   external opencv_world_dll name '?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Destroys the specified window.
+(* @brief Destroys the specified window.
   The function destroyWindow destroys the window with the given name.
   @param winname Name of the window to be destroyed.
 *)
 // CV_EXPORTS_W void destroyWindow(const String& winname);
 
-(* * @brief Destroys all of the HighGUI windows.
+(* @brief Destroys all of the HighGUI windows.
   The function destroyAllWindows destroys all of the opened HighGUI windows.
 *)
 // CV_EXPORTS_W void destroyAllWindows();
 
 // CV_EXPORTS_W int startWindowThread();
 
-(* * @brief Similar to #waitKey, but returns full key code.
+(* @brief Similar to #waitKey, but returns full key code.
   @note
   Key code is implementation specific and depends on used backend: QT/GTK/Win32/etc
 *)
 // CV_EXPORTS_W int waitKeyEx(int delay = 0);
 
-(* * @brief Waits for a pressed key.
+(* @brief Waits for a pressed key.
 
   The function waitKey waits for a key event infinitely (when \f$\texttt{delay}\leq 0\f$ ) or for delay
   milliseconds, when it is positive. Since the OS has a minimum time between switching threads, the
@@ -1983,7 +2007,7 @@ function imread(const filename: CppString; flag: ImreadModes = IMREAD_COLOR): TM
 // int cv::waitKey(int)
 function waitKey(delay: Int = 0): Int; external opencv_world_dll name '?waitKey@cv@@YAHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Polls for a pressed key.
+(* @brief Polls for a pressed key.
 
   The function pollKey polls for a key event without waiting. It returns the code of the pressed key
   or -1 if no key was pressed since the last invocation. To wait until a key was pressed, use #waitKey.
@@ -1997,7 +2021,7 @@ function waitKey(delay: Int = 0): Int; external opencv_world_dll name '?waitKey@
 *)
 // CV_EXPORTS_W int pollKey();
 
-(* * @brief Displays an image in the specified window.
+(* @brief Displays an image in the specified window.
 
   The function imshow displays an image in the specified window. If the window was created with the
   cv::WINDOW_AUTOSIZE flag, the image is shown with its original size, however it is still limited by the screen resolution.
@@ -2066,7 +2090,7 @@ Type
     WINDOW_GUI_NORMAL = $00000010    // !< old fashious way
     );
 
-  (* * @brief Creates a window.
+  (* @brief Creates a window.
 
     The function namedWindow creates a window that can be used as a placeholder for images and
     trackbars. Created windows are referred to by their names.
@@ -2107,7 +2131,7 @@ procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTO
 procedure namedWindow(const winname: String; flags: WindowFlags = WINDOW_AUTOSIZE); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 //
-(* * @brief Creates a trackbar and attaches it to the specified window.
+(* @brief Creates a trackbar and attaches it to the specified window.
 
   The function createTrackbar creates a trackbar (a slider or range control) with the specified name
   and range, assigns a variable value to be a position synchronized with the trackbar and specifies
@@ -2145,7 +2169,7 @@ function createTrackbar(const trackbarname: CppString; const winname: CppString;
   name '?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Moves the window to the specified position
+(* @brief Moves the window to the specified position
 
   @param winname Name of the window.
   @param x The new x-coordinate of the window.
@@ -2160,7 +2184,7 @@ procedure moveWindow(const winname: CppString; x, y: Int); external opencv_world
   name '?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Destroys the specified window.
+(* @brief Destroys the specified window.
   The function destroyWindow destroys the window with the given name.
   @param winname Name of the window to be destroyed.
 *)
@@ -2173,7 +2197,7 @@ procedure destroyWindow(const winname: CppString); external opencv_world_dll
   name '?destroyWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief Resizes the window to the specified size
+(* @brief Resizes the window to the specified size
 
   @note
 
@@ -2216,7 +2240,7 @@ type
     FONT_ITALIC = 16                 // !< flag for italic font
     );
 
-  (* * Possible set of marker types used for the cv::drawMarker function
+  (* Possible set of marker types used for the cv::drawMarker function
     @ingroup imgproc_draw
   *)
   MarkerTypes = (            //
@@ -2512,10 +2536,10 @@ type
   // ! adaptive threshold algorithm
   // ! @see adaptiveThreshold
   AdaptiveThresholdTypes = ( //
-    (* * the threshold value \f$T(x,y)\f$ is a mean of the \f$\texttt{blockSize} \times
+    (* the threshold value \f$T(x,y)\f$ is a mean of the \f$\texttt{blockSize} \times
       \texttt{blockSize}\f$ neighborhood of \f$(x, y)\f$ minus C *)
     ADAPTIVE_THRESH_MEAN_C = 0,
-    (* * the threshold value \f$T(x, y)\f$ is a weighted sum (cross-correlation with a Gaussian
+    (* the threshold value \f$T(x, y)\f$ is a weighted sum (cross-correlation with a Gaussian
       window) of the \f$\texttt{blockSize} \times \texttt{blockSize}\f$ neighborhood of \f$(x, y)\f$
       minus C . The default sigma (standard deviation) is used for the specified blockSize . See
       #getGaussianKernel *)
@@ -2532,29 +2556,29 @@ type
 
   // ! interpolation algorithm
   InterpolationFlags = (
-    (* * nearest neighbor interpolation *)
+    (* nearest neighbor interpolation *)
     INTER_NEAREST = 0,
-    (* * bilinear interpolation *)
+    (* bilinear interpolation *)
     INTER_LINEAR = 1,
-    (* * bicubic interpolation *)
+    (* bicubic interpolation *)
     INTER_CUBIC = 2,
-    (* * resampling using pixel area relation. It may be a preferred method for image decimation, as
+    (* resampling using pixel area relation. It may be a preferred method for image decimation, as
       it gives moire'-free results. But when the image is zoomed, it is similar to the INTER_NEAREST
       method. *)
     INTER_AREA = 3,
-    (* * Lanczos interpolation over 8x8 neighborhood *)
+    (* Lanczos interpolation over 8x8 neighborhood *)
     INTER_LANCZOS4 = 4,
-    (* * Bit exact bilinear interpolation *)
+    (* Bit exact bilinear interpolation *)
     INTER_LINEAR_EXACT = 5,
-    (* * Bit exact nearest neighbor interpolation. This will produce same results as
+    (* Bit exact nearest neighbor interpolation. This will produce same results as
       the nearest neighbor method in PIL, scikit-image or Matlab. *)
     INTER_NEAREST_EXACT = 6,
-    (* * mask for interpolation codes *)
+    (* mask for interpolation codes *)
     INTER_MAX = 7,
-    (* * flag, fills all of the destination image pixels. If some of them correspond to outliers in the
+    (* flag, fills all of the destination image pixels. If some of them correspond to outliers in the
       source image, they are set to zero *)
     WARP_FILL_OUTLIERS = 8,
-    (* * flag, inverse transformation
+    (* flag, inverse transformation
       For example, #linearPolar or #logPolar transforms:
       - flag is __not__ set: \f$dst( \rho , \phi ) = src(x,y)\f$
       - flag is set: \f$dst(x,y) = src( \rho , \phi )\f$
@@ -2564,37 +2588,37 @@ type
 
   // ! mode of the contour retrieval algorithm
   RetrievalModes = ( //
-    (* * retrieves only the extreme outer contours. It sets `hierarchy[i][2]=hierarchy[i][3]=-1` for
+    (* retrieves only the extreme outer contours. It sets `hierarchy[i][2]=hierarchy[i][3]=-1` for
       all the contours. *)
     RETR_EXTERNAL = 0,
-    (* * retrieves all of the contours without establishing any hierarchical relationships. *)
+    (* retrieves all of the contours without establishing any hierarchical relationships. *)
     RETR_LIST = 1,
-    (* * retrieves all of the contours and organizes them into a two-level hierarchy. At the top
+    (* retrieves all of the contours and organizes them into a two-level hierarchy. At the top
       level, there are external boundaries of the components. At the second level, there are
       boundaries of the holes. If there is another contour inside a hole of a connected component, it
       is still put at the top level. *)
     RETR_CCOMP = 2,
-    (* * retrieves all of the contours and reconstructs a full hierarchy of nested contours. *)
+    (* retrieves all of the contours and reconstructs a full hierarchy of nested contours. *)
     RETR_TREE = 3,     //
     RETR_FLOODFILL = 4 // !<
     );
 
   // ! the contour approximation algorithm
   ContourApproximationModes = (
-    (* * stores absolutely all the contour points. That is, any 2 subsequent points (x1,y1) and
+    (* stores absolutely all the contour points. That is, any 2 subsequent points (x1,y1) and
       (x2,y2) of the contour will be either horizontal, vertical or diagonal neighbors, that is,
       max(abs(x1-x2),abs(y2-y1))==1. *)
     CHAIN_APPROX_NONE = 1,
-    (* * compresses horizontal, vertical, and diagonal segments and leaves only their end points.
+    (* compresses horizontal, vertical, and diagonal segments and leaves only their end points.
       For example, an up-right rectangular contour is encoded with 4 points. *)
     CHAIN_APPROX_SIMPLE = 2,
-    (* * applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *)
+    (* applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *)
     CHAIN_APPROX_TC89_L1 = 3,
-    (* * applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *)
+    (* applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *)
     CHAIN_APPROX_TC89_KCOS = 4 //
     );
 
-  (* * @brief Draws a text string.
+  (* @brief Draws a text string.
 
     The function cv::putText renders the specified text string in the image. Symbols that cannot be rendered
     using the specified font are replaced by question marks. See #getTextSize for a text rendering code
@@ -2632,7 +2656,7 @@ procedure putText(const img: TInputOutputArray; const text: CppString; org: UInt
 
 procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
   bottomLeftOrigin: BOOL = false); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Calculates the width and height of a text string.
+(* @brief Calculates the width and height of a text string.
 
   The function cv::getTextSize calculates and returns the size of a box that contains the specified text.
   That is, the following code renders some text, the tight box surrounding it, and the baseline: :
@@ -2692,7 +2716,7 @@ procedure getTextSize(const R: pSize; text: CvStdString; fontFace: Int; fontScal
 function getTextSize(const text: String; fontFace: HersheyFonts; fontScale: double; thickness: Int; baseLine: pInt = nil): TSize; overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Blurs an image using the normalized box filter.
+(* @brief Blurs an image using the normalized box filter.
 
   The function smooths an image using the kernel:
 
@@ -2728,7 +2752,7 @@ procedure blur(const Src: TInputArray; const dst: TOutputArray; ksize: UInt64 { 
 procedure blur(const Src: TInputArray; const dst: TOutputArray; const ksize: TSize); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure blur(const Src: TInputArray; const dst: TOutputArray; const ksize: TSize; const anchor: TPoint; borderType: BorderTypes = BORDER_DEFAULT); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Blurs an image using a Gaussian filter.
+(* @brief Blurs an image using a Gaussian filter.
 
   The function convolves the source image with the specified Gaussian kernel. In-place filtering is
   supported.
@@ -2768,7 +2792,7 @@ procedure GaussianBlur(const Src: TInputArray; const dst: TOutputArray; ksize: U
 procedure GaussianBlur(const Src: TInputArray; const dst: TOutputArray; const ksize: TSize; sigmaX: double; sigmaY: double = 0; borderType: BorderTypes = BORDER_DEFAULT); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Applies the bilateral filter to an image.
+(* @brief Applies the bilateral filter to an image.
 
   The function applies bilateral filtering to the input image, as described in
   http://www.dai.ed.ac.uk/CVonline/LOCAL_COPIES/MANDUCHI1/Bilateral_Filtering.html
@@ -2813,7 +2837,7 @@ procedure bilateralFilter(const Src: TInputArray; const dst: TOutputArray; d: In
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief Blurs an image using the median filter.
+(* @brief Blurs an image using the median filter.
 
   The function smoothes an image using the median filter with the \f$\texttt{ksize} \times
   \texttt{ksize}\f$ aperture. Each channel of a multi-channel image is processed independently.
@@ -2842,7 +2866,7 @@ procedure medianBlur(const Src: TInputArray; const dst: TOutputArray; ksize: Int
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief Applies a fixed-level threshold to each array element.
+(* @brief Applies a fixed-level threshold to each array element.
 
   The function applies fixed-level thresholding to a multiple-channel array. The function is typically
   used to get a bi-level (binary) image out of a grayscale image ( #compare could be also used for
@@ -2882,7 +2906,7 @@ function threshold(const Src: TInputArray; const dst: TOutputArray; thresh, maxV
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief Applies an adaptive threshold to an array.
+(* @brief Applies an adaptive threshold to an array.
 
   The function transforms a grayscale image to a binary image according to the formulae:
   -   **THRESH_BINARY**
@@ -2927,7 +2951,7 @@ procedure adaptiveThreshold(const Src: TInputArray; const dst: TOutputArray; max
   c: double); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Converts an image from one color space to another.
+(* @brief Converts an image from one color space to another.
 
   The function converts an input image from one color space to another. In case of a transformation
   to-from RGB color space, the order of the channels should be specified explicitly (RGB or BGR). Note
@@ -2988,7 +3012,7 @@ procedure cvtColor(const Src: TInputArray; const dst: TOutputArray; code: ColorC
 // ! returns "magic" border value for erosion and dilation. It is automatically transformed to Scalar::all(-DBL_MAX) for dilation.
 function morphologyDefaultBorderValue(): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF} { return Scalar::all(DBL_MAX); }
 //
-(* * @brief Returns a structuring element of the specified size and shape for morphological operations.
+(* @brief Returns a structuring element of the specified size and shape for morphological operations.
 
   The function constructs and returns the structuring element that can be further passed to #erode,
   #dilate or #morphologyEx. But you can also construct an arbitrary binary mask yourself and use it as
@@ -3012,7 +3036,7 @@ function getStructuringElement(shape: Int; ksize: UInt64; anchor: UInt64): TMat;
 function getStructuringElement(shape: MorphShapes; const ksize: TSize): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 function getStructuringElement(shape: MorphShapes; const ksize: TSize; anchor: TPoint): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Erodes an image by using a specific structuring element.
+(* @brief Erodes an image by using a specific structuring element.
 
   The function erodes the source image using the specified structuring element that determines the
   shape of a pixel neighborhood over which the minimum is taken:
@@ -3062,7 +3086,7 @@ procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: T
 procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Dilates an image by using a specific structuring element.
+(* @brief Dilates an image by using a specific structuring element.
 
   The function dilates the source image using the specified structuring element that determines the
   shape of a pixel neighborhood over which the maximum is taken:
@@ -3111,7 +3135,7 @@ procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: 
 procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Equalizes the histogram of a grayscale image.
+(* @brief Equalizes the histogram of a grayscale image.
 
   The function equalizes the histogram of the input image using the following algorithm:
 
@@ -3141,7 +3165,7 @@ procedure equalizeHist(const Src: TInputArray; const dst: TOutputArray); externa
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Draws a simple or thick elliptic arc or fills an ellipse sector.
+(* @brief Draws a simple or thick elliptic arc or fills an ellipse sector.
 
   The function cv::ellipse with more parameters draws an ellipse outline, a filled ellipse, an elliptic
   arc, or a filled ellipse sector. The drawing code uses general parametric form.
@@ -3186,7 +3210,7 @@ procedure ellipse(const img: TInputOutputArray; center: UInt64 { TPoint }; axes:
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
   shift: Int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Draws a marker on a predefined position in an image.
+(* @brief Draws a marker on a predefined position in an image.
 
   The function cv::drawMarker draws a marker on a given position in the image. For the moment several
   marker types are supported, see #MarkerTypes for more information.
@@ -3218,7 +3242,7 @@ procedure drawMarker(const img: TInputOutputArray; position: UInt64 { TPoint }; 
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure drawMarker(const img: TInputOutputArray; const position: TPoint; const color: TScalar; const markerType: MarkerTypes = MARKER_CROSS; const markerSize: Int = 20; const thickness: Int = 1;
   const line_type: LineTypes = LineTypes(8)); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Draws a circle.
+(* @brief Draws a circle.
 
   The function cv::circle draws a simple or filled circle with a given center and radius.
   @param img Image where the circle is drawn.
@@ -3250,7 +3274,7 @@ procedure circle(const img: TInputOutputArray; center: UInt64 { TPoint }; radius
 procedure circle(const img: TInputOutputArray; const center: TPoint; radius: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0); overload;
 {$IFDEF USE_INLINE}inline;
 {$ENDIF}
-(* * @brief Calculates a histogram of a set of arrays.
+(* @brief Calculates a histogram of a set of arrays.
 
   The function cv::calcHist calculates the histogram of one or more arrays. The elements of a tuple used
   to increment a histogram bin are taken from the corresponding input arrays at the same location. The
@@ -3303,7 +3327,7 @@ procedure calcHist(const images: pMat; nimages: Int; channels: pInt; const mask:
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Draws a line segment connecting two points.
+(* @brief Draws a line segment connecting two points.
 
   The function line draws the line segment between pt1 and pt2 points in the image. The line is
   clipped by the image boundaries. For non-antialiased lines with integer coordinates, the 8-connected
@@ -3336,7 +3360,7 @@ procedure line(const img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure line(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Draws an arrow segment pointing from the first point to the second one.
+(* @brief Draws an arrow segment pointing from the first point to the second one.
 
   The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the image. See also #line.
 
@@ -3367,7 +3391,7 @@ procedure arrowedLine(const img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2:
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
   const shift: Int = 0; const tipLength: double = 0.1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Draws a simple, thick, or filled up-right rectangle.
+(* @brief Draws a simple, thick, or filled up-right rectangle.
 
   The function cv::rectangle draws a rectangle outline or a filled rectangle whose two opposite corners
   are pt1 and pt2.
@@ -3400,7 +3424,7 @@ procedure rectangle(const img: TInputOutputArray; pt1, pt2: UInt64 { TPoint }; c
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8; const shift: Int = 0); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Fills the area bounded by one or more polygons.
+(* @brief Fills the area bounded by one or more polygons.
 
   The function cv::fillPoly fills an area bounded by several polygonal contours. The function can fill
   complex areas, for example, areas with holes, contours with self-intersections (some of their
@@ -3420,7 +3444,7 @@ procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const 
 // ?fillPoly@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@AEBV?$Scalar_@N@1@HHV?$Point_@H@1@@Z
 // void cv::fillPoly(class cv::_InputOutputArray const &,class cv::_InputArray const &,class cv::Scalar_<double> const &,int,int,class cv::Point_<int>)
 
-(* * @overload *)
+(* @overload *)
 // CV_EXPORTS void fillPoly(InputOutputArray img, const Point** pts,
 // const int* npts, int ncontours,
 // const Scalar& color, int lineType = LINE_8, int shift = 0,
@@ -3445,7 +3469,7 @@ procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: 
 procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes = LINE_8; const shift: Int = 0); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Draws several polygonal curves.
+(* @brief Draws several polygonal curves.
 
   @param img Image.
   @param pts Array of polygonal curves.
@@ -3464,7 +3488,7 @@ procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: 
 // 5854
 // ?polylines@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@_NAEBV?$Scalar_@N@1@HHH@Z	void cv::polylines(class cv::_InputOutputArray const &,class cv::_InputArray const &,bool,class cv::Scalar_<double> const &,int,int,int)
 
-(* * @overload *)
+(* @overload *)
 // CV_EXPORTS void polylines(InputOutputArray img, const Point* const* pts, const int* npts,
 // int ncontours, bool isClosed, const Scalar& color,
 // int thickness = 1, int lineType = LINE_8, int shift = 0 );
@@ -3485,11 +3509,11 @@ procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts:
 procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const isClosed: BOOL; const color: TScalar; const thickness: Int = 1;
   const lineType: LineTypes = LINE_8; const shift: Int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @example samples/cpp/edge.cpp This program demonstrates usage of the Canny edge detector
+(* @example samples/cpp/edge.cpp This program demonstrates usage of the Canny edge detector
   Check@ref tutorial_canny_detector " the corresponding tutorial "
   for more details *)
 
-(* * @brief Finds edges in an image using the Canny algorithm @cite Canny86 .
+(* @brief Finds edges in an image using the Canny algorithm @cite Canny86 .
 
   The function finds edges in the input image and marks them in the output map edges using the
   Canny algorithm. The smallest value between threshold1 and threshold2 is used for edge linking. The
@@ -3523,7 +3547,7 @@ procedure Canny(const image: TInputArray; const edges: TOutputArray; threshold1,
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * \overload
+(* \overload
 
   Finds edges in an image using the Canny algorithm with custom image gradient.
 
@@ -3555,7 +3579,7 @@ procedure Canny(const dx: TInputArray; const dy: TInputArray; const edges: TOutp
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief Calculates the minimal eigenvalue of gradient matrices for corner detection.
+(* @brief Calculates the minimal eigenvalue of gradient matrices for corner detection.
 
   The function is similar to cornerEigenValsAndVecs but it calculates and stores only the minimal
   eigenvalue of the covariance matrix of derivatives, that is, \f$\min(\lambda_1, \lambda_2)\f$ in terms
@@ -3586,7 +3610,7 @@ procedure cornerMinEigenVal(const Src: TInputArray; const dst: TOutputArray; blo
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //
-(* * @brief Calculates the first x- or y- image derivative using Scharr operator.
+(* @brief Calculates the first x- or y- image derivative using Scharr operator.
 
   The function computes the first x- or y- spatial image derivative using the Scharr operator. The
   call
@@ -3617,27 +3641,17 @@ procedure cornerMinEigenVal(const Src: TInputArray; const dst: TOutputArray; blo
   ?Scharr@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHNNH@Z
   void cv::Scharr(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,double,double,int)
 }
-procedure Scharr(const Src: TInputArray; const dst: TOutputArray;
-depth: Int; dx, dy: Int;
-scale: double {= 1};
-delta: double {= 0};
-borderType: Int {= Int(BORDER_DEFAULT)}
-); overload; external opencv_world_dll
+procedure Scharr(const Src: TInputArray; const dst: TOutputArray; depth: Int; dx, dy: Int; scale: double { = 1 }; delta: double { = 0 }; borderType: Int { = Int(BORDER_DEFAULT) }
+  ); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?Scharr@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHNNH@Z'
 {$ELSE}
   name '?Scharr@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHNNH@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure Scharr(const Src: TInputArray; const dst: TOutputArray;
-depth: Int;
-dx, dy: Int;
-scale: double = 1;
-delta: double = 0;
-borderType: BorderTypes = BORDER_DEFAULT
-); overload;
+procedure Scharr(const Src: TInputArray; const dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0; borderType: BorderTypes = BORDER_DEFAULT); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Draws contours outlines or filled contours.
+(* @brief Draws contours outlines or filled contours.
 
   The function draws contour outlines in the image if \f$\texttt{thickness} \ge 0\f$ or fills the area
   bounded by the contours if \f$\texttt{thickness}<0\f$ . The example below shows how to retrieve
@@ -3695,7 +3709,7 @@ procedure drawContours(const image: TInputOutputArray; const contours: TInputArr
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Saves an image to a specified file.
+(* @brief Saves an image to a specified file.
 
   The function imwrite saves the image to the specified file. The image format is chosen based on the
   filename extension (see cv::imread for the list of extensions). In general, only 8-bit
@@ -3742,7 +3756,7 @@ function imwrite(const filename: CppString; const img: TInputArray; const params
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function imwrite(const filename: CppString; const img: TInputArray): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Calculates eigenvalues and eigenvectors of image blocks for corner detection.
+(* @brief Calculates eigenvalues and eigenvectors of image blocks for corner detection.
 
   For every pixel \f$p\f$ , the function cornerEigenValsAndVecs considers a blockSize \f$\times\f$ blockSize
   neighborhood \f$S(p)\f$ . It calculates the covariation matrix of derivatives over the neighborhood as:
@@ -3785,7 +3799,7 @@ procedure cornerEigenValsAndVecs(const Src: TInputArray; const dst: TOutputArray
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief Determines strong corners on an image.
+(* @brief Determines strong corners on an image.
 
   The function finds the most prominent corners in the image or in the specified image region, as
   described in @cite Shi94
@@ -3865,7 +3879,7 @@ procedure goodFeaturesToTrack(const image: TInputArray; const corners: TOutputAr
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief The function is used to detect translational shifts that occur between two images.
+(* @brief The function is used to detect translational shifts that occur between two images.
 
   The operation takes advantage of the Fourier shift theorem for detecting the translational shift in
   the frequency domain. It can be used for fast image registration as well as motion estimation. For
@@ -3920,7 +3934,7 @@ function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const 
 function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() } ): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 function phaseCorrelate(const src1: TInputArray; const src2: TInputArray): TPoint2d; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief This function computes a Hanning window coefficients in two dimensions.
+(* @brief This function computes a Hanning window coefficients in two dimensions.
 
   See (http://en.wikipedia.org/wiki/Hann_function) and (http://en.wikipedia.org/wiki/Window_function)
   for more information.
@@ -3951,7 +3965,7 @@ procedure createHanningWindow(const dst: TOutputArray; winSize: UInt64 { TSize }
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure createHanningWindow(const dst: TOutputArray; const winSize: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Resizes an image.
+(* @brief Resizes an image.
 
   The function resize resizes the image src down to or up to the specified size. Note that the
   initial dst type or size are not taken into account. Instead, the size and type are derived from
@@ -4003,7 +4017,7 @@ procedure resize(const Src: TInputArray; const dst: TOutputArray; dsize: UInt64 
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //
-(* * @brief Finds contours in a binary image.
+(* @brief Finds contours in a binary image.
 
   The function retrieves contours from the binary image using the algorithm @cite Suzuki85 . The contours
   are a useful tool for shape analysis and object detection and recognition. See squares.cpp in the
@@ -4051,7 +4065,7 @@ procedure findContours(const image: TInputArray; const contours: TOutputArrayOfA
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: RetrievalModes; method: ContourApproximationModes); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @overload *)
+(* @overload *)
 // CV_EXPORTS void findContours( InputArray image, OutputArrayOfArrays contours,
 // int mode, int method, Point offset = Point())
 {
@@ -4072,7 +4086,7 @@ procedure findContours(const image: TInputArray; const contours: TOutputArrayOfA
 procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: RetrievalModes; method: ContourApproximationModes; const offset: TPoint); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 //
-(* * @brief Calculates a contour area.
+(* @brief Calculates a contour area.
 
   The function computes a contour area. Similarly to moments , the area is computed using the Green
   formula. Thus, the returned area and the number of non-zero pixels, if you draw the contour using
@@ -4122,7 +4136,7 @@ function contourArea(const contour: TInputArray; oriented: BOOL = false): double
 {$REGION 'tracking.hpp'}
 
 Type
-  (* *
+  (*
     Base class for dense optical flow algorithms
   *)
   pDenseOpticalFlow = ^TDenseOpticalFlow;
@@ -4137,7 +4151,7 @@ Type
     class function vftable(const s: TDenseOpticalFlow; const index: integer): Pointer; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     class operator Finalize(var Dest: TDenseOpticalFlow);
-    (* * @brief Calculates an optical flow.
+    (* @brief Calculates an optical flow.
 
       @param I0 first 8-bit single-channel input image.
       @param I1 second input image of the same size and the same type as prev.
@@ -4145,13 +4159,13 @@ Type
     *)
     // CV_WRAP virtual void calc( InputArray I0, InputArray I1, InputOutputArray flow ) = 0;
     procedure calc(const i0: TInputArray; const i1: TInputArray; const flow: TInputOutputArray); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief Releases all inner buffers.
+    (* @brief Releases all inner buffers.
     *)
     // CV_WRAP virtual void collectGarbage() = 0;
 
   end;
 
-  (* * @brief DIS optical flow algorithm.
+  (* @brief DIS optical flow algorithm.
 
     This class implements the Dense Inverse Search (DIS) optical flow algorithm. More
     details about the algorithm can be found at @cite Kroeger2016 . Includes three presets with preselected
@@ -4178,89 +4192,89 @@ Type
     PRESET_FAST      = 1;
     PRESET_MEDIUM    = 2;
   public
-    (* * @brief Finest level of the Gaussian pyramid on which the flow is computed (zero level
+    (* @brief Finest level of the Gaussian pyramid on which the flow is computed (zero level
       corresponds to the original image resolution). The final flow is obtained by bilinear upscaling.
       @see setFinestScale *)
     // CV_WRAP virtual int getFinestScale() const = 0;
 
-    (* * @copybrief getFinestScale @see getFinestScale *)
+    (* @copybrief getFinestScale @see getFinestScale *)
     // CV_WRAP virtual void setFinestScale(int val) = 0;
 
-    (* * @brief Size of an image patch for matching (in pixels). Normally, default 8x8 patches work well
+    (* @brief Size of an image patch for matching (in pixels). Normally, default 8x8 patches work well
       enough in most cases.
       @see setPatchSize *)
     // CV_WRAP virtual int getPatchSize() const = 0;
 
-    (* * @copybrief getPatchSize @see getPatchSize *)
+    (* @copybrief getPatchSize @see getPatchSize *)
     // CV_WRAP virtual void setPatchSize(int val) = 0;
 
-    (* * @brief Stride between neighbor patches. Must be less than patch size. Lower values correspond
+    (* @brief Stride between neighbor patches. Must be less than patch size. Lower values correspond
       to higher flow quality.
       @see setPatchStride *)
     // CV_WRAP virtual int getPatchStride() const = 0;
 
-    (* * @copybrief getPatchStride @see getPatchStride *)
+    (* @copybrief getPatchStride @see getPatchStride *)
     // CV_WRAP virtual void setPatchStride(int val) = 0;
 
-    (* * @brief Maximum number of gradient descent iterations in the patch inverse search stage. Higher values
+    (* @brief Maximum number of gradient descent iterations in the patch inverse search stage. Higher values
       may improve quality in some cases.
       @see setGradientDescentIterations *)
     // CV_WRAP virtual int getGradientDescentIterations() const = 0;
 
-    (* * @copybrief getGradientDescentIterations @see getGradientDescentIterations *)
+    (* @copybrief getGradientDescentIterations @see getGradientDescentIterations *)
     // CV_WRAP virtual void setGradientDescentIterations(int val) = 0;
 
-    (* * @brief Number of fixed point iterations of variational refinement per scale. Set to zero to
+    (* @brief Number of fixed point iterations of variational refinement per scale. Set to zero to
       disable variational refinement completely. Higher values will typically result in more smooth and
       high-quality flow.
       @see setGradientDescentIterations *)
     // CV_WRAP virtual int getVariationalRefinementIterations() const = 0;
 
-    (* * @copybrief getGradientDescentIterations @see getGradientDescentIterations *)
+    (* @copybrief getGradientDescentIterations @see getGradientDescentIterations *)
     // CV_WRAP virtual void setVariationalRefinementIterations(int val) = 0;
 
-    (* * @brief Weight of the smoothness term
+    (* @brief Weight of the smoothness term
       @see setVariationalRefinementAlpha *)
     // CV_WRAP virtual float getVariationalRefinementAlpha() const = 0;
 
-    (* * @copybrief getVariationalRefinementAlpha @see getVariationalRefinementAlpha *)
+    (* @copybrief getVariationalRefinementAlpha @see getVariationalRefinementAlpha *)
     // CV_WRAP virtual void setVariationalRefinementAlpha(float val) = 0;
 
-    (* * @brief Weight of the color constancy term
+    (* @brief Weight of the color constancy term
       @see setVariationalRefinementDelta *)
     // CV_WRAP virtual float getVariationalRefinementDelta() const = 0;
 
-    (* * @copybrief getVariationalRefinementDelta @see getVariationalRefinementDelta *)
+    (* @copybrief getVariationalRefinementDelta @see getVariationalRefinementDelta *)
     // CV_WRAP virtual void setVariationalRefinementDelta(float val) = 0;
 
-    (* * @brief Weight of the gradient constancy term
+    (* @brief Weight of the gradient constancy term
       @see setVariationalRefinementGamma *)
     // CV_WRAP virtual float getVariationalRefinementGamma() const = 0;
 
-    (* * @copybrief getVariationalRefinementGamma @see getVariationalRefinementGamma *)
+    (* @copybrief getVariationalRefinementGamma @see getVariationalRefinementGamma *)
     // CV_WRAP virtual void setVariationalRefinementGamma(float val) = 0;
 
-    (* * @brief Whether to use mean-normalization of patches when computing patch distance. It is turned on
+    (* @brief Whether to use mean-normalization of patches when computing patch distance. It is turned on
       by default as it typically provides a noticeable quality boost because of increased robustness to
       illumination variations. Turn it off if you are certain that your sequence doesn't contain any changes
       in illumination.
       @see setUseMeanNormalization *)
     // CV_WRAP virtual bool getUseMeanNormalization() const = 0;
 
-    (* * @copybrief getUseMeanNormalization @see getUseMeanNormalization *)
+    (* @copybrief getUseMeanNormalization @see getUseMeanNormalization *)
     // CV_WRAP virtual void setUseMeanNormalization(bool val) = 0;
 
-    (* * @brief Whether to use spatial propagation of good optical flow vectors. This option is turned on by
+    (* @brief Whether to use spatial propagation of good optical flow vectors. This option is turned on by
       default, as it tends to work better on average and can sometimes help recover from major errors
       introduced by the coarse-to-fine scheme employed by the DIS optical flow algorithm. Turning this
       option off can make the output flow field a bit smoother, however.
       @see setUseSpatialPropagation *)
     // CV_WRAP virtual bool getUseSpatialPropagation() const = 0;
 
-    (* * @copybrief getUseSpatialPropagation @see getUseSpatialPropagation *)
+    (* @copybrief getUseSpatialPropagation @see getUseSpatialPropagation *)
     // CV_WRAP virtual void setUseSpatialPropagation(bool val) = 0;
 
-    (* * @brief Creates an instance of DISOpticalFlow
+    (* @brief Creates an instance of DISOpticalFlow
       @param preset one of PRESET_ULTRAFAST, PRESET_FAST and PRESET_MEDIUM
     *)
     // CV_WRAP static Ptr<DISOpticalFlow> create(int preset = DISOpticalFlow::PRESET_FAST);
@@ -4279,11 +4293,11 @@ const
 
 Type
 
-  (* * @example samples/cpp/facedetect.cpp
+  (* @example samples/cpp/facedetect.cpp
     This program demonstrates usage of the Cascade classifier class
     \image html Cascade_Classifier_Tutorial_Result_Haar.jpg "Sample screenshot" width=321 height=254
   *)
-  (* * @brief Cascade classifier class for object detection. *)
+  (* @brief Cascade classifier class for object detection. *)
 
   pCascadeClassifier = ^TCascadeClassifier;
 
@@ -4294,13 +4308,13 @@ Type
 {$HINTS ON}
   public
     class operator Initialize(out Dest: TCascadeClassifier); // CV_WRAP CascadeClassifier();
-    (* * @brief Loads a classifier from a file.
+    (* @brief Loads a classifier from a file.
       @param filename Name of the file from which the classifier is loaded. *)
     // CV_WRAP CascadeClassifier(const String& filename);
     class operator Finalize(var Dest: TCascadeClassifier); // ~CascadeClassifier();
-    (* * @brief Checks whether the classifier has been loaded. *)
+    (* @brief Checks whether the classifier has been loaded. *)
     function empty: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}     // CV_WRAP bool empty() const;
-    (* * @brief Loads a classifier from a file.
+    (* @brief Loads a classifier from a file.
 
       @param filename Name of the file from which the classifier is loaded. The file may contain an old
       HAAR classifier trained by the haartraining application or a new cascade classifier trained by the
@@ -4308,11 +4322,11 @@ Type
     *)
     function load(const filename: String): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_WRAP bool load( const String& filename );
     function load(const filename: CvStdString): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief Reads a classifier from a FileStorage node.
+    (* @brief Reads a classifier from a FileStorage node.
       @note The file may contain a new cascade classifier (trained traincascade application) only. *)
     // CV_WRAP bool read( const FileNode& node );
 
-    (* * @brief Detects objects of different sizes in the input image. The detected objects are returned as a list of rectangles.
+    (* @brief Detects objects of different sizes in the input image. The detected objects are returned as a list of rectangles.
 
       @param image Matrix of the type CV_8U containing an image where objects are detected.
       @param objects Vector of rectangles where each rectangle contains the detected object, the
@@ -4346,7 +4360,7 @@ Type
     // Size minSize = Size(),
     // Size maxSize = Size() );
 
-    (* * @overload
+    (* @overload
       @param image Matrix of the type CV_8U containing an image where objects are detected.
       @param objects Vector of rectangles where each rectangle contains the detected object, the
       rectangles may be partially outside the original image.
@@ -4369,7 +4383,7 @@ Type
     // Size minSize=Size(),
     // Size maxSize=Size() );
 
-    (* * @overload
+    (* @overload
       This function allows you to retrieve the final stage decision certainty of classification.
       For this, one needs to set `outputRejectLevels` on true and provide the `rejectLevels` and `levelWeights` parameter.
       For each resulting detection, `levelWeights` will then contain the certainty of classification at the final stage.
@@ -4418,25 +4432,25 @@ Type
     class operator Initialize(out Dest: TQRCodeDetector); // CV_WRAP QRCodeDetector();
     class operator Finalize(var Dest: TQRCodeDetector);   // ~QRCodeDetector();
 
-    (* * @brief sets the epsilon used during the horizontal scan of QR code stop marker detection.
+    (* @brief sets the epsilon used during the horizontal scan of QR code stop marker detection.
       @param epsX Epsilon neighborhood, which allows you to determine the horizontal pattern
       of the scheme 1:1:3:1:1 according to QR code standard.
     *)
     // CV_WRAP void setEpsX(double epsX);
-    (* * @brief sets the epsilon used during the vertical scan of QR code stop marker detection.
+    (* @brief sets the epsilon used during the vertical scan of QR code stop marker detection.
       @param epsY Epsilon neighborhood, which allows you to determine the vertical pattern
       of the scheme 1:1:3:1:1 according to QR code standard.
     *)
     // CV_WRAP void setEpsY(double epsY);
 
-    (* * @brief Detects QR code in image and returns the quadrangle containing the code.
+    (* @brief Detects QR code in image and returns the quadrangle containing the code.
       @param img grayscale or color (BGR) image containing (or not) QR code.
       @param points Output vector of vertices of the minimum-area quadrangle containing the code.
     *)
     function detect(const img: TInputArray; const points: TOutputArray): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // CV_WRAP bool detect(InputArray img, OutputArray points) const;
 
-    (* * @brief Decodes QR code in image once it's found by the detect() method.
+    (* @brief Decodes QR code in image once it's found by the detect() method.
 
       Returns UTF8-encoded output string or empty string if the code cannot be decoded.
       @param img grayscale or color (BGR) image containing QR code.
@@ -4445,7 +4459,7 @@ Type
     *)
     // CV_WRAP std::string decode(InputArray img, InputArray points, OutputArray straight_qrcode = noArray());
 
-    (* * @brief Decodes QR code on a curved surface in image once it's found by the detect() method.
+    (* @brief Decodes QR code on a curved surface in image once it's found by the detect() method.
 
       Returns UTF8-encoded output string or empty string if the code cannot be decoded.
       @param img grayscale or color (BGR) image containing QR code.
@@ -4454,7 +4468,7 @@ Type
     *)
     // CV_WRAP cv::String decodeCurved(InputArray img, InputArray points, OutputArray straight_qrcode = noArray());
 
-    (* * @brief Both detects and decodes QR code
+    (* @brief Both detects and decodes QR code
 
       @param img grayscale or color (BGR) image containing QR code.
       @param points optional output array of vertices of the found QR code quadrangle. Will be empty if not found.
@@ -4467,7 +4481,7 @@ Type
     // CV_WRAP std::string detectAndDecode(InputArray img, OutputArray points=noArray(),
     // OutputArray straight_qrcode = noArray());
 
-    (* * @brief Both detects and decodes QR code on a curved surface
+    (* @brief Both detects and decodes QR code on a curved surface
 
       @param img grayscale or color (BGR) image containing QR code.
       @param points optional output array of vertices of the found QR code quadrangle. Will be empty if not found.
@@ -4476,13 +4490,13 @@ Type
     // CV_WRAP std::string detectAndDecodeCurved(InputArray img, OutputArray points=noArray(),
     // OutputArray straight_qrcode = noArray());
 
-    (* * @brief Detects QR codes in image and returns the vector of the quadrangles containing the codes.
+    (* @brief Detects QR codes in image and returns the vector of the quadrangles containing the codes.
       @param img grayscale or color (BGR) image containing (or not) QR codes.
       @param points Output vector of vector of vertices of the minimum-area quadrangle containing the codes.
     *)
     // CV_WRAP bool detectMulti(InputArray img, OutputArray points) const;
     function detectMulti(const img: TInputArray; const points: TOutputArray): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief Decodes QR codes in image once it's found by the detect() method.
+    (* @brief Decodes QR codes in image once it's found by the detect() method.
       @param img grayscale or color (BGR) image containing QR codes.
       @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
       @param points vector of Quadrangle vertices found by detect() method (or some other algorithm).
@@ -4497,7 +4511,7 @@ Type
     // OutputArrayOfArrays straight_qrcode = noArray()
     // ) const;
 
-    (* * @brief Both detects and decodes QR codes
+    (* @brief Both detects and decodes QR codes
       @param img grayscale or color (BGR) image containing QR codes.
       @param decoded_info UTF8-encoded output vector of string or empty vector of string if the codes cannot be decoded.
       @param points optional output vector of vertices of the found QR code quadrangles. Will be empty if not found.
@@ -4526,7 +4540,7 @@ Type
   //
 {$REGION 'photo.hpp'}
 
-  (* * @brief Transforms a color image to a grayscale image. It is a basic tool in digital printing, stylized
+  (* @brief Transforms a color image to a grayscale image. It is a basic tool in digital printing, stylized
     black-and-white photograph rendering, and in many single channel image processing applications
     @cite CL12 .
 
@@ -4551,7 +4565,7 @@ procedure decolor(const Src: TInputArray; const grayscale: TOutputArray; const c
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Filtering is the fundamental operation in image and video processing. Edge-preserving smoothing
+(* @brief Filtering is the fundamental operation in image and video processing. Edge-preserving smoothing
   filters are used in many different applications @cite EM11 .
 
   @param src Input 8-bit 3-channel image.
@@ -4576,7 +4590,7 @@ procedure edgePreservingFilter(const Src: TInputArray; const dst: TOutputArray; 
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief This filter enhances the details of a particular image.
+(* @brief This filter enhances the details of a particular image.
 
   @param src Input 8-bit 3-channel image.
   @param dst Output image with the same size and type as src.
@@ -4599,7 +4613,7 @@ procedure detailEnhance(const Src: TInputArray; const dst: TOutputArray; sigma_s
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Pencil-like non-photorealistic line drawing
+(* @brief Pencil-like non-photorealistic line drawing
   @param src Input 8-bit 3-channel image.
   @param dst1 Output 8-bit 1-channel image.
   @param dst2 Output image with the same size and type as src.
@@ -4623,7 +4637,7 @@ procedure pencilSketch(const Src: TInputArray; const dst1: TOutputArray; const d
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Stylization aims to produce digital imagery with a wide variety of effects not focused on
+(* @brief Stylization aims to produce digital imagery with a wide variety of effects not focused on
   photorealism. Edge-aware filters are ideal for stylization, as they can abstract regions of low
   contrast while preserving, or enhancing, high-contrast features.
 
@@ -4651,7 +4665,7 @@ procedure stylization(const Src: TInputArray; const dst: TOutputArray; sigma_s: 
 {$ENDREGION 'photo.hpp'}
 //
 {$REGION 'fast_math.hpp'}
-(* * @brief Rounds floating-point number to the nearest integer
+(* @brief Rounds floating-point number to the nearest integer
 
   @param value floating-point number. If the value is outside of INT_MIN ... INT_MAX range, the
   result is not defined.
@@ -4707,7 +4721,7 @@ type
     CAP_UEYE = 2500              // !< uEye Camera API
     );
 
-  (* * @brief cv::VideoCapture generic properties identifier.
+  (* @brief cv::VideoCapture generic properties identifier.
 
     Reading / writing properties involves many layers. Some unexpected result might happens along this chain.
     Effective behaviour depends from device hardware, driver and API Backend.
@@ -4784,15 +4798,16 @@ type
 
   TVideoCapture = record
   public
-    (* * @brief Default constructor
+    (* @brief Default constructor
       @note In @ref videoio_c "C API", when you finished working with video, release CvCapture structure with
       cvReleaseCapture(), or use Ptr\<CvCapture\> that calls cvReleaseCapture() automatically in the
       destructor.
     *)
-    class operator Initialize(out Dest: TVideoCapture); // CV_WRAP VideoCapture();
+    // CV_WRAP VideoCapture();
+    class operator Initialize(out Dest: TVideoCapture);
     class operator assign(var Dest: TVideoCapture; const [ref] Src: TVideoCapture);
 
-    (* * @overload
+    (* @overload
       @brief  Opens a video file or a capturing device or an IP video stream for video capturing with API Preference
 
       @param filename it can be:
@@ -4810,7 +4825,7 @@ type
 
     // CV_WRAP explicit VideoCapture(const String & filename, int apiPreference = CAP_ANY);
     class operator Implicit(const filename: string): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @overload
+    (* @overload
       @brief Opens a video file or a capturing device or an IP video stream for video capturing with API Preference and parameters
 
       The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
@@ -4818,7 +4833,7 @@ type
     *)
     // CV_WRAP explicit VideoCapture(const String & filename, int apiPreference, const std: : vector<int> & params);
 
-    (* * @overload
+    (* @overload
       @brief  Opens a camera for video capturing
 
       @param index id of the video capturing device to open. To open default camera using default backend just pass 0.
@@ -4830,7 +4845,7 @@ type
     *)
     // CV_WRAP explicit VideoCapture(int index, int apiPreference = CAP_ANY);
     class operator Implicit(const index: Int): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @overload
+    (* @overload
       @brief Opens a camera for video capturing with API Preference and parameters
 
       The `params` parameter allows to specify extra parameters encoded as pairs `(paramId_1, paramValue_1, paramId_2, paramValue_2, ...)`.
@@ -4838,13 +4853,14 @@ type
     *)
     // CV_WRAP explicit VideoCapture(int index, int apiPreference, const std: : vector<int> & params);
 
-    (* * @brief Default destructor
+    (* @brief Default destructor
 
       The method first calls VideoCapture::release to close the already opened file or camera.
     *)
-    class operator Finalize(var Dest: TVideoCapture); // virtual ~ VideoCapture();
+    // virtual ~ VideoCapture();
+    class operator Finalize(var Dest: TVideoCapture);
 
-    (* * @brief  Opens a video file or a capturing device or an IP video stream for video capturing.
+    (* @brief  Opens a video file or a capturing device or an IP video stream for video capturing.
 
       @overload
 
@@ -4855,7 +4871,7 @@ type
     *)
     // CV_WRAP virtual Bool open(const String & filename, int apiPreference = CAP_ANY);
     function open(const filename: String; const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief  Opens a camera for video capturing
+    (* @brief  Opens a camera for video capturing
 
       @overload
 
@@ -4868,7 +4884,7 @@ type
     *)
     // CV_WRAP virtual Bool open(const String & filename, int apiPreference, const std: : vector<int> & params);
     function open(const filename: String; const apiPreference: VideoCaptureAPIs { = CAP_ANY }; const params: Vector<Int>): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief  Opens a camera for video capturing
+    (* @brief  Opens a camera for video capturing
 
       @overload
 
@@ -4879,7 +4895,7 @@ type
     *)
     // CV_WRAP virtual Bool open(int index, int apiPreference = CAP_ANY);
     function open(const index: Int; const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief Returns true if video capturing has been initialized already.
+    (* @brief Returns true if video capturing has been initialized already.
 
       @overload
 
@@ -4892,14 +4908,14 @@ type
     *)
     // CV_WRAP virtual Bool open(int index, int apiPreference, const std: : vector<int> & params);
 
-    (* * @brief Returns true if video capturing has been initialized already.
+    (* @brief Returns true if video capturing has been initialized already.
 
       If the previous call to VideoCapture constructor or VideoCapture::open() succeeded, the method returns
       true.
     *)
-    function isOpened: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_WRAP virtual Bool isOpened()  const;
-
-    (* * @brief Closes video file or capturing device.
+    // CV_WRAP virtual Bool isOpened()  const;
+    function isOpened: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* @brief Closes video file or capturing device.
 
       The method is automatically called by subsequent VideoCapture::open and by VideoCapture
       destructor.
@@ -4908,7 +4924,7 @@ type
     *)
     // CV_WRAP virtual void release();
     procedure release; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief Grabs the next frame from video file or capturing device.
+    (* @brief Grabs the next frame from video file or capturing device.
 
       @return `true` (non-zero) in the case of success.
 
@@ -4929,7 +4945,7 @@ type
     *)
     // CV_WRAP virtual Bool grab();
 
-    (* * @brief Decodes and returns the grabbed video frame.
+    (* @brief Decodes and returns the grabbed video frame.
 
       @param [out] image the video frame is returned here. If no frames has been grabbed the image will be empty.
       @param flag it could be a frame index or a driver specific flag
@@ -4947,17 +4963,17 @@ type
     *)
     // CV_WRAP virtual Bool retrieve(OutputArray image, int flag = 0);
 
-    (* * @brief Stream operator to read the next video frame.
+    (* @brief Stream operator to read the next video frame.
       @sa read()
     *)
     // virtual VideoCapture & operator >> (CV_OUT Mat & image);
 
-    (* * @overload
+    (* @overload
       @sa read()
     *)
     // virtual VideoCapture & operator >> (CV_OUT UMAT & image);
 
-    (* * @brief Grabs, decodes and returns the next video frame.
+    (* @brief Grabs, decodes and returns the next video frame.
 
       @param [out] image the video frame is returned here. If no frames has been grabbed the image will be empty.
       @return `false` if no frames has been grabbed
@@ -4973,7 +4989,7 @@ type
     *)
     function read(const image: TOutputArray): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_WRAP virtual Bool read(OutputArray image);
 
-    (* * @brief Sets a property in the VideoCapture.
+    (* @brief Sets a property in the VideoCapture.
 
       @param propId Property identifier from cv::VideoCaptureProperties (eg. cv::CAP_PROP_POS_MSEC, cv::CAP_PROP_POS_FRAMES, ...)
       or one from @ref videoio_flags_others
@@ -4984,7 +5000,7 @@ type
     *)
     // CV_WRAP virtual Bool set (int propId, double value);
     function &set(propId: VideoCaptureProperties; Value: double): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief Returns the specified VideoCapture property
+    (* @brief Returns the specified VideoCapture property
 
       @param propId Property identifier from cv::VideoCaptureProperties (eg. cv::CAP_PROP_POS_MSEC, cv::CAP_PROP_POS_FRAMES, ...)
       or one from @ref videoio_flags_others
@@ -5002,15 +5018,15 @@ type
 
     *)
     // CV_WRAP virtual double get(int propId)  const;
-    function get(propId: Int): double; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function get(propId: VideoCaptureProperties): double; {$IFDEF USE_INLINE}inline; {$ENDIF}
     //
-    (* * @brief Returns used backend API name
+    (* @brief Returns used backend API name
 
       @note Stream should be opened.
     *)
     // CV_WRAP String getBackendName()  const;
 
-    (* * Switches exceptions mode
+    (* Switches exceptions mode
       *
       * methods raise exceptions if not successful instead of returning an error code
     *)
@@ -5019,7 +5035,7 @@ type
     /// query if exception mode is active
     // CV_WRAP Bool getExceptionMode() { return throwOnFail; }
 
-    (* * @brief Wait for ready frames from VideoCapture.
+    (* @brief Wait for ready frames from VideoCapture.
 
       @param streams input video streams
       @param readyIndex stream indexes with grabbed frames (ready to use .retrieve() to fetch actual frame)
@@ -5047,12 +5063,176 @@ type
     // friend class internal::VideoCapturePrivateAccessor;
 {$HINTS ON}
   end;
+  //
 
+  (* @brief Video writer class.
+    The class provides C++ API for writing video files or image sequences.
+  *)
+  pVideoWriter = ^TVideoWriter;
+
+  TVideoWriter = record
+  public
+    (* @brief Default constructors
+
+      The constructors/functions initialize video writers.
+      -   On Linux FFMPEG is used to write videos;
+      -   On Windows FFMPEG or MSWF or DSHOW is used;
+      -   On MacOSX AVFoundation is used.
+    *)
+    // CV_WRAP VideoWriter();
+    class operator Initialize(out Dest: TVideoWriter);
+    class operator assign(var Dest: TVideoWriter; const [ref] Src: TVideoWriter);
+
+    (* @overload
+      @param filename Name of the output video file.
+      @param fourcc 4-character code of codec used to compress the frames. For example,
+      VideoWriter::fourcc('P','I','M','1') is a MPEG-1 codec, VideoWriter::fourcc('M','J','P','G') is a
+      motion-jpeg codec etc. List of codes can be obtained at [Video Codecs by
+      FOURCC](http://www.fourcc.org/codecs.php) page. FFMPEG backend with MP4 container natively uses
+      other values as fourcc code: see [ObjectType](http://mp4ra.org/#/codecs),
+      so you may receive a warning message from OpenCV about fourcc code conversion.
+      @param fps Framerate of the created video stream.
+      @param frameSize Size of the video frames.
+      @param isColor If it is not zero, the encoder will expect and encode color frames, otherwise it
+      will work with grayscale frames.
+
+      @b Tips:
+      - With some backends `fourcc=-1` pops up the codec selection dialog from the system.
+      - To save image sequence use a proper filename (eg. `img_%02d.jpg`) and `fourcc=0`
+      OR `fps=0`. Use uncompressed image format (eg. `img_%02d.BMP`) to save raw frames.
+      - Most codecs are lossy. If you want lossless video file you need to use a lossless codecs
+      (eg. FFMPEG FFV1, Huffman HFYU, Lagarith LAGS, etc...)
+      - If FFMPEG is enabled, using `codec=0; fps=0;` you can create an uncompressed (raw) video file.
+    *)
+    // CV_WRAP VideoWriter(const String & filename, Int fourcc, double fps, size frameSize, BOOL isColor = true);
+
+    (* @overload
+      The `apiPreference` parameter allows to specify API backends to use. Can be used to enforce a specific reader implementation
+      if multiple are available: e.g. cv::CAP_FFMPEG or cv::CAP_GSTREAMER.
+    *)
+    // CV_WRAP VideoWriter(const String & filename, Int apiPreference, Int fourcc, double fps, size frameSize, BOOL isColor = true);
+
+    (* @overload
+      * The `params` parameter allows to specify extra encoder parameters encoded as pairs (paramId_1, paramValue_1, paramId_2, paramValue_2, ... .)
+      * see cv::VideoWriterProperties
+    *)
+    // CV_WRAP VideoWriter(const String & filename, Int fourcc, double fps, const size & frameSize, const std: : Vector<Int> & params);
+
+    (* @overload
+    *)
+    // CV_WRAP VideoWriter(const String & filename, Int apiPreference, Int fourcc, double fps, const size & frameSize, const std: : Vector<Int> & params);
+
+    (* @brief Default destructor
+
+      The method first calls VideoWriter::release to close the already opened file.
+    *)
+    // virtual ~ VideoWriter();
+    class operator Finalize(var Dest: TVideoWriter);
+
+    (* @brief Initializes or reinitializes video writer.
+
+      The method opens video writer. Parameters are the same as in the constructor
+      VideoWriter::VideoWriter.
+      @return `true` if video writer has been successfully initialized
+
+      The method first calls VideoWriter::release to close the already opened file.
+    *)
+    // CV_WRAP virtual BOOL open(const String & filename, Int fourcc, double fps, size frameSize, BOOL isColor = true);
+    function open(const filename: String; fourcc: Int; fps: double; const frameSize: TSize; isColor: BOOL = true): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* @overload *)
+    // CV_WRAP BOOL open(const String & filename, Int apiPreference, Int fourcc, double fps, size frameSize, BOOL isColor = true);
+
+    (* @overload *)
+    // CV_WRAP BOOL open(const String & filename, Int fourcc, double fps, const size & frameSize, const std: : Vector<Int> & params);
+
+    (* @overload
+    *)
+    // CV_WRAP BOOL open(const String & filename, Int apiPreference, Int fourcc, double fps, const size & frameSize, const std: : Vector<Int> & params);
+
+    (* @brief Returns true if video writer has been successfully initialized.
+    *)
+    // CV_WRAP virtual BOOL isOpened()  const;
+    function isOpened(): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* @brief Closes the video writer.
+
+      The method is automatically called by subsequent VideoWriter::open and by the VideoWriter
+      destructor.
+    *)
+    // CV_WRAP virtual void release();
+
+    (* @brief Stream operator to write the next video frame.
+      @sa write
+    *)
+    // virtual VideoWriter & operator << (const Mat & image);
+
+    (* @overload
+      @sa write
+    *)
+    // virtual VideoWriter & operator << (const UMAT & image);
+
+    (* @brief Writes the next video frame
+
+      @param image The written frame. In general, color images are expected in BGR format.
+
+      The function/method writes the specified image to video file. It must have the same size as has
+      been specified when opening the video writer.
+    *)
+    // CV_WRAP virtual void write(InputArray image);
+    procedure write(const image: TInputArray); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* @brief Sets a property in the VideoWriter.
+
+      @param propId Property identifier from cv::VideoWriterProperties (eg. cv::VIDEOWRITER_PROP_QUALITY)
+      or one of @ref videoio_flags_others
+
+      @param value Value of the property.
+      @return  `true` if the property is supported by the backend used by the VideoWriter instance.
+    *)
+    // CV_WRAP virtual BOOL set (Int propId, double Value);
+
+    (* @brief Returns the specified VideoWriter property
+
+      @param propId Property identifier from cv::VideoWriterProperties (eg. cv::VIDEOWRITER_PROP_QUALITY)
+      or one of @ref videoio_flags_others
+
+      @return Value for the specified property. Value 0 is returned when querying a property that is
+      not supported by the backend used by the VideoWriter instance.
+    *)
+    // CV_WRAP virtual double get(Int propId)  const;
+
+    (* @brief Concatenates 4 chars to a fourcc code
+
+      @return a fourcc code
+
+      This static method constructs the fourcc code of the codec to be used in the constructor
+      VideoWriter::VideoWriter or VideoWriter::open.
+    *)
+    // CV_WRAP static Int fourcc(char c1, char c2, char c3, char c4);
+
+    (* @brief Returns used backend API name
+
+      @note Stream should be opened.
+    *)
+    // CV_WRAP String getBackendName()  const;
+    //
+    class operator LessThan(const VideoWriter: TVideoWriter; const frame: TMat): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  private
+{$HINTS OFF}
+    _vftable: vftable_func;
+    Dummy: array [0 .. 39 - SizeOf(vftable_func)] of Byte;
+    (*
+      Ptr<CvVideoWriter> writer;
+      Ptr<IVideoWriter> iwriter;
+      static Ptr<IVideoWriter> create(const String& filename, int fourcc, double fps,
+      Size frameSize, bool isColor = true);
+    *)
+{$HINTS ON}
+  end;
+  //
 {$ENDREGION 'videoio.hpp'}
   //
 {$REGION 'tracking.hpp'}
 
-  (* * @brief Calculates an optical flow for a sparse feature set using the iterative Lucas-Kanade method with
+  (* @brief Calculates an optical flow for a sparse feature set using the iterative Lucas-Kanade method with
     pyramids.
 
     @param prevImg first 8-bit input image or pyramid constructed by buildOpticalFlowPyramid.
@@ -5142,7 +5322,7 @@ type
 
   TCommandLineParser = record
   public
-    (* * @brief Constructor
+    (* @brief Constructor
 
       Initializes command line parser object
 
@@ -5154,16 +5334,16 @@ type
     procedure CommandLineParser(const keys: String); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // CommandLineParser(int argc, const char* const argv[], const String& keys);
 
-    (* * @brief Copy constructor *)
+    (* @brief Copy constructor *)
     // CommandLineParser(const CommandLineParser& parser);
 
-    (* * @brief Assignment operator *)
+    (* @brief Assignment operator *)
     // CommandLineParser& operator= (const CommandLineParser& parser);
 
-    (* * @brief Destructor *)
+    (* @brief Destructor *)
     class operator Finalize(var Dest: TCommandLineParser); // ~CommandLineParser();
 
-    (* * @brief Returns application path
+    (* @brief Returns application path
 
       This method returns the path to the executable from the command line (`argv[0]`).
 
@@ -5175,7 +5355,7 @@ type
     *)
     // String getPathToApplication() const;
 
-    (* * @brief Access arguments by name
+    (* @brief Access arguments by name
 
       Returns argument converted to selected type. If the argument is not known or can not be
       converted to selected type, the error flag is set (can be checked with @ref check).
@@ -5215,7 +5395,7 @@ type
       return val;
     }
 
-    (* * @brief Access positional arguments by index
+    (* @brief Access positional arguments by index
 
       Returns argument converted to selected type. Indexes are counted from zero.
 
@@ -5247,13 +5427,13 @@ type
       return val;
     }
 
-    (* * @brief Check if field was provided in the command line
+    (* @brief Check if field was provided in the command line
 
       @param name argument name to check
     *)
     function has(const name: String): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}  // bool has(const String& name) const;
 
-    (* * @brief Check for parsing errors
+    (* @brief Check for parsing errors
 
       Returns false if error occurred while accessing the parameters (bad conversion, missing arguments,
       etc.). Call @ref printErrors to print error messages list.
@@ -5261,14 +5441,14 @@ type
     function check: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // bool check() const;
 
-    (* * @brief Set the about message
+    (* @brief Set the about message
 
       The about message will be shown when @ref printMessage is called, right before arguments table.
     *)
     procedure about(const message: String); {$IFDEF USE_INLINE}inline; {$ENDIF}
     // void about(const String& message);
 
-    (* * @brief Print help message
+    (* @brief Print help message
 
       This method will print standard help message containing the about message and arguments description.
 
@@ -5277,7 +5457,7 @@ type
     procedure printMessage; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // void printMessage() const;
 
-    (* * @brief Print list of errors occurred
+    (* @brief Print list of errors occurred
       @sa check *)
     procedure printErrors; {$IFDEF USE_INLINE}inline; {$ENDIF}// void printErrors() const;
     //
@@ -5297,7 +5477,7 @@ type
   end;
 
   //
-  (* * @brief Returns the number of ticks.
+  (* @brief Returns the number of ticks.
 
     The function returns the number of ticks after the certain event (for example, when the machine was
     turned on). It can be used to initialize RNG or to measure a function execution time by reading the
@@ -5312,7 +5492,7 @@ type
   }
 function getTickCount(): Int64; external opencv_world_dll name '?getTickCount@cv@@YA_JXZ'{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Returns the number of ticks per second.
+(* @brief Returns the number of ticks per second.
 
   The function returns the number of ticks per second. That is, the following code computes the
   execution time in seconds:
@@ -5335,7 +5515,7 @@ function getTickFrequency(): double; external opencv_world_dll name '?getTickFre
 {$ENDREGION 'utility.hpp'}
 //
 {$REGION 'check.hpp'}
-(* * Returns string of cv::Mat depth value: CV_8UC3 -> "CV_8UC3" or "<invalid type>" *)
+(* Returns string of cv::Mat depth value: CV_8UC3 -> "CV_8UC3" or "<invalid type>" *)
 // CV_EXPORTS const String typeToString(int type);
 // ?typeToString@cv@@YA?BV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
 // class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const cv::typeToString(int)
@@ -5345,18 +5525,18 @@ function typeToString(&type: Int): CppString; external opencv_world_dll name '?t
 //
 {$REGION 'ml.hpp'}
 
-(* ***************************************************************************************\
+(* **************************************************************************************\
   *                                   Support Vector Machines                              *
   \*************************************************************************************** *)
 type
 
-  (* * @brief Sample types *)
+  (* @brief Sample types *)
   SampleTypes = (   //
     ROW_SAMPLE = 0, // !< each training sample is a row of samples
     COL_SAMPLE = 1  // !< each training sample occupies a column of samples
     );
 
-  (* * @brief Support Vector Machines.
+  (* @brief Support Vector Machines.
     @sa @ref ml_intro_svm
   *)
 
@@ -5376,121 +5556,121 @@ type
     // virtual void calc( int vcount, int n, const float* vecs, const float* another, float* results ) = 0;
     // };
 
-    (* * Type of a %SVM formulation.
+    (* Type of a %SVM formulation.
       See SVM::Types. Default value is SVM::C_SVC. *)
-    (* * @see setType *)
+    (* @see setType *)
     // CV_WRAP virtual int getType() const = 0;
     function getType: Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
     //
-    (* * @copybrief getType @see getType *)
+    (* @copybrief getType @see getType *)
     // CV_WRAP virtual void setType(int val) = 0;
     procedure setType(val: Int); {$IFDEF USE_INLINE}inline; {$ENDIF}
     //
-    (* * Parameter \f$\gamma\f$ of a kernel function.
+    (* Parameter \f$\gamma\f$ of a kernel function.
       For SVM::POLY, SVM::RBF, SVM::SIGMOID or SVM::CHI2. Default value is 1. *)
-    (* * @see setGamma *)
+    (* @see setGamma *)
     // CV_WRAP virtual double getGamma() const = 0;
 
-    (* * @copybrief getGamma @see getGamma *)
+    (* @copybrief getGamma @see getGamma *)
     // CV_WRAP virtual void setGamma(double val) = 0;
 
-    (* * Parameter _coef0_ of a kernel function.
+    (* Parameter _coef0_ of a kernel function.
       For SVM::POLY or SVM::SIGMOID. Default value is 0. *)
-    (* * @see setCoef0 *)
+    (* @see setCoef0 *)
     // CV_WRAP virtual double getCoef0() const = 0;
 
-    (* * @copybrief getCoef0 @see getCoef0 *)
+    (* @copybrief getCoef0 @see getCoef0 *)
     // CV_WRAP virtual void setCoef0(double val) = 0;
 
-    (* * Parameter _degree_ of a kernel function.
+    (* Parameter _degree_ of a kernel function.
       For SVM::POLY. Default value is 0. *)
-    (* * @see setDegree *)
+    (* @see setDegree *)
     // CV_WRAP virtual double getDegree() const = 0;
 
-    (* * @copybrief getDegree @see getDegree *)
+    (* @copybrief getDegree @see getDegree *)
     // CV_WRAP virtual void setDegree(double val) = 0;
 
-    (* * Parameter _C_ of a %SVM optimization problem.
+    (* Parameter _C_ of a %SVM optimization problem.
       For SVM::C_SVC, SVM::EPS_SVR or SVM::NU_SVR. Default value is 0. *)
-    (* * @see setC *)
+    (* @see setC *)
     // CV_WRAP virtual double getC() const = 0;
 
-    (* * @copybrief getC @see getC *)
+    (* @copybrief getC @see getC *)
     // CV_WRAP virtual void setC(double val) = 0;
 
-    (* * Parameter \f$\nu\f$ of a %SVM optimization problem.
+    (* Parameter \f$\nu\f$ of a %SVM optimization problem.
       For SVM::NU_SVC, SVM::ONE_CLASS or SVM::NU_SVR. Default value is 0. *)
-    (* * @see setNu *)
+    (* @see setNu *)
     // CV_WRAP virtual double getNu() const = 0;
 
-    (* * @copybrief getNu @see getNu *)
+    (* @copybrief getNu @see getNu *)
     // CV_WRAP virtual void setNu(double val) = 0;
 
-    (* * Parameter \f$\epsilon\f$ of a %SVM optimization problem.
+    (* Parameter \f$\epsilon\f$ of a %SVM optimization problem.
       For SVM::EPS_SVR. Default value is 0. *)
-    (* * @see setP *)
+    (* @see setP *)
     // CV_WRAP virtual double getP() const = 0;
 
-    (* * @copybrief getP @see getP *)
+    (* @copybrief getP @see getP *)
     // CV_WRAP virtual void setP(double val) = 0;
 
-    (* * Optional weights in the SVM::C_SVC problem, assigned to particular classes.
+    (* Optional weights in the SVM::C_SVC problem, assigned to particular classes.
       They are multiplied by _C_ so the parameter _C_ of class _i_ becomes `classWeights(i) * C`. Thus
       these weights affect the misclassification penalty for different classes. The larger weight,
       the larger penalty on misclassification of data from the corresponding class. Default value is
       empty Mat. *)
-    (* * @see setClassWeights *)
+    (* @see setClassWeights *)
     // CV_WRAP virtual cv::Mat getClassWeights() const = 0;
 
-    (* * @copybrief getClassWeights @see getClassWeights *)
+    (* @copybrief getClassWeights @see getClassWeights *)
     // CV_WRAP virtual void setClassWeights(const cv::Mat &val) = 0;
 
-    (* * Termination criteria of the iterative %SVM training procedure which solves a partial
+    (* Termination criteria of the iterative %SVM training procedure which solves a partial
       case of constrained quadratic optimization problem.
       You can specify tolerance and/or the maximum number of iterations. Default value is
       `TermCriteria( TermCriteria::MAX_ITER + TermCriteria::EPS, 1000, FLT_EPSILON )`; *)
-    (* * @see setTermCriteria *)
+    (* @see setTermCriteria *)
     // CV_WRAP virtual cv::TermCriteria getTermCriteria() const = 0;
 
-    (* * @copybrief getTermCriteria @see getTermCriteria *)
+    (* @copybrief getTermCriteria @see getTermCriteria *)
     // CV_WRAP virtual void setTermCriteria(const cv::TermCriteria &val) = 0;
     procedure setTermCriteria(const val: TTermCriteria); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * Type of a %SVM kernel.
+    (* Type of a %SVM kernel.
       See SVM::KernelTypes. Default value is SVM::RBF. *)
     // CV_WRAP virtual int getKernelType() const = 0;
 
-    (* * Initialize with one of predefined kernels.
+    (* Initialize with one of predefined kernels.
       See SVM::KernelTypes. *)
     // CV_WRAP virtual void setKernel(int kernelType) = 0;
     procedure setKernel(kernelType: Int); {$IFDEF USE_INLINE}inline; {$ENDIF}
     //
-    (* * Initialize with custom kernel.
+    (* Initialize with custom kernel.
       See SVM::Kernel class for implementation details *)
     // virtual void setCustomKernel(const Ptr<Kernel> &_kernel) = 0;
 
   public const
     // ! %SVM type
     // SVMTypes
-    (* * C-Support Vector Classification. n-class classification (n \f$\geq\f$ 2), allows
+    (* C-Support Vector Classification. n-class classification (n \f$\geq\f$ 2), allows
       imperfect separation of classes with penalty multiplier C for outliers. *)
     C_SVC = 100;
-    (* * \f$\nu\f$-Support Vector Classification. n-class classification with possible
+    (* \f$\nu\f$-Support Vector Classification. n-class classification with possible
       imperfect separation. Parameter \f$\nu\f$ (in the range 0..1, the larger the value, the smoother
       the decision boundary) is used instead of C. *)
     NU_SVC = 101;
-    (* * Distribution Estimation (One-class %SVM). All the training data are from
+    (* Distribution Estimation (One-class %SVM). All the training data are from
       the same class, %SVM builds a boundary that separates the class from the rest of the feature
       space. *)
     ONE_CLASS = 102;
-    (* * \f$\epsilon\f$-Support Vector Regression. The distance between feature vectors
+    (* \f$\epsilon\f$-Support Vector Regression. The distance between feature vectors
       from the training set and the fitting hyper-plane must be less than p. For outliers the
       penalty multiplier C is used. *)
     EPS_SVR = 103;
-    (* * \f$\nu\f$-Support Vector Regression. \f$\nu\f$ is used instead of p.
+    (* \f$\nu\f$-Support Vector Regression. \f$\nu\f$ is used instead of p.
       See @cite LibSVM for details. *)
     NU_SVR = 104;
 
-    (* * @brief %SVM kernel type
+    (* @brief %SVM kernel type
 
       A comparison of different kernels on the following 2D test case with four classes. Four
       SVM::C_SVC SVMs have been trained (one against rest) with auto_train. Evaluation on three
@@ -5499,23 +5679,23 @@ type
       ![image](pics/SVM_Comparison.png)
     *)
     // KernelTypes
-    (* * Returned by SVM::getKernelType in case when custom kernel has been set *)
+    (* Returned by SVM::getKernelType in case when custom kernel has been set *)
     CUSTOM = -1;
-    (* * Linear kernel. No mapping is done, linear discrimination (or regression) is
+    (* Linear kernel. No mapping is done, linear discrimination (or regression) is
       done in the original feature space. It is the fastest option. \f$K(x_i, x_j) = x_i^T x_j\f$. *)
     LINEAR = 0;
-    (* * Polynomial kernel:
+    (* Polynomial kernel:
       \f$K(x_i, x_j) = (\gamma x_i^T x_j + coef0)^{degree}, \gamma > 0\f$. *)
     POLY = 1;
-    (* * Radial basis function (RBF), a good choice in most cases.
+    (* Radial basis function (RBF), a good choice in most cases.
       \f$K(x_i, x_j) = e^{-\gamma ||x_i - x_j||^2}, \gamma > 0\f$. *)
     RBF = 2;
-    (* * Sigmoid kernel: \f$K(x_i, x_j) = \tanh(\gamma x_i^T x_j + coef0)\f$. *)
+    (* Sigmoid kernel: \f$K(x_i, x_j) = \tanh(\gamma x_i^T x_j + coef0)\f$. *)
     SIGMOID = 3;
-    (* * Exponential Chi2 kernel, similar to the RBF kernel:
+    (* Exponential Chi2 kernel, similar to the RBF kernel:
       \f$K(x_i, x_j) = e^{-\gamma \chi^2(x_i,x_j)}, \chi^2(x_i,x_j) = (x_i-x_j)^2/(x_i+x_j), \gamma > 0\f$. *)
     CHI2 = 4;
-    (* * Histogram intersection kernel. A fast kernel. \f$K(x_i, x_j) = min(x_i,x_j)\f$. *)
+    (* Histogram intersection kernel. A fast kernel. \f$K(x_i, x_j) = min(x_i,x_j)\f$. *)
     INTER = 5;
 
     // ! %SVM params type
@@ -5527,7 +5707,7 @@ type
     COEF   = 4;
     DEGREE = 5;
   public
-    (* * @brief Trains an %SVM with optimal parameters.
+    (* @brief Trains an %SVM with optimal parameters.
 
       @param data the training data that can be constructed using TrainData::create or
       TrainData::loadFromCSV.
@@ -5570,7 +5750,7 @@ type
     // ParamGrid degreeGrid = getDefaultGrid(DEGREE),
     // bool balanced=false) = 0;
 
-    (* * @brief Trains an %SVM with optimal parameters
+    (* @brief Trains an %SVM with optimal parameters
 
       @param samples training samples
       @param layout See ml::SampleTypes.
@@ -5610,14 +5790,14 @@ type
     // Ptr<ParamGrid> degreeGrid = SVM::getDefaultGridPtr(SVM::DEGREE),
     // bool balanced=false) = 0;
 
-    (* * @brief Retrieves all the support vectors
+    (* @brief Retrieves all the support vectors
 
       The method returns all the support vectors as a floating-point matrix, where support vectors are
       stored as matrix rows.
     *)
     // CV_WRAP virtual Mat getSupportVectors() const = 0;
 
-    (* * @brief Retrieves all the uncompressed support vectors of a linear %SVM
+    (* @brief Retrieves all the uncompressed support vectors of a linear %SVM
 
       The method returns all the uncompressed support vectors of a linear %SVM that the compressed
       support vector, used for prediction, was derived from. They are returned in a floating-point
@@ -5625,7 +5805,7 @@ type
     *)
     // CV_WRAP virtual Mat getUncompressedSupportVectors() const = 0;
     function getUncompressedSupportVectors(): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief Retrieves the decision function
+    (* @brief Retrieves the decision function
 
       @param i the index of the decision function. If the problem solved is regression, 1-class or
       2-class classification, then there will be just one decision function and the index should
@@ -5642,7 +5822,7 @@ type
     *)
     // CV_WRAP virtual double getDecisionFunction(int i, OutputArray alpha, OutputArray svidx) const = 0;
 
-    (* * @brief Generates a grid for %SVM parameters.
+    (* @brief Generates a grid for %SVM parameters.
 
       @param param_id %SVM parameters IDs that must be one of the SVM::ParamTypes. The grid is
       generated for the parameter with this ID.
@@ -5652,7 +5832,7 @@ type
     *)
     // static ParamGrid getDefaultGrid( int param_id );
 
-    (* * @brief Generates a grid for %SVM parameters.
+    (* @brief Generates a grid for %SVM parameters.
 
       @param param_id %SVM parameters IDs that must be one of the SVM::ParamTypes. The grid is
       generated for the parameter with this ID.
@@ -5662,12 +5842,12 @@ type
     *)
     // CV_WRAP static Ptr<ParamGrid> getDefaultGridPtr( int param_id );
 
-    (* * Creates empty model.
+    (* Creates empty model.
       Use StatModel::train to train the model. Since %SVM has several parameters, you may want to
       find the best parameters for your problem, it can be done with SVM::trainAuto. *)
     class function Create: TPtr<TSVM>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}  // CV_WRAP static Ptr<SVM> create();
 
-    (* * @brief Loads and creates a serialized svm from a file
+    (* @brief Loads and creates a serialized svm from a file
       *
       * Use SVM::save to serialize and store an SVM to disk.
       * Load the SVM from this file again, by calling this function with the path to the file.
@@ -5687,7 +5867,7 @@ type
 {$REGION 'background_segm.hpp'}
 
 Type
-  (* * @brief Gaussian Mixture-based Background/Foreground Segmentation Algorithm.
+  (* @brief Gaussian Mixture-based Background/Foreground Segmentation Algorithm.
     The class implements the Gaussian mixture model background subtraction described in @cite Zivkovic2004
     and @cite Zivkovic2006 .
   *)
@@ -5700,44 +5880,44 @@ Type
   public
     class operator Finalize(var Dest: TBackgroundSubtractorMOG2);
   public
-    (* * @brief Returns the number of last frames that affect the background model
+    (* @brief Returns the number of last frames that affect the background model
     *)
     // CV_WRAP virtual int getHistory() const = 0;
-    (* * @brief Sets the number of last frames that affect the background model
+    (* @brief Sets the number of last frames that affect the background model
     *)
     // CV_WRAP virtual void setHistory(int history) = 0;
 
-    (* * @brief Returns the number of gaussian components in the background model
+    (* @brief Returns the number of gaussian components in the background model
     *)
     // CV_WRAP virtual int getNMixtures() const = 0;
-    (* * @brief Sets the number of gaussian components in the background model.
+    (* @brief Sets the number of gaussian components in the background model.
 
       The model needs to be reinitalized to reserve memory.
     *)
     // CV_WRAP virtual void setNMixtures(int nmixtures) = 0;//needs reinitialization!
 
-    (* * @brief Returns the "background ratio" parameter of the algorithm
+    (* @brief Returns the "background ratio" parameter of the algorithm
 
       If a foreground pixel keeps semi-constant value for about backgroundRatio\*history frames, it's
       considered background and added to the model as a center of a new component. It corresponds to TB
       parameter in the paper.
     *)
     // CV_WRAP virtual double getBackgroundRatio() const = 0;
-    (* * @brief Sets the "background ratio" parameter of the algorithm
+    (* @brief Sets the "background ratio" parameter of the algorithm
     *)
     // CV_WRAP virtual void setBackgroundRatio(double ratio) = 0;
 
-    (* * @brief Returns the variance threshold for the pixel-model match
+    (* @brief Returns the variance threshold for the pixel-model match
 
       The main threshold on the squared Mahalanobis distance to decide if the sample is well described by
       the background model or not. Related to Cthr from the paper.
     *)
     // CV_WRAP virtual double getVarThreshold() const = 0;
-    (* * @brief Sets the variance threshold for the pixel-model match
+    (* @brief Sets the variance threshold for the pixel-model match
     *)
     // CV_WRAP virtual void setVarThreshold(double varThreshold) = 0;
     procedure setVarThreshold(varThreshold: double); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    (* * @brief Returns the variance threshold for the pixel-model match used for new mixture component generation
+    (* @brief Returns the variance threshold for the pixel-model match used for new mixture component generation
 
       Threshold for the squared Mahalanobis distance that helps decide when a sample is close to the
       existing components (corresponds to Tg in the paper). If a pixel is not close to any component, it
@@ -5746,14 +5926,14 @@ Type
       they can grow too large.
     *)
     // CV_WRAP virtual double getVarThresholdGen() const = 0;
-    (* * @brief Sets the variance threshold for the pixel-model match used for new mixture component generation
+    (* @brief Sets the variance threshold for the pixel-model match used for new mixture component generation
     *)
     // CV_WRAP virtual void setVarThresholdGen(double varThresholdGen) = 0;
 
-    (* * @brief Returns the initial variance of each gaussian component
+    (* @brief Returns the initial variance of each gaussian component
     *)
     // CV_WRAP virtual double getVarInit() const = 0;
-    (* * @brief Sets the initial variance of each gaussian component
+    (* @brief Sets the initial variance of each gaussian component
     *)
     // CV_WRAP virtual void setVarInit(double varInit) = 0;
 
@@ -5763,38 +5943,38 @@ Type
     // CV_WRAP virtual double getVarMax() const = 0;
     // CV_WRAP virtual void setVarMax(double varMax) = 0;
 
-    (* * @brief Returns the complexity reduction threshold
+    (* @brief Returns the complexity reduction threshold
 
       This parameter defines the number of samples needed to accept to prove the component exists. CT=0.05
       is a default value for all the samples. By setting CT=0 you get an algorithm very similar to the
       standard Stauffer&Grimson algorithm.
     *)
     // CV_WRAP virtual double getComplexityReductionThreshold() const = 0;
-    (* * @brief Sets the complexity reduction threshold
+    (* @brief Sets the complexity reduction threshold
     *)
     // CV_WRAP virtual void setComplexityReductionThreshold(double ct) = 0;
 
-    (* * @brief Returns the shadow detection flag
+    (* @brief Returns the shadow detection flag
 
       If true, the algorithm detects shadows and marks them. See createBackgroundSubtractorMOG2 for
       details.
     *)
     // CV_WRAP virtual bool getDetectShadows() const = 0;
-    (* * @brief Enables or disables shadow detection
+    (* @brief Enables or disables shadow detection
     *)
     // CV_WRAP virtual void setDetectShadows(bool detectShadows) = 0;
 
-    (* * @brief Returns the shadow value
+    (* @brief Returns the shadow value
 
       Shadow value is the value used to mark shadows in the foreground mask. Default value is 127. Value 0
       in the mask always means background, 255 means foreground.
     *)
     // CV_WRAP virtual int getShadowValue() const = 0;
-    (* * @brief Sets the shadow value
+    (* @brief Sets the shadow value
     *)
     // CV_WRAP virtual void setShadowValue(int value) = 0;
 
-    (* * @brief Returns the shadow threshold
+    (* @brief Returns the shadow threshold
 
       A shadow is detected if pixel is a darker version of the background. The shadow threshold (Tau in
       the paper) is a threshold defining how much darker the shadow can be. Tau= 0.5 means that if a pixel
@@ -5802,11 +5982,11 @@ Type
       *Detecting Moving Shadows...*, IEEE PAMI,2003.
     *)
     // CV_WRAP virtual double getShadowThreshold() const = 0;
-    (* * @brief Sets the shadow threshold
-    *)
+
+    (* @brief Sets the shadow threshold *)
     // CV_WRAP virtual void setShadowThreshold(double threshold) = 0;
 
-    (* * @brief Computes a foreground mask.
+    (* @brief Computes a foreground mask.
 
       @param image Next video frame. Floating point frame will be used without scaling and should be in range \f$[0,255]\f$.
       @param fgmask The output foreground mask as an 8-bit binary image.
@@ -5819,7 +5999,7 @@ Type
     procedure apply(const image: TInputArray; const fgmask: TOutputArray; learningRate: double = -1); {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
-  (* * @brief Creates MOG2 Background Subtractor
+  (* @brief Creates MOG2 Background Subtractor
 
     @param history Length of the history.
     @param varThreshold Threshold on the squared Mahalanobis distance between the pixel and the model
@@ -5884,6 +6064,7 @@ Type
 {$I opencv.MatSize.import.inc}
 {$I opencv.CascadeClassifier.import.inc}
 {$I opencv.VideoCapture.import.inc}
+{$I opencv.VideoWriter.import.inc}
 {$I opencv.rng.import.inc}
 {$I opencv.CommandLineParser.import.inc}
 {$I opencv.QRCodeDetector.import.inc}
@@ -5999,7 +6180,7 @@ end;
 
 function Vector<T>.GetItems(const index: UInt64): T;
 begin
-  StdItem(@Self, vt, index, @Result);
+  StdGetItem(@Self, vt, index, @Result);
 end;
 
 class operator Vector<T>.Initialize(out Dest: Vector<T>);
@@ -6010,12 +6191,17 @@ end;
 
 function Vector<T>.pT(const index: UInt64): Pointer;
 begin
-  StdPItem(@Self, vt, index, TStdPointer(Result));
+  StdGetPItem(@Self, vt, index, TStdPointer(Result));
 end;
 
 procedure Vector<T>.push_back(const Value: T);
 begin
   StdPushBack(@Self, @Value, vt);
+end;
+
+procedure Vector<T>.setItems(const index: UInt64; const Value: T);
+begin
+  StdSetItem(@Self, vt, index, TStdPointer(@Value));
 end;
 
 function Vector<T>.size: { UInt64 } Int64;
@@ -6101,8 +6287,7 @@ begin
   polylines(img, pts, npts, ncontours, isClosed, color, thickness, Int(lineType), shift);
 end;
 
-procedure Scharr(const Src: TInputArray; const dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0;
-  borderType: BorderTypes = BORDER_DEFAULT);
+procedure Scharr(const Src: TInputArray; const dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0; borderType: BorderTypes = BORDER_DEFAULT);
 begin
   Scharr(Src, dst, depth, dx, dy, scale, delta, Int(borderType));
 end;
@@ -6765,6 +6950,14 @@ begin
   Result.sz    := size(0, 0);
 end;
 
+class operator TInputArray.Implicit(const v: Vector<TMat>): TInputArray;
+begin
+  // Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TMat>.Value + Int(ACCESS_READ);
+  Result.flags := Int(STD_VECTOR_MAT) + Int(ACCESS_READ);
+  Result.Obj   := @v;
+  Result.sz    := size(0, 0);
+end;
+
 { TScalar }
 
 class function TScalar.Create(const v0, v1, v2, v3: double): TScalar;
@@ -7105,9 +7298,9 @@ begin
   destructor_VideoCapture(@Dest);
 end;
 
-function TVideoCapture.get(propId: Int): double;
+function TVideoCapture.get(propId: VideoCaptureProperties): double;
 begin
-  Result := get_VideoCapture(@Self, propId);
+  Result := get_VideoCapture(@Self, Int(propId));
 end;
 
 class operator TVideoCapture.Implicit(const filename: string): TVideoCapture;
@@ -7792,6 +7985,11 @@ begin
   Result := TInputArrayOfArrays(TInputArray(v));
 end;
 
+class operator TInputArrayOfArraysHelper.Implicit(const v: Vector<TMat>): TInputArrayOfArrays;
+begin
+  Result := TInputArrayOfArrays(TInputArray(v));
+end;
+
 { TBackgroundSubtractorMOG2 }
 
 procedure TBackgroundSubtractorMOG2.apply(const image: TInputArray; const fgmask: TOutputArray; learningRate: double);
@@ -7816,6 +8014,46 @@ end;
 class function TBackgroundSubtractorMOG2.vftable(const s: TBackgroundSubtractorMOG2; const index: integer): Pointer;
 begin
   Result := pvftable(s._vftable)[index];
+end;
+
+{ TVideoWriter }
+
+class operator TVideoWriter.assign(var Dest: TVideoWriter; const [ref] Src: TVideoWriter);
+begin
+  Move(Src, Dest, SizeOf(Dest));
+  if Src.isOpened then
+    FillChar((@Src.Dummy)^, SizeOf(Dest.Dummy), 0);
+end;
+
+class operator TVideoWriter.Finalize(var Dest: TVideoWriter);
+begin
+  destructor_VideoWriter(@Dest);
+end;
+
+class operator TVideoWriter.LessThan(const VideoWriter: TVideoWriter; const frame: TMat): BOOL;
+begin
+  VideoWriter.write(frame);
+  Result := true;
+end;
+
+class operator TVideoWriter.Initialize(out Dest: TVideoWriter);
+begin
+  constructor_VideoWriter(@Dest);
+end;
+
+function TVideoWriter.isOpened: BOOL;
+begin
+  Result := isOpened_VideoWriter(@Self);
+end;
+
+function TVideoWriter.open(const filename: String; fourcc: Int; fps: double; const frameSize: TSize; isColor: BOOL): BOOL;
+begin
+  Result := open_VideoWriter(@Self, filename, fourcc, fps, frameSize, isColor);
+end;
+
+procedure TVideoWriter.write(const image: TInputArray);
+begin
+  write_VideoWriter(@Self, image);
 end;
 
 initialization

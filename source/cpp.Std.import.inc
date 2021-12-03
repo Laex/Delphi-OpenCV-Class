@@ -210,9 +210,11 @@ procedure CreateStdVector(Obj: TStdPointer; vt: TVectorType); external opencv_de
 // ?DestroyStdVector@@YAXPEAXH@Z	void __cdecl DestroyStdVector(void * __ptr64,int)
 procedure DestroyStdVector(Obj: TStdPointer; vt: TVectorType); external opencv_delphi_dll name '?DestroyStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdItem@@YAXPEAXH_K0@Z	void __cdecl StdItem(void * __ptr64,int,unsigned __int64,void * __ptr64)
-procedure StdItem(const Obj: TStdPointer; vt: TVectorType; index: UInt64; p: TStdPointer); external opencv_delphi_dll name '?StdItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure StdGetItem(const Obj: TStdPointer; vt: TVectorType; index: UInt64; p: TStdPointer); external opencv_delphi_dll name '?StdItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//?StdSetItem@@YAXPEAXH_K0@Z;void __cdecl StdSetItem(void * __ptr64,int,unsigned __int64,void * __ptr64)
+procedure StdSetItem(const Obj: TStdPointer; vt: TVectorType; index: UInt64; p: TStdPointer); external opencv_delphi_dll name '?StdSetItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdPItem@@YAXPEAXH_KPEAPEAX@Z;void __cdecl StdPItem(void * __ptr64,int,unsigned __int64,void * __ptr64 * __ptr64)
-procedure StdPItem(const Obj: TStdPointer; vt: TVectorType; index: UInt64; Var p: TStdPointer); external opencv_delphi_dll name '?StdPItem@@YAXPEAXH_KPEAPEAX@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure StdGetPItem(const Obj: TStdPointer; vt: TVectorType; index: UInt64; Var p: TStdPointer); external opencv_delphi_dll name '?StdPItem@@YAXPEAXH_KPEAPEAX@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdSize@@YA_KPEAXH@Z	unsigned __int64 __cdecl StdSize(void * __ptr64,int)
 function StdSize(Obj: TStdPointer; vt: TVectorType): UInt64; external opencv_delphi_dll name '?StdSize@@YA_KPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdEmpty@@YA_NPEAXH@Z	bool __cdecl StdEmpty(void * __ptr64,int)
