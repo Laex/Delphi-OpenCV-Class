@@ -49,8 +49,8 @@ resourcestring
 
 procedure Register;
 begin
-  RegisterComponents('OpenCV', [TCVView, TCVCaptureSource]);
-  RegisterClasses([TCVWebCameraSource, TCVFileSource{, TCVIPStreamSource}]);
+  RegisterComponents('OpenCV', [TCVView, TCVCaptureSource,TCVVideoWriter]);
+  RegisterClasses([TCVWebCameraSource, TCVFileSource]);
 end;
 
 var

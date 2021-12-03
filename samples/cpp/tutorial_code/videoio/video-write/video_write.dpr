@@ -79,7 +79,12 @@ begin
 
       // Transform from int to char via Bitwise operators
     var
-      EXT: TArray<byte> := [(ex and $FF), ((ex and $FF00) shr 8), ((ex and $FF0000) shr 16), ((ex and $FF000000) shr 24), 0];
+      EXT: TArray<AnsiChar> := [//
+      AnsiChar(ex and $FF),//
+      AnsiChar((ex and $FF00) shr 8),//
+      AnsiChar((ex and $FF0000) shr 16),//
+      AnsiChar((ex and $FF000000) shr 24),//
+      AnsiChar(0)];
 
     Var
       S: TSize := Size(Trunc(inputVideo.get(CAP_PROP_FRAME_WIDTH)), // Acquire input size
@@ -103,7 +108,7 @@ begin
       ' of nr#: ', inputVideo.get(CAP_PROP_FRAME_COUNT):1:4);
     Write('Input codec type: ');
     for Var i := 0 to High(EXT) do
-      Write(IntToHex(EXT[i], 2));
+      Write(EXT[i]);
     Writeln;
     Var
       channel: int := 2; // Select the channel to save

@@ -18,6 +18,8 @@ Uses
 
 Type
 
+  TMat = opencv_world.TMat;
+
   ICVDataReceiver = interface
     ['{7EBE0282-0731-45EB-8A1D-1097C2CBC680}']
     procedure TakeMat(const AMat: TMat);
@@ -368,8 +370,39 @@ Type
     property SourceType: TCVCustomSource read GetProperties write SetProperties;
   end;
 
-//  TCVMatOperation = class(TCVDataProxy, ICVEditorPropertiesContainer)
-//  end;
+  TCVVideoWriter = class(TCVDataProxy)
+  private
+    FWriter: pVideoWriter;
+    FFileName: TFileName;
+    FEnabled: Boolean;
+    FFourCC: AnsiString;
+    FFPS: Cardinal;
+    FisColored: Boolean;
+    FResolution: TCVCustomResolution;
+    FSameResolution: Boolean;
+    procedure SetFileName(const Value: TFileName);
+    procedure CloseWriter;
+    procedure OpenWriter(const S: TSize);
+    procedure SetFourCC(const Value: AnsiString);
+    procedure setFPS(const Value: Cardinal);
+    procedure setisColored(const Value: Boolean);
+    procedure setSameResolution(const Value: Boolean);
+  protected
+    procedure setEnabled(const Value: Boolean); override;
+    function Writer: pVideoWriter;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure TakeMat(const AMat: TMat); override;
+  published
+    property Enabled: Boolean Read FEnabled write setEnabled default false;
+    property OutputFileName: TFileName read FFileName write SetFileName;
+    property FourCC: AnsiString read FFourCC write SetFourCC;
+    property FPS: Cardinal read FFPS write setFPS default 24;
+    property isColored: Boolean read FisColored write setisColored default True;
+    property SameResolution: Boolean read FSameResolution write setSameResolution default True;
+    property Resolution: TCVCustomResolution read FResolution write FResolution;
+  end;
 
   TRegisteredCaptureSource = class(TStringList)
   public
@@ -380,6 +413,8 @@ Type
   end;
 
 function GetRegisteredCaptureSource: TRegisteredCaptureSource;
+function CV_FOURCC(const c1, c2, c3, c4: AnsiChar): Integer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function CV_FOURCC(const c: AnsiString): Integer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 implementation
 
@@ -1070,7 +1105,6 @@ begin
     FNotifyChange(Self);
 end;
 
-
 function TCVCustomSource.GetNamePath: string;
 var
   S: string;
@@ -1226,6 +1260,145 @@ begin
   inherited;
   FWidth  := 800;
   FHeight := 600;
+end;
+
+{ TCVVideoWriter }
+
+procedure TCVVideoWriter.CloseWriter;
+begin
+  if Assigned(FWriter) then
+  begin
+    Dispose(FWriter);
+    FWriter := nil;
+  end;
+  FEnabled := false;
+end;
+
+constructor TCVVideoWriter.Create(AOwner: TComponent);
+begin
+  inherited;
+  FFourCC            := 'XVID';
+  FFPS               := 24;
+  FisColored         := True;
+  FSameResolution    := True;
+  FResolution        := TCVCustomResolution.Create;
+end;
+
+destructor TCVVideoWriter.Destroy;
+begin
+  CloseWriter;
+  FResolution.Free;
+  inherited;
+end;
+
+procedure TCVVideoWriter.OpenWriter(const S: TSize);
+var
+  ex: Int;
+begin
+  if Writer.isOpened then
+    CloseWriter;
+
+  if (Length(FFileName) > 0) then
+  begin
+    if Length(FFourCC) = 4 then
+      ex := CV_FOURCC(FFourCC)
+    else
+      ex     := -1;
+    FEnabled := Writer.open(FFileName, ex, Int(FFPS), S, FisColored);
+  end;
+end;
+
+procedure TCVVideoWriter.setEnabled(const Value: Boolean);
+begin
+  if FEnabled <> Value then
+  begin
+    if (csDesigning in ComponentState) or (csLoading in ComponentState) then
+      FEnabled := Value
+    else
+    begin
+      CloseWriter;
+      FEnabled := Value;
+    end;
+  end;
+end;
+
+procedure TCVVideoWriter.SetFileName(const Value: TFileName);
+begin
+  if (not FEnabled) or (csDesigning in ComponentState) or (csLoading in ComponentState) then
+  begin
+    if FFileName <> Value then
+      FFileName := Value;
+  end;
+end;
+
+procedure TCVVideoWriter.SetFourCC(const Value: AnsiString);
+Var
+  V: AnsiString;
+begin
+  if (not FEnabled) or (csDesigning in ComponentState) or (csLoading in ComponentState) then
+  begin
+    V := Value;
+    if Length(V) > 4 then
+      SetLength(V, 4);
+    if (Length(V) = 4) and (FFourCC <> V) then
+      FFourCC := V;
+  end;
+end;
+
+procedure TCVVideoWriter.setFPS(const Value: Cardinal);
+begin
+  if (FFPS <> Value) and ((not FEnabled) or (csDesigning in ComponentState)) or (csLoading in ComponentState) then
+    FFPS := Value;
+end;
+
+procedure TCVVideoWriter.setisColored(const Value: Boolean);
+begin
+  if (FisColored <> Value) and ((not FEnabled) or (csDesigning in ComponentState)) or (csLoading in ComponentState) then
+    FisColored := Value;
+end;
+
+procedure TCVVideoWriter.setSameResolution(const Value: Boolean);
+begin
+  if (FSameResolution <> Value) and ((not FEnabled) or (csDesigning in ComponentState)) or (csLoading in ComponentState) then
+    FSameResolution := Value;
+end;
+
+procedure TCVVideoWriter.TakeMat(const AMat: TMat);
+begin
+  if not(csDesigning in ComponentState) or (csLoading in ComponentState) then
+  begin
+    if FEnabled then
+    begin
+      if not Writer.isOpened then
+      begin
+        if FSameResolution then
+          OpenWriter(AMat.size)
+        else
+          OpenWriter(size(FResolution.Width, FResolution.Height));
+      end;
+      if FEnabled then
+        Writer.write(AMat);
+    end;
+    NotifyReceiver(AMat);
+  end;
+end;
+
+function TCVVideoWriter.Writer: pVideoWriter;
+begin
+  if not Assigned(FWriter) then
+    New(FWriter);
+  Result := FWriter;
+end;
+
+function CV_FOURCC(const c1, c2, c3, c4: AnsiChar): Integer;
+begin
+  Result := Integer(c1) + (Integer(c2) shl 8) + (Integer(c3) shl 16) + (Integer(c4) shl 24);
+end;
+
+function CV_FOURCC(const c: AnsiString): Integer;
+begin
+  Assert(Length(c) = 4);
+  Result := CV_FOURCC(c[1], c[2], c[3], c[4]);
 end;
 
 initialization

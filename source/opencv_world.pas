@@ -5159,7 +5159,7 @@ type
       destructor.
     *)
     // CV_WRAP virtual void release();
-
+    procedure release; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* @brief Stream operator to write the next video frame.
       @sa write
     *)
@@ -8049,6 +8049,11 @@ end;
 function TVideoWriter.open(const filename: String; fourcc: Int; fps: double; const frameSize: TSize; isColor: BOOL): BOOL;
 begin
   Result := open_VideoWriter(@Self, filename, fourcc, fps, frameSize, isColor);
+end;
+
+procedure TVideoWriter.release;
+begin
+  release_VideoWriter(@Self);
 end;
 
 procedure TVideoWriter.write(const image: TInputArray);
