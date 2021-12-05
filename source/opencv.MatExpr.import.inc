@@ -35,7 +35,7 @@ procedure Operator_MatExpr_Assign_Const_MatExpr(Obj: pMatExpr; m: pMatExpr); ove
 // 6473
 // ?size@MatExpr@cv@@QEBA?AV?$Size_@H@2@XZ
 // public: class cv::Size_<int> __cdecl cv::MatExpr::size(void)const __ptr64
-function MatExpr_size(Obj: pMatExpr; p: pSize): pSize; external opencv_world_dll
+procedure MatExpr_size(Obj: pMatExpr; const p: TSize); external opencv_world_dll
 // index 6473
   name '?size@MatExpr@cv@@QEBA?AV?$Size_@H@2@XZ'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};

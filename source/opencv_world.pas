@@ -360,10 +360,13 @@ type
   private
     _Data: array [0 .. 2] of uchar;
     function getItem(const index: integer): uchar; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure setItem(const index: integer; const Value: uchar); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure setItem(const index: integer; const Value: uchar);
   public
     property Items[const Index: integer]: uchar read getItem write setItem; default;
     class operator Implicit(const a: TArray<uchar>): Vec3b; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // class operator Implicit(const a: TArray<UInt32>): Vec3b; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // class operator Implicit(const a: TArray<UInt64>): Vec3b; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // class operator Explicit(const a: TArray<UInt64>): Vec3b; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   pVec3b = ^Vec3b;
@@ -395,7 +398,9 @@ function MIN(a, b: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) > (b) ?
 function MAX(a, b: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) < (b) ? (b) : (a))
 
 type
-  TRect_<T> = record
+  TRect_<T: record > = record
+  public type
+    pT = ^T;
   public
     // ! default constructor
     // Rect_();
@@ -420,6 +425,7 @@ type
     // Size_<_Tp> size() const;
     // ! area (width*height) of the rectangle
     // _Tp area() const;
+    function area: T; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! true if empty
     // bool empty() const;
 
@@ -430,6 +436,7 @@ type
     // bool contains(const Point_<_Tp>& pt) const;
 
     class function Rect(const _x: T; _y: T; _width: T; _height: T): TRect_<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator BitwiseAnd(const a, b: TRect_<T>): TRect_<T>;
   public
     x: T;      // !< x coordinate of the top-left corner
     y: T;      // !< y coordinate of the top-left corner
@@ -479,6 +486,7 @@ Type
     // template<typename _Tp2> operator Size_<_Tp2>() const;
     //
     class operator Implicit(const m: TSize_<T>): UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: UInt64): TSize_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     width: T;  // _Tp width;  // !< the width
     height: T; // _Tp height; // !< the height
@@ -486,8 +494,9 @@ Type
 
   TSize2i = TSize_<Int>;
   TSize   = TSize2i;
-  pSize   = ^TSize;
-  rSize   = UInt64;
+  // pSize   = ^TSize;
+  // rSize   = UInt64;
+  TSize2f = TSize_<float>;
 
 function size(const _width, _height: Int): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
@@ -538,7 +547,7 @@ type
   TPoint2i = TPoint_<Int>;
   TPoint   = TPoint2i;
   pPoint   = ^TPoint;
-  rPoint   = UInt64;
+  // rPoint   = UInt64;
 
   TPoint2f = TPoint_<float>;
   TPoint2d = TPoint_<double>;
@@ -586,12 +595,90 @@ type
     epsilon: double; // !< the desired accuracy
   end;
 
+  (* * @brief The class represents rotated (i.e. not up-right) rectangles on a plane.
+
+    Each rectangle is specified by the center point (mass center), length of each side (represented by
+    #Size2f structure) and the rotation angle in degrees.
+
+    The sample below demonstrates how to use RotatedRect:
+    @snippet snippets/core_various.cpp RotatedRect_demo
+    ![image](pics/rotatedrect.png)
+
+    @sa CamShift, fitEllipse, minAreaRect, CvBox2D
+  *)
+  pRotatedRect = ^TRotatedRect;
+
+  TRotatedRect = record
+  public
+    // ! default constructor
+    // RotatedRect();
+    (* * full constructor
+      @param center The rectangle mass center.
+      @param size Width and height of the rectangle.
+      @param angle The rotation angle in a clockwise direction. When the angle is 0, 90, 180, 270 etc.,
+      the rectangle becomes an up-right rectangle.
+    *)
+    // RotatedRect(const Point2f& center, const Size2f& size, float angle);
+    (* *
+      Any 3 end points of the RotatedRect. They must be given in order (either clockwise or
+      anticlockwise).
+    *)
+    // RotatedRect(const Point2f& point1, const Point2f& point2, const Point2f& point3);
+
+    (* * returns 4 vertices of the rectangle
+      @param pts The points array for storing rectangle vertices. The order is bottomLeft, topLeft, topRight, bottomRight.
+    *)
+    // void points(Point2f pts[]) const;
+    // ! returns the minimal up-right integer rectangle containing the rotated rectangle
+    // Rect boundingRect() const;
+    // ! returns the minimal (exact) floating point rectangle containing the rotated rectangle, not intended for use with images
+    // Rect_<float> boundingRect2f() const;
+  public
+    // ! returns the rectangle mass center
+    center: TPoint2f;
+    // ! returns width and height of the rectangle
+    size: TSize2f;
+    // ! returns the rotation angle. When the angle is 0, 90, 180, 270 etc., the rectangle becomes an up-right rectangle.
+    angle: float;
+  end;
+
 {$ENDREGION 'types.hpp'}
   //
 {$REGION 'mat.hpp'}
 
 Type
 
+  pScalar = ^TScalar;
+
+  TScalar = record
+  private
+{$HINTS OFF}
+    v: array [0 .. 3] of double;
+{$HINTS ON}
+  public
+    class operator Initialize(out Dest: TScalar); // Scalar_();
+    class function Create(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // Scalar_(_Tp v0, _Tp v1, _Tp v2=0, _Tp v3=0);
+    class function Create(const v0: double): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Scalar_(_Tp v0);
+    // Scalar_(const Scalar_& s);
+    // Scalar_(Scalar_&& s) CV_NOEXCEPT;
+    // Scalar_& operator=(const Scalar_& s);
+    // Scalar_& operator=(Scalar_&& s) CV_NOEXCEPT;
+    // Scalar_(const Vec<_Tp2, cn>& v);
+    // //! returns a scalar with all elements set to v0
+    class function all(const v0: double): TScalar; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // static Scalar_<_Tp> all(_Tp v0);
+    // //! per-element product
+    // Scalar_<_Tp> mul(const Scalar_<_Tp>& a, double scale=1 ) const;
+    // //! returns (v0, -v1, -v2, -v3)
+    // Scalar_<_Tp> conj() const;
+    // //! returns true iff v1 == v2 == v3 == 0
+    // bool isReal() const;
+    class operator Implicit(const v0: double): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+function Scalar(const v0: double; const v1: double = 0; const v2: double = 0; const v3: double = 0): TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function Scalar(const v: Vec3b): TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+type
   AccessFlag = (ACCESS_READ = 1 shl 24, ACCESS_WRITE = 1 shl 25, ACCESS_RW = 3 shl 24, ACCESS_MASK = ACCESS_RW, ACCESS_FAST = 1 shl 26);
 
   pMatSize = ^TMatSize;
@@ -694,7 +781,9 @@ Type
     // constructors
     class function Mat(const size: TSize; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat(Size size, int type);
     // TMatHelper // Mat(int rows, int cols, int type, const Scalar& s);
+    class function Mat(rows, cols, &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(Size size, int type, const Scalar& s);
+    class function Mat(const size: TSize; &type: Int; const s: TScalar): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(int ndims, const int* sizes, int type);
     // Mat(const std::vector<int>& sizes, int type);
     // Mat(int ndims, const int* sizes, int type, const Scalar& s);
@@ -703,9 +792,8 @@ Type
     class function Mat(rows, cols: Int; &type: Int; Data: Pointer; step: size_t = AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function Mat<T>(rows, cols: Int; Data: TArray<T>; step: size_t = AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function Mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t = AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class function Mat<T>(const vec: Vector<T>; copyData: BOOL = false): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(int rows, int cols, int type, void* data, size_t step=AUTO_STEP);
-
+    class function Mat<T>(const vec: Vector<T>; copyData: BOOL = false): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(Size size, int type, void* data, size_t step=AUTO_STEP);
     // Mat(int ndims, const int* sizes, int type, void* data, const size_t* steps=0);
     // Mat(const std::vector<int>& sizes, int type, void* data, const size_t* steps=0);
@@ -753,7 +841,7 @@ Type
     // TMatHelper // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
     // TMatHelper // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
     procedure Create(rows, cols, &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} // void create(int rows, int cols, int type);
-    procedure Create(size: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void create(Size size, int type);
+    procedure Create(const size: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void create(Size size, int type);
     // void create(int ndims, const int* sizes, int type);
     // void create(const std::vector<int>& sizes, int type);
     procedure addref; {$IFDEF USE_INLINE}inline; {$ENDIF} // void addref();
@@ -803,7 +891,10 @@ Type
     function at<T>(const i0, i1: Int): T; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function pT<T>(const i0: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function pT<T>(const i0, i1: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure st<T>(const i0: Int; const v: T); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure st<T>(const i0, i1: Int; const v: T); overload;
+  public
+    procedure assign(const s: TScalar); {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     // CVMat: TCVMat;
     flags: Int; // int flags;
@@ -838,35 +929,6 @@ Type
 
   TStdVectorMat = Vector<TMat>;
   pStdVectorMat = ^TStdVectorMat;
-
-  pScalar = ^TScalar;
-
-  TScalar = record
-  private
-{$HINTS OFF}
-    v: array [0 .. 3] of double;
-{$HINTS ON}
-  public
-    class operator Initialize(out Dest: TScalar); // Scalar_();
-    class function Create(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // Scalar_(_Tp v0, _Tp v1, _Tp v2=0, _Tp v3=0);
-    class function Create(const v0: double): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Scalar_(_Tp v0);
-    // Scalar_(const Scalar_& s);
-    // Scalar_(Scalar_&& s) CV_NOEXCEPT;
-    // Scalar_& operator=(const Scalar_& s);
-    // Scalar_& operator=(Scalar_&& s) CV_NOEXCEPT;
-    // Scalar_(const Vec<_Tp2, cn>& v);
-    // //! returns a scalar with all elements set to v0
-    class function all(const v0: double): TScalar; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // static Scalar_<_Tp> all(_Tp v0);
-    // //! per-element product
-    // Scalar_<_Tp> mul(const Scalar_<_Tp>& a, double scale=1 ) const;
-    // //! returns (v0, -v1, -v2, -v3)
-    // Scalar_<_Tp> conj() const;
-    // //! returns true iff v1 == v2 == v3 == 0
-    // bool isReal() const;
-    class operator Implicit(const v0: double): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  end;
-
-function Scalar(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 type
   pMatExpr = ^TMatExpr;
@@ -1015,6 +1077,7 @@ type
     class operator Implicit(const v: double): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<Vec4i>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<TMat>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: TScalar): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
 {$HINTS OFF}
     flags: Int;   // int flags;
@@ -1107,8 +1170,9 @@ type
   TOutputArrayOfArrays = TOutputArray;
   pOutputArrayOfArrays = ^TOutputArrayOfArrays;
 
-  TInputOutputArray = type TOutputArray;
-  pInputOutputArray = ^TInputOutputArray;
+  TInputOutputArray         = type TOutputArray;
+  TInputOutputArrayOfArrays = TInputOutputArray;
+  pInputOutputArray         = ^TInputOutputArray;
 
   TInputOutputArrayHelper = record helper for TInputOutputArray
     // private
@@ -1300,7 +1364,49 @@ procedure addWeighted(const src1: TInputArray; alpha: double; const src2: TInput
   name '?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-//
+
+(* * @brief computes bitwise conjunction of the two arrays (dst = src1 & src2)
+  Calculates the per-element bit-wise conjunction of two arrays or an
+  array and a scalar.
+
+  The function cv::bitwise_and calculates the per-element bit-wise logical conjunction for:
+  *   Two arrays when src1 and src2 have the same size:
+  \f[\texttt{dst} (I) =  \texttt{src1} (I)  \wedge \texttt{src2} (I) \quad \texttt{if mask} (I) \ne0\f]
+  *   An array and a scalar when src2 is constructed from Scalar or has
+  the same number of elements as `src1.channels()`:
+  \f[\texttt{dst} (I) =  \texttt{src1} (I)  \wedge \texttt{src2} \quad \texttt{if mask} (I) \ne0\f]
+  *   A scalar and an array when src1 is constructed from Scalar or has
+  the same number of elements as `src2.channels()`:
+  \f[\texttt{dst} (I) =  \texttt{src1}  \wedge \texttt{src2} (I) \quad \texttt{if mask} (I) \ne0\f]
+  In case of floating-point arrays, their machine-specific bit
+  representations (usually IEEE754-compliant) are used for the operation.
+  In case of multi-channel arrays, each channel is processed
+  independently. In the second and third cases above, the scalar is first
+  converted to the array type.
+  @param src1 first input array or a scalar.
+  @param src2 second input array or a scalar.
+  @param dst output array that has the same size and type as the input
+  arrays.
+  @param mask optional operation mask, 8-bit single channel array, that
+  specifies elements of the output array to be changed.
+*)
+// CV_EXPORTS_W void bitwise_and(InputArray src1, InputArray src2,
+// OutputArray dst, InputArray mask = noArray());
+{
+  3626
+  ?bitwise_and@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z
+  ?bitwise_and@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z
+  void cv::bitwise_and(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
+}
+procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } ); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?bitwise_and@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
+{$ELSE}
+  name '?bitwise_and@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload;
+
 (* @brief  Inverts every bit of an array.
 
   The function cv::bitwise_not calculates per-element bit-wise inversion of the input
@@ -1332,6 +1438,40 @@ procedure bitwise_not(const Src: TInputArray; const dst: TOutputArray; mask: TIn
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure bitwise_not(const Src: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
+(* * @brief  Checks if array elements lie between the elements of two other arrays.
+
+  The function checks the range as follows:
+  -   For every element of a single-channel input array:
+  \f[\texttt{dst} (I)= \texttt{lowerb} (I)_0  \leq \texttt{src} (I)_0 \leq  \texttt{upperb} (I)_0\f]
+  -   For two-channel arrays:
+  \f[\texttt{dst} (I)= \texttt{lowerb} (I)_0  \leq \texttt{src} (I)_0 \leq  \texttt{upperb} (I)_0  \land \texttt{lowerb} (I)_1  \leq \texttt{src} (I)_1 \leq  \texttt{upperb} (I)_1\f]
+  -   and so forth.
+
+  That is, dst (I) is set to 255 (all 1 -bits) if src (I) is within the
+  specified 1D, 2D, 3D, ... box and 0 otherwise.
+
+  When the lower and/or upper boundary parameters are scalars, the indexes
+  (I) at lowerb and upperb in the above formulas should be omitted.
+  @param src first input array.
+  @param lowerb inclusive lower boundary array or a scalar.
+  @param upperb inclusive upper boundary array or a scalar.
+  @param dst output array of the same size as src and CV_8U type.
+*)
+// CV_EXPORTS_W void inRange(InputArray src, InputArray lowerb,
+// InputArray upperb, OutputArray dst);
+{
+  5273
+  ?inRange@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z
+  ?inRange@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z
+  void cv::inRange(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
+}
+procedure inRange(const Src: TInputArray; const lowerb: TInputArray; const upperb: TInputArray; const dst: TOutputArray); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?inRange@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
+{$ELSE}
+  name '?inRange@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 (* @overload
   @param m input multi-channel array.
   @param mv output vector of arrays; the arrays themselves are reallocated, if needed.
@@ -1359,6 +1499,89 @@ procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); overload;
 procedure split(const m: TMat; const mv: pMat); overload; external opencv_world_dll name '?split@cv@@YAXAEBVMat@1@PEAV21@@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure split(const m: TMat; const mv: TArray<TMat>); overload;
+
+(* * @brief Copies specified channels from input arrays to the specified channels of
+  output arrays.
+
+  The function cv::mixChannels provides an advanced mechanism for shuffling image channels.
+
+  cv::split,cv::merge,cv::extractChannel,cv::insertChannel and some forms of cv::cvtColor are partial cases of cv::mixChannels.
+
+  In the example below, the code splits a 4-channel BGRA image into a 3-channel BGR (with B and R
+  channels swapped) and a separate alpha-channel image:
+  @code{.cpp}
+  Mat bgra( 100, 100, CV_8UC4, Scalar(255,0,0,255) );
+  Mat bgr( bgra.rows, bgra.cols, CV_8UC3 );
+  Mat alpha( bgra.rows, bgra.cols, CV_8UC1 );
+
+  // forming an array of matrices is a quite efficient operation,
+  // because the matrix data is not copied, only the headers
+  Mat out[] = { bgr, alpha };
+  // bgra[0] -> bgr[2], bgra[1] -> bgr[1],
+  // bgra[2] -> bgr[0], bgra[3] -> alpha[0]
+  int from_to[] = { 0,2, 1,1, 2,0, 3,3 };
+  mixChannels( &bgra, 1, out, 2, from_to, 4 );
+  @endcode
+  @note Unlike many other new-style C++ functions in OpenCV (see the introduction section and
+  Mat::create ), cv::mixChannels requires the output arrays to be pre-allocated before calling the
+  function.
+  @param src input array or vector of matrices; all of the matrices must have the same size and the
+  same depth.
+  @param nsrcs number of matrices in `src`.
+  @param dst output array or vector of matrices; all the matrices **must be allocated**; their size and
+  depth must be the same as in `src[0]`.
+  @param ndsts number of matrices in `dst`.
+  @param fromTo array of index pairs specifying which channels are copied and where; fromTo[k\*2] is
+  a 0-based index of the input channel in src, fromTo[k\*2+1] is an index of the output channel in
+  dst; the continuous channel numbering is used: the first input image channels are indexed from 0 to
+  src[0].channels()-1, the second input image channels are indexed from src[0].channels() to
+  src[0].channels() + src[1].channels()-1, and so on, the same scheme is used for the output image
+  channels; as a special case, when fromTo[k\*2] is negative, the corresponding output channel is
+  filled with zero .
+  @param npairs number of index pairs in `fromTo`.
+  @sa split, merge, extractChannel, insertChannel, cvtColor
+*)
+// CV_EXPORTS void mixChannels(const Mat* src, size_t nsrcs, Mat* dst, size_t ndsts,
+// const int* fromTo, size_t npairs);
+{
+  5678
+  ?mixChannels@cv@@YAXPEBVMat@1@_KPEAV21@1PEBH1@Z
+  ?mixChannels@cv@@YAXPEBVMat@1@_KPEAV21@1PEBH1@Z
+  void cv::mixChannels(class cv::Mat const *,unsigned __int64,class cv::Mat *,unsigned __int64,int const *,unsigned __int64)
+}
+procedure mixChannels(Var Src: TMat; nsrcs: size_t; Var dst: TMat; ndsts: size_t; const fromTo: pInt; npairs: size_t); overload;
+  external opencv_world_dll name '?mixChannels@cv@@YAXPEBVMat@1@_KPEAV21@1PEBH1@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @overload
+  @param src input array or vector of matrices; all of the matrices must have the same size and the
+  same depth.
+  @param dst output array or vector of matrices; all the matrices **must be allocated**; their size and
+  depth must be the same as in src[0].
+  @param fromTo array of index pairs specifying which channels are copied and where; fromTo[k\*2] is
+  a 0-based index of the input channel in src, fromTo[k\*2+1] is an index of the output channel in
+  dst; the continuous channel numbering is used: the first input image channels are indexed from 0 to
+  src[0].channels()-1, the second input image channels are indexed from src[0].channels() to
+  src[0].channels() + src[1].channels()-1, and so on, the same scheme is used for the output image
+  channels; as a special case, when fromTo[k\*2] is negative, the corresponding output channel is
+  filled with zero .
+  @param npairs number of index pairs in fromTo.
+*)
+// CV_EXPORTS void mixChannels(InputArrayOfArrays src, InputOutputArrayOfArrays dst,
+// const int* fromTo, size_t npairs);
+{
+  5677
+  ?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@PEBH_K@Z
+  ?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@PEBH_K@Z
+  void cv::mixChannels(class cv::_InputArray const &,class cv::_InputOutputArray const &,int const *,unsigned __int64)
+}
+procedure mixChannels(const Src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: pInt; npairs: size_t); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@PEBH_K@Z'
+{$ELSE}
+  name '?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@PEBH_K@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* @brief Normalizes the norm or value range of an array.
 
@@ -2089,7 +2312,21 @@ Type
     WINDOW_GUI_EXPANDED = $00000000, // !< status bar and tool bar
     WINDOW_GUI_NORMAL = $00000010    // !< old fashious way
     );
-
+  // ! Mouse Events see cv::MouseCallback
+  MouseEventTypes = (        //
+    EVENT_MOUSEMOVE = 0,     // !< indicates that the mouse pointer has moved over the window.
+    EVENT_LBUTTONDOWN = 1,   // !< indicates that the left mouse button is pressed.
+    EVENT_RBUTTONDOWN = 2,   // !< indicates that the right mouse button is pressed.
+    EVENT_MBUTTONDOWN = 3,   // !< indicates that the middle mouse button is pressed.
+    EVENT_LBUTTONUP = 4,     // !< indicates that left mouse button is released.
+    EVENT_RBUTTONUP = 5,     // !< indicates that right mouse button is released.
+    EVENT_MBUTTONUP = 6,     // !< indicates that middle mouse button is released.
+    EVENT_LBUTTONDBLCLK = 7, // !< indicates that left mouse button is double clicked.
+    EVENT_RBUTTONDBLCLK = 8, // !< indicates that right mouse button is double clicked.
+    EVENT_MBUTTONDBLCLK = 9, // !< indicates that middle mouse button is double clicked.
+    EVENT_MOUSEWHEEL = 10,   // !< positive and negative values mean forward and backward scrolling, respectively.
+    EVENT_MOUSEHWHEEL = 11   // !< positive and negative values mean right and left scrolling, respectively.
+    );
   (* @brief Creates a window.
 
     The function namedWindow creates a window that can be used as a placeholder for images and
@@ -2164,10 +2401,10 @@ procedure namedWindow(const winname: String; flags: WindowFlags = WINDOW_AUTOSIZ
 // int cv::createTrackbar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int *,int,void (*)(int,void *),void *)
 Type
   TTrackbarCallback = procedure(pos: Int; userdata: Pointer);
-function createTrackbar(const trackbarname: CppString; const winname: CppString; Value: pInt; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int; external opencv_world_dll
-// index 4302
-  name '?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z'
+function createTrackbar(const trackbarname: CppString; const winname: CppString; Value: pInt; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int; overload;
+  external opencv_world_dll name '?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function createTrackbar(const trackbarname: String; const winname: String; var Value: Int; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int; overload;
 
 (* @brief Moves the window to the specified position
 
@@ -2176,14 +2413,34 @@ function createTrackbar(const trackbarname: CppString; const winname: CppString;
   @param y The new y-coordinate of the window.
 *)
 // CV_EXPORTS_W void moveWindow(const String& winname, int x, int y);
-// 5691
-// ?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z
-// void cv::moveWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,int)
-procedure moveWindow(const winname: CppString; x, y: Int); external opencv_world_dll
-// index 5691
-  name '?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z'
+{
+  5691
+  ?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z
+  void cv::moveWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,int)
+}
+procedure moveWindow(const winname: CppString; x, y: Int); external opencv_world_dll name '?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
+Type
+  TMouseCallback = procedure(event, x, y, flags: Int; userdata: Pointer);
+
+  (* * @brief Sets mouse handler for the specified window
+
+    @param winname Name of the window.
+    @param onMouse Callback function for mouse events. See OpenCV samples on how to specify and use the callback.
+    @param userdata The optional parameter passed to the callback.
+  *)
+  // CV_EXPORTS void setMouseCallback(const String& winname, MouseCallback onMouse, void* userdata = 0);
+  {
+    6348
+    ?setMouseCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHHHHPEAX@Z1@Z
+    ?setMouseCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHHHHPEAX@Z1@Z
+    void cv::setMouseCallback(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,void (*)(int,int,int,int,void *),void *)
+  }
+procedure setMouseCallback(const winname: CppString; onMouse: TMouseCallback; userdata: Pointer = nil); overload;
+  external opencv_world_dll name '?setMouseCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHHHHPEAX@Z1@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure setMouseCallback(const winname: String; onMouse: TMouseCallback; userdata: Pointer = nil); overload;
 (* @brief Destroys the specified window.
   The function destroyWindow destroys the window with the given name.
   @param winname Name of the window to be destroyed.
@@ -2704,14 +2961,13 @@ procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fo
 // CV_EXPORTS_W Size getTextSize(const String& text, int fontFace,
 // double fontScale, int thickness,
 // CV_OUT int* baseLine);
-// 5135
-// ?getTextSize@cv@@YA?AV?$Size_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HNHPEAH@Z
-// class cv::Size_<int> cv::getTextSize(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,double,int,int *)
-// function _getTextSize(const text: CvStdString; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil): pSize;
-// external opencv_world_dll index 5135{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure getTextSize(const R: pSize; text: CvStdString; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil); overload; external opencv_world_dll
-// index 5135
-  name '?getTextSize@cv@@YA?AV?$Size_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HNHPEAH@Z'
+{
+  5135
+  ?getTextSize@cv@@YA?AV?$Size_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HNHPEAH@Z
+  class cv::Size_<int> cv::getTextSize(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,double,int,int *)
+}
+procedure getTextSize(Var r: TSize; text: CvStdString; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil); overload;
+  external opencv_world_dll name '?getTextSize@cv@@YA?AV?$Size_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HNHPEAH@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function getTextSize(const text: String; fontFace: HersheyFonts; fontScale: double; thickness: Int; baseLine: pInt = nil): TSize; overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3210,6 +3466,31 @@ procedure ellipse(const img: TInputOutputArray; center: UInt64 { TPoint }; axes:
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
   shift: Int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @overload
+  @param img Image.
+  @param box Alternative ellipse representation via RotatedRect. This means that the function draws
+  an ellipse inscribed in the rotated rectangle.
+  @param color Ellipse color.
+  @param thickness Thickness of the ellipse arc outline, if positive. Otherwise, this indicates that
+  a filled ellipse sector is to be drawn.
+  @param lineType Type of the ellipse boundary. See #LineTypes
+*)
+// CV_EXPORTS_W void ellipse(InputOutputArray img, const RotatedRect& box, const Scalar& color,
+// int thickness = 1, int lineType = LINE_8);
+{
+  4579
+  ?ellipse@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBVRotatedRect@1@AEBV?$Scalar_@N@1@HH@Z
+  ?ellipse@cv@@YAXAEBV_InputOutputArray@1@AEBVRotatedRect@1@AEBV?$Scalar_@N@1@HH@Z
+  void cv::ellipse(class cv::_InputOutputArray const &,class cv::RotatedRect const &,class cv::Scalar_<double> const &,int,int)
+}
+procedure ellipse(const img: TInputOutputArray; const box: TRotatedRect; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8)); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?ellipse@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBVRotatedRect@1@AEBV?$Scalar_@N@1@HH@Z'
+{$ELSE}
+  name '?ellipse@cv@@YAXAEBV_InputOutputArray@1@AEBVRotatedRect@1@AEBV?$Scalar_@N@1@HH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure ellipse(const img: TInputOutputArray; const box: TRotatedRect; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* @brief Draws a marker on a predefined position in an image.
 
   The function cv::drawMarker draws a marker on a given position in the image. For the moment several
@@ -3272,8 +3553,7 @@ procedure circle(const img: TInputOutputArray; center: UInt64 { TPoint }; radius
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure circle(const img: TInputOutputArray; const center: TPoint; radius: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0); overload;
-{$IFDEF USE_INLINE}inline;
-{$ENDIF}
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 (* @brief Calculates a histogram of a set of arrays.
 
   The function cv::calcHist calculates the histogram of one or more arrays. The elements of a tuple used
@@ -3319,11 +3599,102 @@ procedure circle(const img: TInputOutputArray; const center: TPoint; radius: Int
   int, int const *, float const * *,bool,bool)
 }
 procedure calcHist(const images: pMat; nimages: Int; channels: pInt; const mask: TInputArray; const hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; UNIFORM: BOOL = true;
-  accumulate: BOOL = false); external opencv_world_dll
+  accumulate: BOOL = false); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@41@H1PEAPEBM_N5@Z'
 {$ELSE}
   name '?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@1@AEBV_OutputArray@1@H1PEAPEBM_N5@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @brief Calculates the back projection of a histogram.
+
+  The function cv::calcBackProject calculates the back project of the histogram. That is, similarly to
+  #calcHist , at each location (x, y) the function collects the values from the selected channels
+  in the input images and finds the corresponding histogram bin. But instead of incrementing it, the
+  function reads the bin value, scales it by scale , and stores in backProject(x,y) . In terms of
+  statistics, the function computes probability of each element value in respect with the empirical
+  probability distribution represented by the histogram. See how, for example, you can find and track
+  a bright-colored object in a scene:
+
+  - Before tracking, show the object to the camera so that it covers almost the whole frame.
+  Calculate a hue histogram. The histogram may have strong maximums, corresponding to the dominant
+  colors in the object.
+
+  - When tracking, calculate a back projection of a hue plane of each input video frame using that
+  pre-computed histogram. Threshold the back projection to suppress weak colors. It may also make
+  sense to suppress pixels with non-sufficient color saturation and too dark or too bright pixels.
+
+  - Find connected components in the resulting picture and choose, for example, the largest
+  component.
+
+  This is an approximate algorithm of the CamShift color object tracker.
+
+  @param images Source arrays. They all should have the same depth, CV_8U, CV_16U or CV_32F , and the same
+  size. Each of them can have an arbitrary number of channels.
+  @param nimages Number of source images.
+  @param channels The list of channels used to compute the back projection. The number of channels
+  must match the histogram dimensionality. The first array channels are numerated from 0 to
+  images[0].channels()-1 , the second array channels are counted from images[0].channels() to
+  images[0].channels() + images[1].channels()-1, and so on.
+  @param hist Input histogram that can be dense or sparse.
+  @param backProject Destination back projection array that is a single-channel array of the same
+  size and depth as images[0] .
+  @param ranges Array of arrays of the histogram bin boundaries in each dimension. See #calcHist .
+  @param scale Optional scale factor for the output back projection.
+  @param uniform Flag indicating whether the histogram is uniform or not (see above).
+
+  @sa calcHist, compareHist
+*)
+
+// CV_EXPORTS void calcBackProject( const Mat* images, int nimages,
+// const int* channels, InputArray hist,
+// OutputArray backProject, const float** ranges,
+// double scale = 1, bool uniform = true );
+{
+  3706
+  ?calcBackProject@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@41@PEAPEBMN_N@Z
+  ?calcBackProject@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@1@AEBV_OutputArray@1@PEAPEBMN_N@Z
+  void cv::calcBackProject(class cv::Mat const *,int,int const *,class cv::_InputArray const &,class cv::_OutputArray const &,float const** ,double,bool)
+}
+procedure calcBackProject(const images: pMat; nimages: Int; const channels: pInt; const hist: TInputArray; const backProject: TOutputArray; const ranges: pFloat { float** }; scale: double = 1;
+  UNIFORM: BOOL = true); overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?calcBackProject@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@41@PEAPEBMN_N@Z'
+{$ELSE}
+  name '?calcBackProject@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@1@AEBV_OutputArray@1@PEAPEBMN_N@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+(* * @overload *)
+// CV_EXPORTS void calcBackProject( const Mat* images, int nimages,
+// const int* channels, const SparseMat& hist,
+// OutputArray backProject, const float** ranges,
+// double scale = 1, bool uniform = true );
+{
+  3705
+  ?calcBackProject@cv@@YAXPEBVMat@1@HPEBHAEBVSparseMat@1@AEBV_OutputArray@debug_build_guard@1@PEAPEBMN_N@Z
+  ?calcBackProject@cv@@YAXPEBVMat@1@HPEBHAEBVSparseMat@1@AEBV_OutputArray@1@PEAPEBMN_N@Z
+  void cv::calcBackProject(class cv::Mat const *,int,int const *,class cv::SparseMat const &,class cv::_OutputArray const &,float const** ,double,bool)
+}
+
+(* * @overload *)
+// CV_EXPORTS_W void calcBackProject( InputArrayOfArrays images, const std::vector<int>& channels,
+// InputArray hist, OutputArray dst,
+// const std::vector<float>& ranges,
+// double scale );
+{
+  3704
+  ?calcBackProject@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV?$vector@HV?$allocator@H@std@@@std@@0AEBV_OutputArray@31@AEBV?$vector@MV?$allocator@M@std@@@5@N@Z
+  ?calcBackProject@cv@@YAXAEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@std@@0AEBV_OutputArray@1@AEBV?$vector@MV?$allocator@M@std@@@4@N@Z
+  void cv::calcBackProject(class cv::_InputArray const &,class std::vector<int,class std::allocator<int> > const &,class cv::_InputArray const &,class cv::_OutputArray const &,class std::vector<float,class std::allocator<float> > const &,double)
+}
+procedure calcBackProject(const images: TInputArrayOfArrays; const channels: Vector<Int>; const hist: TInputArray; const dst: TOutputArray; const ranges: Vector<float>; scale: double); overload;
+  external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?calcBackProject@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV?$vector@HV?$allocator@H@std@@@std@@0AEBV_OutputArray@31@AEBV?$vector@MV?$allocator@M@std@@@5@N@Z'
+{$ELSE}
+  name '?calcBackProject@cv@@YAXAEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@std@@0AEBV_OutputArray@1@AEBV?$vector@MV?$allocator@M@std@@@4@N@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -4134,6 +4505,39 @@ function contourArea(const contour: TInputArray; oriented: BOOL = false): double
 {$ENDREGION 'imgproc.hpp'}
 //
 {$REGION 'tracking.hpp'}
+(* * @brief Finds an object center, size, and orientation.
+
+  @param probImage Back projection of the object histogram. See calcBackProject.
+  @param window Initial search window.
+  @param criteria Stop criteria for the underlying meanShift.
+  returns
+  (in old interfaces) Number of iterations CAMSHIFT took to converge
+  The function implements the CAMSHIFT object tracking algorithm @cite Bradski98 . First, it finds an
+  object center using meanShift and then adjusts the window size and finds the optimal rotation. The
+  function returns the rotated rectangle structure that includes the object position, size, and
+  orientation. The next position of the search window can be obtained with RotatedRect::boundingRect()
+
+  See the OpenCV sample camshiftdemo.c that tracks colored objects.
+
+  @note
+  -   (Python) A sample explaining the camshift tracking algorithm can be found at
+  opencv_source_code/samples/python/camshift.py
+*)
+// CV_EXPORTS_W RotatedRect CamShift( InputArray probImage, CV_IN_OUT Rect& window,
+// TermCriteria criteria );
+{
+  3353
+  ?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@debug_build_guard@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z
+  ?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z
+  class cv::RotatedRect cv::CamShift(class cv::_InputArray const &,class cv::Rect_<int> &,class cv::TermCriteria)
+}
+function CamShift(const probImage: TInputArray; const window: TRect; const criteria: TTermCriteria): TRotatedRect; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@debug_build_guard@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z'
+{$ELSE}
+  name '?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 Type
   (*
@@ -6023,6 +6427,133 @@ function createBackgroundSubtractorMOG2(history: Int = 500; varThreshold: double
 //
 {$ENDREGION 'background_segm.hpp'}
 //
+{$REGION 'segmentation.hpp'}
+
+Type
+  (* * @brief Intelligent Scissors image segmentation
+    *
+    * This class is used to find the path (contour) between two points
+    * which can be used for image segmentation.
+    *
+    * Usage example:
+    * @snippet snippets/imgproc_segmentation.cpp usage_example_intelligent_scissors
+    *
+    * Reference: <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.138.3811&rep=rep1&type=pdf">"Intelligent Scissors for Image Composition"</a>
+    * algorithm designed by Eric N. Mortensen and William A. Barrett, Brigham Young University
+    * @cite Mortensen95intelligentscissors
+  *)
+  pIntelligentScissorsMB = ^TIntelligentScissorsMB;
+
+  TIntelligentScissorsMB = record
+  public
+    // CV_WRAP IntelligentScissorsMB();
+    class operator Initialize(out Dest: TIntelligentScissorsMB);
+    class operator Finalize(var Dest: TIntelligentScissorsMB);
+    (* * @brief Specify weights of feature functions
+      *
+      * Consider keeping weights normalized (sum of weights equals to 1.0)
+      * Discrete dynamic programming (DP) goal is minimization of costs between pixels.
+      *
+      * @param weight_non_edge Specify cost of non-edge pixels (default: 0.43f)
+      * @param weight_gradient_direction Specify cost of gradient direction function (default: 0.43f)
+      * @param weight_gradient_magnitude Specify cost of gradient magnitude function (default: 0.14f)
+    *)
+    // CV_WRAP
+    // IntelligentScissorsMB& setWeights(float weight_non_edge, float weight_gradient_direction, float weight_gradient_magnitude);
+
+    (* * @brief Specify gradient magnitude max value threshold
+      *
+      * Zero limit value is used to disable gradient magnitude thresholding (default behavior, as described in original article).
+      * Otherwize pixels with `gradient magnitude >= threshold` have zero cost.
+      *
+      * @note Thresholding should be used for images with irregular regions (to avoid stuck on parameters from high-contract areas, like embedded logos).
+      *
+      * @param gradient_magnitude_threshold_max Specify gradient magnitude max value threshold (default: 0, disabled)
+    *)
+    // CV_WRAP
+    // IntelligentScissorsMB& setGradientMagnitudeMaxLimit(float gradient_magnitude_threshold_max = 0.0f);
+    function setGradientMagnitudeMaxLimit(gradient_magnitude_threshold_max: float = 0.0): pIntelligentScissorsMB; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * @brief Switch to "Laplacian Zero-Crossing" edge feature extractor and specify its parameters
+      *
+      * This feature extractor is used by default according to article.
+      *
+      * Implementation has additional filtering for regions with low-amplitude noise.
+      * This filtering is enabled through parameter of minimal gradient amplitude (use some small value 4, 8, 16).
+      *
+      * @note Current implementation of this feature extractor is based on processing of grayscale images (color image is converted to grayscale image first).
+      *
+      * @note Canny edge detector is a bit slower, but provides better results (especially on color images): use setEdgeFeatureCannyParameters().
+      *
+      * @param gradient_magnitude_min_value Minimal gradient magnitude value for edge pixels (default: 0, check is disabled)
+    *)
+    // CV_WRAP
+    // IntelligentScissorsMB& setEdgeFeatureZeroCrossingParameters(float gradient_magnitude_min_value = 0.0f);
+
+    (* * @brief Switch edge feature extractor to use Canny edge detector
+      *
+      * @note "Laplacian Zero-Crossing" feature extractor is used by default (following to original article)
+      *
+      * @sa Canny
+    *)
+    // CV_WRAP
+    // IntelligentScissorsMB& setEdgeFeatureCannyParameters(
+    // double threshold1, double threshold2,
+    // int apertureSize = 3, bool L2gradient = false);
+    function setEdgeFeatureCannyParameters(threshold1, threshold2: double; apertureSize: Int = 3; L2gradient: BOOL = false): pIntelligentScissorsMB; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * @brief Specify input image and extract image features
+      *
+      * @param image input image. Type is #CV_8UC1 / #CV_8UC3
+    *)
+    // CV_WRAP
+    // IntelligentScissorsMB& applyImage(InputArray image);
+    function applyImage(const image: TInputArray): pIntelligentScissorsMB; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * @brief Specify custom features of imput image
+      *
+      * Customized advanced variant of applyImage() call.
+      *
+      * @param non_edge Specify cost of non-edge pixels. Type is CV_8UC1. Expected values are `{0, 1}`.
+      * @param gradient_direction Specify gradient direction feature. Type is CV_32FC2. Values are expected to be normalized: `x^2 + y^2 == 1`
+      * @param gradient_magnitude Specify cost of gradient magnitude function: Type is CV_32FC1. Values should be in range `[0, 1]`.
+      * @param image **Optional parameter**. Must be specified if subset of features is specified (non-specified features are calculated internally)
+    *)
+    // CV_WRAP
+    // IntelligentScissorsMB& applyImageFeatures(
+    // InputArray non_edge, InputArray gradient_direction, InputArray gradient_magnitude,
+    // InputArray image = noArray());
+
+    (* * @brief Prepares a map of optimal paths for the given source point on the image
+      *
+      * @note applyImage() / applyImageFeatures() must be called before this call
+      *
+      * @param sourcePt The source point used to find the paths
+    *)
+    // CV_WRAP void buildMap(const Point& sourcePt);
+    procedure buildMap(const sourcePt: TPoint); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    (* * @brief Extracts optimal contour for the given target point on the image
+      *
+      * @note buildMap() must be called before this call
+      *
+      * @param targetPt The target point
+      * @param[out] contour The list of pixels which contains optimal path between the source and the target points of the image. Type is CV_32SC2 (compatible with `std::vector<Point>`)
+      * @param backward Flag to indicate reverse order of retrived pixels (use "true" value to fetch points from the target to the source point)
+    *)
+    // CV_WRAP void getContour(const Point& targetPt, OutputArray contour, bool backward = false) const;
+    procedure getContour(const targetPt: TPoint; const contour: TOutputArray; backward: BOOL = false); {$IFDEF USE_INLINE}inline; {$ENDIF}
+  private
+{$HINTS OFF}
+    Dummy: array [0 .. 15] of Byte;
+{$HINTS OFF}
+{$IFNDEF CV_DOXYGEN}
+  public
+    // struct Impl;
+    // inline Impl* getImpl() const { return impl.get(); }
+  private
+    // std::shared_ptr<Impl> impl;
+{$ENDIF}
+  end;
+  //
+{$ENDREGION 'segmentation.hpp'}
+  //
 {$REGION 'helpers'}
 
 Type
@@ -6033,7 +6564,7 @@ Type
     procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
     procedure convertTo(const m: TOutputArray; rtype: Int; alpha: double = 1; beta: double = 0); // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
     class operator Subtract(const m: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const Scalar& s);
+    // class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat& operator = (const Scalar& s);
     class operator Implicit(const m: TMatExpr): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat& operator = (const MatExpr& expr);
     class operator Implicit(const v: Vector<TPoint>): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} //
     class function zeros(const rows, cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}   // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
@@ -6047,6 +6578,7 @@ Type
     class function eye(size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
 
     class operator LogicalNot(const m: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator BitwiseAnd(const a: TMat; const b: TMat): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
 {$ENDREGION 'helpers'}
@@ -6071,6 +6603,7 @@ Type
 {$I opencv.SVM.import.inc}
 {$I opencv.OpticalFlow.import.inc}
 {$I opencv.BackgroundSubtractorMOG2.import.inc}
+{$I opencv.IntelligentScissorsMB.import.inc}
   //
 {$I opencv.operator.import.inc}
 {$ENDREGION 'import'}
@@ -6116,10 +6649,10 @@ end;
 
 class operator CvStdString.Implicit(const s: CvStdString): string;
 var
-  R: pAnsiChar;
+  r: pAnsiChar;
 begin
-  R      := c_str_CppString(@s);
-  Result := string(R);
+  r := c_str_CppString(@s);
+  Result := string(r);
 end;
 
 class operator CvStdString.Initialize(out Dest: CvStdString);
@@ -6385,10 +6918,10 @@ begin
   ellipse(img, UInt64(center), UInt64(axes), angle, startAngle, endAngle, color, thickness, Int(lineType), shift);
 end;
 
-// function noArray(): TInputOutputArray;
-// begin
-// Result := TInputOutputArray.noArray;
-// end;
+procedure ellipse(const img: TInputOutputArray; const box: TRotatedRect; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8);
+begin
+  ellipse(img, box, color, thickness, Int(lineType));
+end;
 
 procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: Int { = 1 };
   const borderType: BorderTypes { = BORDER_CONSTANT }; const borderValue: TScalar { = morphologyDefaultBorderValue() } );
@@ -6493,6 +7026,16 @@ begin
   namedWindow(CppString(winname), Int(flags));
 end;
 
+function createTrackbar(const trackbarname: String; const winname: String; var Value: Int; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
+begin
+  Result := createTrackbar(CppString(trackbarname), CppString(winname), @Value, COUNT, onChange, userdata);
+end;
+
+procedure setMouseCallback(const winname: String; onMouse: TMouseCallback; userdata: Pointer = nil);
+begin
+  setMouseCallback(CppString(winname), onMouse, userdata);
+end;
+
 procedure putText(img: TInputOutputArray; const text: CppString; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
   bottomLeftOrigin: BOOL = false);
 begin
@@ -6501,7 +7044,7 @@ end;
 
 function getTextSize(const text: String; fontFace: HersheyFonts; fontScale: double; thickness: Int; baseLine: pInt = nil): TSize;
 begin
-  getTextSize(@Result, text, Int(fontFace), fontScale, thickness, baseLine);
+  getTextSize(Result, text, Int(fontFace), fontScale, thickness, baseLine);
 end;
 
 procedure copyMakeBorder(const Src: TInputArray; Var dst: TOutputArray; top, bottom, left, right, borderType: Int); overload;
@@ -6509,6 +7052,11 @@ Var
   Scalar: TScalar;
 begin
   copyMakeBorder(Src, dst, top, bottom, left, right, borderType, Scalar);
+end;
+
+procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
+begin
+  bitwise_and(src1, src2, dst, TInputArray.noArray);
 end;
 
 procedure bitwise_not(const Src: TInputArray; const dst: TOutputArray);
@@ -6560,9 +7108,9 @@ begin
   clone_Mat(@Self, @Result);
 end;
 
-procedure TMat.Create(size: TSize; &type: Int);
+procedure TMat.Create(const size: TSize; &type: Int);
 begin
-  create_Mat(@Self, @size, &type);
+  create_Mat(@Self, size, &type);
 end;
 
 function TMat.diag(d: Int): TMat;
@@ -6580,6 +7128,11 @@ begin
   Result := isSubmatrix_Mat(@Self);
 end;
 
+class operator TMatHelper.BitwiseAnd(const a, b: TMat): TMat;
+begin
+  bitwise_and(a, b, Result);
+end;
+
 class operator TMatHelper.LogicalNot(const m: TMat): TMatExpr;
 begin
   Result := MatExpr_LogicalNot_Mat(@Result, @m)^;
@@ -6587,12 +7140,22 @@ end;
 
 class function TMat.Mat(const size: TSize; &type: Int): TMat;
 begin
-  Constructor_Mat(@Result, rSize(size), &type);
+  Constructor_Mat(@Result, size, &type);
 end;
 
 function TMat.Mat(const roi: TRect): TMat;
 begin
   Result := TMat.Mat(Self, roi);
+end;
+
+class function TMat.Mat(const size: TSize; &type: Int; const s: TScalar): TMat;
+begin
+  Constructor_Mat(@Result, size, &type, s);
+end;
+
+class function TMat.Mat(rows, cols, &type: Int): TMat;
+begin
+  Result.Create(rows, cols, &type);
 end;
 
 class function TMat.Mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t): TMat;
@@ -6604,10 +7167,10 @@ Var
 begin
   p := AllocMem(rows * cols * SizeOf(T));
   try
-    for Var i           := 0 to cols - 1 do
-      for Var j         := 0 to rows - 1 do
+    for Var i := 0 to cols - 1 do
+      for Var j := 0 to rows - 1 do
         p[j * cols + i] := Data[j, i];
-    Result              := TMat.Mat(rows, cols, d.&type, p, step);
+    Result := TMat.Mat(rows, cols, d.&type, p, step);
   finally
     FreeMem(p);
   end;
@@ -6666,8 +7229,34 @@ var
   p: pType;
 begin
 {$WARNINGS OFF}
-  p     := pType(Data + step.p[0] * i0);
+  p := pType(Data + step.p[0] * i0);
   p[i1] := v;
+{$WARNINGS ON}
+end;
+
+procedure TMat.st<T>(const i0: Int; const v: T);
+Type
+  pType = ^T;
+begin
+  // {$WARNINGS OFF}
+  // pType(Data + step.p[0] * i0)^ := v;
+  // {$WARNINGS ON}
+{$WARNINGS OFF}
+  if (isContinuous() or (size.p[0] = 1)) then
+  begin
+    pType(Data)[i0] := v;
+    Exit;
+  end;
+  if (size.p[1] = 1) then
+  begin
+    pType(Data + step.p[0] * i0)^ := v; // *(_Tp*)(data + step.p[0] * i0);
+    Exit;
+  end;
+  Var
+    i: Int := i0 div cols;
+  Var
+    j: Int := i0 - i * cols;
+  pType(Data + step.p[0] * i0 + j * SizeOf(T))^ := v;
 {$WARNINGS ON}
 end;
 
@@ -6679,6 +7268,11 @@ end;
 procedure TMat.addref;
 begin
   addref_Mat(@Self);
+end;
+
+procedure TMat.assign(const s: TScalar);
+begin
+  Operator_Mat_Assign_Scalar(@Self, s);
 end;
 
 function TMat.at<T>(const i0, i1: Int): T;
@@ -6787,12 +7381,12 @@ begin
     Exit(TMat.Mat);
   if (not copyData) then
   begin
-    Result.step[0]   := SizeOf(T);
-    Result.step[1]   := SizeOf(T);
+    Result.step[0] := SizeOf(T);
+    Result.step[1] := SizeOf(T);
     Result.datastart := vec.pT(0);
-    Result.Data      := vec.pT(0);
+    Result.Data := vec.pT(0);
     Result.datalimit := Result.datastart + Result.rows * Result.step[0];
-    Result.dataend   := Result.datastart + Result.rows * Result.step[0];
+    Result.dataend := Result.datastart + Result.rows * Result.step[0];
   end
   else
     TMat.Mat(vec.size, 1, TTraitsType<T>.Value, vec.pT(0)).copyTo(Result);
@@ -6802,13 +7396,11 @@ end;
 
 class function TInputArray.InputArray(const m: TMat): TInputArray;
 begin
-  // m.addref;
   Constructor_InputArray(@Result, pMat(@m));
 end;
 
 class operator TInputArray.Implicit(const m: TMat): TInputArray;
 begin
-  // Constructor_InputArray(@Result, pMat(@m));
   Result := TInputArray.InputArray(m);
 end;
 
@@ -6857,22 +7449,22 @@ end;
 class operator TInputArray.Implicit(const v: Vector < Vector < TPoint >> ): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_READ);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<TPoint2f>): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<uchar>): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_READ);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 { TOutputArray }
@@ -6911,51 +7503,59 @@ end;
 class operator TOutputArrayHelper.Implicit(const v: Vector<TPoint>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_WRITE);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<TPoint2f>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_WRITE);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<uchar>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_WRITE);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<float>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<float>.Value + Int(ACCESS_WRITE);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: double): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(MATX) + Int(CV_64F) + Int(ACCESS_READ);
-  Result.Obj   := @v;
-  Result.sz    := size(1, 1);
+  Result.Obj := @v;
+  Result.sz := size(1, 1);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<Vec4i>): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<Vec4i>.Value + Int(ACCESS_READ);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<TMat>): TInputArray;
 begin
   // Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TMat>.Value + Int(ACCESS_READ);
   Result.flags := Int(STD_VECTOR_MAT) + Int(ACCESS_READ);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
+end;
+
+class operator TInputArray.Implicit(const v: TScalar): TInputArray;
+begin
+  // -1056833530
+  Result.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(MATX) + { traits::Type<_Tp>::value } TTraitsType<double>.Value + Int(ACCESS_READ);
+  Result.Obj := @v;
+  Result.sz := size(1, 4);
 end;
 
 { TScalar }
@@ -6990,6 +7590,11 @@ begin
   Result := TScalar.Create(v0, v1, v2, v3);
 end;
 
+function Scalar(const v: Vec3b): TScalar;
+begin
+  Result := Scalar(Vec3b[0], Vec3b[1], Vec3b[2]);
+end;
+
 { TSize_<T> }
 
 class operator TSize_<T>.Implicit(const m: TSize_<T>): UInt64;
@@ -7000,7 +7605,7 @@ end;
 
 class function TSize_<T>.size(const _width, _height: T): TSize_<T>;
 begin
-  Result.width  := _width;
+  Result.width := _width;
   Result.height := _height;
 end;
 
@@ -7009,9 +7614,15 @@ begin
   Result := TSize.size(_width, _height);
 end;
 
+class operator TSize_<T>.Implicit(const m: UInt64): TSize_<T>;
+begin
+  Assert(SizeOf(Result) = 8);
+  Move(m, Result, 8);
+end;
+
 class function TSize_<T>.size: TSize_<T>;
 begin
-  Result.width  := default (T);
+  Result.width := default (T);
   Result.height := default (T);
 end;
 
@@ -7034,14 +7645,14 @@ end;
 
 function TMatExpr.size: TSize;
 begin
-  Result := MatExpr_size(@Self, @Result)^;
+  MatExpr_size(@Self, Result);
 end;
 
 { TMatSize }
 
 class operator TMatSize.Implicit(const m: TMatSize): TSize;
 begin
-  operator_MatSize_MatSizeToSize(@m, @Result);
+  operator_MatSize_MatSizeToSize(@m, Result);
 end;
 
 // class operator TMatSize.Implicit(const m: TMatSize): String;
@@ -7081,8 +7692,8 @@ end;
 class operator TInputOutputArrayHelper.Implicit(const v: Vector<TPoint2f>): TInputOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 { TPoint_<T> }
@@ -7227,10 +7838,11 @@ begin
   ones_Mat(@Result, size, &type);
 end;
 
-class operator TMatHelper.Implicit(const s: TScalar): TMat;
-begin
-  Operator_Mat_Assign_Scalar(@Result, @s);
-end;
+// class operator TMatHelper.Implicit(const s: TScalar): TMat;
+// begin
+// // Mat& Mat::operator = (const Scalar& s)
+// Operator_Mat_Assign_Scalar(@Result, s);
+// end;
 
 class operator TMatHelper.Subtract(const m: TMat; const s: TScalar): TMatExpr;
 begin
@@ -7445,8 +8057,8 @@ Var
   argv: ppAnsiChar;
   argc: Int;
 begin
-  argc      := ParamCount + 1;
-  argv      := AllocMem(SizeOf(pAnsiChar) * argc);
+  argc := ParamCount + 1;
+  argv := AllocMem(SizeOf(pAnsiChar) * argc);
   for Var i := 0 to argc - 1 do
   begin
     argv[i] := pAnsiChar(AllocMem(SizeOf(AnsiChar) * length(ParamStr(i)) + 1));
@@ -7604,14 +8216,14 @@ begin
     isCount: BOOL := ((&type and COUNT) <> 0) and (maxCount > 0);
   var
     isEps: BOOL := ((&type and EPS) <> 0) and (not IsNaN(epsilon));
-  Result        := isCount or isEps;
+  Result := isCount or isEps;
 end;
 
 class function TTermCriteria.TermCriteria(const &type, maxCount: Int; const epsilon: double): TTermCriteria;
 begin
-  Result.&type    := &type;
+  Result.&type := &type;
   Result.maxCount := maxCount;
-  Result.epsilon  := epsilon;
+  Result.epsilon := epsilon;
 end;
 
 {$REGION 'tracking.hpp'}
@@ -7640,19 +8252,19 @@ begin
     with Dest do
     begin
       generic_type := 0;
-      depth        := CV_8U;
-      channels     := 1;
-      fmt          := Int('u');
-      &type        := CV_MAKETYPE(depth, channels)
+      depth := CV_8U;
+      channels := 1;
+      fmt := Int('u');
+      &type := CV_MAKETYPE(depth, channels)
     end
   else if TypeInfo(T) = TypeInfo(uchar) then
     with Dest do
     begin
       generic_type := 0;
-      depth        := CV_8U;
-      channels     := 1;
-      fmt          := Int('u');
-      &type        := CV_MAKETYPE(depth, channels)
+      depth := CV_8U;
+      channels := 1;
+      fmt := Int('u');
+      &type := CV_MAKETYPE(depth, channels)
     end
   else
     // template<> class DataType<schar>
@@ -7717,36 +8329,30 @@ begin
       with Dest do
       begin
         generic_type := 0;
-        depth        := CV_32S;
-        channels     := 1;
-        fmt          := Int('i');
-        &type        := CV_MAKETYPE(depth, channels)
+        depth := CV_32S;
+        channels := 1;
+        fmt := Int('i');
+        &type := CV_MAKETYPE(depth, channels)
       end
     else if TypeInfo(T) = TypeInfo(float) then
       with Dest do
       begin
         generic_type := 0;
-        depth        := CV_32F;
-        channels     := 1;
-        fmt          := Int('f');
-        &type        := CV_MAKETYPE(depth, channels)
+        depth := CV_32F;
+        channels := 1;
+        fmt := Int('f');
+        &type := CV_MAKETYPE(depth, channels)
+      end
+    else if TypeInfo(T) = TypeInfo(double) then
+      with Dest do
+      begin
+        generic_type := 0;
+        depth := CV_64F;
+        channels := 1;
+        fmt := Int('d');
+        &type := CV_MAKETYPE(depth, channels)
       end
     else
-      // template<> class DataType<double>
-      // {
-      // public:
-      // typedef double      value_type;
-      // typedef value_type  work_type;
-      // typedef value_type  channel_type;
-      // typedef value_type  vec_type;
-      // enum { generic_type = 0,
-      // depth        = CV_64F,
-      // channels     = 1,
-      // fmt          = (int)'d',
-      // type         = CV_MAKETYPE(depth, channels)
-      // };
-      // };
-      //
       // template<> class DataType<float16_t>
       // {
       // public:
@@ -7777,34 +8383,50 @@ end;
 
 class function TTraitsType<T>.Value: Int;
 begin
-  if TypeInfo(T) = TypeInfo(Vec4i) then
+  if TypeInfo(T) = TypeInfo(TScalar) then
+    Result := CV_MAKETYPE(TDepth<double>.Value, 4)
+  else if TypeInfo(T) = TypeInfo(Vec4i) then
     Result := CV_MAKETYPE(TDepth<Int>.Value, 4)
   else if TypeInfo(T) = TypeInfo(TPoint) then
     Result := CV_MAKETYPE(TDepth<Int>.Value, 2)
   else if TypeInfo(T) = TypeInfo(TPoint2f) then
     Result := CV_MAKETYPE(TDepth<float>.Value, 2)
-  else if TypeInfo(T) = TypeInfo(uchar) then
-  begin
-    Var
-      a: TDataType<uchar>;
-    Result := a.&type;
-  end
-  else if TypeInfo(T) = TypeInfo(float) then
-  begin
-    Var
-      a: TDataType<float>;
-    Result := a.&type;
-  end
   else
   begin
     Var
-    AssertMsg := 'TTraitsType - not defined type'
-{$IFDEF USE_TYPEINFO}
-      + ' "' + GetTypeName(TypeInfo(T)) + '"'
-{$ENDIF}
-      ;
-    Assert(false, AssertMsg);
+      a: TDataType<T>;
+    Result := a.&type;
   end;
+  (*
+    if TypeInfo(T) = TypeInfo(uchar) then
+    begin
+    Var
+    a: TDataType<uchar>;
+    Result := a.&type;
+    end
+    else if TypeInfo(T) = TypeInfo(float) then
+    begin
+    Var
+    a: TDataType<float>;
+    Result := a.&type;
+    end
+    else if TypeInfo(T) = TypeInfo(float) then
+    begin
+    Var
+    a: TDataType<float>;
+    Result := a.&type;
+    end
+    else
+    begin
+    Var
+    AssertMsg := 'TTraitsType - not defined type'
+    {$IFDEF USE_TYPEINFO}
+    + ' "' + GetTypeName(TypeInfo(T)) + '"'
+    {$ENDIF}
+    ;
+    Assert(false, AssertMsg);
+    end;
+  *)
 end;
 
 {$ENDREGION 'traits.hpp'}
@@ -7886,6 +8508,14 @@ end;
 {$REGION 'matx.hpp'}
 { Vec3b }
 
+// class operator Vec3b.Explicit(const a: TArray<UInt64>): Vec3b;
+// begin
+// Assert(length(a) > 2);
+// // slow
+// for Var i := 0 to High(Result._Data) do
+// Result._Data[i] := a[i];
+// end;
+
 function Vec3b.getItem(const index: integer): uchar;
 begin
   Assert((index >= 0) and (index < 3));
@@ -7896,7 +8526,7 @@ class operator Vec3b.Implicit(const a: TArray<uchar>): Vec3b;
 begin
   Assert(length(a) > 2);
   // slow
-  for Var i         := 0 to High(Result._Data) do
+  for Var i := 0 to High(Result._Data) do
     Result._Data[i] := a[i];
 end;
 
@@ -7939,11 +8569,56 @@ end;
 
 { TRect_<T> }
 
+function TRect_<T>.area: T;
+begin
+  if TypeInfo(T) = TypeInfo(float) then
+    pFloat(@Result)^ := (pFloat(@Self.width)^) * (pFloat(@Self.height)^)
+  else if TypeInfo(T) = TypeInfo(double) then
+    pDouble(@Result)^ := (pDouble(@Self.width)^) * (pDouble(@Self.height)^)
+  else if TypeInfo(T) = TypeInfo(Int) then
+    pInt(@Result)^ := (pInt(@Self.width)^) * (pInt(@Self.height)^)
+  else
+    Assert(false, 'Point type must be numeric');
+end;
+
+class operator TRect_<T>.BitwiseAnd(const a, b: TRect_<T>): TRect_<T>;
+begin
+  Result := default (TRect_<T>);
+  if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    Var
+      x1, y1, a_x, a_y, b_x, b_y, a_width, a_height, b_width, b_height: Int;
+
+    a_x := pInt(@a.x)^;
+    a_y := pInt(@a.y)^;
+    b_x := pInt(@b.x)^;
+    b_y := pInt(@b.y)^;
+    a_width := pInt(@a.width)^;
+    a_height := pInt(@a.height)^;
+    b_width := pInt(@b.width)^;
+    b_height := pInt(@b.height)^;
+
+    x1 := MAX(a_x, b_x);
+    y1 := MAX(a_y, b_y);
+    a_width := MIN(a_x + a_width, b_x + b_width) - x1;
+    a_height := MIN(a_y + a_height, b_y + b_height) - y1;
+    if (a_width > 0) and (a_height > 0) then
+    begin
+      pInt(@Result.x)^ := x1;
+      pInt(@Result.y)^ := y1;
+      pInt(@Result.width)^ := a_width;
+      pInt(@Result.height)^ := a_height;
+    end;
+  end
+  else
+    Assert(false, 'Point type must be numeric');
+end;
+
 class function TRect_<T>.Rect(const _x: T; _y, _width, _height: T): TRect_<T>;
 begin
-  Result.x      := _x;
-  Result.y      := _y;
-  Result.width  := _width;
+  Result.x := _x;
+  Result.y := _y;
+  Result.width := _width;
   Result.height := _height;
 end;
 
@@ -7955,15 +8630,15 @@ end;
 class operator TOutputArrayHelper.Implicit(const v: Vector<Vec4i>): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<Vec4i>.Value + Int(ACCESS_WRITE);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector < Vector < TPoint >> ): TOutputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_WRITE);
-  Result.Obj   := @v;
-  Result.sz    := size(0, 0);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
 end;
 
 { TMatStep }
@@ -8061,13 +8736,53 @@ begin
   write_VideoWriter(@Self, image);
 end;
 
+{ TIntelligentScissorsMB }
+
+function TIntelligentScissorsMB.applyImage(const image: TInputArray): pIntelligentScissorsMB;
+begin
+  applyImage_IntelligentScissorsMB(@Self, image);
+  Result := @Self;
+end;
+
+procedure TIntelligentScissorsMB.buildMap(const sourcePt: TPoint);
+begin
+  buildMap_IntelligentScissorsMB(@Self, sourcePt);
+end;
+
+class operator TIntelligentScissorsMB.Finalize(var Dest: TIntelligentScissorsMB);
+begin
+  destructor_IntelligentScissorsMB(@Dest);
+end;
+
+procedure TIntelligentScissorsMB.getContour(const targetPt: TPoint; const contour: TOutputArray; backward: BOOL);
+begin
+  getContour_IntelligentScissorsMB(@Self, targetPt, contour, backward);
+end;
+
+class operator TIntelligentScissorsMB.Initialize(out Dest: TIntelligentScissorsMB);
+begin
+  Constructor_IntelligentScissorsMB(@Dest);
+end;
+
+function TIntelligentScissorsMB.setEdgeFeatureCannyParameters(threshold1, threshold2: double; apertureSize: Int; L2gradient: BOOL): pIntelligentScissorsMB;
+begin
+  setEdgeFeatureCannyParameters_IntelligentScissorsMB(@Self, threshold1, threshold2, apertureSize, L2gradient);
+  Result := @Self;
+end;
+
+function TIntelligentScissorsMB.setGradientMagnitudeMaxLimit(gradient_magnitude_threshold_max: float): pIntelligentScissorsMB;
+begin
+  setGradientMagnitudeMaxLimit_IntelligentScissorsMB(@Self, gradient_magnitude_threshold_max);
+  Result := @Self;
+end;
+
 initialization
 
 {$REGION 'Interface.h'}
   CV_8UC1 := CV_MAKETYPE(CV_8U, 1);
-CV_8UC2   := CV_MAKETYPE(CV_8U, 2);
-CV_8UC3   := CV_MAKETYPE(CV_8U, 3);
-CV_8UC4   := CV_MAKETYPE(CV_8U, 4);
+CV_8UC2 := CV_MAKETYPE(CV_8U, 2);
+CV_8UC3 := CV_MAKETYPE(CV_8U, 3);
+CV_8UC4 := CV_MAKETYPE(CV_8U, 4);
 
 CV_8SC1 := CV_MAKETYPE(CV_8S, 1);
 CV_8SC2 := CV_MAKETYPE(CV_8S, 2);

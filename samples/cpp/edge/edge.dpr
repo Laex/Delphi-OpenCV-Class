@@ -45,7 +45,7 @@ begin
 
   // Run the edge detector on grayscale
   Canny(blurImage, edge1, edgeThresh, edgeThresh * 3, 3);
-  cedge := TScalar.all(0);
+  cedge.Assign(TScalar.all(0));
 
   image.copyTo(cedge, edge1);
   imshow(window_name1, cedge);
@@ -57,7 +57,7 @@ begin
   Scharr(blurImage, dy, CV_16S, 0, 1);
   Canny(dx, dy, edge2, edgeThreshScharr, edgeThreshScharr * 3);
   /// Using Canny's output as a mask, we display our result
-  cedge := TScalar.all(0);
+  cedge.Assign(TScalar.all(0));
   image.copyTo(cedge, edge2);
   imshow(window_name2, cedge);
 end;
