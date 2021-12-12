@@ -26,8 +26,8 @@ program Smoothing;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cv.resource,
+  cv.opencv;
 
 const
   EXIT_FAILURE = 1;

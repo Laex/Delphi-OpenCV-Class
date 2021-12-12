@@ -36,7 +36,8 @@ requires
   rtlCVClass;
 
 contains
-  CVRegVCL in '..\CVRegVCL.pas',
-  CVProp in '..\CVProp.pas';
+  CVClass in '..\CVClass.pas',
+  CVProp in '..\CVProp.pas',
+  CVRegVCL in '..\CVRegVCL.pas';
 
 end.

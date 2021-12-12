@@ -27,8 +27,9 @@ program segment_objects;
 uses
   System.SysUtils,
   System.Classes,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 procedure refineSegments(const img: TMat; const mask: TMat; Var dst: TMat);
 begin
@@ -38,7 +39,7 @@ begin
   Var
     contours: vector<vector<TPoint>>;
   Var
-    hierarchy: vector<Vec4i>;
+    hierarchy: vector<TVec4i>;
 
   Var
     temp: TMat;

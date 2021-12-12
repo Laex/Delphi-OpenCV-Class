@@ -35,7 +35,6 @@ requires
   vcl;
 
 contains
-  opencv_world in '..\..\source\opencv_world.pas',
-  CVClass in '..\CVClass.pas';
+  cv.opencv in '..\..\source\cv.opencv.pas';
 
 end.

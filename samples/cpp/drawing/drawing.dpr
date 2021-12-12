@@ -26,8 +26,9 @@ program drawing;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 const
   EXIT_FAILURE = 1;
@@ -46,7 +47,7 @@ end;
 
 Var
   pt: array [0 .. 1, 0 .. 2] of TPoint;
-  ppt: array [0 .. 1] of pPoint;
+  ppt: array [0 .. 1] of ^TPoint;
   npt: array [0 .. 1] of Int;
 
 begin
@@ -54,7 +55,7 @@ begin
     help;
 
     Var
-      wndname: CvStdString := 'Drawing Demo';
+      wndname: CppString := 'Drawing Demo';
     Var
       NUMBER: Int := 100;
     Var

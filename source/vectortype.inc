@@ -1,0 +1,15 @@
+    vtMat = 1,              // vector<Mat>
+    vtRect = 2,             // vector<Rect>
+    vtPoint = 3,            // vector<Point>
+    vtVectorMat = 4,        // vector<vector<Mat>>
+    vtVectorRect = 5,       // vector<vector<Rect>>
+    vtVectorPoint = 6,      // vector<vector<Point>>
+    vtPoint2f = 7,          // vector<Point2f>
+    vtScalar = 8,           // vector<Scalar>
+    vtUchar = 9,            // vector<uchar>
+    vtFloat = 10,           // vector<float>
+    vtInt = 11,             // vector<int>
+    vtVec4i = 12,           // vector<Vec4i>
+    vtGMat = 13,            // vector<GMat>
+    vtGCompileArg = 14,     // vector<GCompileArg>
+    vtpVoid       = 15      // vector<pMat>

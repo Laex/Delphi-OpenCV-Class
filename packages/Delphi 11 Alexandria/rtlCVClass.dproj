@@ -145,8 +145,7 @@
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="vcl.dcp"/>
-        <DCCReference Include="..\..\source\opencv_world.pas"/>
-        <DCCReference Include="..\CVClass.pas"/>
+        <DCCReference Include="..\..\source\cv.opencv.pas"/>
         <None Include="ModelSupport_rtlCVClass\default.txaPackage"/>
         <None Include="ModelSupport_rtlCVClass\default.txvpck"/>
         <None Include="ModelSupport_rtlCVClass\CVClass\default.txvpck"/>
@@ -921,9 +920,9 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>

@@ -26,8 +26,9 @@ program calcHist_Demo;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 const
   EXIT_FAILURE = 1;
@@ -77,9 +78,9 @@ begin
     Var
       b_hist, g_hist, r_hist: TMat;
 
-    calcHist(@bgr_planes[0], 1, nil, TMat.Mat(), b_hist, 1, @histSize, @histRange[0], uniform, accumulate);
-    calcHist(@bgr_planes[1], 1, nil, TMat.Mat(), g_hist, 1, @histSize, @histRange[0], uniform, accumulate);
-    calcHist(@bgr_planes[2], 1, nil, TMat.Mat(), r_hist, 1, @histSize, @histRange[0], uniform, accumulate);
+    calcHist(bgr_planes[0], 1, nil, TMat.Mat(), b_hist, 1, @histSize, @histRange[0], uniform, accumulate);
+    calcHist(bgr_planes[1], 1, nil, TMat.Mat(), g_hist, 1, @histSize, @histRange[0], uniform, accumulate);
+    calcHist(bgr_planes[2], 1, nil, TMat.Mat(), r_hist, 1, @histSize, @histRange[0], uniform, accumulate);
     // ! [Compute the histograms]
 
     // ! [Draw the histograms for B, G and R]

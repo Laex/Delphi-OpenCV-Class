@@ -27,9 +27,9 @@ program camshiftdemo;
 uses
   WinApi.Windows,
   System.SysUtils,
-  CVResource,
-  cpputils,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 Var
   image: TMat;
@@ -182,7 +182,7 @@ begin
             // Var
             maskroi { : TMat } := TMat.Mat(mask, selection);
 
-            calcHist(@roi, 1, nil, maskroi, hist, 1, @hsize, @phranges);
+            calcHist(roi, 1, nil, maskroi, hist, 1, @hsize, @phranges);
             normalize(hist, hist, 0, 255, NORM_MINMAX);
 
             trackWindow := selection;
@@ -197,8 +197,8 @@ begin
             for Var i := 0 to hsize - 1 do
             begin
               Var
-                v: Vec3b := [(i * 180) div hsize, 255, 255];
-              buf.st<Vec3b>(i, v);
+                v: TVec3b := [(i * 180) div hsize, 255, 255];
+              buf.st<TVec3b>(i, v);
             end;
 
             cvtColor(buf, buf, COLOR_HSV2BGR);
@@ -212,7 +212,7 @@ begin
                 histimg,                                   //
                 Point(i * binW, histimg.rows),             //
                 Point((i + 1) * binW, histimg.rows - val), //
-                Scalar(buf.at<Vec3b>(i)),                  //
+                Scalar(buf.at<TVec3b>(i)),                  //
                 -1,                                        //
                 8                                          //
                 );

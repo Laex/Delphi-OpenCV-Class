@@ -27,8 +27,9 @@ program dis_opticalflow;
 uses
   WinApi.Windows,
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 begin
   try

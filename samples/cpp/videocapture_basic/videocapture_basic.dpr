@@ -26,8 +26,8 @@ program videocapture_basic;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cv.resource,
+  cv.opencv;
 
 begin
   try

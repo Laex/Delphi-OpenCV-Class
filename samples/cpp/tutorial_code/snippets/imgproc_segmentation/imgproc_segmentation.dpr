@@ -27,8 +27,9 @@ program imgproc_segmentation;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 Var
   image: TMat;

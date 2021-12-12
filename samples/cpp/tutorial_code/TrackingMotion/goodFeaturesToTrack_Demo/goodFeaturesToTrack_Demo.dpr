@@ -27,8 +27,9 @@ program goodFeaturesToTrack_Demo;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 const
   EXIT_FAILURE = 1;

@@ -26,8 +26,9 @@ program objectDetection;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 Var
   (* * Global variables *)
@@ -46,7 +47,7 @@ begin
 
   // -- Detect faces
   Var
-    faces: TStdVectorRect;
+    faces: Vector<TRect>;
 
   face_cascade.detectMultiScale(frame_gray, faces);
 
@@ -66,7 +67,7 @@ begin
 
       // -- In each face, detect eyes
     Var
-      eyes: TStdVectorRect;
+      eyes: Vector<TRect>;
 
     eyes_cascade.detectMultiScale(faceROI, eyes);
 
@@ -99,11 +100,11 @@ begin
 
     // String face_cascade_name = samples::findFile( parser.get<String>("face_cascade"));
     Var
-      face_cascade_name: CvStdString := OprnCVHaar + 'haarcascade_frontalface_alt.xml';
+      face_cascade_name: CppString := OprnCVHaar + 'haarcascade_frontalface_alt.xml';
 
       // String eyes_cascade_name = samples::findFile( parser.get<String>("eyes_cascade"));
     Var
-      eyes_cascade_name: CvStdString := OprnCVHaar + 'haarcascade_eye_tree_eyeglasses.xml';
+      eyes_cascade_name: CppString := OprnCVHaar + 'haarcascade_eye_tree_eyeglasses.xml';
 
       // -- 1. Load the cascades
     if (not face_cascade.load(face_cascade_name)) then

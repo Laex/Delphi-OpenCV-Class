@@ -26,8 +26,8 @@ program phase_corr;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cv.resource,
+  cv.opencv;
 
 begin
   try

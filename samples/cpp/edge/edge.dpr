@@ -26,8 +26,9 @@ program edge;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 Var
   edgeThresh: int = 1;
@@ -35,8 +36,8 @@ Var
 
   image, gray, blurImage, edge1, edge2, cedge: TMat;
 
-  window_name1: cvStdString;
-  window_name2: cvStdString;
+  window_name1: CppString;
+  window_name2: CppString;
 
   // define a trackbar callback
 procedure onTrackbar(a: int; p: pointer);
@@ -75,7 +76,7 @@ begin
     help;
 
     Var
-      filename: cvStdString;
+      filename: CppString;
     if ParamCount > 0 then
       filename := ParamStr(1)
     else

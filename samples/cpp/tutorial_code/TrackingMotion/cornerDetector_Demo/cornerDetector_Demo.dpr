@@ -27,8 +27,9 @@ program cornerDetector_Demo;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 const
   EXIT_FAILURE = 1;
@@ -120,9 +121,9 @@ begin
       for Var j: int := 0 to src_gray.cols - 1 do
       begin
         Var
-          lambda_1: float := pVec6f(myHarris_dst.pt<Vec6f>(i, j))[0];
+          lambda_1: float := pVec6f(myHarris_dst.pt<TVec6f>(i, j))[0];
         Var
-          lambda_2: float := pVec6f(myHarris_dst.pt<Vec6f>(i, j))[1];
+          lambda_2: float := pVec6f(myHarris_dst.pt<TVec6f>(i, j))[1];
 
           // Mc.st<float>(i, j, lambda_1 * lambda_2 - 0.04 * ((lambda_1 + lambda_2) * (lambda_1 + lambda_2)));
         pFloat(Mc.pt<float>(i, j))^ := { v; // } lambda_1 * lambda_2 - 0.04 * ((lambda_1 + lambda_2) * (lambda_1 + lambda_2));

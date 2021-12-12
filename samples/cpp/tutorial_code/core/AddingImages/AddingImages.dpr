@@ -26,8 +26,8 @@ program AddingImages;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  CV.Resource,
+  cv.opencv;
 
 const
   EXIT_FAILURE = 1;

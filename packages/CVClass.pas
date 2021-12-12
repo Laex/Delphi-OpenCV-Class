@@ -14,11 +14,11 @@ Uses
   System.SyncObjs,
   VCL.Controls,
   VCL.Graphics,
-  opencv_world;
+  cv.opencv;
 
 Type
 
-  TMat = opencv_world.TMat;
+  TMat = cv.opencv.TMat;
 
   ICVDataReceiver = interface
     ['{7EBE0282-0731-45EB-8A1D-1097C2CBC680}']

@@ -27,8 +27,9 @@ program facedetect;
 uses
   System.SysUtils,
   System.Classes,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 procedure help;
 begin

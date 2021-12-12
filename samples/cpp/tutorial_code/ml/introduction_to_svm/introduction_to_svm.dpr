@@ -26,8 +26,9 @@ program introduction_to_svm;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
 begin
   try
@@ -71,10 +72,10 @@ begin
       // Show the decision regions given by the SVM
       // ! [show]
     Var
-      green: Vec3b := [0, 255, 0];
+      green: TVec3b := [0, 255, 0];
 
     Var
-      blue: Vec3b := [255, 0, 0];
+      blue: TVec3b := [255, 0, 0];
 
     for Var i: Int := 0 to image.rows - 1 do
       for Var j: Int := 0 to image.cols - 1 do
@@ -90,9 +91,9 @@ begin
           response: float := svm.v.predict(sampleMat);
 
         if (response = 1) then
-          pVec3b(image.pT<Vec3b>(i, j))^ := green
+          pVec3b(image.pT<TVec3b>(i, j))^ := green
         else if (response = -1) then
-          pVec3b(image.pT<Vec3b>(i, j))^ := blue;
+          pVec3b(image.pT<TVec3b>(i, j))^ := blue;
       end;
 
     // ! [show]
