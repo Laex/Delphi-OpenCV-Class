@@ -62,4 +62,27 @@ begin
   Result := createTrackbar(trackbarname, winname, @Value, COUNT, onChange, userdata);
 end;
 
+procedure setWindowTitle(const winname: String; const title: String);
+begin
+  AliasSetWindowTitle(CppString(winname), CppString(title));
+end;
+
+procedure addText(const img: TMat; const text: String; const org: TPoint; const nameFont: String; pointSize: Int { = -1 }; const color: TScalar { = Scalar::all(0) };
+  weight: QtFontWeights = QT_FONT_NORMAL; style: QtFontStyles = QT_STYLE_NORMAL; spacing: Int = 0);
+begin
+  addText(img, text, org, nameFont, pointSize, color, Int(weight), Int(style), spacing);
+end;
+
+procedure addText(const img: TMat; const text: String; const org: TPoint; const nameFont: String; pointSize: Int = -1);
+begin
+  addText(img, text, org, nameFont, pointSize, TScalar.all(0));
+end;
+
+function createButton( const bar_name:String; on_change:TButtonCallback;
+                             userdata :Pointer = nil; &type :QtButtonTypes= QT_PUSH_BUTTON;
+                             initial_button_state :bool= false):int;
+begin
+  Result := createButton(CppString(bar_name),on_change,userdata,Int(&type),initial_button_state);
+end;
+
 {$ENDIF}

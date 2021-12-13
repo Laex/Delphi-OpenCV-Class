@@ -114,5 +114,42 @@ begin
   merge(@mv[0], length(mv), dst);
 end;
 
+procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right, borderType: int);
+begin
+  copyMakeBorder(src,dst,top, bottom, left, right, borderType, TScalar.Scalar());
+end;
+
+procedure subtract(const src1:TInputArray; const src2:TInputArray; const dst:TOutputArray);
+begin
+  subtract(src1,src2,dst,TInputArray.noArray());
+end;
+
+function mean(const src:TInputArray):TScalar;
+begin
+  Result := mean(src, TInputArray.noArray());
+end;
+
+procedure meanStdDev(const src:TInputArray;const mean:TOutputArray;const stddev:TOutputArray);
+begin
+  meanStdDev(src,mean,stddev,TInputArray.noArray());
+end;
+
+function norm(const src1:TInputArray; normType :NormTypes= NORM_L2):double;
+begin
+  norm(src1,Int(normType),TInputArray.noArray());
+end;
+
+function norm(const src1:TInputArray;const src2:TInputArray; normType: NormTypes= NORM_L2):double;
+begin
+  norm(src1,src2,Int(normType),TInputArray.noArray());
+end;
+
+procedure batchDistance(const src1:TInputArray;const src2:TInputArray;
+          const dist:TOutputArray; dtype:int; const nidx:TOutputArray;
+          normType :normTypes= NORM_L2; K :int= 0);
+begin
+  batchDistance(src1,src2,dist,dtype,nidx,Int(normType),K,TInputArray.noArray());
+end;
+
 {$ENDIF OPENCV_CORE_HPP}
 

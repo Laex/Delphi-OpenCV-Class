@@ -35,8 +35,10 @@ uses
   ToolsAPI,
   CVClass;
 
+{$i '../../source/core/version.inc'}
+
 resourcestring
-  resPackageName = 'Delphi-OpenCV for C++ classes';
+  resPackageName = 'Delphi-OpenCV for C++ classes '+CV_VERSION;
   resAboutDescription = 'Delphi-OpenCV for C++ classes';
   resAboutURL = 'Web: https://github.com/Laex/Delphi-OpenCV-Class/';
   resAboutCopyright = 'Copyright (c) 2021 Laentir Valetov';

@@ -153,15 +153,8 @@ It provides easy interface to:
 *)
 
 ///////////////////////// graphical user interface //////////////////////////
-//namespace cv
-//{
 
 Type
-//! @addtogroup highgui
-//! @{
-
-//! @addtogroup highgui_window_flags
-//! @{
 
 //! Flags for cv::namedWindow
 WindowFlags = (                //
@@ -213,10 +206,6 @@ MouseEventTypes = (        //
        EVENT_FLAG_ALTKEY    = 32 //!< indicates that ALT Key is pressed.
      );
 
-//! @} highgui_window_flags
-
-//! @addtogroup highgui_qt
-//! @{
 
 //! Qt font weight
  QtFontWeights =(//
@@ -242,7 +231,6 @@ QtButtonTypes =(//
        QT_NEW_BUTTONBAR = 1024  //!< Button should create a new buttonbar
      );
 
-//! @} highgui_qt
 
 (** @brief Callback function for mouse events. see cv::setMouseCallback
 @param event one of the cv::MouseEventTypes constants.
@@ -257,20 +245,17 @@ TMouseCallback = procedure(event, x, y, flags: Int; userdata: Pointer);
 @param pos current position of the specified trackbar.
 @param userdata The optional parameter.
  *)
-//typedef void (*TrackbarCallback)(int pos, void* userdata);
 TTrackbarCallback = procedure(pos:int; userdata:pointer);
 
 (** @brief Callback function defined to be called every frame. See cv::setOpenGlDrawCallback
 @param userdata The optional parameter.
  *)
-//typedef void (*OpenGlDrawCallback)(void* userdata);
 TOpenGlDrawCallback = procedure(userdata:Pointer);
 
 (** @brief Callback function for a button created by cv::createButton
 @param state current state of the button. It could be -1 for a push button, 0 or 1 for a check/radio box button.
 @param userdata The optional parameter.
  *)
-//typedef void (*ButtonCallback)(int state, void* userdata);
 TButtonCallback=procedure(state:int; userdata:pointer);
 
 (** @brief Creates a window.
@@ -335,17 +320,37 @@ procedure destroyWindow(const winname: String); overload; {$IFDEF USE_INLINE}inl
 The function destroyAllWindows destroys all of the opened HighGUI windows.
  *)
 //CV_EXPORTS_W void destroyAllWindows();
+{
+4410
+?destroyAllWindows@cv@@YAXXZ
+?destroyAllWindows@cv@@YAXXZ
+void cv::destroyAllWindows(void)
+}
+procedure destroyAllWindows(); external opencv_world_dll
+  name '?destroyAllWindows@cv@@YAXXZ'{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CV_EXPORTS_W int startWindowThread();
+{
+6530
+?startWindowThread@cv@@YAHXZ
+?startWindowThread@cv@@YAHXZ
+int cv::startWindowThread(void)
+}
+function startWindowThread:Int; external opencv_world_dll
+  name '?startWindowThread@cv@@YAHXZ'{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Similar to #waitKey, but returns full key code.
-
 @note
-
 Key code is implementation specific and depends on used backend: QT/GTK/Win32/etc
-
 *)
 //CV_EXPORTS_W int waitKeyEx(int delay = 0);
+{
+6735
+?waitKeyEx@cv@@YAHH@Z
+?waitKeyEx@cv@@YAHH@Z
+int cv::waitKeyEx(int)
+}
+function waitKeyEx(delay: Int = 0): Int; external opencv_world_dll name '?waitKeyEx@cv@@YAHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Waits for a pressed key.
 
@@ -385,6 +390,13 @@ HighGUI is used within an environment that takes care of event processing.
 active. If there are several HighGUI windows, any of them can be active.
  *)
 //CV_EXPORTS_W int pollKey();
+{
+5853
+?pollKey@cv@@YAHXZ
+?pollKey@cv@@YAHXZ
+int cv::pollKey(void)
+}
+function pollKey(): Int; external opencv_world_dll name '?pollKey@cv@@YAHXZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Displays an image in the specified window.
 
@@ -497,6 +509,20 @@ The function setWindowProperty enables changing properties of a window.
 @param title New title.
 *)
 //CV_EXPORTS_W void setWindowTitle(const String& winname, const String& title);
+{
+6453
+?setWindowTitle@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
+?setWindowTitle@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
+void cv::setWindowTitle(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
+}
+procedure setWindowTitle(const winname: CppString; const title:CppString); overload;
+external opencv_world_dll name '?setWindowTitle@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure setWindowTitle(const winname: String; const title:String); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+Const
+  AliasSetWindowTitle : procedure(const winname: CppString; const title: CppString) = setWindowTitle;
 
 (** @brief Provides parameters of a window.
 
@@ -508,6 +534,15 @@ The function getWindowProperty returns properties of a window.
 @sa setWindowProperty
  *)
 //CV_EXPORTS_W double getWindowProperty(const String& winname, int prop_id);
+{
+5183
+?getWindowProperty@cv@@YANAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
+?getWindowProperty@cv@@YANAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
+double cv::getWindowProperty(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+}
+function getWindowProperty(const winname:CppString; prop_id:int):double;
+external opencv_world_dll name '?getWindowProperty@cv@@YANAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Provides rectangle of image in the window.
 
@@ -518,6 +553,15 @@ The function getWindowImageRect returns the client screen coordinates, width and
 @sa resizeWindow moveWindow
  *)
 //CV_EXPORTS_W Rect getWindowImageRect(const String& winname);
+{
+5181
+?getWindowImageRect@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?getWindowImageRect@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+class cv::Rect_<int> cv::getWindowImageRect(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
+}
+function getWindowImageRect(const winname:CppString): TRect;
+external opencv_world_dll name '?getWindowImageRect@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* @example samples/cpp/create_mask.cpp
 This program demonstrates using mouse events and how to make and use a mask image (black and white) .
@@ -559,6 +603,15 @@ Mouse-wheel events are currently supported only on Windows.
 @param flags The mouse callback flags parameter.
  *)
 //CV_EXPORTS int getMouseWheelDelta(int flags);
+{
+5033
+?getMouseWheelDelta@cv@@YAHH@Z
+?getMouseWheelDelta@cv@@YAHH@Z
+int cv::getMouseWheelDelta(int)
+}
+function getMouseWheelDelta(flags:Int):Int;
+external opencv_world_dll name '?getMouseWheelDelta@cv@@YAHH@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Allows users to select a ROI on the given image.
 
@@ -576,10 +629,40 @@ selection rectangle will correspont to the initial mouse position.
 After finish of work an empty callback will be set for the used window.
  *)
 //CV_EXPORTS_W Rect selectROI(const String& windowName, InputArray img, bool showCrosshair = true, bool fromCenter = false);
+{
+6225
+?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@_N2@Z
+?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@_N2@Z
+class cv::Rect_<int> cv::selectROI(
+class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
+class cv::_InputArray const &,bool,bool)
+}
+function selectROI(const windowName:CppString; const img:TInputArray; showCrosshair :bool= true; fromCenter :bool= false):TRect;
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@_N2@Z'
+{$ELSE}
+name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@_N2@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload
  *)
 //CV_EXPORTS_W Rect selectROI(InputArray img, bool showCrosshair = true, bool fromCenter = false);
+{
+6226
+?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@debug_build_guard@1@_N1@Z
+?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@1@_N1@Z
+class cv::Rect_<int> cv::selectROI(class cv::_InputArray const &,bool,bool)
+}
+function selectROI(const img:TInputArray; showCrosshair :bool= true; fromCenter :bool= false):TRect;
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@debug_build_guard@1@_N1@Z'
+{$ELSE}
+name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@1@_N1@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Allows users to select multiple ROIs on the given image.
 
@@ -599,6 +682,21 @@ After finish of work an empty callback will be set for the used window.
  *)
 //CV_EXPORTS_W void selectROIs(const String& windowName, InputArray img,
 //                             CV_OUT std::vector<Rect>& boundingBoxes, bool showCrosshair = true, bool fromCenter = false);
+{
+6227
+?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z
+?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z
+void cv::selectROIs(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &,class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > &,bool,bool)
+}
+procedure selectROIs(const windowName:CppString;const img:TInputArray;
+const boundingBoxes: vector<TRect>;showCrosshair :bool= true; fromCenter :bool= false);
+external opencv_world_dll
+{$IFDEF DEBUG}
+name '?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z'
+{$ELSE}
+name '?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates a trackbar and attaches it to the specified window.
 
@@ -630,10 +728,11 @@ events without using global variables.
 //                              int* value, int count,
 //                              TrackbarCallback onChange = 0,
 //                              void* userdata = 0);
-// 4302
-// ?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z
-// int cv::createTrackbar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int *,int,void (*)(int,void *),void *)
-
+{
+ 4302
+ ?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z
+ int cv::createTrackbar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int *,int,void (*)(int,void *),void *)
+}
 function createTrackbar(const trackbarname: CppString; const winname: CppString; Value: pInt; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int; overload;
   external opencv_world_dll name '?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
@@ -652,6 +751,15 @@ panel.
 @param winname Name of the window that is the parent of the trackbar.
  *)
 //CV_EXPORTS_W int getTrackbarPos(const String& trackbarname, const String& winname);
+{
+5148
+?getTrackbarPos@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
+?getTrackbarPos@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
+int cv::getTrackbarPos(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
+}
+function getTrackbarPos(const trackbarname:CppString; const winname:CppString):Int;
+external opencv_world_dll name '?getTrackbarPos@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets the trackbar position.
 
@@ -667,6 +775,15 @@ panel.
 @param pos New position.
  *)
 //CV_EXPORTS_W void setTrackbarPos(const String& trackbarname, const String& winname, int pos);
+{
+6422
+?setTrackbarPos@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+?setTrackbarPos@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+void cv::setTrackbarPos(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+}
+procedure setTrackbarPos(const trackbarname:CppString; const winname:CppString; pos:int);
+external opencv_world_dll name '?setTrackbarPos@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets the trackbar maximum position.
 
@@ -682,6 +799,15 @@ panel.
 @param maxval New maximum position.
  *)
 //CV_EXPORTS_W void setTrackbarMax(const String& trackbarname, const String& winname, int maxval);
+{
+6420
+?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+void cv::setTrackbarMax(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+}
+procedure setTrackbarMax(const trackbarname:CppString; const winname:CppString; maxval:int);
+external opencv_world_dll name '?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets the trackbar minimum position.
 
@@ -697,9 +823,15 @@ panel.
 @param minval New minimum position.
  *)
 //CV_EXPORTS_W void setTrackbarMin(const String& trackbarname, const String& winname, int minval);
-
-//! @addtogroup highgui_opengl OpenGL support
-//! @{
+{
+6421
+?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+void cv::setTrackbarMin(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+}
+procedure setTrackbarMin(const trackbarname:CppString; const winname:CppString; minval:int);
+external opencv_world_dll name '?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Displays OpenGL 2D texture in the specified window.
 
@@ -749,42 +881,63 @@ prototyped as void Foo(void\* ) .
 @param userdata Pointer passed to the callback function.(__Optional__)
  *)
 //CV_EXPORTS void setOpenGlDrawCallback(const String& winname, OpenGlDrawCallback onOpenGlDraw, void* userdata = 0);
+{
+6360
+?setOpenGlDrawCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXPEAX@Z1@Z
+?setOpenGlDrawCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXPEAX@Z1@Z
+void cv::setOpenGlDrawCallback(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,void (*)(void *),void *)
+}
+procedure setOpenGlDrawCallback(const winname:CppString; const onOpenGlDraw:TOpenGlDrawCallback; userdata :Pointer= nil);
+external opencv_world_dll name '?setOpenGlDrawCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXPEAX@Z1@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets the specified window as current OpenGL context.
-
 @param winname Name of the window.
  *)
 //CV_EXPORTS void setOpenGlContext(const String& winname);
+{
+6359
+?setOpenGlContext@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?setOpenGlContext@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+void cv::setOpenGlContext(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
+}
+procedure setOpenGlContext(const winname:CppString);
+external opencv_world_dll name '?setOpenGlContext@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Force window to redraw its context and call draw callback ( See cv::setOpenGlDrawCallback ).
 
 @param winname Name of the window.
  *)
 //CV_EXPORTS void updateWindow(const String& winname);
+{
+6698
+?updateWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?updateWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+void cv::updateWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
+}
+procedure updateWindow(const winname:CppString);
+external opencv_world_dll name '?updateWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-//! @} highgui_opengl
-
-//! @addtogroup highgui_qt
-//! @{
-
+Type
 (** @brief QtFont available only for Qt. See cv::fontQt
  *)
-(*
-struct QtFont
-{
-    const char* nameFont;  //!< Name of the font
-    Scalar      color;     //!< Color of the font. Scalar(blue_component, green_component, red_component[, alpha_component])
-    int         font_face; //!< See cv::QtFontStyles
-    const int*  ascii;     //!< font data and metrics
-    const int*  greek;
-    const int*  cyrillic;
-    float       hscale, vscale;
-    float       shear;     //!< slope coefficient: 0 - normal, >0 - italic
-    int         thickness; //!< See cv::QtFontWeights
-    float       dx;        //!< horizontal interval between letters
-    int         line_type; //!< PointSize
-};
-*)
+
+ TQtFont = record
+    nameFont:  pAnsiChar;  //!< Name of the font
+    color:     TScalar;     //!< Color of the font. Scalar(blue_component, green_component, red_component[, alpha_component])
+    font_face: int; //!< See cv::QtFontStyles
+    ascii:     pInt;     //!< font data and metrics
+    greek:     pInt;
+    cyrillic:  pInt;
+    hscale, vscale:float;
+    shear:     float;     //!< slope coefficient: 0 - normal, >0 - italic
+    thickness:Int; //!< See cv::QtFontWeights
+    dx:float;        //!< horizontal interval between letters
+    line_type:int; //!< PointSize
+ end;
+
 (** @brief Creates the font to draw a text on an image.
 
 The function fontQt creates a cv::QtFont object. This cv::QtFont is not compatible with putText .
@@ -837,6 +990,22 @@ font is set to a system-dependent default value. Generally, this is 12 points.
  *)
 //CV_EXPORTS_W void addText(const Mat& img, const String& text, Point org, const String& nameFont, int pointSize = -1, Scalar color = Scalar::all(0),
 //        int weight = QT_FONT_NORMAL, int style = QT_STYLE_NORMAL, int spacing = 0);
+{
+3506
+?addText@cv@@YAXAEBVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@1HV?$Scalar_@N@1@HHH@Z
+?addText@cv@@YAXAEBVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@1HV?$Scalar_@N@1@HHH@Z
+void cv::addText(class cv::Mat const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::Point_<int>,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,class cv::Scalar_<double>,int,int,int)
+}
+procedure addText(const img:TMat; const text:CppString;const org:TPoint; const nameFont:CppString;
+                        pointSize :int {= -1}; const color :TScalar {= Scalar::all(0)};
+                        weight :int = Int(QT_FONT_NORMAL); style :int= Int(QT_STYLE_NORMAL); spacing :int= 0); overload;
+external opencv_world_dll name '?addText@cv@@YAXAEBVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@1HV?$Scalar_@N@1@HHH@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure addText(const img:TMat; const text:String;const org:TPoint; const nameFont:String;
+                        pointSize :int {= -1}; const color :TScalar {= Scalar::all(0)};
+                        weight :QtFontWeights = QT_FONT_NORMAL; style :QtFontStyles= QT_STYLE_NORMAL; spacing :int= 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure addText(const img:TMat; const text:String;const org:TPoint; const nameFont:String;
+                        pointSize :int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Displays a text on a window image as an overlay for a specified duration.
 
@@ -851,6 +1020,15 @@ function is called before the previous overlay text timed out, the timer is rest
 is updated. If this value is zero, the text never disappears.
  *)
 //CV_EXPORTS_W void displayOverlay(const String& winname, const String& text, int delayms = 0);
+{
+4500
+?displayOverlay@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+?displayOverlay@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+void cv::displayOverlay(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+}
+procedure displayOverlay(const winname:CppString; const text:CppString; delayms :int = 0);
+external opencv_world_dll name '?displayOverlay@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Displays a text on the window statusbar during the specified period of time.
 
@@ -865,6 +1043,15 @@ the previous text timed out, the timer is restarted and the text is updated. If 
 zero, the text never disappears.
  *)
 //CV_EXPORTS_W void displayStatusBar(const String& winname, const String& text, int delayms = 0);
+{
+4501
+?displayStatusBar@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+?displayStatusBar@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
+void cv::displayStatusBar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+}
+procedure displayStatusBar(const winname:CppString; const text:CppString; delayms :int= 0);
+external opencv_world_dll name '?displayStatusBar@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Saves parameters of the specified window.
 
@@ -874,6 +1061,15 @@ location of the window windowName.
 @param windowName Name of the window.
  *)
 //CV_EXPORTS void saveWindowParameters(const String& windowName);
+{
+6212
+?saveWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?saveWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+void cv::saveWindowParameters(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
+}
+procedure saveWindowParameters(const windowName:CppString);
+external opencv_world_dll name '?saveWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Loads parameters of the specified window.
 
@@ -883,10 +1079,40 @@ location of the window windowName.
 @param windowName Name of the window.
  *)
 //CV_EXPORTS void loadWindowParameters(const String& windowName);
+{
+5487
+?loadWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?loadWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+void cv::loadWindowParameters(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
+}
+procedure loadWindowParameters(const windowName:CppString);
+external opencv_world_dll name '?loadWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+Type
+  Targv = ^PAnsiChar;
+  Tpt2Func = function(argc:int; argv:Targv):int;
 
 //CV_EXPORTS  int startLoop(int (*pt2Func)(int argc, char *argv[]), int argc, char* argv[]);
+{
+6529
+?startLoop@cv@@YAHP6AHHQEAPEAD@ZH0@Z
+?startLoop@cv@@YAHP6AHHQEAPEAD@ZH0@Z
+int cv::startLoop(int (*)(int,char * * const),int,char * * const)
+}
+function startLoop(pt2Func:Tpt2Func; argc:int; argv:Targv):int;
+external opencv_world_dll name '?startLoop@cv@@YAHP6AHHQEAPEAD@ZH0@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CV_EXPORTS  void stopLoop();
+{
+6558
+?stopLoop@cv@@YAXXZ
+?stopLoop@cv@@YAXXZ
+void cv::stopLoop(void)
+}
+procedure stopLoop(); external opencv_world_dll name '?stopLoop@cv@@YAXXZ'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Attaches a button to the control panel.
 
@@ -914,14 +1140,23 @@ of the button. It could be -1 for a push button, 0 or 1 for a check/radio box bu
 @param initial_button_state Default state of the button. Use for checkbox and radiobox. Its
 value could be 0 or 1. (__Optional__)
 *)
+
 //CV_EXPORTS int createButton( const String& bar_name, ButtonCallback on_change,
 //                             void* userdata = 0, int type = QT_PUSH_BUTTON,
 //                             bool initial_button_state = false);
-
-//! @} highgui_qt
-
-//! @} highgui
-
-//} // cv
+{
+4265
+?createButton@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHPEAX@Z1H_N@Z
+?createButton@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHPEAX@Z1H_N@Z
+int cv::createButton(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,void (*)(int,void *),void *,int,bool)
+}
+function createButton( const bar_name:CppString; on_change:TButtonCallback;
+                             userdata :Pointer = nil; &type :int= int(QT_PUSH_BUTTON);
+                             initial_button_state :bool= false):int; overload;
+external opencv_world_dll name '?createButton@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHPEAX@Z1H_N@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function createButton( const bar_name:String; on_change:TButtonCallback;
+                             userdata :Pointer = nil; &type :QtButtonTypes= QT_PUSH_BUTTON;
+                             initial_button_state :bool= false):int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 {$ENDIF OPENCV_HIGHGUI_HPP}

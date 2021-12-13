@@ -207,6 +207,11 @@ begin
   v[index] := Value;
 end;
 
+class function TScalar.Scalar:TScalar;
+begin
+  Initialize(Result);
+end;
+
 function Scalar(const v0, v1, v2, v3: double): TScalar;
 begin
   Result := TScalar.Create(v0, v1, v2, v3);

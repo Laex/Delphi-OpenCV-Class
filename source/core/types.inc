@@ -665,6 +665,7 @@ TScalar = record
 {$HINTS ON}
   public
     class operator Initialize(out Dest: TScalar); // Scalar_();
+    class function Scalar:TScalar; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function Create(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // Scalar_(_Tp v0, _Tp v1, _Tp v2=0, _Tp v3=0);
     class function Create(const v0: double): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Scalar_(_Tp v0);
     // Scalar_(const Scalar_& s);
