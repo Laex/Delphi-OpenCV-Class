@@ -136,12 +136,12 @@ end;
 
 function norm(const src1:TInputArray; normType :NormTypes= NORM_L2):double;
 begin
-  norm(src1,Int(normType),TInputArray.noArray());
+  Result := norm(src1,Int(normType),TInputArray.noArray());
 end;
 
 function norm(const src1:TInputArray;const src2:TInputArray; normType: NormTypes= NORM_L2):double;
 begin
-  norm(src1,src2,Int(normType),TInputArray.noArray());
+  Result :=norm(src1,src2,Int(normType),TInputArray.noArray());
 end;
 
 procedure batchDistance(const src1:TInputArray;const src2:TInputArray;
@@ -149,6 +149,22 @@ procedure batchDistance(const src1:TInputArray;const src2:TInputArray;
           normType :normTypes= NORM_L2; K :int= 0);
 begin
   batchDistance(src1,src2,dist,dtype,nidx,Int(normType),K,TInputArray.noArray());
+end;
+
+procedure minMaxIdx(const src:TInputArray; minVal:pDouble;  maxVal :pDouble = nil;
+          minIdx :Pointer = nil; maxIdx :pInt = nil);
+begin
+  minMaxIdx(src,minVal,maxVal,minIdx,maxIdx,TInputArray.noArray());
+end;
+
+procedure bitwise_or(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
+begin
+  bitwise_or(src1,src2,dst,TInputArray.noArray());
+end;
+
+procedure bitwise_xor(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
+begin
+  bitwise_xor(src1,src2,dst,TInputArray.noArray());
 end;
 
 {$ENDIF OPENCV_CORE_HPP}

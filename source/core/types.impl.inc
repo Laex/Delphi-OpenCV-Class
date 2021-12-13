@@ -139,10 +139,10 @@ begin
     b_width := pInt(@b.width)^;
     b_height := pInt(@b.height)^;
 
-    x1 := MAX(a_x, b_x);
-    y1 := MAX(a_y, b_y);
-    a_width := MIN(a_x + a_width, b_x + b_width) - x1;
-    a_height := MIN(a_y + a_height, b_y + b_height) - y1;
+    x1 := System.Math.MAX(a_x, b_x);
+    y1 := System.Math.MAX(a_y, b_y);
+    a_width := System.Math.MIN(a_x + a_width, b_x + b_width) - x1;
+    a_height := System.Math.MIN(a_y + a_height, b_y + b_height) - y1;
     if (a_width > 0) and (a_height > 0) then
     begin
       pInt(@Result.x)^ := x1;

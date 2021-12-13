@@ -481,11 +481,11 @@ CV_MAT_CN_MASK = ((CV_CN_MAX - 1) shl CV_CN_SHIFT);
 //#ifndef MIN
 //#  define MIN(a,b)  ((a) > (b) ? (b) : (a))
 //{$endif}
-function MIN(a, b: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) > (b) ? (b) : (a))
+function MIN(a, b: Int): Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) > (b) ? (b) : (a))
 //#ifndef MAX
 //#  define MAX(a,b)  ((a) < (b) ? (b) : (a))
 //{$endif}
-function MAX(a, b: Int): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) < (b) ? (b) : (a))
+function MAX(a, b: Int): Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) < (b) ? (b) : (a))
 
 ///////////////////////////////////////// Enum operators ///////////////////////////////////////
 
