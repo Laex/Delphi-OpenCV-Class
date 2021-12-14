@@ -31,7 +31,7 @@ __For the library to work properly, you need__
 2. Open `<project>\samples\Samples.groupproj`
 #### To instal components ####
 1. For components, install the packages from<br>
-`<project>\packages\<Delphi Version>\ CVClassGroup.groupproj`
+`<project>\packages\<Delphi Version>\CVClassGroup.groupproj`
 2. Run demo from `<project>\samples\Component\`
 ---------------------------
 **Donate**<br>

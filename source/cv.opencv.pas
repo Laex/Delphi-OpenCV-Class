@@ -31,8 +31,7 @@ Uses
 {$IFDEF USE_TYPEINFO}
    System.TypInfo,
 {$ENDIF}
-   cpp.utils,
-   cv.utils;
+   cpp.utils;
 
 {$I cvconfig.inc}
 
