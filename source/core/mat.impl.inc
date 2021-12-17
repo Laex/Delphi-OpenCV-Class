@@ -386,6 +386,11 @@ begin
   operator_MatExpr_Subtract_Mat_MatExpr(Result, m, s);
 end;
 
+class operator TMatHelper.Implicit(const s: TScalar): TMat;
+begin
+ Result.Assign(s);
+end;
+
 { TMatExpr }
 
 class operator TMatExpr.assign(var Dest: TMatExpr; const [ref] Src: TMatExpr);

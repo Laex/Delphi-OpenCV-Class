@@ -6,10 +6,10 @@
     vtVectorPoint = 6,      // vector<vector<Point>>
     vtPoint2f = 7,          // vector<Point2f>
     vtScalar = 8,           // vector<Scalar>
-    vtUchar = 9,            // vector<uchar>
-    vtFloat = 10,           // vector<float>
-    vtInt = 11,             // vector<int>
+    vtuchar = 9,            // vector<uchar>
+    vtfloat = 10,           // vector<float>
+    vtint = 11,             // vector<int>
     vtVec4i = 12,           // vector<Vec4i>
     vtGMat = 13,            // vector<GMat>
-    vtGCompileArg = 14,     // vector<GCompileArg>
-    vtpVoid       = 15      // vector<pMat>
+    vtGCompileArg = 14//,     // vector<GCompileArg>
+    //vtvoid       = 15       // vector<void *>

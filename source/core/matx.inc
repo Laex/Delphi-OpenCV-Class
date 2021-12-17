@@ -29,8 +29,8 @@
 
 {$I 'core/cvdef.inc'}
 {$I 'core/base.inc'}
-{.$I 'core/traits.inc'}
-{.$I 'core/saturate.inc'}
+{$I 'core/traits.inc'}
+{$I 'core/saturate.inc'}
 
 //{$I <initializer_list>
 

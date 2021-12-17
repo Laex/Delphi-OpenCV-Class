@@ -23,7 +23,9 @@
 {$ifndef OPENCV_IMGCODECS_HPP}
 {$define OPENCV_IMGCODECS_HPP}
 
+{$IFNDEF OPENCV_CORE_HPP}
 {$i 'core.inc'}
+{$ENDIF}
 
 (**
   @defgroup imgcodecs Image file reading and writing

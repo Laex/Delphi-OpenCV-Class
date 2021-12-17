@@ -1,32 +1,35 @@
-(*
-  This file is part of Delphi-OpenCV-Class project.
-  https://github.com/Laex/Delphi-OpenCV-Class
+  (*
+    This file is part of Delphi-OpenCV-Class project.
+    https://github.com/Laex/Delphi-OpenCV-Class
 
-  It is subject to the license terms in the LICENSE file found in the top-level directory
-  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+    It is subject to the license terms in the LICENSE file found in the top-level directory
+    of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
 
-  Copyright 2021, Laentir Valetov, laex@bk.ru
+    Copyright 2021, Laentir Valetov, laex@bk.ru
 
-  Licensed under the Apache License, Version 2.0 (the 'License');
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+    Licensed under the Apache License, Version 2.0 (the 'License');
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an 'AS IS' BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*)
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an 'AS IS' BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  *)
 
 {$IFDEF OPENCV_CORE_TYPES_HPP}
-{ TPoint_<T> }
+  { TPoint_<T> }
 
 class operator TPoint_<T>.Implicit(const m: TPoint_<T>): UInt64;
+Var
+  t:TPoint_<Int>;
 begin
   Assert(SizeOf(m) = 8);
-  Move(m, Result, 8);
+  t:=m;
+  Move(t, Result, 8);
 end;
 
 class operator TPoint_<T>.Implicit(const p: TPoint_<T>): TPoint_<Int>;
@@ -45,6 +48,27 @@ begin
     Assert(false, 'Point type must be Single(Float) or Double');
 end;
 
+class operator TPoint_<T>.Subtract(const a: TPoint_<T>; const b: TPoint_<T>): TPoint_<T>;
+begin
+  if TypeInfo(T) = TypeInfo(float) then
+  begin
+    pFloat(@Result.x)^ := pFloat(@a.x)^ - pFloat(@b.x)^;
+    pFloat(@Result.y)^ := pFloat(@a.y)^ - pFloat(@b.y)^;
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    pDouble(@Result.x)^ := pDouble(@a.x)^ - pDouble(@b.x)^;
+    pDouble(@Result.y)^ := pDouble(@a.y)^ - pDouble(@b.y)^;
+  end
+  else if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    pInt(@Result.x)^ := saturate_cast.cast<int>(pInt(@a.x)^ - pInt(@b.x)^);
+    pInt(@Result.y)^ := saturate_cast.cast<int>(pInt(@a.y)^ - pInt(@b.y)^);
+  end
+  else
+    Assert(false, 'Point type must be Integer, Single(Float) or Double');
+end;
+
 class function TPoint_<T>.Point(_x, _y: T): TPoint_<T>;
 begin
   Result.x := _x;
@@ -56,7 +80,12 @@ begin
   Result := TPoint.Point(_x, _y);
 end;
 
-{ TSize_<T> }
+function Point2f(const _x, _y: float): TPoint2f;
+begin
+  Result := TPoint_<float>.Point(_x, _y);
+end;
+
+  { TSize_<T> }
 
 class operator TSize_<T>.Implicit(const m: TSize_<T>): UInt64;
 begin
@@ -87,31 +116,31 @@ begin
   Result.height := default (T);
 end;
 
-{ TRect_<T> }
+  { TRect_<T> }
 
 function TRect_<T>.area: T;
 begin
-  (*
-    Var
-    p: pTypeInfo := TypeInfo(T);
-    if Assigned(p) then
-    begin
-    Var
-    vH := TValue.From<T>(height);
-    Var
-    vW := TValue.From<T>(width);
-    Case p^.Kind of
-    tkInteger, tkChar, tkInt64:
-    Result := vW.AsOrdinal * vH.AsOrdinal;
-    tkFloat:
-    Result := vW.AsExtended * vH.AsExtended;
-    else
-    Assert(false, 'Point type must be numeric');
-    end
-    end
-    else
-    Assert(false, 'Unknown type T');
-  *)
+    (*
+      Var
+      p: pTypeInfo := TypeInfo(T);
+      if Assigned(p) then
+      begin
+      Var
+      vH := TValue.From<T>(height);
+      Var
+      vW := TValue.From<T>(width);
+      Case p^.Kind of
+      tkInteger, tkChar, tkInt64:
+      Result := vW.AsOrdinal * vH.AsOrdinal;
+      tkFloat:
+      Result := vW.AsExtended * vH.AsExtended;
+      else
+      Assert(false, 'Point type must be numeric');
+      end
+      end
+      else
+      Assert(false, 'Unknown type T');
+    *)
   if TypeInfo(T) = TypeInfo(float) then
     pFloat(@Result)^ := (pFloat(@Self.width)^) * (pFloat(@Self.height)^)
   else if TypeInfo(T) = TypeInfo(double) then
@@ -168,7 +197,7 @@ begin
   Result := TRect_<Int>.Rect(_x, _y, _width, _height);
 end;
 
-{ TScalar }
+  { TScalar }
 
 class function TScalar.Create(const v0, v1, v2, v3: double): TScalar;
 begin
@@ -207,7 +236,7 @@ begin
   v[index] := Value;
 end;
 
-class function TScalar.Scalar:TScalar;
+class function TScalar.Scalar: TScalar;
 begin
   Initialize(Result);
 end;
@@ -222,7 +251,7 @@ begin
   Result := Scalar(v[0], v[1], v[2]);
 end;
 
-{ TTermCriteria }
+  { TTermCriteria }
 
 function TTermCriteria.isValid: BOOL;
 begin
@@ -233,13 +262,28 @@ begin
   Result := isCount or isEps;
 end;
 
-class function TTermCriteria.TermCriteria(const &type, maxCount: Int;
-
-  const epsilon: double): TTermCriteria;
+class function TTermCriteria.TermCriteria(const &type, maxCount: Int; const epsilon: double): TTermCriteria;
 begin
   Result.&type := &type;
   Result.maxCount := maxCount;
   Result.epsilon := epsilon;
+end;
+
+//function norm(const pt: TPoint_<T>): double;
+//begin
+//  if TypeInfo(T) = TypeInfo(float) then
+//    Result := Sqrt(Sqr(pFloat(@a.x)^ - pFloat(@b.x)^) + Sqr(pFloat(@a.y)^ - pFloat(@b.y)^))
+//  else if TypeInfo(T) = TypeInfo(double) then
+//    Result := Sqrt(Sqr(pDouble(@a.x)^ - pDouble(@b.x)^) + Sqr(pDouble(@a.y)^ - pDouble(@b.y)^))
+//  else if TypeInfo(T) = TypeInfo(Int) then
+//    Result := Sqrt(Sqr(pInt(@a.x)^ - pInt(@b.x)^) + Sqr(pInt(@a.y)^ - pInt(@b.y)^))
+//  else
+//    Assert(false, 'Point type must be Integer, Single(Float) or Double');
+//end;
+
+function norm(const pt: TPoint): double;
+begin
+  Result := Sqrt(Sqr(pt.x) + Sqr(pt.y));
 end;
 
 {$ENDIF}

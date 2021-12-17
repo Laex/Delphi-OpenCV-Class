@@ -24,9 +24,11 @@
 {$define OPENCV_HIGHGUI_HPP}
 
 {$I 'core.inc'}
+
 {$ifdef HAVE_OPENCV_IMGCODECS}
 {$I 'imgcodecs.inc'}
 {$ENDIF}
+
 {$ifdef HAVE_OPENCV_VIDEOIO}
 {$I 'videoio.inc'}
 {$ENDIF}

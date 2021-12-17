@@ -20,28 +20,11 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_CORE_MATX_HPP}
+{$ifdef OPENCV_CORE_SATURATE_HPP}
 
-function TVec3b.getItem(const index: integer): uchar;
+class function saturate_cast.cast<Int>(const a:int):int;
 begin
-  Assert((index >= 0) and (index < 3));
-  Result := _Data[index];
+  Result := a;
 end;
-
-class operator TVec3b.Implicit(const a: TArray<uchar>): TVec3b;
-begin
-  Assert(length(a) > 2);
-  // slow
-  for Var i := 0 to High(Result._Data) do
-    Result._Data[i] := a[i];
-end;
-
-procedure TVec3b.setItem(const index: integer; const Value: uchar);
-begin
-  Assert((index >= 0) and (index < 3));
-  _Data[index] := Value;
-end;
-
-{$I 'core/saturate.impl.inc'}
 
 {$endif}

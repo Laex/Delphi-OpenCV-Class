@@ -2057,6 +2057,22 @@ the corner position moves by less than criteria.epsilon on some iteration.
 //CV_EXPORTS_W void cornerSubPix( InputArray image, InputOutputArray corners,
 //                                Size winSize, Size zeroZone,
 //                                TermCriteria criteria );
+{
+4091
+?cornerSubPix@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@V?$Size_@H@1@2VTermCriteria@1@@Z
+?cornerSubPix@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@V?$Size_@H@1@2VTermCriteria@1@@Z
+void cv::cornerSubPix(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::Size_<int>,class cv::Size_<int>,class cv::TermCriteria)
+}
+procedure cornerSubPix(const image:TInputArray;const corners:TInputOutputArray;
+                                winSize:UInt64 {TSize}; zeroZone:UInt64{TSize};
+                                const criteria:TTermCriteria);
+external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?cornerSubPix@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@V?$Size_@H@1@2VTermCriteria@1@@Z'
+{$ELSE}
+  name '?cornerSubPix@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@V?$Size_@H@1@2VTermCriteria@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Determines strong corners on an image.
 

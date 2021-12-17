@@ -139,17 +139,6 @@ begin
   circle(img, center, radius, color, thickness, Int(lineType), shift);
 end;
 
-procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 }; dtype: Int { = -1 };
-  const mask: TInputArray { = noArray() } );
-begin
-  normalize(Src, dst, alpha, beta, Int(norm_type), dtype, mask);
-end;
-
-procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: Int = -1);
-begin
-  normalize(Src, dst, alpha, beta, norm_type, dtype, TInputArray.noArray);
-end;
-
 procedure line(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
 begin
   line(img, UInt64(pt1), UInt64(pt2), color, thickness, Int(lineType), shift);

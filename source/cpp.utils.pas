@@ -66,6 +66,8 @@ Type
     function size: { UInt64 } Int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function empty: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure push_back(const Value: T); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure resize(const NewSize: UInt64); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure clear(); {$IFDEF USE_INLINE}inline; {$ENDIF}
       //
     function pT(const index: UInt64): Pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
     property v[const index: UInt64]: T read GetItems write setItems; default;
@@ -106,13 +108,20 @@ Type
     class operator Finalize(var Dest: TPtr<T>);
   end;
 
+  makePtr<T: record > = record
+  public type
+    pT = ^T;
+  public
+    class function Create(const v: T): TPtr<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
   TSet<T> = record
   private
-    FDict: TDictionary<T, Integer>;
+    FDict: TDictionary<T, integer>;
   public
     class operator Initialize(out Dest: TSet<T>);
     class operator Finalize(var Dest: TSet<T>);
-    class operator Assign(var Dest: TSet<T>; const [ref] Src: TSet<T>);
+    class operator assign(var Dest: TSet<T>; const [ref] Src: TSet<T>);
     class operator In (const a: T; const b: TSet<T>): Boolean;
     class operator Implicit(const a: TArray<T>): TSet<T>;
     class operator Implicit(const a: TSet<T>): TArray<T>;
@@ -144,6 +153,14 @@ Var
   cerr: Tcout;
   argv: TArray<string>;
 
+function isIntNumber(const v: String): Boolean;
+function isIntNumberWithDefault(const v: String; const D: integer = 0): integer;
+
+type
+  TSwap = record
+    class procedure swap<T>(var a, b: Vector<T>); static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
 implementation
 
 Uses
@@ -154,6 +171,11 @@ Uses
 class operator Vector<T>.assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
 begin
   CopyStdVector(@Dest, @Src, vt);
+end;
+
+procedure Vector<T>.clear;
+begin
+  clearStdVector(@Self, vt);
 end;
 
 function Vector<T>.empty: BOOL;
@@ -198,11 +220,14 @@ begin
   StdPushBack(@Self, @Value, vt);
 end;
 
-procedure Vector<T>.setItems(const index: UInt64;
-
-  const Value: T);
+procedure Vector<T>.resize(const NewSize: UInt64);
 begin
-  StdSetItem(@Self, vt, index, pVector(@Value));
+  resizeStdVector(@Self, NewSize, vt);
+end;
+
+procedure Vector<T>.setItems(const index: UInt64;const Value: T);
+begin
+  StdSetItem(@Self, vt, index, @Value);
 end;
 
 function Vector<T>.size: { UInt64 } Int64;
@@ -345,13 +370,13 @@ begin
   Result := c;
 end;
 
-{ TSet<T> }
+  { TSet<T> }
 
-class operator TSet<T>.Assign(var Dest: TSet<T>; const [ref] Src: TSet<T>);
+class operator TSet<T>.assign(var Dest: TSet<T>; const [ref] Src: TSet<T>);
 begin
-  // Dest.FDict.ToArray
-  // Src.FDict.F
-  // .Assign(Src.FDict);
+    // Dest.FDict.ToArray
+    // Src.FDict.F
+    // .Assign(Src.FDict);
 end;
 
 function TSet<T>.Contains(const Value: T): Boolean;
@@ -371,13 +396,13 @@ end;
 
 class operator TSet<T>.Implicit(const a: TArray<T>): TSet<T>;
 begin
-  for Var V: T in a do
-    Result.Include(V);
+  for Var v: T in a do
+    Result.Include(v);
 end;
 
 class operator TSet<T>.Implicit(const a: TSet<T>): TArray<T>;
 begin
- Result := a.FDict.Keys.ToArray;
+  Result := a.FDict.Keys.ToArray;
 end;
 
 class operator TSet<T>.In(const a: T; const b: TSet<T>): Boolean;
@@ -392,12 +417,50 @@ end;
 
 class operator TSet<T>.Initialize(out Dest: TSet<T>);
 begin
-  Dest.FDict := TDictionary<T, Integer>.Create;
+  Dest.FDict := TDictionary<T, integer>.Create;
 end;
 
 function vftable(const vft: vftable_func; const index: integer): Pointer;
 begin
   Result := pvftable(vft)[index];
+end;
+
+  { makePtr<T> }
+
+class function makePtr<T>.Create(const v: T): TPtr<T>;
+begin
+  Result._Ptr := @v;
+end;
+
+function isIntNumber(const v: String): Boolean;
+Var
+  R: integer;
+begin
+  Result := TryStrToInt(v, R);
+end;
+
+function isIntNumberWithDefault(const v: String; const D: integer = 0): integer;
+begin
+  if not TryStrToInt(v, Result) then
+    Result := D;
+end;
+
+  { TSwap }
+
+class procedure TSwap.swap<T>(var a, b: Vector<T>);
+Var
+  c: Pointer;
+  cs: size_t;
+begin
+  cs := SizeOf(a);
+  c := AllocMem(cs);
+  try
+    Move(a, c^, cs);
+    Move(b, a, cs);
+    Move(c^, b, cs);
+  finally
+    FreeMem(c);
+  end;
 end;
 
 initialization

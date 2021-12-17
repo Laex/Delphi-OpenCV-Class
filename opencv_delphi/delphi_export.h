@@ -37,10 +37,64 @@ class BODY_API ExportString : public String {};
 //class BODY_API ExportGRunArgBase : public GRunArgBase {};
 
 enum VectorType {
-#include "..\vectortype.inc"
+#include "../source/vectortype.inc"
 };
 
-using pVoid = void*;
+BODY_API void clearStdVector(void* obj, int vt)
+{
+#define DefClearStdVector(T) (*(static_cast<vector<T>*>(obj))).clear(); break;
+#define caseDefClearStdVector(T) case vt ## T : DefClearStdVector(T)
+
+	if (vt)
+	{
+		switch (vt)
+		{
+			caseDefClearStdVector(Mat)
+			caseDefClearStdVector(Rect)
+			caseDefClearStdVector(Point)
+		case vtVectorMat: DefClearStdVector(vector<Mat>)
+		case vtVectorRect: DefClearStdVector(vector<Rect>)
+		case vtVectorPoint: DefClearStdVector(vector<Point>)
+			caseDefClearStdVector(Point2f)
+			caseDefClearStdVector(Scalar)
+			caseDefClearStdVector(uchar)
+			caseDefClearStdVector(float)
+			caseDefClearStdVector(int)
+			caseDefClearStdVector(Vec4i)
+			caseDefClearStdVector(GMat)
+			caseDefClearStdVector(GCompileArg)
+		}
+	}
+}
+
+
+BODY_API void resizeStdVector(void* obj, size_t NewSize, int vt)
+{
+#define DefResizeStdVector(T) (*(static_cast<vector<T>*>(obj))).resize(NewSize); break;
+#define caseDefResizeStdVector(T) case vt ## T : DefResizeStdVector(T)
+
+	if (vt)
+	{
+		switch (vt)
+		{
+			caseDefResizeStdVector(Mat)
+			caseDefResizeStdVector(Rect)
+			caseDefResizeStdVector(Point)
+		case vtVectorMat: DefResizeStdVector(vector<Mat>)
+		case vtVectorRect: DefResizeStdVector(vector<Rect>)
+		case vtVectorPoint: DefResizeStdVector(vector<Point>)				
+			caseDefResizeStdVector(Point2f)
+			caseDefResizeStdVector(Scalar)
+			caseDefResizeStdVector(uchar)
+			caseDefResizeStdVector(float)		
+			caseDefResizeStdVector(int)
+			caseDefResizeStdVector(Vec4i)
+			caseDefResizeStdVector(GMat)
+			caseDefResizeStdVector(GCompileArg)
+		}
+	}
+}
+
 
 BODY_API void CopyStdVector(void* obj, void* src, int vt)
 {
@@ -76,13 +130,13 @@ BODY_API void CopyStdVector(void* obj, void* src, int vt)
 		case vtScalar:
 			DefCopyStdVector(Scalar)
 				break;
-		case vtUchar:
+		case vtuchar:
 			DefCopyStdVector(uchar)
 				break;
-		case vtFloat:
+		case vtfloat:
 			DefCopyStdVector(float)
 				break;
-		case vtInt:
+		case vtint:
 			DefCopyStdVector(int)
 				break;
 		case vtVec4i:
@@ -128,13 +182,13 @@ BODY_API void CreateStdVector(void* obj, int vt)
 		case vtScalar:
 			DefCreateStdVector(Scalar)
 				break;
-		case vtUchar:
+		case vtuchar:
 			DefCreateStdVector(uchar)
 				break;
-		case vtFloat:
+		case vtfloat:
 			DefCreateStdVector(float)
 				break;
-		case vtInt:
+		case vtint:
 			DefCreateStdVector(int)
 				break;
 		case vtVec4i:
@@ -142,7 +196,7 @@ BODY_API void CreateStdVector(void* obj, int vt)
 				break;
 		caseDefCreateStdVector(GMat)
 		caseDefCreateStdVector(GCompileArg)
-		caseDefCreateStdVector(pVoid)
+//		caseDefCreateStdVector(void)
 		default:
 			obj = nullptr;
 		}
@@ -183,13 +237,13 @@ BODY_API void DestroyStdVector(void* p, int vt)
 		case vtScalar:
 			DefDestroyStdVector(Scalar)
 				break;
-		case vtUchar:
+		case vtuchar:
 			DefDestroyStdVector(uchar)
 				break;
-		case vtFloat:
+		case vtfloat:
 			DefDestroyStdVector(float)
 				break;
-		case vtInt:
+		case vtint:
 			DefDestroyStdVector(int)
 				break;
 		case vtVec4i:
@@ -235,13 +289,13 @@ BODY_API void StdPushBack(void* p, void* o, int vt)
 		case vtScalar:
 			defpush_back(Scalar)
 				break;
-		case vtUchar:
+		case vtuchar:
 			defpush_back(uchar)
 				break;
-		case vtFloat:
+		case vtfloat:
 			defpush_back(float)
 				break;
-		case vtInt:
+		case vtint:
 			defpush_back(int)
 				break;
 		case vtVec4i:
@@ -279,11 +333,11 @@ BODY_API bool StdEmpty(void* p, int vt)
 			return static_cast<vector<Point2f>*>(p)->empty();
 		case vtScalar:
 			DefStdEmpty(Scalar)
-		case vtUchar:
+		case vtuchar:
 			DefStdEmpty(uchar)
-		case vtFloat:
+		case vtfloat:
 			DefStdEmpty(float)
-		case vtInt:
+		case vtint:
 			DefStdEmpty(int)
 		case vtVec4i:
 			DefStdEmpty(Vec4i)
@@ -328,13 +382,13 @@ BODY_API void StdItem(void* p, int vt, unsigned __int64 index, void* dst)
 		case vtScalar:
 			DefStdItem(Scalar)
 				break;
-		case vtUchar:
+		case vtuchar:
 			DefStdItem(uchar)
 				break;
-		case vtFloat:
+		case vtfloat:
 			DefStdItem(float)
 				break;
-		case vtInt:
+		case vtint:
 			DefStdItem(int)
 				break;
 		case vtVec4i:
@@ -380,13 +434,13 @@ BODY_API void StdPItem(void* p, int vt, unsigned __int64 index, void** dst)
 		case vtScalar:
 			DefStdPItem(Scalar)
 				break;
-		case vtUchar:
+		case vtuchar:
 			DefStdPItem(uchar)
 				break;
-		case vtFloat:
+		case vtfloat:
 			DefStdPItem(float)
 				break;
-		case vtInt:
+		case vtint:
 			DefStdPItem(int)
 				break;
 		case vtVec4i:
@@ -424,11 +478,11 @@ BODY_API unsigned __int64 StdSize(void* p, int vt)
 			return static_cast<vector<Point2f>*>(p)->size();
 		case vtScalar:
 			DefStdSize(Scalar)
-		case vtUchar:
+		case vtuchar:
 			DefStdSize(uchar)
-		case vtFloat:
+		case vtfloat:
 			DefStdSize(float)
-		case vtInt:
+		case vtint:
 			DefStdSize(int)
 		case vtVec4i:
 			DefStdSize(Vec4i)
@@ -473,13 +527,13 @@ BODY_API void StdSetItem(void* p, int vt, unsigned __int64 index, void* dst)
 		case vtScalar:
 			DefStdSetItem(Scalar)
 				break;
-		case vtUchar:
+		case vtuchar:
 			DefStdSetItem(uchar)
 				break;
-		case vtFloat:
+		case vtfloat:
 			DefStdSetItem(float)
 				break;
-		case vtInt:
+		case vtint:
 			DefStdSetItem(int)
 				break;
 		case vtVec4i:

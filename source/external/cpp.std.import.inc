@@ -1,3 +1,25 @@
+(*
+  This file is part of Delphi-OpenCV-Class project.
+  https://github.com/Laex/Delphi-OpenCV-Class
+
+  It is subject to the license terms in the LICENSE file found in the top-level directory
+  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+
+  Copyright 2021, Laentir Valetov, laex@bk.ru
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*)
+
 {$REGION 'CppString'}
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@$$QEAV01@@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &&)
 // ??0?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@QEAA@$$QEAV01@AEBV?$allocator@D@1@@Z	std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > &&,class std::allocator<char> const &)
@@ -211,9 +233,9 @@ procedure CreateStdVector(Obj: pVector; vt: TVectorType); external opencv_delphi
 // ?DestroyStdVector@@YAXPEAXH@Z	void __cdecl DestroyStdVector(void * __ptr64,int)
 procedure DestroyStdVector(Obj: pVector; vt: TVectorType); external opencv_delphi_dll name '?DestroyStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdItem@@YAXPEAXH_K0@Z	void __cdecl StdItem(void * __ptr64,int,unsigned __int64,void * __ptr64)
-procedure StdGetItem(const Obj: pVector; vt: TVectorType; index: UInt64; p: pVector); external opencv_delphi_dll name '?StdItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure StdGetItem(const Obj: pVector; vt: TVectorType; index: UInt64;const pGetValue: Pointer); external opencv_delphi_dll name '?StdItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 //?StdSetItem@@YAXPEAXH_K0@Z;void __cdecl StdSetItem(void * __ptr64,int,unsigned __int64,void * __ptr64)
-procedure StdSetItem(const Obj: pVector; vt: TVectorType; index: UInt64; p: pVector); external opencv_delphi_dll name '?StdSetItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure StdSetItem(const Obj: pVector; vt: TVectorType; index: UInt64;const pSetValue: Pointer); external opencv_delphi_dll name '?StdSetItem@@YAXPEAXH_K0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdPItem@@YAXPEAXH_KPEAPEAX@Z;void __cdecl StdPItem(void * __ptr64,int,unsigned __int64,void * __ptr64 * __ptr64)
 procedure StdGetPItem(const Obj: pVector; vt: TVectorType; index: UInt64; Var p: pVector); external opencv_delphi_dll name '?StdPItem@@YAXPEAXH_KPEAPEAX@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?StdSize@@YA_KPEAXH@Z	unsigned __int64 __cdecl StdSize(void * __ptr64,int)
@@ -224,4 +246,8 @@ function StdEmpty(Obj: pVector; vt: TVectorType): bool; external opencv_delphi_d
 function StdPushBack(Obj: pVector; p: pVector; vt: TVectorType): bool; external opencv_delphi_dll name '?StdPushBack@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?CopyStdVector@@YAXPEAX0H@Z	void __cdecl CopyStdVector(void * __ptr64,void * __ptr64,int)
 procedure CopyStdVector(Obj, Src: pVector; vt: TVectorType); external opencv_delphi_dll name '?CopyStdVector@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// ?resizeStdVector@@YAXPEAX_KH@Z;void __cdecl resizeStdVector(void * __ptr64,unsigned __int64,int)
+procedure resizeStdVector(Obj: pVector; NewSize: UInt64; vt: TVectorType); external opencv_delphi_dll name '?resizeStdVector@@YAXPEAX_KH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// ?clearStdVector@@YAXPEAXH@Z;void __cdecl clearStdVector(void * __ptr64,int)
+procedure clearStdVector(Obj: pVector; vt: TVectorType); external opencv_delphi_dll name '?clearStdVector@@YAXPEAXH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 {$ENDREGION 'vector<T>'}

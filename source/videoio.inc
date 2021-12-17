@@ -47,19 +47,8 @@
 ////////////////////////////////// video io /////////////////////////////////
 
 Type
-
 //typedef struct CvCapture CvCapture;
 //typedef struct CvVideoWriter CvVideoWriter;
-
-//namespace cv
-//{
-
-//! @addtogroup videoio
-//! @{
-
-//! @addtogroup videoio_flags_base
-//! @{
-
 
 (** @brief cv::VideoCapture API backends identifier.
 
@@ -214,20 +203,15 @@ VideoWriterProperties =(//
  * @note In case of FFmpeg backend, it translated to enum AVHWDeviceType (https://github.com/FFmpeg/FFmpeg/blob/master/libavutil/hwcontext.h)
  *)
  VideoAccelerationType = (//
-
     VIDEO_ACCELERATION_NONE     =  0,  //!< Do not require any specific H/W acceleration, prefer software processing.
                                        //!< Reading of this value means that special H/W accelerated handling is not added or not detected by OpenCV.
-
     VIDEO_ACCELERATION_ANY      =  1,  //!< Prefer to use H/W acceleration. If no one supported, then fallback to software processing.
                                        //!< @note H/W acceleration may require special configuration of used environment.
                                        //!< @note Results in encoding scenario may differ between software and hardware accelerated encoders.
-
     VIDEO_ACCELERATION_D3D11    =  2,  //!< DirectX 11
     VIDEO_ACCELERATION_VAAPI    =  3,  //!< VAAPI
     VIDEO_ACCELERATION_MFX      =  4   //!< libmfx (Intel MediaSDK/oneVPL)
 );
-
-//! @} Hardware acceleration support
 
 (** @name IEEE 1394 drivers
     @{
@@ -244,14 +228,11 @@ const
        CAP_PROP_DC1394_MODE_ONE_PUSH_AUTO = -1;
        CAP_PROP_DC1394_MAX                = 31;
 
-//! @} IEEE 1394 drivers
-
 (** @name OpenNI (for Kinect)
     @{
 *)
 
 //! OpenNI map generators
-
        CAP_OPENNI_DEPTH_GENERATOR = 1 shl 31;
        CAP_OPENNI_IMAGE_GENERATOR = 1 shl 30;
        CAP_OPENNI_IR_GENERATOR    = 1 shl 29;
@@ -304,14 +285,10 @@ const
        CAP_OPENNI_QVGA_30HZ = 3;
        CAP_OPENNI_QVGA_60HZ = 4;
 
-//! @} OpenNI
-
 (** @name GStreamer
     @{
 *)
     CAP_PROP_GSTREAMER_QUEUE_LENGTH = 200; //!< Default is 1
-
-//! @} GStreamer
 
 (** @name PvAPI, Prosilica GigE SDK
     @{
@@ -348,8 +325,6 @@ const
        CAP_PVAPI_PIXELFORMAT_BGR24    = 6;    //!< Bgr24
        CAP_PVAPI_PIXELFORMAT_RGBA32   = 7;    //!< Rgba32
        CAP_PVAPI_PIXELFORMAT_BGRA32   = 8;    //!< Bgra32
-
-//! @} PvAPI
 
 (** @name XIMEA Camera API
     @{
@@ -507,18 +482,12 @@ const
        CAP_PROP_XI_SENSOR_FEATURE_SELECTOR                      = 585; //!< Selects the current feature which is accessible by XI_PRM_SENSOR_FEATURE_VALUE.
        CAP_PROP_XI_SENSOR_FEATURE_VALUE                         = 586; //!< Allows access to sensor feature value currently selected by XI_PRM_SENSOR_FEATURE_SELECTOR.
 
-//! @} XIMEA
-
-
 (** @name ARAVIS Camera API
     @{
 *)
 
 //! Properties of cameras available through ARAVIS backend
  CAP_PROP_ARAVIS_AUTOTRIGGER                              = 600; //!< Automatically trigger frame capture if camera is configured with software trigger
-
-
-//! @} ARAVIS
 
 (** @name AVFoundation framework for iOS
     @{
@@ -546,7 +515,6 @@ const
        CAP_PROP_GIGA_FRAME_HEIGH_MAX  = 10004;
        CAP_PROP_GIGA_FRAME_SENS_WIDTH = 10005;
        CAP_PROP_GIGA_FRAME_SENS_HEIGH = 10006;
-
 
 //! @} Smartek
 

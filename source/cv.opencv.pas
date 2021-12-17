@@ -42,22 +42,22 @@ Uses
 {$I opencv_modules.inc}
 // Then the list of defines is checked to include the correct headers
 // Core library is always included --> without no OpenCV functionality available
-{$I core.inc}
+{$I core.inc} {done, no classes}
 // Then the optional modules are checked
 {$IFDEF HAVE_OPENCV_CALIB3D}
 {.$I calib3d.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_FEATURES2D}
-{.$I features2d.inc}
+{$I features2d.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_DNN}
 {.$I dnn.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_FLANN}
-{.$I flann.inc}
+{$I flann.inc}
 {$endif}
 {$IFDEF HAVE_OPENCV_HIGHGUI}
-{$I highgui.inc}
+{$I highgui.inc} {done}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_IMGCODECS}
 {$I imgcodecs.inc}
@@ -95,13 +95,13 @@ implementation
 {.$I calib3d.impl.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_FEATURES2D}
-{.$I features2d.impl.inc}
+{$I features2d.impl.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_DNN}
 {.$I dnn.impl.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_FLANN}
-{.$I flann.inc}
+{$I flann.impl.inc}
 {$endif}
 {$IFDEF HAVE_OPENCV_HIGHGUI}
 {$I highgui.impl.inc}
@@ -136,3 +136,4 @@ initialization
 {$I core.init.inc}
 
 end.
+

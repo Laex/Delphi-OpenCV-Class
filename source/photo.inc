@@ -60,14 +60,6 @@
     @}
   *)
 
-  // namespace cv
-  // {
-
-  // ! @addtogroup photo
-  // ! @{
-
-  // ! @addtogroup photo_inpaint
-  // ! @{
 const
     // ! the inpainting algorithm
   INPAINT_NS    = 0; // !< Use Navier-Stokes based method
@@ -95,6 +87,21 @@ const
     *)
     // CV_EXPORTS_W void inpaint( InputArray src, InputArray inpaintMask,
     // OutputArray dst, double inpaintRadius, int flags );
+{
+5318
+?inpaint@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z
+?inpaint@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z
+void cv::inpaint(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,int)
+}
+procedure inpaint( const src:TInputArray;const inpaintMask:TInputArray;
+                   const dst:TOutputArray; inpaintRadius:double; flags:int);
+external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?inpaint@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
+{$ELSE}
+  name '?inpaint@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     // ! @} photo_inpaint
 
@@ -152,8 +159,25 @@ const
     // const std::vector<float>& h,
     // int templateWindowSize = 7, int searchWindowSize = 21,
     // int normType = NORM_L2);
+{
+4688
+?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z
+?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z
+void cv::fastNlMeansDenoising(class cv::_InputArray const &,class cv::_OutputArray const &,class std::vector<float,class std::allocator<float> > const &,int,int,int)
+}
+procedure fastNlMeansDenoising( const src:TInputArray;const dst:TOutputArray;
+     const h:vector<float>;
+     templateWindowSize :int= 7; searchWindowSize :int= 21;
+     normType :int= int(NORM_L2));
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
+{$ELSE}
+  name '?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-    (* * @brief Modification of fastNlMeansDenoising function for colored images
+(* * @brief Modification of fastNlMeansDenoising function for colored images
 
       @param src Input 8-bit 3-channel image.
       @param dst Output image with the same size and type as src .
@@ -171,9 +195,25 @@ const
       The function converts image to CIELAB colorspace and then separately denoise L and AB components
       with given h parameters using fastNlMeansDenoising function.
     *)
-    // CV_EXPORTS_W void fastNlMeansDenoisingColored( InputArray src, OutputArray dst,
-    // float h = 3, float hColor = 3,
-    // int templateWindowSize = 7, int searchWindowSize = 21);
+//CV_EXPORTS_W void fastNlMeansDenoisingColored( InputArray src, OutputArray dst,
+//float h = 3, float hColor = 3,
+//int templateWindowSize = 7, int searchWindowSize = 21);
+{
+4691
+?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MMHH@Z
+?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MMHH@Z
+void cv::fastNlMeansDenoisingColored(class cv::_InputArray const &,class cv::_OutputArray const &,float,float,int,int)
+}
+procedure fastNlMeansDenoisingColored(const src:TInputArray;const dst:TOutputArray;
+h :float= 3; hColor :float= 3;
+templateWindowSize :int= 7; searchWindowSize :int= 21);
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MMHH@Z'
+{$ELSE}
+  name '?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MMHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
       captured in small period of time. For example video. This version of the function is for grayscale
@@ -198,9 +238,25 @@ const
       perfectly removes noise but also removes image details, smaller h
       value preserves details but also preserves some noise
     *)
-    // CV_EXPORTS_W void fastNlMeansDenoisingMulti( InputArrayOfArrays srcImgs, OutputArray dst,
-    // int imgToDenoiseIndex, int temporalWindowSize,
-    // float h = 3, int templateWindowSize = 7, int searchWindowSize = 21);
+// CV_EXPORTS_W void fastNlMeansDenoisingMulti( InputArrayOfArrays srcImgs, OutputArray dst,
+// int imgToDenoiseIndex, int temporalWindowSize,
+// float h = 3, int templateWindowSize = 7, int searchWindowSize = 21);
+{
+4694
+?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMHH@Z
+?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMHH@Z
+void cv::fastNlMeansDenoisingMulti(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,float,int,int)
+}
+procedure fastNlMeansDenoisingMulti(const srcImgs:TInputArrayOfArrays;const dst:TOutputArray;
+ imgToDenoiseIndex:int; temporalWindowSize:int;
+ h :float= 3; templateWindowSize :int= 7; searchWindowSize :int= 21);
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMHH@Z'
+{$ELSE}
+  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
       captured in small period of time. For example video. This version of the function is for grayscale
@@ -227,11 +283,29 @@ const
       value preserves details but also preserves some noise
       @param normType Type of norm used for weight calculation. Can be either NORM_L2 or NORM_L1
     *)
-    // CV_EXPORTS_W void fastNlMeansDenoisingMulti( InputArrayOfArrays srcImgs, OutputArray dst,
-    // int imgToDenoiseIndex, int temporalWindowSize,
-    // const std::vector<float>& h,
-    // int templateWindowSize = 7, int searchWindowSize = 21,
-    // int normType = NORM_L2);
+// CV_EXPORTS_W void fastNlMeansDenoisingMulti( InputArrayOfArrays srcImgs, OutputArray dst,
+// int imgToDenoiseIndex, int temporalWindowSize,
+// const std::vector<float>& h,
+// int templateWindowSize = 7, int searchWindowSize = 21,
+// int normType = NORM_L2);
+{
+4693
+?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z
+?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z
+void cv::fastNlMeansDenoisingMulti(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,class std::vector<float,class std::allocator<float> > const &,int,int,int)
+}
+procedure fastNlMeansDenoisingMulti(const srcImgs:TInputArrayOfArrays;const dst:TOutputArray;
+ imgToDenoiseIndex:int; temporalWindowSize:int;
+ const h:vector<float>;
+ templateWindowSize :int= 7; searchWindowSize: int= 21;
+ normType :int= int(NORM_L2));
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
+{$ELSE}
+  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Modification of fastNlMeansDenoisingMulti function for colored images sequences
 
@@ -256,10 +330,27 @@ const
       The function converts images to CIELAB colorspace and then separately denoise L and AB components
       with given h parameters using fastNlMeansDenoisingMulti function.
     *)
-    // CV_EXPORTS_W void fastNlMeansDenoisingColoredMulti( InputArrayOfArrays srcImgs, OutputArray dst,
-    // int imgToDenoiseIndex, int temporalWindowSize,
-    // float h = 3, float hColor = 3,
-    // int templateWindowSize = 7, int searchWindowSize = 21);
+// CV_EXPORTS_W void fastNlMeansDenoisingColoredMulti( InputArrayOfArrays srcImgs, OutputArray dst,
+// int imgToDenoiseIndex, int temporalWindowSize,
+// float h = 3, float hColor = 3,
+// int templateWindowSize = 7, int searchWindowSize = 21);
+{
+4692
+?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMMHH@Z
+?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMMHH@Z
+void cv::fastNlMeansDenoisingColoredMulti(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,float,float,int,int)
+}
+procedure fastNlMeansDenoisingColoredMulti(const srcImgs:TInputArrayOfArrays;const dst:TOutputArray;
+ imgToDenoiseIndex:int; temporalWindowSize:int;
+ h :float= 3; hColor :float= 3;
+ templateWindowSize :int= 7; searchWindowSize :int= 21);
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMMHH@Z'
+{$ELSE}
+  name '?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMMHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Primal-dual algorithm is an algorithm for solving special types of variational problems (that is,
       finding a function to minimize some functional). As the image denoising, in particular, may be seen
@@ -298,12 +389,23 @@ const
       better, but it is hard to quantitatively refine this statement, so just use the default and
       increase it if the results are poor.
     *)
-    // CV_EXPORTS_W void denoise_TVL1(const std::vector<Mat>& observations,Mat& result, double lambda=1.0, int niters=30);
+// CV_EXPORTS_W void denoise_TVL1(const std::vector<Mat>& observations,Mat& result, double lambda=1.0, int niters=30);
+{
+4375
+?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z
+?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z
+void cv::denoise_TVL1(class std::vector<class cv::Mat,class std::allocator<class cv::Mat> > const &,class cv::Mat &,double,int)
+}
+procedure denoise_TVL1(const observations:vector<TMat>; Var res:TMat; lambda:double=1.0; niters:int=30);
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z'
+{$ELSE}
+  name '?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-    // ! @} photo_denoise
 
-    // ! @addtogroup photo_hdr
-    // ! @{
 const
   LDR_SIZE = 256;
 
@@ -329,7 +431,21 @@ const
       equal to 2.2f is suitable for most displays.
       Generally gamma \> 1 brightens the image and gamma \< 1 darkens it.
     *)
-    // CV_EXPORTS_W Ptr<Tonemap> createTonemap(float gamma = 1.0f);
+// CV_EXPORTS_W Ptr<Tonemap> createTonemap(float gamma = 1.0f);
+{
+4298
+?createTonemap@cv@@YA?AU?$Ptr@VTonemap@cv@@@1@M@Z
+?createTonemap@cv@@YA?AU?$Ptr@VTonemap@cv@@@1@M@Z
+struct cv::Ptr<class cv::Tonemap> cv::createTonemap(float)
+}
+//function createTonemap(gamma :float= 1.0):TPtr<TTonemap>;
+//overload; external opencv_world_dll
+//{$IFDEF DEBUG}
+//  name '?createTonemap@cv@@YA?AU?$Ptr@VTonemap@cv@@@1@M@Z'
+//{$ELSE}
+//  name '?createTonemap@cv@@YA?AU?$Ptr@VTonemap@cv@@@1@M@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Adaptive logarithmic mapping is a fast global tonemapping algorithm that scales the image in
       logarithmic domain.
@@ -683,11 +799,12 @@ const
       ?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z
       void cv::decolor(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
     }
-procedure decolor(const Src: TInputArray; const grayscale: TOutputArray; const color_boost: TOutputArray); external opencv_world_dll
+procedure decolor(const Src: TInputArray; const grayscale: TOutputArray; const color_boost: TOutputArray);
+external opencv_world_dll
 {$IFDEF DEBUG}
-  name '?decolor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
+name '?decolor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
 {$ELSE}
-  name '?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
+name '?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -722,8 +839,23 @@ const
       @param blend Output image with the same size and type as dst.
       @param flags Cloning method that could be cv::NORMAL_CLONE, cv::MIXED_CLONE or cv::MONOCHROME_TRANSFER
     *)
-    // CV_EXPORTS_W void seamlessClone( InputArray src, InputArray dst, InputArray mask, Point p,
-    // OutputArray blend, int flags);
+// CV_EXPORTS_W void seamlessClone( InputArray src, InputArray dst, InputArray mask, Point p,
+// OutputArray blend, int flags);
+{
+6218
+?seamlessClone@cv@@YAXAEBV_InputArray@debug_build_guard@1@00V?$Point_@H@1@AEBV_OutputArray@31@H@Z
+?seamlessClone@cv@@YAXAEBV_InputArray@1@00V?$Point_@H@1@AEBV_OutputArray@1@H@Z
+void cv::seamlessClone(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::Point_<int>,class cv::_OutputArray const &,int)
+}
+procedure seamlessClone(const src:TInputArray;const dst:TInputArray;const mask:TInputArray;const p:TPoint;
+     const blend:TOutputArray; flags:int);
+external opencv_world_dll
+{$IFDEF DEBUG}
+name '?seamlessClone@cv@@YAXAEBV_InputArray@debug_build_guard@1@00V?$Point_@H@1@AEBV_OutputArray@31@H@Z'
+{$ELSE}
+name '?seamlessClone@cv@@YAXAEBV_InputArray@1@00V?$Point_@H@1@AEBV_OutputArray@1@H@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Given an original color image, two differently colored versions of this image can be mixed
       seamlessly.
@@ -737,8 +869,23 @@ const
 
       Multiplication factor is between .5 to 2.5.
     *)
-    // CV_EXPORTS_W void colorChange(InputArray src, InputArray mask, OutputArray dst, float red_mul = 1.0f,
-    // float green_mul = 1.0f, float blue_mul = 1.0f);
+// CV_EXPORTS_W void colorChange(InputArray src, InputArray mask, OutputArray dst, float red_mul = 1.0f,
+// float green_mul = 1.0f, float blue_mul = 1.0f);
+{
+3958
+?colorChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMM@Z
+?colorChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMM@Z
+void cv::colorChange(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,float,float,float)
+}
+procedure colorChange(const src:TInputArray;const mask:TInputArray;const dst:TOutputArray; red_mul :float= 1.0;
+ green_mul :float= 1.0; blue_mul :float= 1.0);
+external opencv_world_dll
+{$IFDEF DEBUG}
+name '?colorChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMM@Z'
+{$ELSE}
+name '?colorChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMM@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Applying an appropriate non-linear transformation to the gradient field inside the selection and
       then integrating back with a Poisson solver, modifies locally the apparent illumination of an image.
@@ -751,8 +898,23 @@ const
 
       This is useful to highlight under-exposed foreground objects or to reduce specular reflections.
     *)
-    // CV_EXPORTS_W void illuminationChange(InputArray src, InputArray mask, OutputArray dst,
-    // float alpha = 0.2f, float beta = 0.4f);
+// CV_EXPORTS_W void illuminationChange(InputArray src, InputArray mask, OutputArray dst,
+// float alpha = 0.2f, float beta = 0.4f);
+{
+5246
+?illuminationChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MM@Z
+?illuminationChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MM@Z
+void cv::illuminationChange(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
+}
+procedure illuminationChange(const src:TInputArray;const mask:TInputArray;const dst:TOutputArray;
+ alpha :float= 0.2; beta :float= 0.4);
+external opencv_world_dll
+{$IFDEF DEBUG}
+name '?illuminationChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MM@Z'
+{$ELSE}
+name '?illuminationChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MM@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief By retaining only the gradients at edge locations, before integrating with the Poisson solver, one
       washes out the texture of the selected region, giving its contents a flat aspect. Here Canny Edge %Detector is used.
@@ -769,9 +931,25 @@ const
       assumption means that when the colors don't match, the source image color gets tinted toward the
       color of the destination image.
     *)
-    // CV_EXPORTS_W void textureFlattening(InputArray src, InputArray mask, OutputArray dst,
-    // float low_threshold = 30, float high_threshold = 45,
-    // int kernel_size = 3);
+// CV_EXPORTS_W void textureFlattening(InputArray src, InputArray mask, OutputArray dst,
+// float low_threshold = 30, float high_threshold = 45,
+// int kernel_size = 3);
+{
+6605
+?textureFlattening@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMH@Z
+?textureFlattening@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMH@Z
+void cv::textureFlattening(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,float,float,int)
+}
+procedure textureFlattening(const src:TInputArray;const mask:TInputArray;const dst:TOutputArray;
+ low_threshold :float= 30; high_threshold :float= 45;
+ kernel_size :int= 3);
+external opencv_world_dll
+{$IFDEF DEBUG}
+name '?textureFlattening@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMH@Z'
+{$ELSE}
+name '?textureFlattening@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     // ! @} photo_clone
 
@@ -791,19 +969,20 @@ const
       @param sigma_s %Range between 0 to 200.
       @param sigma_r %Range between 0 to 1.
     *)
-    // CV_EXPORTS_W void edgePreservingFilter(InputArray src, OutputArray dst, int flags = 1,
-    // float sigma_s = 60, float sigma_r = 0.4f);
-    {
-      4555
-      ?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z
-      ?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z
-      void cv::edgePreservingFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,float,float)
-    }
-procedure edgePreservingFilter(const Src: TInputArray; const dst: TOutputArray; flags: Int = 1; sigma_s: float = 60; sigma_r: float = 0.4); external opencv_world_dll
+// CV_EXPORTS_W void edgePreservingFilter(InputArray src, OutputArray dst, int flags = 1,
+// float sigma_s = 60, float sigma_r = 0.4f);
+{
+ 4555
+ ?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z
+ ?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z
+ void cv::edgePreservingFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,float,float)
+}
+procedure edgePreservingFilter(const Src: TInputArray; const dst: TOutputArray; flags: Int = 1; sigma_s: float = 60; sigma_r: float = 0.4);
+external opencv_world_dll
 {$IFDEF DEBUG}
-  name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z'
+name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z'
 {$ELSE}
-  name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z'
+name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -874,7 +1053,8 @@ procedure pencilSketch(const Src: TInputArray; const dst1: TOutputArray; const d
     ?stylization@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z
     void cv::stylization(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
   }
-procedure stylization(const Src: TInputArray; const dst: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.45); external opencv_world_dll
+procedure stylization(const Src: TInputArray; const dst: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.45);
+external opencv_world_dll
 {$IFDEF DEBUG}
   name '?stylization@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z'
 {$ELSE}

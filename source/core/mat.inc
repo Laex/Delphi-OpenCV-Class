@@ -45,7 +45,7 @@
   ACCESS_MASK = ACCESS_RW, //
   ACCESS_FAST = 1 shl 26   //
   );
-CV_ENUM_FLAGS = TSet<AccessFlag>; // CV_ENUM_FLAGS(AccessFlag)
+  // CV_ENUM_FLAGS = TSet<AccessFlag>; // CV_ENUM_FLAGS(AccessFlag)
   // __CV_ENUM_FLAGS_BITWISE_AND(AccessFlag, int, AccessFlag)
 
   // CV__DEBUG_NS_BEGIN
@@ -354,7 +354,7 @@ type
     class operator Implicit(const v: Vector<TVec4i>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<TMat>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: TScalar): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  public
+   public
 {$HINTS OFF}
     flags: Int;   // int flags;
     Obj: Pointer; // void* obj;
@@ -884,7 +884,7 @@ type
     class function mat(): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
       // constructors
     class function mat(const size: TSize; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat(Size size, int type);
-      // TMatHelper // Mat(int rows, int cols, int type, const Scalar& s);
+      // Mat(int rows, int cols, int type, const Scalar& s);
     class function mat(rows, cols, &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
       // Mat(Size size, int type, const Scalar& s);
     class function mat(const size: TSize; &type: Int; const s: TScalar): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -908,7 +908,7 @@ type
       // Mat(const Mat& m, const std::vector<Range>& ranges);
 
       // Mat& operator = (const Mat& m);
-      // TMatHelper // Mat& operator = (const MatExpr& expr);
+      // Mat& operator = (const MatExpr& expr);
       // UMat getUMat(AccessFlag accessFlags, UMatUsageFlags usageFlags = USAGE_DEFAULT) const;
       // Mat row(int y) const;
       // Mat col(int x) const;
@@ -924,6 +924,7 @@ type
       // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
       // void assignTo( Mat& m, int type=-1 ) const;
       // Mat& operator = (const Scalar& s);
+      class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
       // Mat& setTo(InputArray value, InputArray mask=noArray());
       // Mat reshape(int cn, int rows=0) const;
       // Mat reshape(int cn, int newndims, const int* newsz) const;
@@ -933,14 +934,14 @@ type
       // MatExpr mul(InputArray m, double scale=1) const;
       // Mat cross(InputArray m) const;
       // double dot(InputArray m) const;
-      // TMatHelper // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
-      // TMatHelper  // CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
+      // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
+      // CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
       // CV_NODISCARD_STD static MatExpr zeros(int ndims, const int* sz, int type);
-      // TMatHelper // CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
-      // TMatHelper // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
-      // TMatHelper // CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
-      // TMatHelper // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
-      // TMatHelper // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
+      // CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
+      // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
+      // CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
+      // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
+      // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
     procedure Create(rows, cols, &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} // void create(int rows, int cols, int type);
     procedure Create(const size: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void create(Size size, int type);
       // void create(int ndims, const int* sizes, int type);

@@ -43,12 +43,12 @@ end;
 
 { TRNG }
 
-class operator TRNG.Implicit(const p: TRNG): unsigned;
+class operator TRNGHelper.Implicit(const p: TRNG): unsigned;
 begin
   Result := operator_RNG_ToUnsignedInt(p);
 end;
 
-class operator TRNG.Implicit(const u: UInt64): TRNG;
+class operator TRNGHelper.Implicit(const u: UInt64): TRNG;
 begin
   Result := TRNG.RNG(u);
 end;
@@ -58,12 +58,12 @@ begin
   constructor_RNG(Dest);
 end;
 
-class function TRNG.RNG(state: UInt64): TRNG;
+class function TRNGHelper.RNG(state: UInt64): TRNG;
 begin
   constructor_RNG(Result, state);
 end;
 
-function TRNG.UNIFORM(a, b: Int): Int;
+function TRNGHelper.UNIFORM(a, b: Int): Int;
 begin
   Result := uniform_RNG(Self, a, b);
 end;
@@ -165,6 +165,39 @@ end;
 procedure bitwise_xor(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
 begin
   bitwise_xor(src1,src2,dst,TInputArray.noArray());
+end;
+
+procedure mulTransposed(const src:TInputArray;const dst:TOutputArray; aTa:bool);
+begin
+  mulTransposed(src,dst,aTa,TInputArray.noArray());
+end;
+
+procedure setIdentity(const mtx:TInputOutputArray);
+begin
+  setIdentity(mtx,Scalar(1));
+end;
+
+function eigen(const src:TInputArray;const eigenvalues:TOutputArray):bool;
+begin
+  Result := eigen(src,eigenvalues,TOutputArray.noArray());
+end;
+
+function kmeans(const data:TInputArray; K:int;const bestLabels:TInputOutputArray;
+  const criteria:TTermCriteria; attempts:int;
+  flags:int):double;
+begin
+  Result := kmeans(data,K,bestLabels,criteria,attempts,flags,TOutputArray.noArray());
+end;
+
+procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 }; dtype: Int { = -1 };
+  const mask: TInputArray { = noArray() } );
+begin
+  normalize(Src, dst, alpha, beta, Int(norm_type), dtype, mask);
+end;
+
+procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: Int = -1);
+begin
+  normalize(Src, dst, alpha, beta, norm_type, dtype, TInputArray.noArray);
 end;
 
 {$ENDIF OPENCV_CORE_HPP}

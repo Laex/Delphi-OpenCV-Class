@@ -173,6 +173,7 @@ Example:
     // bool inside(const Rect_<_Tp>& r) const;
     class operator Implicit(const m: TPoint_<T>): UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const p: TPoint_<T>): TPoint_<Int>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Subtract(const a: TPoint_<T>; const b: TPoint_<T>) : TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     x: T; // !< x coordinate of the point
     y: T; // !< y coordinate of the point
@@ -186,6 +187,7 @@ Example:
   pPoint = ^TPoint;
 
 function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function Point2f(const _x, _y: float): TPoint2f; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (*
 template<typename _Tp> class DataType< Point_<_Tp> >
@@ -1310,13 +1312,15 @@ Point_<_Tp>& operator /= (Point_<_Tp>& a, double b)
     a.y = saturate_cast<_Tp>(a.y / b);
     return a;
 }
+*)
+//template<typename _Tp> static inline
+//double norm(const Point_<_Tp>& pt)
+//{
+//    return std::sqrt((double)pt.x*pt.x + (double)pt.y*pt.y);
+//}
+function norm(const pt:TPoint):double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-template<typename _Tp> static inline
-double norm(const Point_<_Tp>& pt)
-{
-    return std::sqrt((double)pt.x*pt.x + (double)pt.y*pt.y);
-}
-
+(*
 template<typename _Tp> static inline
 bool operator == (const Point_<_Tp>& a, const Point_<_Tp>& b)
 {

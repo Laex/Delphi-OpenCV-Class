@@ -26,11 +26,17 @@ program minarea;
 
 uses
   System.SysUtils,
-  CVResource,
-  opencv_world;
+  cpp.utils,
+  cv.resource,
+  cv.opencv;
 
-const
-  EXIT_FAILURE = 1;
+procedure help();
+begin
+    cout + 'This program demonstrates finding the minimum enclosing box, triangle or circle of a set\n'//
+         + 'of points using functions: minAreaRect() minEnclosingTriangle() minEnclosingCircle().\n'//
+         + 'Random points are generated and then enclosed.\n\n'//
+         + 'Press ESC, "q" or "Q" to exit and any other key to regenerate the set of points.\n\n';
+end;
 
 begin
   try
