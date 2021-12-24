@@ -11,5 +11,6 @@
     vtint = 11,             // vector<int>
     vtVec4i = 12,           // vector<Vec4i>
     vtGMat = 13,            // vector<GMat>
-    vtGCompileArg = 14//,     // vector<GCompileArg>
-    //vtvoid       = 15       // vector<void *>
+    vtGCompileArg = 14,     // vector<GCompileArg>
+    vtVec6f       = 15,     // vector<Vec6f>
+    vtVectorPoint2f = 16    // vector<vector<Point2f>>

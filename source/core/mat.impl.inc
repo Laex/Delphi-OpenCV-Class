@@ -479,6 +479,13 @@ begin
   Result.sz := size(0, 0);
 end;
 
+class operator TInputArray.Implicit(const v: Vector<TPoint>): TInputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_READ);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
+end;
+
 class operator TInputArray.Implicit(const v: Vector<uchar>): TInputArray;
 begin
   Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_READ);

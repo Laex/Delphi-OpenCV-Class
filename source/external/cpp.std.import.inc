@@ -245,7 +245,7 @@ function StdEmpty(Obj: pVector; vt: TVectorType): bool; external opencv_delphi_d
 // ?StdPushBack@@YAXPEAX0H@Z	void __cdecl StdPushBack(void * __ptr64,void * __ptr64,int)
 function StdPushBack(Obj: pVector; p: pVector; vt: TVectorType): bool; external opencv_delphi_dll name '?StdPushBack@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?CopyStdVector@@YAXPEAX0H@Z	void __cdecl CopyStdVector(void * __ptr64,void * __ptr64,int)
-procedure CopyStdVector(Obj, Src: pVector; vt: TVectorType); external opencv_delphi_dll name '?CopyStdVector@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure CopyStdVector(const Obj, Src: pVector; vt: TVectorType); external opencv_delphi_dll name '?CopyStdVector@@YAXPEAX0H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?resizeStdVector@@YAXPEAX_KH@Z;void __cdecl resizeStdVector(void * __ptr64,unsigned __int64,int)
 procedure resizeStdVector(Obj: pVector; NewSize: UInt64; vt: TVectorType); external opencv_delphi_dll name '?resizeStdVector@@YAXPEAX_KH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?clearStdVector@@YAXPEAXH@Z;void __cdecl clearStdVector(void * __ptr64,int)

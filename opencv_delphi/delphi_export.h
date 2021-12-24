@@ -49,20 +49,22 @@ BODY_API void clearStdVector(void* obj, int vt)
 	{
 		switch (vt)
 		{
-			caseDefClearStdVector(Mat)
-			caseDefClearStdVector(Rect)
-			caseDefClearStdVector(Point)
+		caseDefClearStdVector(Mat)
+		caseDefClearStdVector(Rect)
+		caseDefClearStdVector(Point)
 		case vtVectorMat: DefClearStdVector(vector<Mat>)
 		case vtVectorRect: DefClearStdVector(vector<Rect>)
 		case vtVectorPoint: DefClearStdVector(vector<Point>)
-			caseDefClearStdVector(Point2f)
-			caseDefClearStdVector(Scalar)
-			caseDefClearStdVector(uchar)
-			caseDefClearStdVector(float)
-			caseDefClearStdVector(int)
-			caseDefClearStdVector(Vec4i)
-			caseDefClearStdVector(GMat)
-			caseDefClearStdVector(GCompileArg)
+		caseDefClearStdVector(Point2f)
+		caseDefClearStdVector(Scalar)
+		caseDefClearStdVector(uchar)
+		caseDefClearStdVector(float)
+		caseDefClearStdVector(int)
+		caseDefClearStdVector(Vec4i)
+		caseDefClearStdVector(Vec6f)
+		case vtVectorPoint2f: DefClearStdVector(vector<Point2f>)
+			//caseDefClearStdVector(GMat)
+			//caseDefClearStdVector(GCompileArg)
 		}
 	}
 }
@@ -82,15 +84,17 @@ BODY_API void resizeStdVector(void* obj, size_t NewSize, int vt)
 			caseDefResizeStdVector(Point)
 		case vtVectorMat: DefResizeStdVector(vector<Mat>)
 		case vtVectorRect: DefResizeStdVector(vector<Rect>)
-		case vtVectorPoint: DefResizeStdVector(vector<Point>)				
+		case vtVectorPoint: DefResizeStdVector(vector<Point>)
 			caseDefResizeStdVector(Point2f)
 			caseDefResizeStdVector(Scalar)
 			caseDefResizeStdVector(uchar)
 			caseDefResizeStdVector(float)		
 			caseDefResizeStdVector(int)
 			caseDefResizeStdVector(Vec4i)
-			caseDefResizeStdVector(GMat)
-			caseDefResizeStdVector(GCompileArg)
+			caseDefResizeStdVector(Vec6f)
+		case vtVectorPoint2f: DefResizeStdVector(vector<Point2f>)
+			//caseDefResizeStdVector(GMat)
+			//caseDefResizeStdVector(GCompileArg)
 		}
 	}
 }
@@ -142,8 +146,10 @@ BODY_API void CopyStdVector(void* obj, void* src, int vt)
 		case vtVec4i:
 			DefCopyStdVector(Vec4i)
 				break;
-		caseDefCopyStdVector(GMat)
-		caseDefCopyStdVector(GCompileArg)
+			caseDefCopyStdVector(Vec6f)
+		case vtVectorPoint2f: DefCopyStdVector(vector<Point2f>); break;
+		//caseDefCopyStdVector(GMat)
+		//caseDefCopyStdVector(GCompileArg)
 		}
 	}
 }
@@ -194,8 +200,10 @@ BODY_API void CreateStdVector(void* obj, int vt)
 		case vtVec4i:
 			DefCreateStdVector(Vec4i)
 				break;
-		caseDefCreateStdVector(GMat)
-		caseDefCreateStdVector(GCompileArg)
+		caseDefCreateStdVector(Vec6f)
+		case vtVectorPoint2f: DefCreateStdVector(vector<Point2f>)
+//		caseDefCreateStdVector(GMat)
+//		caseDefCreateStdVector(GCompileArg)
 //		caseDefCreateStdVector(void)
 		default:
 			obj = nullptr;
@@ -249,8 +257,10 @@ BODY_API void DestroyStdVector(void* p, int vt)
 		case vtVec4i:
 			DefDestroyStdVector(Vec4i)
 				break;
-		caseDefDestroyStdVector(GMat)
-		caseDefDestroyStdVector(GCompileArg)
+			caseDefDestroyStdVector(Vec6f)
+		case vtVectorPoint2f: DefDestroyStdVector(vector<Point2f>); break;
+			//caseDefDestroyStdVector(GMat)
+		//caseDefDestroyStdVector(GCompileArg)
 		}
 	}
 }
@@ -301,8 +311,10 @@ BODY_API void StdPushBack(void* p, void* o, int vt)
 		case vtVec4i:
 			defpush_back(Vec4i)
 				break;
-		casedefpush_back(GMat)
-		casedefpush_back(GCompileArg)
+			casedefpush_back(Vec6f)
+		case vtVectorPoint2f: defpush_back(vector<Point2f>); break;
+		//casedefpush_back(GMat)
+		//casedefpush_back(GCompileArg)
 		}
 	}
 }
@@ -341,8 +353,10 @@ BODY_API bool StdEmpty(void* p, int vt)
 			DefStdEmpty(int)
 		case vtVec4i:
 			DefStdEmpty(Vec4i)
-		caseDefStdEmpty(GMat)
-		caseDefStdEmpty(GCompileArg)
+		caseDefStdEmpty(Vec6f)
+		case vtVectorPoint2f: DefStdEmpty(vector<Point2f>);
+		//caseDefStdEmpty(GMat)
+		//caseDefStdEmpty(GCompileArg)
 		}
 	}
 	return true;
@@ -381,21 +395,23 @@ BODY_API void StdItem(void* p, int vt, unsigned __int64 index, void* dst)
 			break;
 		case vtScalar:
 			DefStdItem(Scalar)
-				break;
+			break;
 		case vtuchar:
 			DefStdItem(uchar)
-				break;
+			break;
 		case vtfloat:
 			DefStdItem(float)
-				break;
+			break;
 		case vtint:
 			DefStdItem(int)
-				break;
+			break;
 		case vtVec4i:
 			DefStdItem(Vec4i)
-				break;
-		caseDefStdItem(GMat)
-		caseDefStdItem(GCompileArg)
+			break;
+		caseDefStdItem(Vec6f)
+		case vtVectorPoint2f: DefStdItem(vector<Point2f>); break;
+		//caseDefStdItem(GMat)
+		//caseDefStdItem(GCompileArg)
 		}
 	}
 }
@@ -412,42 +428,44 @@ BODY_API void StdPItem(void* p, int vt, unsigned __int64 index, void** dst)
 		{
 		case vtMat:
 			DefStdPItem(Mat)
-				break;
+			break;
 		case vtRect:
 			DefStdPItem(Rect)
-				break;
+			break;
 		case vtPoint:
 			DefStdPItem(Point)
-				break;
+			break;
 		case vtVectorMat:
-			DefStdPItem(vector<vector<Mat>>)
-				break;
+			DefStdPItem(vector<Mat>)
+			break;
 		case vtVectorRect:
-			DefStdPItem(vector<vector<Rect>>)
-				break;
+			DefStdPItem(vector<Rect>)
+			break;
 		case vtVectorPoint:
-			DefStdPItem(vector<vector<Point>>)
-				break;
+			DefStdPItem(vector<Point>)
+			break;
 		case vtPoint2f:
-			DefStdPItem(vector<vector<Point2f>>)
-				break;
+			DefStdPItem(vector<Point2f>)
+			break;
 		case vtScalar:
 			DefStdPItem(Scalar)
-				break;
+			break;
 		case vtuchar:
 			DefStdPItem(uchar)
-				break;
+			break;
 		case vtfloat:
 			DefStdPItem(float)
-				break;
+			break;
 		case vtint:
 			DefStdPItem(int)
-				break;
+			break;
 		case vtVec4i:
 			DefStdPItem(Vec4i)
-				break;
-		caseDefStdPItem(GMat)
-		caseDefStdPItem(GCompileArg)
+			break;
+			caseDefStdPItem(Vec6f)
+		case vtVectorPoint2f: DefStdPItem(vector<Point2f>); break;
+		//caseDefStdPItem(GMat)
+		//caseDefStdPItem(GCompileArg)
 		}
 	}
 }
@@ -486,8 +504,10 @@ BODY_API unsigned __int64 StdSize(void* p, int vt)
 			DefStdSize(int)
 		case vtVec4i:
 			DefStdSize(Vec4i)
-		caseDefStdSize(GMat)
-		caseDefStdSize(GCompileArg)
+		caseDefStdSize(Vec6f)
+		case vtVectorPoint2f: DefStdSize(vector<Point2f>)
+		//caseDefStdSize(GMat)
+		//caseDefStdSize(GCompileArg)
 		}
 	}
 	return 0;
@@ -538,9 +558,11 @@ BODY_API void StdSetItem(void* p, int vt, unsigned __int64 index, void* dst)
 				break;
 		case vtVec4i:
 			DefStdSetItem(Vec4i)
-				break;
-		caseDefStdSetItem(GMat)
-		caseDefStdSetItem(GCompileArg)
+			break;
+		caseDefStdSetItem(Vec6f)
+		case vtVectorPoint2f: DefStdSetItem(vector<Point2f>) break;
+		//caseDefStdSetItem(GMat)
+		//caseDefStdSetItem(GCompileArg)
 		}
 	}
 }

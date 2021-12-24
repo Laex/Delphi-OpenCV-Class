@@ -251,6 +251,69 @@ begin
   drawContours(image, contours, contourIdx, color, thickness, lineType, TInputArray.noArray);
 end;
 
+{ TSubdiv2D }
+
+class operator TSubdiv2D.Initialize(out Dest: TSubdiv2D);
+begin
+  constructor_Subdiv2D(Dest);
+end;
+
+class operator TSubdiv2D.Finalize(var Dest: TSubdiv2D);
+begin
+  destructor_Subdiv2D(Dest);
+end;
+
+class operator TSubdiv2D.assign(var Dest: TSubdiv2D; const [ref] Src: TSubdiv2D);
+begin
+  operator_assign_Subdiv2D(Dest,Src);
+end;
+
+procedure TSubdiv2D.getTriangleList(const triangleList:vector<TVec6f>);
+begin
+  getTriangleList_Subdiv2D(Self,triangleList);
+end;
+
+function TSubdiv2D.locate(const pt:TPoint2f;Var edge:int;Var vertex:int):int;
+begin
+  Result := locale_Subdiv2D(Self,pt,edge,vertex);
+end;
+
+function TSubdiv2D.edgeOrg(edge:int; var orgpt:TPoint2f):Int;
+begin
+  Result := edgeOrg_Subdiv2D(Self,edge,orgpt);
+end;
+
+function TSubdiv2D.edgeDst(edge:int; var dstpt:TPoint2f):Int;
+begin
+  Result := edgeDst_Subdiv2D(Self,edge,dstpt);
+end;
+
+function TSubdiv2D.getEdge(edge:int; nextEdgeType:int):int;
+begin
+  Result := getEdge_Subdiv2D(Self,edge,nextEdgeType);
+end;
+
+procedure TSubdiv2D.getVoronoiFacetList(const idx:vector<int>;const facetList:vector<vector<TPoint2f>>;
+                                     const facetCenters:vector<TPoint2f>);
+begin
+  getVoronoiFacetList_Subdiv2D(Self,idx,facetList,facetCenters);
+end;
+
+class function TSubdiv2D.Subdiv2D(const rect:TRect): TSubdiv2D;
+begin
+  constructor_Subdiv2D(Result,rect);
+end;
+
+class operator TSubdiv2D.Implicit(const r: TRect): TSubdiv2D;
+begin
+  Result := TSubdiv2D.Subdiv2D(r);
+end;
+
+function TSubdiv2D.insert(const pt:TPoint2f):int;
+begin
+  Result := insert_Subdiv2D(Self,pt);
+end;
+
 {$i 'imgproc/segmentation.impl.inc'}
 
 {$ENDIF}

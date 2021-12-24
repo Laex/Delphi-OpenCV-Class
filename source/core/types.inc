@@ -453,6 +453,7 @@ TRect_<T: record > = record
 
     // ! size (width, height) of the rectangle
     // Size_<_Tp> size() const;
+    function size:TSize_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! area (width*height) of the rectangle
     // _Tp area() const;
     function area: T; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -467,6 +468,7 @@ TRect_<T: record > = record
 
     class function Rect(const _x: T; _y: T; _width: T; _height: T): TRect_<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator BitwiseAnd(const a, b: TRect_<T>): TRect_<T>;
+    class operator Implicit(const a: TArray<T>): TRect_<T>;
   public
     x: T;      // !< x coordinate of the top-left corner
     y: T;      // !< y coordinate of the top-left corner
@@ -684,6 +686,7 @@ TScalar = record
     // //! returns true iff v1 == v2 == v3 == 0
     // bool isReal() const;
     class operator Implicit(const v0: double): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const a: TArray<double>): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
     property val[const index: integer]: double read getval write setval; default;
   end;
 

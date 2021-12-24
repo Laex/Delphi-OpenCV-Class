@@ -24,12 +24,9 @@
   { TPoint_<T> }
 
 class operator TPoint_<T>.Implicit(const m: TPoint_<T>): UInt64;
-Var
-  t:TPoint_<Int>;
 begin
   Assert(SizeOf(m) = 8);
-  t:=m;
-  Move(t, Result, 8);
+  Move(m, Result, 8);
 end;
 
 class operator TPoint_<T>.Implicit(const p: TPoint_<T>): TPoint_<Int>;
@@ -62,8 +59,8 @@ begin
   end
   else if TypeInfo(T) = TypeInfo(Int) then
   begin
-    pInt(@Result.x)^ := saturate_cast.cast<int>(pInt(@a.x)^ - pInt(@b.x)^);
-    pInt(@Result.y)^ := saturate_cast.cast<int>(pInt(@a.y)^ - pInt(@b.y)^);
+    pInt(@Result.x)^ := saturate_cast.cast<Int>(pInt(@a.x)^ - pInt(@b.x)^);
+    pInt(@Result.y)^ := saturate_cast.cast<Int>(pInt(@a.y)^ - pInt(@b.y)^);
   end
   else
     Assert(false, 'Point type must be Integer, Single(Float) or Double');
@@ -192,6 +189,21 @@ begin
   Result.height := _height;
 end;
 
+class operator TRect_<T>.Implicit(const a: TArray<T>): TRect_<T>;
+begin
+  Assert(Length(a)=4);
+  Result.x := a[0];
+  Result.y := a[1];
+  Result.width := a[2];
+  Result.height := a[3];
+end;
+
+function TRect_<T>.size:TSize_<T>;
+begin
+  Result.width:= width;
+  Result.height:= height;
+end;
+
 function Rect(const _x: Int; _y: Int; _width: Int; _height: Int): TRect;
 begin
   Result := TRect_<Int>.Rect(_x, _y, _width, _height);
@@ -241,6 +253,12 @@ begin
   Initialize(Result);
 end;
 
+class operator TScalar.Implicit(const a: TArray<double>): TScalar;
+begin
+  for var i := 0 to MIN(High(a), High(Result.v)) do
+    Result.v[i] := a[i];
+end;
+
 function Scalar(const v0, v1, v2, v3: double): TScalar;
 begin
   Result := TScalar.Create(v0, v1, v2, v3);
@@ -269,17 +287,17 @@ begin
   Result.epsilon := epsilon;
 end;
 
-//function norm(const pt: TPoint_<T>): double;
-//begin
-//  if TypeInfo(T) = TypeInfo(float) then
-//    Result := Sqrt(Sqr(pFloat(@a.x)^ - pFloat(@b.x)^) + Sqr(pFloat(@a.y)^ - pFloat(@b.y)^))
-//  else if TypeInfo(T) = TypeInfo(double) then
-//    Result := Sqrt(Sqr(pDouble(@a.x)^ - pDouble(@b.x)^) + Sqr(pDouble(@a.y)^ - pDouble(@b.y)^))
-//  else if TypeInfo(T) = TypeInfo(Int) then
-//    Result := Sqrt(Sqr(pInt(@a.x)^ - pInt(@b.x)^) + Sqr(pInt(@a.y)^ - pInt(@b.y)^))
-//  else
-//    Assert(false, 'Point type must be Integer, Single(Float) or Double');
-//end;
+  // function norm(const pt: TPoint_<T>): double;
+  // begin
+  // if TypeInfo(T) = TypeInfo(float) then
+  // Result := Sqrt(Sqr(pFloat(@a.x)^ - pFloat(@b.x)^) + Sqr(pFloat(@a.y)^ - pFloat(@b.y)^))
+  // else if TypeInfo(T) = TypeInfo(double) then
+  // Result := Sqrt(Sqr(pDouble(@a.x)^ - pDouble(@b.x)^) + Sqr(pDouble(@a.y)^ - pDouble(@b.y)^))
+  // else if TypeInfo(T) = TypeInfo(Int) then
+  // Result := Sqrt(Sqr(pInt(@a.x)^ - pInt(@b.x)^) + Sqr(pInt(@a.y)^ - pInt(@b.y)^))
+  // else
+  // Assert(false, 'Point type must be Integer, Single(Float) or Double');
+  // end;
 
 function norm(const pt: TPoint): double;
 begin

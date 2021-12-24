@@ -62,6 +62,7 @@ Type
     class operator Initialize(out Dest: Vector<T>);
     class operator Finalize(var Dest: Vector<T>);
     class operator assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
+    class function vector:Vector<T>;static; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     function size: { UInt64 } Int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function empty: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -72,6 +73,7 @@ Type
     function pT(const index: UInt64): Pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
     property v[const index: UInt64]: T read GetItems write setItems; default;
     class operator Implicit(const a: TArray<T>): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const size: integer): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function noVector: Vector<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
@@ -199,6 +201,11 @@ begin
     StdPushBack(@Result, @a[i], vt);
 end;
 
+class operator Vector<T>.Implicit(const size: integer): Vector<T>;
+begin
+  Result.resize(size);
+end;
+
 class operator Vector<T>.Initialize(out Dest: Vector<T>);
 begin
   FillChar(Dest, SizeOf(Dest), 0);
@@ -235,6 +242,11 @@ begin
   Result := StdSize(@Self, vt);
 end;
 
+class function Vector<T>.vector: Vector<T>;
+begin
+  Initialize(Result);
+end;
+
 class function Vector<T>.vt: TVectorType;
 begin
   if TypeInfo(T) = TypeInfo(TMat) then
@@ -257,6 +269,10 @@ begin
     vt := vtInt
   else if TypeInfo(T) = TypeInfo(TVec4i) then // vector<float>
     vt := vtVec4i
+  else if TypeInfo(T) = TypeInfo(TVec6f) then // vector<float>
+    vt := vtVec6f
+  else if TypeInfo(T) = TypeInfo(Vector<TPoint2f>) then // vector<float>
+    vt := vtVectorPoint2f
       // else if TypeInfo(T) = TypeInfo(TGMat) then // vector<GMat>
       // vt := vtGMat
       // else if TypeInfo(T) = TypeInfo(TGCompileArg) then // vector<GCompileArg>
