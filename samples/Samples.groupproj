@@ -84,6 +84,12 @@
         <Projects Include="cpp\delaunay2\delaunay2.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="cpp\laplace\cv_laplace.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="cpp\peopledetect\peopledetect.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -335,14 +341,32 @@
     <Target Name="delaunay2:Make">
         <MSBuild Projects="cpp\delaunay2\delaunay2.dproj" Targets="Make"/>
     </Target>
+    <Target Name="cv_laplace">
+        <MSBuild Projects="cpp\laplace\cv_laplace.dproj"/>
+    </Target>
+    <Target Name="cv_laplace:Clean">
+        <MSBuild Projects="cpp\laplace\cv_laplace.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="cv_laplace:Make">
+        <MSBuild Projects="cpp\laplace\cv_laplace.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="peopledetect">
+        <MSBuild Projects="cpp\peopledetect\peopledetect.dproj"/>
+    </Target>
+    <Target Name="peopledetect:Clean">
+        <MSBuild Projects="cpp\peopledetect\peopledetect.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="peopledetect:Make">
+        <MSBuild Projects="cpp\peopledetect\peopledetect.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm;cvdecolor;npr_demo;phase_corr;videocapture_basic;videocapture_image_sequence;dis_opticalflow;facedetect;segment_objects;video_write;facial_features;camshiftdemo;imgproc_segmentation;minarea;lkdemo;delaunay2"/>
+        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm;cvdecolor;npr_demo;phase_corr;videocapture_basic;videocapture_image_sequence;dis_opticalflow;facedetect;segment_objects;video_write;facial_features;camshiftdemo;imgproc_segmentation;minarea;lkdemo;delaunay2;cv_laplace;peopledetect"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean;cvdecolor:Clean;npr_demo:Clean;phase_corr:Clean;videocapture_basic:Clean;videocapture_image_sequence:Clean;dis_opticalflow:Clean;facedetect:Clean;segment_objects:Clean;video_write:Clean;facial_features:Clean;camshiftdemo:Clean;imgproc_segmentation:Clean;minarea:Clean;lkdemo:Clean;delaunay2:Clean"/>
+        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean;cvdecolor:Clean;npr_demo:Clean;phase_corr:Clean;videocapture_basic:Clean;videocapture_image_sequence:Clean;dis_opticalflow:Clean;facedetect:Clean;segment_objects:Clean;video_write:Clean;facial_features:Clean;camshiftdemo:Clean;imgproc_segmentation:Clean;minarea:Clean;lkdemo:Clean;delaunay2:Clean;cv_laplace:Clean;peopledetect:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make;cvdecolor:Make;npr_demo:Make;phase_corr:Make;videocapture_basic:Make;videocapture_image_sequence:Make;dis_opticalflow:Make;facedetect:Make;segment_objects:Make;video_write:Make;facial_features:Make;camshiftdemo:Make;imgproc_segmentation:Make;minarea:Make;lkdemo:Make;delaunay2:Make"/>
+        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make;cvdecolor:Make;npr_demo:Make;phase_corr:Make;videocapture_basic:Make;videocapture_image_sequence:Make;dis_opticalflow:Make;facedetect:Make;segment_objects:Make;video_write:Make;facial_features:Make;camshiftdemo:Make;imgproc_segmentation:Make;minarea:Make;lkdemo:Make;delaunay2:Make;cv_laplace:Make;peopledetect:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -355,6 +355,7 @@ type
     class operator Implicit(const v: Vector<TVec4i>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<TMat>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: TScalar): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<float>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
    public
 {$HINTS OFF}
     flags: Int;   // int flags;

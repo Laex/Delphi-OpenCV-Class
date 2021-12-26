@@ -27,6 +27,7 @@ program AddingImages;
 uses
   System.SysUtils,
   CV.Resource,
+  cpp.utils,
   cv.opencv;
 
 const

@@ -27,6 +27,7 @@ program morph_lines_detection;
 uses
   System.SysUtils,
   cv.resource,
+  cpp.utils,
   cv.opencv;
 
 const

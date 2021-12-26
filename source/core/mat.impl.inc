@@ -521,6 +521,12 @@ begin
   Result.sz := size(1, 4);
 end;
 
+class operator TInputArray.Implicit(const v: Vector<float>): TInputArray;
+begin
+  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<float>.Value + Int(ACCESS_READ);
+  Result.Obj := @v;
+  Result.sz := size(1, 4);
+end;
 { TOutputArray }
 
 class function TOutputArrayHelper.noArray: TOutputArray;

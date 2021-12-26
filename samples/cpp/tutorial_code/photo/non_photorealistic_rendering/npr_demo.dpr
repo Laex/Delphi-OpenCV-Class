@@ -27,6 +27,7 @@ program npr_demo;
 uses
   System.SysUtils,
   cv.resource,
+  cpp.utils,
   cv.opencv;
 
 begin

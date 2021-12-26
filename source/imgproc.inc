@@ -1204,6 +1204,7 @@ public:
     function edgeDst(edge:int; var dstpt:TPoint2f):Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 private
+    {$HINTS OFF}
 (*
     int newEdge();
     void deleteEdge(int edge);
@@ -1253,9 +1254,6 @@ private
     topLeft:TPoint2f;
     //! Bottom right corner of the bounding rect
     bottomRight:TPoint2f;
-
-    {$HINTS OFF}
-//    Dummy:array[0..96-1] of Byte;
     {$HINTS ON}
 end;
 
@@ -1841,6 +1839,22 @@ applied. See #getDerivKernels for details.
 //CV_EXPORTS_W void Laplacian( InputArray src, OutputArray dst, int ddepth,
 //                             int ksize = 1, double scale = 1, double delta = 0,
 //                             int borderType = BORDER_DEFAULT );
+{
+3393
+?Laplacian@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHNNH@Z
+?Laplacian@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHNNH@Z
+void cv::Laplacian(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,double,double,int)
+}
+procedure Laplacian(const src:TInputArray;const dst:TOutputArray; ddepth:int;
+                             ksize :int= 1; scale :double= 1; delta :double= 0;
+                             borderType :int= int(BORDER_DEFAULT));
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?Laplacian@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHNNH@Z'
+{$ELSE}
+  name '?Laplacian@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHNNH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //! @} imgproc_filter
 

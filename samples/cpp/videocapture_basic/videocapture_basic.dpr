@@ -27,6 +27,7 @@ program videocapture_basic;
 uses
   System.SysUtils,
   cv.resource,
+  cpp.utils,
   cv.opencv;
 
 begin

@@ -53,7 +53,16 @@ Type
   Vector<T> = record
   private
 {$HINTS OFF}
-    Data: array [0 .. 31] of Byte;
+      // release 24
+      // Data: array [0 .. 24 - 1] of Byte;
+    A: UInt64;
+    B: UInt64;
+    C: UInt64;
+{$IFDEF DEBUG}
+      // debug 32
+      // Data: array [0 .. 32 - 1] of Byte;
+    D: UInt64;
+{$ENDIF}
 {$HINTS ON}
     class function vt: TVectorType; static;
     function GetItems(const index: UInt64): T;
@@ -62,8 +71,7 @@ Type
     class operator Initialize(out Dest: Vector<T>);
     class operator Finalize(var Dest: Vector<T>);
     class operator assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
-    class function vector:Vector<T>;static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
+    class function Vector: Vector<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function size: { UInt64 } Int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function empty: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure push_back(const Value: T); {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -72,7 +80,7 @@ Type
       //
     function pT(const index: UInt64): Pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
     property v[const index: UInt64]: T read GetItems write setItems; default;
-    class operator Implicit(const a: TArray<T>): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const A: TArray<T>): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const size: integer): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function noVector: Vector<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
@@ -124,9 +132,9 @@ Type
     class operator Initialize(out Dest: TSet<T>);
     class operator Finalize(var Dest: TSet<T>);
     class operator assign(var Dest: TSet<T>; const [ref] Src: TSet<T>);
-    class operator In (const a: T; const b: TSet<T>): Boolean;
-    class operator Implicit(const a: TArray<T>): TSet<T>;
-    class operator Implicit(const a: TSet<T>): TArray<T>;
+    class operator In (const A: T; const B: TSet<T>): Boolean;
+    class operator Implicit(const A: TArray<T>): TSet<T>;
+    class operator Implicit(const A: TSet<T>): TArray<T>;
     function Contains(const Value: T): Boolean; inline;
     procedure Include(const Value: T); inline;
     procedure Exclude(const Value: T); inline;
@@ -142,8 +150,8 @@ const
 
 type
   Tcout = record
-    class operator Add(const c: Tcout; const b: String): Tcout; inline;
-    class operator Add(const c: Tcout; const b: double): Tcout; inline;
+    class operator Add(const C: Tcout; const B: String): Tcout; inline;
+    class operator Add(const C: Tcout; const B: double): Tcout; inline;
   end;
 
 function CppReplace(const text: String): String;
@@ -160,7 +168,7 @@ function isIntNumberWithDefault(const v: String; const D: integer = 0): integer;
 
 type
   TSwap = record
-    class procedure swap<T>(var a, b: Vector<T>); static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class procedure swap<T>(var A, B: Vector<T>); static; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
 implementation
@@ -195,10 +203,10 @@ begin
   StdGetItem(@Self, vt, index, @Result);
 end;
 
-class operator Vector<T>.Implicit(const a: TArray<T>): Vector<T>;
+class operator Vector<T>.Implicit(const A: TArray<T>): Vector<T>;
 begin
-  for Var i := 0 to High(a) do
-    StdPushBack(@Result, @a[i], vt);
+  for Var i := 0 to High(A) do
+    StdPushBack(@Result, @A[i], vt);
 end;
 
 class operator Vector<T>.Implicit(const size: integer): Vector<T>;
@@ -232,7 +240,7 @@ begin
   resizeStdVector(@Self, NewSize, vt);
 end;
 
-procedure Vector<T>.setItems(const index: UInt64;const Value: T);
+procedure Vector<T>.setItems(const index: UInt64; const Value: T);
 begin
   StdSetItem(@Self, vt, index, @Value);
 end;
@@ -242,7 +250,7 @@ begin
   Result := StdSize(@Self, vt);
 end;
 
-class function Vector<T>.vector: Vector<T>;
+class function Vector<T>.Vector: Vector<T>;
 begin
   Initialize(Result);
 end;
@@ -374,16 +382,16 @@ end;
 
   { Tcout }
 
-class operator Tcout.Add(const c: Tcout; const b: String): Tcout;
+class operator Tcout.Add(const C: Tcout; const B: String): Tcout;
 begin
-  write(CppReplace(b));
-  Result := c;
+  write(CppReplace(B));
+  Result := C;
 end;
 
-class operator Tcout.Add(const c: Tcout; const b: double): Tcout;
+class operator Tcout.Add(const C: Tcout; const B: double): Tcout;
 begin
-  write(b.ToString);
-  Result := c;
+  write(B.ToString);
+  Result := C;
 end;
 
   { TSet<T> }
@@ -410,20 +418,20 @@ begin
   Dest.FDict.Free;
 end;
 
-class operator TSet<T>.Implicit(const a: TArray<T>): TSet<T>;
+class operator TSet<T>.Implicit(const A: TArray<T>): TSet<T>;
 begin
-  for Var v: T in a do
+  for Var v: T in A do
     Result.Include(v);
 end;
 
-class operator TSet<T>.Implicit(const a: TSet<T>): TArray<T>;
+class operator TSet<T>.Implicit(const A: TSet<T>): TArray<T>;
 begin
-  Result := a.FDict.Keys.ToArray;
+  Result := A.FDict.Keys.ToArray;
 end;
 
-class operator TSet<T>.In(const a: T; const b: TSet<T>): Boolean;
+class operator TSet<T>.In(const A: T; const B: TSet<T>): Boolean;
 begin
-  Result := b.Contains(a);
+  Result := B.Contains(A);
 end;
 
 procedure TSet<T>.Include(const Value: T);
@@ -463,19 +471,19 @@ end;
 
   { TSwap }
 
-class procedure TSwap.swap<T>(var a, b: Vector<T>);
+class procedure TSwap.swap<T>(var A, B: Vector<T>);
 Var
-  c: Pointer;
+  C: Pointer;
   cs: size_t;
 begin
-  cs := SizeOf(a);
-  c := AllocMem(cs);
+  cs := SizeOf(A);
+  C := AllocMem(cs);
   try
-    Move(a, c^, cs);
-    Move(b, a, cs);
-    Move(c^, b, cs);
+    Move(A, C^, cs);
+    Move(B, A, cs);
+    Move(C^, B, cs);
   finally
-    FreeMem(c);
+    FreeMem(C);
   end;
 end;
 

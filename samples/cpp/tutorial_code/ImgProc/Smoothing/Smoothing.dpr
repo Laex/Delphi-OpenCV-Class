@@ -27,6 +27,7 @@ program Smoothing;
 uses
   System.SysUtils,
   cv.resource,
+  cpp.utils,
   cv.opencv;
 
 const

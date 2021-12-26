@@ -27,6 +27,7 @@ program videocapture_image_sequence;
 uses
   System.SysUtils,
   cv.resource,
+  cpp.utils,
   cv.opencv;
 
 procedure help();

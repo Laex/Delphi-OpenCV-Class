@@ -353,7 +353,7 @@ TSize_<T> = record
   TSize2d =TSize_<double>;
   TSize   =TSize2i       ;
 
-function size(const _width, _height: Int): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function size(const _width:Int=0;const _height: Int=0): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (*
 template<typename _Tp> class DataType< Size_<_Tp> >
@@ -448,8 +448,10 @@ TRect_<T: record > = record
     // #endif
     // ! the top-left corner
     // Point_<_Tp> tl() const;
+    function tl:TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! the bottom-right corner
     // Point_<_Tp> br() const;
+    function br:TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     // ! size (width, height) of the rectangle
     // Size_<_Tp> size() const;

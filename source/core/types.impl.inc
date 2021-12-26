@@ -191,17 +191,44 @@ end;
 
 class operator TRect_<T>.Implicit(const a: TArray<T>): TRect_<T>;
 begin
-  Assert(Length(a)=4);
+  Assert(Length(a) = 4);
   Result.x := a[0];
   Result.y := a[1];
   Result.width := a[2];
   Result.height := a[3];
 end;
 
-function TRect_<T>.size:TSize_<T>;
+function TRect_<T>.size: TSize_<T>;
 begin
-  Result.width:= width;
-  Result.height:= height;
+  Result.width := width;
+  Result.height := height;
+end;
+
+function TRect_<T>.tl: TPoint_<T>;
+begin
+  Result.x := x;
+  Result.y := y;
+end;
+
+function TRect_<T>.br: TPoint_<T>;
+begin
+  if TypeInfo(T) = TypeInfo(float) then
+  begin
+    pFloat(@Result.x)^ := pFloat(@x)^ + pFloat(@width)^;
+    pFloat(@Result.y)^ := pFloat(@y)^ + pFloat(@height)^;
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    pDouble(@Result.x)^ := pDouble(@x)^ + pDouble(@width)^;
+    pDouble(@Result.y)^ := pDouble(@y)^ + pDouble(@height)^;
+  end
+  else if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    pInt(@Result.x)^ := pInt(@x)^ + pInt(@width)^;
+    pInt(@Result.y)^ := pInt(@y)^ + pInt(@height)^;
+  end
+  else
+    Assert(false, 'Point type must be numeric');
 end;
 
 function Rect(const _x: Int; _y: Int; _width: Int; _height: Int): TRect;
