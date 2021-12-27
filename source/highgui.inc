@@ -242,6 +242,7 @@ QtButtonTypes =(//
 @param userdata The optional parameter.
  *)
 TMouseCallback = procedure(event, x, y, flags: Int; userdata: Pointer);
+TMouseCallbackEvent = procedure(event:MouseEventTypes; x, y, flags: Int; userdata: Pointer);
 
 (** @brief Callback function for Trackbar see cv::createTrackbar
 @param pos current position of the specified trackbar.
@@ -585,6 +586,10 @@ procedure setMouseCallback(const winname: CppString; onMouse: TMouseCallback; us
   external opencv_world_dll name '?setMouseCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHHHHPEAX@Z1@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure setMouseCallback(const winname: String; onMouse: TMouseCallback; userdata: Pointer = nil); overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure setMouseCallback(const winname: CppString; onMouse: TMouseCallbackEvent; userdata: Pointer = nil); overload;
+external opencv_world_dll name '?setMouseCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHHHHPEAX@Z1@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure setMouseCallback(const winname: String; onMouse: TMouseCallbackEvent; userdata: Pointer = nil); overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Gets the mouse-wheel motion delta, when handling mouse-wheel events cv::EVENT_MOUSEWHEEL and
 cv::EVENT_MOUSEHWHEEL.
@@ -805,10 +810,15 @@ panel.
 6420
 ?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
 ?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-void cv::setTrackbarMax(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+void cv::setTrackbarMax( class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
+                         class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
+                         int)
 }
-procedure setTrackbarMax(const trackbarname:CppString; const winname:CppString; maxval:int);
-external opencv_world_dll name '?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
+procedure setTrackbarMax( const trackbarname:CppString;
+                          const winname:CppString;
+                          maxval:int);
+external opencv_world_dll
+name '?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets the trackbar minimum position.
@@ -829,10 +839,15 @@ panel.
 6421
 ?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
 ?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-void cv::setTrackbarMin(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
+void cv::setTrackbarMin( class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
+                         class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
+                         int)
 }
-procedure setTrackbarMin(const trackbarname:CppString; const winname:CppString; minval:int);
-external opencv_world_dll name '?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
+procedure setTrackbarMin( const trackbarname:CppString;
+                          const winname:CppString;
+                          minval:int);
+external opencv_world_dll
+name '?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Displays OpenGL 2D texture in the specified window.

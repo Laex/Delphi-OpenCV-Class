@@ -57,6 +57,11 @@ begin
   setMouseCallback(CppString(winname), onMouse, userdata);
 end;
 
+procedure setMouseCallback(const winname: String; onMouse: TMouseCallbackEvent; userdata: Pointer = nil);
+begin
+  setMouseCallback(CppString(winname), onMouse, userdata);
+end;
+
 function createTrackbar(const trackbarname: String; const winname: String; var Value: Int; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
 begin
   Result := createTrackbar(trackbarname, winname, @Value, COUNT, onChange, userdata);

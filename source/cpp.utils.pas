@@ -171,6 +171,8 @@ type
     class procedure swap<T>(var A, B: Vector<T>); static; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
+procedure printf(const Text:string); {$IFDEF USE_INLINE}inline; {$ENDIF}
+
 implementation
 
 Uses
@@ -485,6 +487,11 @@ begin
   finally
     FreeMem(C);
   end;
+end;
+
+procedure printf(const Text:string);
+begin
+  cout + Text;
 end;
 
 initialization

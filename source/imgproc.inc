@@ -2511,6 +2511,36 @@ successively: erode -> erode -> dilate -> dilate (and not erode -> dilate -> ero
 //                                Point anchor = Point(-1,-1), int iterations = 1,
 //                                int borderType = BORDER_CONSTANT,
 //                                const Scalar& borderValue = morphologyDefaultBorderValue() );
+{
+5687
+?morphologyEx@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
+?morphologyEx@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z
+void cv::morphologyEx(class cv::_InputArray const &,class cv::_OutputArray const &,int,class cv::_InputArray const &,class cv::Point_<int>,int,int,class cv::Scalar_<double> const &)
+}
+procedure morphologyEx(const src:TInputArray;const dst:TOutputArray;
+                                op:MorphTypes;
+                                const kernel:TInputArray;
+                                const anchor :UInt64 {= Point(-1,-1)}; iterations :int {= 1};
+                                borderType :BorderTypes {= BORDER_CONSTANT};
+                                const borderValue :TScalar {= morphologyDefaultBorderValue()} );
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?morphologyEx@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
+{$ELSE}
+  name '?morphologyEx@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure morphologyEx(const src:TInputArray;const dst:TOutputArray;
+                                op:MorphTypes;
+                                const kernel:TInputArray;
+                                const anchor :TPoint {= Point(-1,-1)}; iterations :int = 1;
+                                borderType :BorderTypes = BORDER_CONSTANT);
+overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure morphologyEx(const src:TInputArray;const dst:TOutputArray;
+                                op:MorphTypes;
+                                const kernel:TInputArray);
+overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
 
 //! @} imgproc_filter
 
