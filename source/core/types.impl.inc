@@ -282,7 +282,7 @@ end;
 
 class operator TScalar.Implicit(const a: TArray<double>): TScalar;
 begin
-  for var i := 0 to MIN(High(a), High(Result.v)) do
+  for var i := 0 to cv.opencv.MIN(High(a), High(Result.v)) do
     Result.v[i] := a[i];
 end;
 
@@ -328,7 +328,7 @@ end;
 
 function norm(const pt: TPoint): double;
 begin
-  Result := Sqrt(Sqr(pt.x) + Sqr(pt.y));
+  Result := System.Sqrt(System.Sqr(pt.x) + System.Sqr(pt.y));
 end;
 
 {$ENDIF}

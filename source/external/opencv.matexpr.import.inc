@@ -83,3 +83,14 @@ procedure MatExpr_size(const Obj: TMatExpr; const p: TSize); external opencv_wor
 procedure operator_MatExpr_Subtract_Mat_MatExpr(Var Obj: TMatExpr; const m: TMat; const s: TScalar); external opencv_world_dll //
   name '??Gcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+{
+2932
+??Pcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
+??Pcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
+class cv::MatExpr cv::operator>=(class cv::Mat const &,double)
+}
+procedure operator_MatExpr_GreaterThanOrEqual_double(Var Obj: TMatExpr; const m: TMat; const d: double);
+external opencv_world_dll name '??Pcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+

@@ -171,7 +171,12 @@ type
     class procedure swap<T>(var A, B: Vector<T>); static; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
-procedure printf(const Text:string); {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure printf(const text: string); {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+Type
+  iif = record
+    class function iif<T>(const Cond: Boolean; const ifTrue, ifFalse: T): T; static; inline;
+  end;
 
 implementation
 
@@ -489,9 +494,19 @@ begin
   end;
 end;
 
-procedure printf(const Text:string);
+procedure printf(const text: string);
 begin
-  cout + Text;
+  cout + text;
+end;
+
+  { iif }
+
+class function iif.iif<T>(const Cond: Boolean; const ifTrue, ifFalse: T): T;
+begin
+  if Cond then
+    Result := ifTrue
+  else
+    Result := ifFalse;
 end;
 
 initialization

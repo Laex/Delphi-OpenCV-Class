@@ -356,7 +356,7 @@ type
     class operator Implicit(const v: Vector<TMat>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: TScalar): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<float>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-   public
+  public
 {$HINTS OFF}
     flags: Int;   // int flags;
     Obj: Pointer; // void* obj;
@@ -885,7 +885,8 @@ type
   public
     class function mat(): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
       // constructors
-    class function mat(const size: TSize; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Mat(Size size, int type);
+      // Mat(Size size, int type);
+    class function mat(const size: TSize; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
       // Mat(int rows, int cols, int type, const Scalar& s);
     class function mat(rows, cols, &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
       // Mat(Size size, int type, const Scalar& s);
@@ -926,7 +927,7 @@ type
       // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
       // void assignTo( Mat& m, int type=-1 ) const;
       // Mat& operator = (const Scalar& s);
-      class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
       // Mat& setTo(InputArray value, InputArray mask=noArray());
       // Mat reshape(int cn, int rows=0) const;
       // Mat reshape(int cn, int newndims, const int* newsz) const;
@@ -1015,6 +1016,7 @@ type
     class function eye(size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
     class operator LogicalNot(const m: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator BitwiseAnd(const a: TMat; const b: TMat): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator GreaterThanOrEqual(const a: TMat; const b:Int): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
     // Move comment to TMat

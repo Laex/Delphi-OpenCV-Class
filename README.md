@@ -1,5 +1,5 @@
 # Delphi-OpenCV for C++ classes
-* Experimental Delphi binding for OpenCV 4.5.4
+* Experimental Delphi binding for OpenCV 4.5.5
 * Development environment - Delphi 10.4, 11
 * x64 platform only
 ##### Contributors:
@@ -9,14 +9,14 @@
 2. Download [OpenCV 4.5.4][3], run and unpack to the selected directory.<br>
 The following DLLs are required to work properly<br>
 __From `<opencv>\build\x64\vc15\bin\`__
-* opencv_videoio_ffmpeg454_64.dll - `release`<br>
-* opencv_videoio_msmf454_64.dll   - `release`<br>
-* opencv_world454.dll             - `release`<br>
-* opencv_videoio_msmf454_64d.dll  - `debug`<br>
-* opencv_world454d.dll            - `debug`<br>
+* opencv_videoio_ffmpeg455_64.dll - `release`<br>
+* opencv_videoio_msmf455_64.dll   - `release`<br>
+* opencv_world455.dll             - `release`<br>
+* opencv_videoio_msmf455_64d.dll  - `debug`<br>
+* opencv_world455d.dll            - `debug`<br>
 **From `<project>\bin\`**
-* opencv_delphi454.dll - `release`<br>
-* opencv_delphi454d.dll - `debug`<br>
+* opencv_delphi455.dll - `release`<br>
+* opencv_delphi455d.dll - `debug`<br>
 
 __For the library to work properly, you need__
 - place next to the executable file of your program. To run examples - in `<project>\bin\`<br>

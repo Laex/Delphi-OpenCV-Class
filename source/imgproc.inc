@@ -3834,6 +3834,22 @@ the parameter is forced to 3 because a \f$3\times 3\f$ mask gives the same resul
 //CV_EXPORTS_AS(distanceTransformWithLabels) void distanceTransform( InputArray src, OutputArray dst,
 //                                     OutputArray labels, int distanceType, int maskSize,
 //                                     int labelType = DIST_LABEL_CCOMP );
+{
+4502
+?distanceTransform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1HHH@Z
+?distanceTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1HHH@Z
+void cv::distanceTransform(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,int,int,int)
+}
+procedure distanceTransform( const src:TInputArray;const dst:TOutputArray;
+                             const labels:TOutputArray; distanceType:DistanceTypes; maskSize:DistanceTransformMasks;
+                             labelType : DistanceTransformLabelTypes = DIST_LABEL_CCOMP );
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?distanceTransform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1HHH@Z'
+{$ELSE}
+  name '?distanceTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload
 @param src 8-bit, single-channel (binary) source image.
@@ -3848,6 +3864,22 @@ the first variant of the function and distanceType == #DIST_L1.
 *)
 //CV_EXPORTS_W void distanceTransform( InputArray src, OutputArray dst,
 //                                     int distanceType, int maskSize, int dstType=CV_32F);
+{
+4503
+?distanceTransform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z
+?distanceTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z
+void cv::distanceTransform(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
+}
+procedure distanceTransform( const src:TInputArray;const dst:TOutputArray;
+                             distanceType:DistanceTypes; maskSize:DistanceTransformMasks;
+                             dstType:int = CV_32F);
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?distanceTransform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z'
+{$ELSE}
+  name '?distanceTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Fills a connected component with the given color.
 
@@ -4000,7 +4032,8 @@ channels is derived automatically from src and code.
   ?cvtColor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z
   void cv::cvtColor(class cv::_InputArray const &,class cv::_OutputArray const &,int,int)
 }
-procedure cvtColor(const Src: TInputArray; const dst: TOutputArray; code: Int; dstCn: Int = 0); overload; external opencv_world_dll
+procedure cvtColor(const Src: TInputArray; const dst: TOutputArray; code: Int; dstCn: Int = 0);
+overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?cvtColor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'
 {$ELSE}
@@ -4330,7 +4363,8 @@ procedure findContours(const image: TInputArray; const contours: TOutputArrayOfA
   ?findContours@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHV?$Point_@H@1@@Z
   void cv::findContours(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,class cv::Point_<int>)
 }
-procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: Int; method: Int; const offset: UInt64 = 0 { = Point() } ); overload; external opencv_world_dll
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: Int; method: Int; const offset: UInt64 = 0 { = Point() } );
+overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?findContours@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHV?$Point_@H@1@@Z'
 {$ELSE}
@@ -4367,6 +4401,22 @@ connected). Otherwise, it is not closed.
 //CV_EXPORTS_W void approxPolyDP( InputArray curve,
 //                                OutputArray approxCurve,
 //                                double epsilon, bool closed );
+{
+3558
+?approxPolyDP@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@N_N@Z
+?approxPolyDP@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@N_N@Z
+void cv::approxPolyDP(class cv::_InputArray const &,class cv::_OutputArray const &,double,bool)
+}
+procedure approxPolyDP( const curve:TInputArray;
+                        const approxCurve:TOutputArray;
+                        epsilon:double; closed:bool);
+overload; external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?approxPolyDP@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@N_N@Z'
+{$ELSE}
+  name '?approxPolyDP@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@N_N@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Calculates a contour perimeter or a curve length.
 
