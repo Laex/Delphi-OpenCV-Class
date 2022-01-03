@@ -209,6 +209,15 @@ compiler flags, enabled modules and third party libraries, etc. Output format de
 architecture.
  *)
 //CV_EXPORTS_W const String& getBuildInformation();
+{
+863
+?getBuildInformation@cv@@YAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ
+?getBuildInformation@cv@@YAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ
+class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & cv::getBuildInformation(void)
+}
+function _getBuildInformation: pCppString;
+external opencv_world_dll name '?getBuildInformation@cv@@YAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ'{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function getBuildInformation: String;
 
 (** @brief Returns library version string
 
@@ -380,7 +389,8 @@ std::cout << tm;
 //std::ostream& operator << (std::ostream& out, const TickMeter& tm)
 //{
 //    return out << tm.getTimeSec() << "sec";
-//}
+//}
+
 
 (** @brief Returns the number of CPU ticks.
 
@@ -440,7 +450,8 @@ The function returns the aligned pointer of the same type as the input pointer:
 //{
 //    CV_DbgAssert((n & (n - 1)) == 0); // n is a power of 2
 //    return (_Tp*)(((size_t)ptr + n-1) & -n);
-//}
+//}
+
 
 (** @brief Aligns a buffer size to the specified number of bytes.
 
@@ -453,7 +464,8 @@ The function returns the minimum number that is greater than or equal to sz and 
 //{
 //    CV_DbgAssert((n & (n - 1)) == 0); // n is a power of 2
 //    return (sz + n-1) & -n;
-//}
+//}
+
 
 (** @brief Integer division with result round up.
 
@@ -465,12 +477,14 @@ Use this function instead of `ceil((float)a / b)` expressions.
 //{
 //    CV_DbgAssert(a >= 0);
 //    return (a + b - 1) / b;
-//}
+//}
+
 (** @overload *)
 //static inline size_t divUp(size_t a, unsigned int b)
 //{
 //    return (a + b - 1) / b;
-//}
+//}
+
 
 (** @brief Round first value up to the nearest multiple of second value.
 
@@ -482,7 +496,8 @@ Use this function instead of `ceil((float)a / b) * b` expressions.
 //{
 //    CV_DbgAssert(a >= 0);
 //    return a + b - 1 - (a + b -1) % b;
-//}
+//}
+
 (** @overload *)
 //static inline size_t roundUp(size_t a, unsigned int b)
 //{
@@ -500,31 +515,36 @@ Usage: `isAligned<sizeof(int)>(...)`
 //{
 //    CV_StaticAssert((N & (N - 1)) == 0, "");  // power of 2
 //    return (((size_t)data) & (N - 1)) == 0;
-//}
+//}
+
 (** @overload *)
 //template<int N> static inline
 //bool isAligned(const void* p1)
 //{
 //    return isAligned<N>((size_t)p1);
-//}
+//}
+
 (** @overload *)
 //template<int N> static inline
 //bool isAligned(const void* p1, const void* p2)
 //{
 //    return isAligned<N>(((size_t)p1)|((size_t)p2));
-//}
+//}
+
 (** @overload *)
 //template<int N> static inline
 //bool isAligned(const void* p1, const void* p2, const void* p3)
 //{
 //    return isAligned<N>(((size_t)p1)|((size_t)p2)|((size_t)p3));
-//}
+//}
+
 (** @overload *)
 //template<int N> static inline
 //bool isAligned(const void* p1, const void* p2, const void* p3, const void* p4)
 //{
 //    return isAligned<N>(((size_t)p1)|((size_t)p2)|((size_t)p3)|((size_t)p4));
-//}
+//}
+
 
 (** @brief Enables or disables the optimized code.
 
@@ -592,7 +612,8 @@ The function returns true if the optimized code is enabled. Otherwise, it return
 //void parallel_for_(const Range& range, std::function<void(const Range&)> functor, double nstripes=-1.)
 //{
 //    parallel_for_(range, ParallelLoopBodyLambdaWrapper(functor), nstripes);
-//}
+//}
+
 
 
 /////////////////////////////// forEach method of cv::Mat ////////////////////////////
@@ -691,7 +712,8 @@ The function returns true if the optimized code is enabled. Otherwise, it return
 //    };
 //
 //    parallel_for_(cv::Range(0, LINES), PixelOperationWrapper(reinterpret_cast<Mat_<_Tp>*>(this), operation));
-//}
+//}
+
 
 /////////////////////////// Synchronization Primitives ///////////////////////////////
 
@@ -1170,7 +1192,8 @@ Search directories:
 //    if (res.empty())
 //        return relative_path;
 //    return res;
-//}
+//}
+
 
 (** @brief Override search data path by adding new search location
 

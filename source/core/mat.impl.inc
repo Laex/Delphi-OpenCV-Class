@@ -1,36 +1,32 @@
-  (*
-    This file is part of Delphi-OpenCV-Class project.
-    https://github.com/Laex/Delphi-OpenCV-Class
+(*
+  This file is part of Delphi-OpenCV-Class project.
+  https://github.com/Laex/Delphi-OpenCV-Class
 
-    It is subject to the license terms in the LICENSE file found in the top-level directory
-    of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+  It is subject to the license terms in the LICENSE file found in the top-level directory
+  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
 
-    Copyright 2021, Laentir Valetov, laex@bk.ru
+  Copyright 2021, Laentir Valetov, laex@bk.ru
 
-    Licensed under the Apache License, Version 2.0 (the 'License');
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the 'License');
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an 'AS IS' BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  *)
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an 'AS IS' BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*)
 
 {$IFDEF OPENCV_CORE_MAT_HPP}
-  { TMat }
+{ TMat }
 
-class operator TMatHelper.Implicit(const m: TMatExpr): TMat;
-begin
-  Operator_Mat_Assign_MatExpr(Result, m);
-end;
 
 class operator TMat.Initialize(out Dest: TMat);
 begin
-  Dest := Constructor_Mat(Dest)^;
+  Constructor_Mat(Dest);
 end;
 
 class operator TMat.Finalize(var Dest: TMat);
@@ -42,6 +38,11 @@ class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
 begin
   if @Dest <> @Src then
     Operator_Mat_Assign_Const_Mat(Dest, Src);
+end;
+
+class operator TMatHelper.Implicit(const m: TMatExpr): TMat;
+begin
+  Operator_Mat_Assign_MatExpr(Result, m);
 end;
 
 function TMatHelper.clone: TMat;
@@ -74,6 +75,11 @@ begin
   bitwise_and(a, b, Result);
 end;
 
+class operator TMatHelper.BitwiseAnd(const a: TMat; const b: TScalar): TMatExpr;
+begin
+  operator_MatExpr_BitwiseAnd_Mat_Scalar(Result,a,b);
+end;
+
 class operator TMatHelper.LogicalNot(const m: TMat): TMatExpr;
 begin
   operator_MatExpr_LogicalNot_Mat(Result, m);
@@ -82,6 +88,16 @@ end;
 class operator TMatHelper.GreaterThanOrEqual(const a: TMat; const b: Int): TMatExpr;
 begin
   operator_MatExpr_GreaterThanOrEqual_double(Result, a, b);
+end;
+
+class operator TMatHelper.Multiply(const a: TMat; const b: double): TMatExpr;
+begin
+  operator_MatExpr_Mul_Mat_double(Result, a, b);
+end;
+
+class operator TMatHelper.Add(const a: TMat; const s: TScalar): TMatExpr;
+begin
+  operator_MatExpr_Add_Mat_Scalar(Result, a, s);
 end;
 
 class function TMatHelper.Mat(const size: TSize; &type: Int): TMat;
@@ -136,7 +152,8 @@ end;
 
 class function TMatHelper.Mat: TMat;
 begin
-  Result := Constructor_Mat(Result)^;
+//  Result := Constructor_Mat(Result)^;
+  Constructor_Mat(Result);
 end;
 
 class function TMatHelper.Mat(const m: TMat; const roi: TRect): TMat;
@@ -148,15 +165,22 @@ function TMatHelper.pT<T>(const i0: Int): Pointer;
 Type
   pType = ^T;
 begin
-    // CV_DbgAssert( y == 0 || (data && dims >= 1 && (unsigned)y < (unsigned)size.p[0]) );
+  // CV_DbgAssert( y == 0 || (data && dims >= 1 && (unsigned)y < (unsigned)size.p[0]) );
 {$WARNINGS OFF}
   Result := (Data + step.p[0] * i0);
 {$WARNINGS ON}
 end;
 
-function TMatHelper.pT<T>(const i0, i1: Int): Pointer;
+function TMatHelper.pT<T>(const i0, i1, i2: Int): Pointer;
 Type
   pType = ^T;
+begin
+{$WARNINGS OFF}
+  Result := Pointer(Data + i0 * step.p[0] + i1 * step.p[1] + i2 * step.p[2]);
+{$WARNINGS ON}
+end;
+
+function TMatHelper.pT<T>(const i0, i1: Int): Pointer;
 begin
 {$WARNINGS OFF}
   Result := Pointer(Data + step.p[0] * i0 + i1 * SizeOf(T));
@@ -184,9 +208,9 @@ procedure TMatHelper.st<T>(const i0: Int; const v: T);
 Type
   pType = ^T;
 begin
-    // {$WARNINGS OFF}
-    // pType(Data + step.p[0] * i0)^ := v;
-    // {$WARNINGS ON}
+  // {$WARNINGS OFF}
+  // pType(Data + step.p[0] * i0)^ := v;
+  // {$WARNINGS ON}
 {$WARNINGS OFF}
   if (isContinuous() or (size.p[0] = 1)) then
   begin
@@ -225,11 +249,11 @@ function TMatHelper.at<T>(const i0, i1: Int): T;
 Type
   pType = ^T;
 begin
-    // CV_DbgAssert(dims <= 2);
-    // CV_DbgAssert(data);
-    // CV_DbgAssert((unsigned)i0 < (unsigned)size.p[0]);
-    // CV_DbgAssert((unsigned)(i1 * DataType<_Tp>::channels) < (unsigned)(size.p[1] * channels()));
-    // CV_DbgAssert(CV_ELEM_SIZE1(traits::Depth<_Tp>::value) == elemSize1());
+  // CV_DbgAssert(dims <= 2);
+  // CV_DbgAssert(data);
+  // CV_DbgAssert((unsigned)i0 < (unsigned)size.p[0]);
+  // CV_DbgAssert((unsigned)(i1 * DataType<_Tp>::channels) < (unsigned)(size.p[1] * channels()));
+  // CV_DbgAssert(CV_ELEM_SIZE1(traits::Depth<_Tp>::value) == elemSize1());
 {$WARNINGS OFF}
   Result := pType(Data + step.p[0] * i0)[i1];
 {$WARNINGS ON}
@@ -239,10 +263,10 @@ function TMatHelper.at<T>(const i0: Int): T;
 Type
   pType = ^T;
 begin
-    // CV_DbgAssert(dims <= 2);
-    // CV_DbgAssert(data);
-    // CV_DbgAssert((unsigned)i0 < (unsigned)(size.p[0] * size.p[1]));
-    // CV_DbgAssert(elemSize() == sizeof(_Tp));
+  // CV_DbgAssert(dims <= 2);
+  // CV_DbgAssert(data);
+  // CV_DbgAssert((unsigned)i0 < (unsigned)(size.p[0] * size.p[1]));
+  // CV_DbgAssert(elemSize() == sizeof(_Tp));
 {$WARNINGS OFF}
   if (isContinuous() or (size.p[0] = 1)) then
     Exit(pType(Data)[i0]);
@@ -334,8 +358,6 @@ begin
     TMat.Mat(vec.size, 1, TTraitsType<T>.Value, vec.pT(0)).copyTo(Result);
 end;
 
-  { TMatHelper }
-
 procedure TMatHelper.copyTo(m: TOutputArray);
 begin
   copyTo_Mat(Self, m);
@@ -391,12 +413,37 @@ begin
   operator_MatExpr_Subtract_Mat_MatExpr(Result, m, s);
 end;
 
-class operator TMatHelper.Implicit(const s: TScalar): TMat;
+function TMatHelper.ptr(const i0: Int): puchar;
 begin
-  Result.assign(s);
+  Result := pT<uchar>(i0);
 end;
 
-  { TMatExpr }
+function TMatHelper.ptr(const row, col: Int): puchar;
+begin
+  Result := pT<uchar>(row, col);
+end;
+
+function TMatHelper.ptr(const i0, i1, i2: Int): puchar;
+begin
+  Result := pT<uchar>(i0, i1, i2);
+end;
+
+function TMatHelper.ptr(const idx: pInt): puchar;
+begin
+  Var
+    i: Int;
+  Var
+    d: Int := dims;
+  Result := Data;
+  // CV_DbgAssert( d >= 1 && p );
+  for i := 0 to d - 1 do
+  begin
+    // CV_DbgAssert( (unsigned)idx[i] < (unsigned)size.p[i] );
+    Result := Result + UInt64(idx[i]) * UInt64(step.p[i]);
+  end;
+end;
+
+{ TMatExpr }
 
 class operator TMatExpr.assign(var Dest: TMatExpr; const [ref] Src: TMatExpr);
 begin
@@ -418,7 +465,7 @@ begin
   MatExpr_size(Self, Result);
 end;
 
-  { TInputArray }
+{ TInputArray }
 
 class function TInputArray.InputArray(const m: TMat): TInputArray;
 begin
@@ -532,7 +579,7 @@ begin
   Result.Obj := @v;
   Result.sz := size(1, 4);
 end;
-  { TOutputArray }
+{ TOutputArray }
 
 class function TOutputArrayHelper.noArray: TOutputArray;
 begin
@@ -607,7 +654,7 @@ begin
   Result.sz := size(0, 0);
 end;
 
-  { TInputOutputArray }
+{ TInputOutputArray }
 
 class operator TInputOutputArrayHelper.Implicit(const IOA: TInputOutputArray): TMat;
 Type
@@ -644,7 +691,7 @@ begin
   Result.sz := size(0, 0);
 end;
 
-  { TInputArrayOfArraysHelper }
+{ TInputArrayOfArraysHelper }
 
 class operator TInputArrayOfArraysHelper.Implicit(const v: Vector < Vector < TPoint >> ): TInputArrayOfArrays;
 begin
@@ -656,14 +703,14 @@ begin
   Result := TInputArrayOfArrays(TInputArray(v));
 end;
 
-  { TMatSize }
+{ TMatSize }
 
 class operator TMatSizeHelper.Implicit(const m: TMatSize): TSize;
 begin
   operator_MatSize_MatSizeToSize(m, Result);
 end;
 
-  { TMatStep }
+{ TMatStep }
 
 function TMatStepHelper.GetItems(const index: Int): Int;
 begin

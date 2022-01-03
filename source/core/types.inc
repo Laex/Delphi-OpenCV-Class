@@ -478,10 +478,10 @@ TRect_<T: record > = record
     height: T; // !< height of the rectangle
   end;
 
-  TRect2i     =TRect_<int>   ;
-  TRect2f     =TRect_<float> ;
-  TRect2d     =TRect_<double>;
-  TRect       =TRect2i       ;
+  TRect2i     = TRect_<int>   ;
+  TRect2f     = TRect_<float> ;
+  TRect2d     = TRect_<double>;
+  TRect       = TRect2i       ;
 
 function Rect(const _x: Int; _y: Int; _width: Int; _height: Int): TRect; {$IFDEF USE_INLINE}inline; {$ENDIF}
 

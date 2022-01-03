@@ -162,6 +162,7 @@ Var
   cout: Tcout;
   cerr: Tcout;
   argv: TArray<string>;
+  argc:Integer;
 
 function isIntNumber(const v: String): Boolean;
 function isIntNumberWithDefault(const v: String; const D: integer = 0): integer;
@@ -514,5 +515,7 @@ initialization
 argv := [ExtractFileName(ParamStr(0))];
 for Var i := 1 to ParamCount do
   argv := argv + [ParamStr(i)];
+
+argc := 1+ParamCount;
 
 end.

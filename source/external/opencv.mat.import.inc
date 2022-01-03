@@ -103,7 +103,10 @@ function Constructor_Mat(const Obj: TMat; a: UInt64{TSize}; b: int; c: Pointer; 
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ??0Mat@cv@@QEAA@XZ
 // public: __cdecl cv::Mat::Mat(void) __ptr64
-function Constructor_Mat(const Obj: TMat):pMat; overload; external opencv_world_dll name '??0Mat@cv@@QEAA@XZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+//function Constructor_Mat(const Obj: TMat):pMat;
+procedure Constructor_Mat(Var Obj: TMat);
+overload; external opencv_world_dll name '??0Mat@cv@@QEAA@XZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 // ??1Mat@cv@@QEAA@XZ
 // public: __cdecl cv::Mat::~Mat(void) __ptr64
 function Destructor_Mat(const Obj: TMat):pMat; overload; external opencv_world_dll name '??1Mat@cv@@QEAA@XZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
