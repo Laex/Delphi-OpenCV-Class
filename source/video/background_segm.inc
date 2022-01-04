@@ -31,36 +31,42 @@
 //! @addtogroup video_motion
 //! @{
 
+Type
 (** @brief Base class for background/foreground segmentation. :
 
 The class is only used to define the common interface for the whole family of background/foreground
 segmentation algorithms.
  *)
-//class CV_EXPORTS_W BackgroundSubtractor : public Algorithm
-//{
-//public:
-//    (** @brief Computes a foreground mask.
-//
-//    @param image Next video frame.
-//    @param fgmask The output foreground mask as an 8-bit binary image.
-//    @param learningRate The value between 0 and 1 that indicates how fast the background model is
-//    learnt. Negative parameter value makes the algorithm to use some automatically chosen learning
-//    rate. 0 means that the background model is not updated at all, 1 means that the background model
-//    is completely reinitialized from the last frame.
-//     *)
-//    CV_WRAP virtual void apply(InputArray image, OutputArray fgmask, double learningRate=-1) = 0;
-//
-//    (** @brief Computes a background image.
-//
-//    @param backgroundImage The output background image.
-//
-//    @note Sometimes the background image can be very blurry, as it contain the average background
-//    statistics.
-//     *)
-//    CV_WRAP virtual void getBackgroundImage(OutputArray backgroundImage) const = 0;
-//};
+    TBackgroundSubtractor = type TAlgorithm;
 
-Type
+    pTBackgroundSubtractor = ^TBackgroundSubtractor;
+
+    TBackgroundSubtractorHelper = record helper for TBackgroundSubtractor
+    public
+    (** @brief Computes a foreground mask.
+
+    @param image Next video frame.
+    @param fgmask The output foreground mask as an 8-bit binary image.
+    @param learningRate The value between 0 and 1 that indicates how fast the background model is
+    learnt. Negative parameter value makes the algorithm to use some automatically chosen learning
+    rate. 0 means that the background model is not updated at all, 1 means that the background model
+    is completely reinitialized from the last frame.
+     *)
+//    CV_WRAP virtual void apply(InputArray image, OutputArray fgmask, double learningRate=-1) = 0;
+    procedure apply(const image:TInputArray;const fgmask:TOutputArray; learningRate:double=-1); {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+    (** @brief Computes a background image.
+
+    @param backgroundImage The output background image.
+
+    @note Sometimes the background image can be very blurry, as it contain the average background
+    statistics.
+     *)
+//    CV_WRAP virtual void getBackgroundImage(OutputArray backgroundImage) const = 0;
+    procedure getBackgroundImage(const backgroundImage:TOutputArray); {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+
 (** @brief Gaussian Mixture-based Background/Foreground Segmentation Algorithm.
 
 The class implements the Gaussian mixture model background subtraction described in @cite Zivkovic2004
@@ -203,93 +209,96 @@ speed a bit, so if you do not need this feature, set the parameter to false.
 //CV_EXPORTS_W Ptr<BackgroundSubtractorMOG2>
 //    createBackgroundSubtractorMOG2(int history=500, double varThreshold=16,
 //                                   bool detectShadows=true);
-
-  {
+{
     4264
     ?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z
     ?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z
     struct cv::Ptr<class cv::BackgroundSubtractorMOG2> cv::createBackgroundSubtractorMOG2(int,double,bool)
-  }
-function createBackgroundSubtractorMOG2(history: Int = 500; varThreshold: double = 16; detectShadows: BOOL = true): TPtr<TBackgroundSubtractorMOG2>;
-  external opencv_world_dll name '?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z'
+}
+function createBackgroundSubtractorMOG2(history: Int = 500; varThreshold: double = 16; detectShadows: BOOL = true): TPtr<TBackgroundSubtractorMOG2>; overload;
+external opencv_world_dll name '?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
+type
 (** @brief K-nearest neighbours - based Background/Foreground Segmentation Algorithm.
 
 The class implements the K-nearest neighbours background subtraction described in @cite Zivkovic2006 .
 Very efficient if number of foreground pixels is low.
  *)
-//class CV_EXPORTS_W BackgroundSubtractorKNN : public BackgroundSubtractor
-//{
-//public:
-//    (** @brief Returns the number of last frames that affect the background model
-//    *)
+    TBackgroundSubtractorKNN = type TBackgroundSubtractor;
+
+    pBackgroundSubtractorKNN = ^TBackgroundSubtractorKNN;
+
+    TBackgroundSubtractorKNNHelper = record helper for TBackgroundSubtractorKNN
+    public
+    (** @brief Returns the number of last frames that affect the background model
+    *)
 //    CV_WRAP virtual int getHistory() const = 0;
-//    (** @brief Sets the number of last frames that affect the background model
-//    *)
+    (** @brief Sets the number of last frames that affect the background model
+    *)
 //    CV_WRAP virtual void setHistory(int history) = 0;
-//
-//    (** @brief Returns the number of data samples in the background model
-//    *)
+
+    (** @brief Returns the number of data samples in the background model
+    *)
 //    CV_WRAP virtual int getNSamples() const = 0;
-//    (** @brief Sets the number of data samples in the background model.
-//
-//    The model needs to be reinitalized to reserve memory.
-//    *)
+    (** @brief Sets the number of data samples in the background model.
+
+    The model needs to be reinitalized to reserve memory.
+    *)
 //    CV_WRAP virtual void setNSamples(int _nN) = 0;//needs reinitialization!
-//
-//    (** @brief Returns the threshold on the squared distance between the pixel and the sample
-//
-//    The threshold on the squared distance between the pixel and the sample to decide whether a pixel is
-//    close to a data sample.
-//     *)
+
+    (** @brief Returns the threshold on the squared distance between the pixel and the sample
+
+    The threshold on the squared distance between the pixel and the sample to decide whether a pixel is
+    close to a data sample.
+     *)
 //    CV_WRAP virtual double getDist2Threshold() const = 0;
-//    (** @brief Sets the threshold on the squared distance
-//    *)
+    (** @brief Sets the threshold on the squared distance
+    *)
 //    CV_WRAP virtual void setDist2Threshold(double _dist2Threshold) = 0;
-//
-//    (** @brief Returns the number of neighbours, the k in the kNN.
-//
-//    K is the number of samples that need to be within dist2Threshold in order to decide that that
-//    pixel is matching the kNN background model.
-//     *)
+
+    (** @brief Returns the number of neighbours, the k in the kNN.
+
+    K is the number of samples that need to be within dist2Threshold in order to decide that that
+    pixel is matching the kNN background model.
+     *)
 //    CV_WRAP virtual int getkNNSamples() const = 0;
-//    (** @brief Sets the k in the kNN. How many nearest neighbours need to match.
-//    *)
+    (** @brief Sets the k in the kNN. How many nearest neighbours need to match.
+    *)
 //    CV_WRAP virtual void setkNNSamples(int _nkNN) = 0;
-//
-//    (** @brief Returns the shadow detection flag
-//
-//    If true, the algorithm detects shadows and marks them. See createBackgroundSubtractorKNN for
-//    details.
-//     *)
+
+    (** @brief Returns the shadow detection flag
+
+    If true, the algorithm detects shadows and marks them. See createBackgroundSubtractorKNN for
+    details.
+     *)
 //    CV_WRAP virtual bool getDetectShadows() const = 0;
-//    (** @brief Enables or disables shadow detection
-//    *)
+    (** @brief Enables or disables shadow detection
+    *)
 //    CV_WRAP virtual void setDetectShadows(bool detectShadows) = 0;
-//
-//    (** @brief Returns the shadow value
-//
-//    Shadow value is the value used to mark shadows in the foreground mask. Default value is 127. Value 0
-//    in the mask always means background, 255 means foreground.
-//     *)
+
+    (** @brief Returns the shadow value
+
+    Shadow value is the value used to mark shadows in the foreground mask. Default value is 127. Value 0
+    in the mask always means background, 255 means foreground.
+     *)
 //    CV_WRAP virtual int getShadowValue() const = 0;
-//    (** @brief Sets the shadow value
-//    *)
+    (** @brief Sets the shadow value
+    *)
 //    CV_WRAP virtual void setShadowValue(int value) = 0;
-//
-//    (** @brief Returns the shadow threshold
-//
-//    A shadow is detected if pixel is a darker version of the background. The shadow threshold (Tau in
-//    the paper) is a threshold defining how much darker the shadow can be. Tau= 0.5 means that if a pixel
-//    is more than twice darker then it is not shadow. See Prati, Mikic, Trivedi and Cucchiara,
-//    *Detecting Moving Shadows...*, IEEE PAMI,2003.
-//     *)
+
+    (** @brief Returns the shadow threshold
+
+    A shadow is detected if pixel is a darker version of the background. The shadow threshold (Tau in
+    the paper) is a threshold defining how much darker the shadow can be. Tau= 0.5 means that if a pixel
+    is more than twice darker then it is not shadow. See Prati, Mikic, Trivedi and Cucchiara,
+    *Detecting Moving Shadows...*, IEEE PAMI,2003.
+     *)
 //    CV_WRAP virtual double getShadowThreshold() const = 0;
-//    (** @brief Sets the shadow threshold
-//     *)
+    (** @brief Sets the shadow threshold
+     *)
 //    CV_WRAP virtual void setShadowThreshold(double threshold) = 0;
-//};
+end;
 
 (** @brief Creates KNN Background Subtractor
 
@@ -302,6 +311,17 @@ speed a bit, so if you do not need this feature, set the parameter to false.
 //CV_EXPORTS_W Ptr<BackgroundSubtractorKNN>
 //    createBackgroundSubtractorKNN(int history=500, double dist2Threshold=400.0,
 //                                   bool detectShadows=true);
+{
+4263
+?createBackgroundSubtractorKNN@cv@@YA?AU?$Ptr@VBackgroundSubtractorKNN@cv@@@1@HN_N@Z
+?createBackgroundSubtractorKNN@cv@@YA?AU?$Ptr@VBackgroundSubtractorKNN@cv@@@1@HN_N@Z
+struct cv::Ptr<class cv::BackgroundSubtractorKNN> cv::createBackgroundSubtractorKNN(int,double,bool)
+}
+function createBackgroundSubtractorKNN(history:int=500; dist2Threshold:double=400.0; detectShadows:bool=true):TPtr<TBackgroundSubtractorKNN>;
+external opencv_world_dll name '?createBackgroundSubtractorKNN@cv@@YA?AU?$Ptr@VBackgroundSubtractorKNN@cv@@@1@HN_N@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+//4264	?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z	?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z	struct cv::Ptr<class cv::BackgroundSubtractorMOG2> cv::createBackgroundSubtractorMOG2(int,double,bool)
 
 //! @} video_motion
 

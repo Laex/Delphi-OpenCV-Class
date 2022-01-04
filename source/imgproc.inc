@@ -3284,13 +3284,14 @@ types.
   ?threshold@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@NNH@Z
   double cv::threshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int)
 }
-function threshold(const Src: TInputArray; const dst: TOutputArray; thresh, maxVal: double; &type: Int): double; external opencv_world_dll
+function threshold(const Src: TInputArray; const dst: TOutputArray; thresh, maxVal: double; &type: Int): double; overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?threshold@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NNH@Z'
 {$ELSE}
   name '?threshold@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@NNH@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function threshold(const Src: TInputArray; const dst: TOutputArray; thresh, maxVal: double; &type: ThresholdTypes): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Applies an adaptive threshold to an array.
 

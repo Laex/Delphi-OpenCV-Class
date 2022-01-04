@@ -1,24 +1,24 @@
-  (*
-    This file is part of Delphi-OpenCV-Class project.
-    https://github.com/Laex/Delphi-OpenCV-Class
+(*
+  This file is part of Delphi-OpenCV-Class project.
+  https://github.com/Laex/Delphi-OpenCV-Class
 
-    It is subject to the license terms in the LICENSE file found in the top-level directory
-    of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+  It is subject to the license terms in the LICENSE file found in the top-level directory
+  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
 
-    Copyright 2021, Laentir Valetov, laex@bk.ru
+  Copyright 2021, Laentir Valetov, laex@bk.ru
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  *)
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*)
 
 unit cpp.utils;
 
@@ -53,14 +53,14 @@ Type
   Vector<T> = record
   private
 {$HINTS OFF}
-      // release 24
-      // Data: array [0 .. 24 - 1] of Byte;
+    // release 24
+    // Data: array [0 .. 24 - 1] of Byte;
     A: UInt64;
     B: UInt64;
     C: UInt64;
 {$IFDEF DEBUG}
-      // debug 32
-      // Data: array [0 .. 32 - 1] of Byte;
+    // debug 32
+    // Data: array [0 .. 32 - 1] of Byte;
     D: UInt64;
 {$ENDIF}
 {$HINTS ON}
@@ -77,7 +77,7 @@ Type
     procedure push_back(const Value: T); {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure resize(const NewSize: UInt64); {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure clear(); {$IFDEF USE_INLINE}inline; {$ENDIF}
-      //
+    //
     function pT(const index: UInt64): Pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
     property v[const index: UInt64]: T read GetItems write setItems; default;
     class operator Implicit(const A: TArray<T>): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -116,6 +116,7 @@ Type
     function v: pT; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator assign(var Dest: TPtr<T>; const [ref] Src: TPtr<T>);
     class operator Finalize(var Dest: TPtr<T>);
+    class operator Equal(const A: TPtr<T>; const B: boolean): boolean; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   makePtr<T: record > = record
@@ -132,10 +133,10 @@ Type
     class operator Initialize(out Dest: TSet<T>);
     class operator Finalize(var Dest: TSet<T>);
     class operator assign(var Dest: TSet<T>; const [ref] Src: TSet<T>);
-    class operator In (const A: T; const B: TSet<T>): Boolean;
+    class operator In (const A: T; const B: TSet<T>): boolean;
     class operator Implicit(const A: TArray<T>): TSet<T>;
     class operator Implicit(const A: TSet<T>): TArray<T>;
-    function Contains(const Value: T): Boolean; inline;
+    function Contains(const Value: T): boolean; inline;
     procedure Include(const Value: T); inline;
     procedure Exclude(const Value: T); inline;
   end;
@@ -162,9 +163,9 @@ Var
   cout: Tcout;
   cerr: Tcout;
   argv: TArray<string>;
-  argc:Integer;
+  argc: integer;
 
-function isIntNumber(const v: String): Boolean;
+function isIntNumber(const v: String): boolean;
 function isIntNumberWithDefault(const v: String; const D: integer = 0): integer;
 
 type
@@ -176,7 +177,7 @@ procedure printf(const text: string); {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 Type
   iif = record
-    class function iif<T>(const Cond: Boolean; const ifTrue, ifFalse: T): T; static; inline;
+    class function iif<T>(const Cond: boolean; const ifTrue, ifFalse: T): T; static; inline;
   end;
 
 implementation
@@ -184,7 +185,7 @@ implementation
 Uses
   cv.opencv;
 
-  { vector<T> }
+{ vector<T> }
 
 class operator Vector<T>.assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
 begin
@@ -289,12 +290,12 @@ begin
     vt := vtVec6f
   else if TypeInfo(T) = TypeInfo(Vector<TPoint2f>) then // vector<float>
     vt := vtVectorPoint2f
-      // else if TypeInfo(T) = TypeInfo(TGMat) then // vector<GMat>
-      // vt := vtGMat
-      // else if TypeInfo(T) = TypeInfo(TGCompileArg) then // vector<GCompileArg>
-      // vt := vtGCompileArg
-      // else if TypeInfo(T) = TypeInfo(pMat) then // vector<GCompileArg>
-      // vt := vtpVoid
+    // else if TypeInfo(T) = TypeInfo(TGMat) then // vector<GMat>
+    // vt := vtGMat
+    // else if TypeInfo(T) = TypeInfo(TGCompileArg) then // vector<GCompileArg>
+    // vt := vtGCompileArg
+    // else if TypeInfo(T) = TypeInfo(pMat) then // vector<GCompileArg>
+    // vt := vtpVoid
   else
   begin
     Var
@@ -307,7 +308,7 @@ begin
   end;
 end;
 
-  { CppString }
+{ CppString }
 
 procedure CppString.assign(const p: pAnsiChar);
 begin
@@ -359,7 +360,7 @@ begin
   Result := size_CppString(@Self);
 end;
 
-  { TPtr<T> }
+{ TPtr<T> }
 
 class operator TPtr<T>.assign(var Dest: TPtr<T>; const [ref] Src: TPtr<T>);
 Var
@@ -368,6 +369,11 @@ begin
   Move(Src, Dest, SizeOf(Dest));
   p := @Src;
   Inc(p^._Ref);
+end;
+
+class operator TPtr<T>.Equal(const A: TPtr<T>; const B: boolean): boolean;
+begin
+  Result := Assigned(A._Ptr) = B;
 end;
 
 class operator TPtr<T>.Finalize(var Dest: TPtr<T>);
@@ -388,7 +394,7 @@ begin
   Result := text.Replace('\n', #13#10).Replace('\t', #9);
 end;
 
-  { Tcout }
+{ Tcout }
 
 class operator Tcout.Add(const C: Tcout; const B: String): Tcout;
 begin
@@ -402,16 +408,16 @@ begin
   Result := C;
 end;
 
-  { TSet<T> }
+{ TSet<T> }
 
 class operator TSet<T>.assign(var Dest: TSet<T>; const [ref] Src: TSet<T>);
 begin
-    // Dest.FDict.ToArray
-    // Src.FDict.F
-    // .Assign(Src.FDict);
+  // Dest.FDict.ToArray
+  // Src.FDict.F
+  // .Assign(Src.FDict);
 end;
 
-function TSet<T>.Contains(const Value: T): Boolean;
+function TSet<T>.Contains(const Value: T): boolean;
 begin
   Result := FDict.ContainsKey(Value);
 end;
@@ -437,7 +443,7 @@ begin
   Result := A.FDict.Keys.ToArray;
 end;
 
-class operator TSet<T>.In(const A: T; const B: TSet<T>): Boolean;
+class operator TSet<T>.In(const A: T; const B: TSet<T>): boolean;
 begin
   Result := B.Contains(A);
 end;
@@ -457,14 +463,14 @@ begin
   Result := pvftable(vft)[index];
 end;
 
-  { makePtr<T> }
+{ makePtr<T> }
 
 class function makePtr<T>.Create(const v: T): TPtr<T>;
 begin
   Result._Ptr := @v;
 end;
 
-function isIntNumber(const v: String): Boolean;
+function isIntNumber(const v: String): boolean;
 Var
   R: integer;
 begin
@@ -477,7 +483,7 @@ begin
     Result := D;
 end;
 
-  { TSwap }
+{ TSwap }
 
 class procedure TSwap.swap<T>(var A, B: Vector<T>);
 Var
@@ -500,9 +506,9 @@ begin
   cout + text;
 end;
 
-  { iif }
+{ iif }
 
-class function iif.iif<T>(const Cond: Boolean; const ifTrue, ifFalse: T): T;
+class function iif.iif<T>(const Cond: boolean; const ifTrue, ifFalse: T): T;
 begin
   if Cond then
     Result := ifTrue
@@ -516,6 +522,6 @@ argv := [ExtractFileName(ParamStr(0))];
 for Var i := 1 to ParamCount do
   argv := argv + [ParamStr(i)];
 
-argc := 1+ParamCount;
+argc := 1 + ParamCount;
 
 end.

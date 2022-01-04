@@ -191,6 +191,11 @@ begin
   createHanningWindow(dst, UInt64(winSize), &type);
 end;
 
+function threshold(const Src: TInputArray; const dst: TOutputArray; thresh, maxVal: double; &type: ThresholdTypes): double;
+begin
+  Result := threshold(Src,dst,thresh, maxVal,Int(&type));
+end;
+
 function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() }; Var response: double { = 0 } ): TPoint2d;
 begin
   Result := phaseCorrelate(src1, src2, window, @response);

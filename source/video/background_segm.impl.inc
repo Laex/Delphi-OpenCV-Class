@@ -43,4 +43,20 @@ begin
   TsetVarThreshold(vftable(Self.vft, $80 div SizeOf(Pointer)))(Self, varThreshold);
 end;
 
+{ TBackgroundSubtractorHelper }
+
+procedure TBackgroundSubtractorHelper.apply(const image:TInputArray;const fgmask:TOutputArray; learningRate:double);
+Type
+  Tapply = procedure(const Obj: TBackgroundSubtractor; const image: TInputArray; const fgmask: TOutputArray; learningRate: double);
+begin
+  Tapply(vftable(Self.vft, $38 div SizeOf(Pointer)))(Self, image, fgmask, learningRate);
+end;
+
+procedure TBackgroundSubtractorHelper.getBackgroundImage(const backgroundImage:TOutputArray);
+Type
+  TgetBackgroundImage = procedure(const Obj: TBackgroundSubtractor; const backgroundImage:TOutputArray);
+begin
+  TgetBackgroundImage(vftable(Self.vft, $40 div SizeOf(Pointer)))(Self, backgroundImage);
+end;
+
 {$endif}
