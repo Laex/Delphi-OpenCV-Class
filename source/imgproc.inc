@@ -3769,6 +3769,22 @@ mode==GC_EVAL .
 //CV_EXPORTS_W void grabCut( InputArray img, InputOutputArray mask, Rect rect,
 //                           InputOutputArray bgdModel, InputOutputArray fgdModel,
 //                           int iterCount, int mode = GC_EVAL );
+{
+5203
+?grabCut@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@V?$Rect_@H@1@11HH@Z
+?grabCut@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@V?$Rect_@H@1@11HH@
+Z	void cv::grabCut(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::Rect_<int>,class cv::_InputOutputArray const &,class cv::_InputOutputArray const &,int,int)
+}
+procedure grabCut(const img:TInputArray;const mask:TInputOutputArray;const rect:TRect;
+                           const bgdModel:TInputOutputArray;const fgdModel:TInputOutputArray;
+                           iterCount:int; mode :GrabCutModes = GC_EVAL );
+external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?grabCut@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@V?$Rect_@H@1@11HH@Z'
+{$ELSE}
+  name '?grabCut@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@V?$Rect_@H@1@11HH@'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //! @} imgproc_segmentation
 

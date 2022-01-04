@@ -236,6 +236,14 @@ begin
   Result := TRect_<Int>.Rect(_x, _y, _width, _height);
 end;
 
+function Rect(const pt1,pt2:TPoint): TRect;
+begin
+    Result.x := System.Math.min(pt1.x, pt2.x);
+    Result.y := System.Math.min(pt1.y, pt2.y);
+    Result.width := System.Math.max(pt1.x, pt2.x) - Result.x;
+    Result.height := System.Math.max(pt1.y, pt2.y) - Result.y;
+end;
+
   { TScalar }
 
 class function TScalar.Create(const v0, v1, v2, v3: double): TScalar;

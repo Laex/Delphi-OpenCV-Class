@@ -483,7 +483,8 @@ TRect_<T: record > = record
   TRect2d     = TRect_<double>;
   TRect       = TRect2i       ;
 
-function Rect(const _x: Int; _y: Int; _width: Int; _height: Int): TRect; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function Rect(const _x: Int; _y: Int; _width: Int; _height: Int): TRect; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function Rect(const pt1,pt2:TPoint): TRect; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (*
 template<typename _Tp> class DataType< Rect_<_Tp> >

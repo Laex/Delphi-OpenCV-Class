@@ -40,6 +40,16 @@ begin
     Operator_Mat_Assign_Const_Mat(Dest, Src);
 end;
 
+function TMatHelper.setTo(const value:TInputArray;const mask:TInputArray{=noArray()}):TMat;
+begin
+  Result := setTo_Mat(Self,value,mask)^;
+end;
+
+function TMatHelper.setTo(const value:TInputArray):TMat;
+begin
+  Result := setTo(value,TInputArray.noArray);
+end;
+
 class operator TMatHelper.Implicit(const m: TMatExpr): TMat;
 begin
   Operator_Mat_Assign_MatExpr(Result, m);

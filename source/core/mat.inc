@@ -120,8 +120,7 @@ type
   public
     class operator Initialize(out Dest: TMat); // Mat();
     class operator Finalize(var Dest: TMat);   // ~Mat();
-    class operator assign(var Dest: TMat; const [ref] Src: TMat);
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator assign(var Dest: TMat; const [ref] Src: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     // CVMat: TCVMat;
     flags: Int; // int flags;
@@ -293,10 +292,10 @@ type
   public
     class operator Initialize(out Dest: TInputArray); // _InputArray();
     // _InputArray(int _flags, void* _obj);
-    class function InputArray(const m: TMat): TInputArray; overload; static;
-{$IFDEF USE_INLINE}inline; {$ENDIF}// _InputArray(const Mat& m);
-    class function InputArray(const m: TMatExpr): TInputArray; overload; static;
-{$IFDEF USE_INLINE}inline; {$ENDIF}// _InputArray(const MatExpr& expr);
+    // _InputArray(const Mat& m);
+    class function InputArray(const m: TMat): TInputArray; overload; static;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    // _InputArray(const MatExpr& expr);
+    class function InputArray(const m: TMatExpr): TInputArray; overload; static;{$IFDEF USE_INLINE}inline; {$ENDIF}
     // _InputArray(const std::vector<Mat>& vec);
     // _InputArray(const std::vector<bool>& vec);
     // _InputArray(const std::vector<std::vector<bool> >&) = delete;  // not supported
@@ -349,30 +348,18 @@ type
     // bool isGpuMatVector() const;
     class operator Finalize(var Dest: TInputArray); // ~_InputArray();
     //
-    class function noArray: TInputArray; static; {$IFDEF USE_INLINE}inline;
-{$ENDIF}
-    class operator Implicit(const m: TMat): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMatExpr): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint2f>): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint>): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<uchar>): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: double): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TVec4i>): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TMat>): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: TScalar): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<float>): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function noArray: TInputArray; static; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    class operator Implicit(const m: TMat): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: TMatExpr): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<uchar>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: double): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TVec4i>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TMat>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: TScalar): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<float>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
   public
 {$HINTS OFF}
     flags: Int;   // int flags;
@@ -938,6 +925,8 @@ type
     class function mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(int rows, int cols, int type, void* data, size_t step=AUTO_STEP);
     class function mat<T>(const vec: Vector<T>; copyData: BOOL = false): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // Mat(int rows, int cols, int type, const Scalar& s);
+    class function mat(rows, cols, &type: Int; const s: TScalar): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(Size size, int type, void* data, size_t step=AUTO_STEP);
     // Mat(int ndims, const int* sizes, int type, void* data, const size_t* steps=0);
     // Mat(const std::vector<int>& sizes, int type, void* data, const size_t* steps=0);
@@ -965,14 +954,15 @@ type
     // void copyTo( OutputArray m, InputArray mask ) const;
     // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
     // void assignTo( Mat& m, int type=-1 ) const;
-
-    // Use Assign(const s: TScalar)
+    //----------- Use Assign(const s: TScalar) or setTo() --------------
     // Mat& operator = (const Scalar& s);
     // class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE } inline; {$ENDIF}
     // assign all values to s
     procedure assign(const s: TScalar); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
     // Mat& setTo(InputArray value, InputArray mask=noArray());
+    function setTo(const value:TInputArray;const mask:TInputArray{=noArray()}):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function setTo(const value:TInputArray):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    //-------------------------
     // Mat reshape(int cn, int rows=0) const;
     // Mat reshape(int cn, int newndims, const int* newsz) const;
     // Mat reshape(int cn, const std::vector<int>& newshape) const;
@@ -1059,7 +1049,6 @@ type
     procedure st<T>(const i0: Int; const v: T); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure st<T>(const i0, i1: Int; const v: T); overload;
 
-    class function mat(rows, cols, &type: Int; const s: TScalar): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}  // Mat(int rows, int cols, int type, const Scalar& s);
     procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
     procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
     // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
