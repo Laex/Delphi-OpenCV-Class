@@ -37,8 +37,7 @@ begin
   With (cvcptrsrcFile.SourceType as TCVFileSource) do
   begin
     FileName := OpenCVData + 'Megamind.avi';
-    Loop     := True;
-    Enabled  := True;
+    Enabled := True;
   end;
 end;
 

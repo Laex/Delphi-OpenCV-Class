@@ -20,12 +20,10 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_VIDEOIO_HPP}
-{$define OPENCV_VIDEOIO_HPP}
-
+{$IFNDEF OPENCV_VIDEOIO_HPP}
+{$DEFINE OPENCV_VIDEOIO_HPP}
 {$I 'core.inc'}
-
-(**
+(* *
   @defgroup videoio Video I/O
 
   @brief Read and write video or images sequence with OpenCV
@@ -34,31 +32,31 @@
   - @ref videoio_overview
   - Tutorials: @ref tutorial_table_of_content_app
   @{
-    @defgroup videoio_flags_base Flags for video I/O
-    @defgroup videoio_flags_others Additional flags for video I/O API backends
-    @defgroup videoio_hwaccel Hardware-accelerated video decoding and encoding
-    @defgroup videoio_c C API for video I/O
-    @defgroup videoio_ios iOS glue for video I/O
-    @defgroup videoio_winrt WinRT glue for video I/O
-    @defgroup videoio_registry Query I/O API backends registry
+  @defgroup videoio_flags_base Flags for video I/O
+  @defgroup videoio_flags_others Additional flags for video I/O API backends
+  @defgroup videoio_hwaccel Hardware-accelerated video decoding and encoding
+  @defgroup videoio_c C API for video I/O
+  @defgroup videoio_ios iOS glue for video I/O
+  @defgroup videoio_winrt WinRT glue for video I/O
+  @defgroup videoio_registry Query I/O API backends registry
   @}
 *)
 
-////////////////////////////////// video io /////////////////////////////////
+/// /////////////////////////////// video io /////////////////////////////////
 
 Type
-//typedef struct CvCapture CvCapture;
-//typedef struct CvVideoWriter CvVideoWriter;
+  // typedef struct CvCapture CvCapture;
+  // typedef struct CvVideoWriter CvVideoWriter;
 
-(** @brief cv::VideoCapture API backends identifier.
+  (* * @brief cv::VideoCapture API backends identifier.
 
-Select preferred API for a capture object.
-To be used in the VideoCapture::VideoCapture() constructor or VideoCapture::open()
+    Select preferred API for a capture object.
+    To be used in the VideoCapture::VideoCapture() constructor or VideoCapture::open()
 
-@note Backends are available only if they have been built with your OpenCV binaries.
-See @ref videoio_overview for more information.
-*)
-VideoCaptureAPIs = (           //
+    @note Backends are available only if they have been built with your OpenCV binaries.
+    See @ref videoio_overview for more information.
+  *)
+  VideoCaptureAPIs = (           //
     CAP_ANY = 0,                 // !< Auto detect == 0
     CAP_VFW = 200,               // !< Video For Windows (obsolete, removed)
     CAP_V4L = 200,               // !< V4L/V4L2 capturing support
@@ -96,13 +94,13 @@ VideoCaptureAPIs = (           //
     CAP_UEYE = 2500              // !< uEye Camera API
     );
 
-(** @brief cv::VideoCapture generic properties identifier.
+  (* * @brief cv::VideoCapture generic properties identifier.
 
- Reading / writing properties involves many layers. Some unexpected result might happens along this chain.
- Effective behaviour depends from device hardware, driver and API Backend.
- @sa videoio_flags_others, VideoCapture::get(), VideoCapture::set()
-*)
-VideoCaptureProperties = (    //
+    Reading / writing properties involves many layers. Some unexpected result might happens along this chain.
+    Effective behaviour depends from device hardware, driver and API Backend.
+    @sa videoio_flags_others, VideoCapture::get(), VideoCapture::set()
+  *)
+  VideoCaptureProperties = (    //
     CAP_PROP_POS_MSEC = 0,      // !< Current position of the video file in milliseconds.
     CAP_PROP_POS_FRAMES = 1,    // !< 0-based index of the frame to be decoded/captured next.
     CAP_PROP_POS_AVI_RATIO = 2, // !< Relative position of the video file: 0=start of the film, 1=end of the film.
@@ -161,451 +159,464 @@ VideoCaptureProperties = (    //
     CAP_PROP_HW_DEVICE = 51, // !< (**open-only**) Hardware device index (select GPU if multiple available). Device enumeration is acceleration type specific.
     CAP_PROP_HW_ACCELERATION_USE_OPENCL = 52,
     // !< (**open-only**) If non-zero, create new OpenCL context and bind it to current thread. The OpenCL context created with Video Acceleration context attached it (if not attached yet) for optimized GPU data copy between HW accelerated decoder and cv::UMat.
-    CAP_PROP_OPEN_TIMEOUT_MSEC = 53,     // !< (**open-only**) timeout in milliseconds for opening a video capture (applicable for FFmpeg back-end only)
-    CAP_PROP_READ_TIMEOUT_MSEC = 54,     // !< (**open-only**) timeout in milliseconds for reading from a video capture (applicable for FFmpeg back-end only)
-    CAP_PROP_STREAM_OPEN_TIME_USEC = 55, // <! (read-only) time in microseconds since Jan 1 1970 when stream was opened. Applicable for FFmpeg backend only. Useful for RTSP and other live streams
+    CAP_PROP_OPEN_TIMEOUT_MSEC = 53, // !< (**open-only**) timeout in milliseconds for opening a video capture (applicable for FFmpeg back-end only)
+    CAP_PROP_READ_TIMEOUT_MSEC = 54, // !< (**open-only**) timeout in milliseconds for reading from a video capture (applicable for FFmpeg back-end only)
+    CAP_PROP_STREAM_OPEN_TIME_USEC = 55,
+    // <! (read-only) time in microseconds since Jan 1 1970 when stream was opened. Applicable for FFmpeg backend only. Useful for RTSP and other live streams
 {$IFNDEF CV_DOXYGEN}
     CV__CAP_PROP_LATEST = 56
 {$ENDIF}
     );
 
-(** @brief cv::VideoWriter generic properties identifier.
- @sa VideoWriter::get(), VideoWriter::set()
-*)
-VideoWriterProperties =(//
-  VIDEOWRITER_PROP_QUALITY = 1,    //!< Current quality (0..100%) of the encoded videostream. Can be adjusted dynamically in some codecs.
-  VIDEOWRITER_PROP_FRAMEBYTES = 2, //!< (Read-only): Size of just encoded video frame. Note that the encoding order may be different from representation order.
-  VIDEOWRITER_PROP_NSTRIPES = 3,   //!< Number of stripes for parallel encoding. -1 for auto detection.
-  VIDEOWRITER_PROP_IS_COLOR = 4,   //!< If it is not zero, the encoder will expect and encode color frames, otherwise it
-                                   //!< will work with grayscale frames.
-  VIDEOWRITER_PROP_DEPTH = 5,      //!< Defaults to CV_8U.
-  VIDEOWRITER_PROP_HW_ACCELERATION = 6, //!< (**open-only**) Hardware acceleration type (see #VideoAccelerationType). Setting supported only via `params` parameter in VideoWriter constructor / .open() method. Default value is backend-specific.
-  VIDEOWRITER_PROP_HW_DEVICE       = 7, //!< (**open-only**) Hardware device index (select GPU if multiple available). Device enumeration is acceleration type specific.
-  VIDEOWRITER_PROP_HW_ACCELERATION_USE_OPENCL= 8, //!< (**open-only**) If non-zero, create new OpenCL context and bind it to current thread. The OpenCL context created with Video Acceleration context attached it (if not attached yet) for optimized GPU data copy between cv::UMat and HW accelerated encoder.
-{$ifndef CV_DOXYGEN}
-  CV__VIDEOWRITER_PROP_LATEST = 9
+  (* * @brief cv::VideoWriter generic properties identifier.
+    @sa VideoWriter::get(), VideoWriter::set()
+  *)
+  VideoWriterProperties = (          //
+    VIDEOWRITER_PROP_QUALITY = 1,    // !< Current quality (0..100%) of the encoded videostream. Can be adjusted dynamically in some codecs.
+    VIDEOWRITER_PROP_FRAMEBYTES = 2, // !< (Read-only): Size of just encoded video frame. Note that the encoding order may be different from representation order.
+    VIDEOWRITER_PROP_NSTRIPES = 3,   // !< Number of stripes for parallel encoding. -1 for auto detection.
+    VIDEOWRITER_PROP_IS_COLOR = 4,   // !< If it is not zero, the encoder will expect and encode color frames, otherwise it
+    // !< will work with grayscale frames.
+    VIDEOWRITER_PROP_DEPTH = 5, // !< Defaults to CV_8U.
+    VIDEOWRITER_PROP_HW_ACCELERATION = 6,
+    // !< (**open-only**) Hardware acceleration type (see #VideoAccelerationType). Setting supported only via `params` parameter in VideoWriter constructor / .open() method. Default value is backend-specific.
+    VIDEOWRITER_PROP_HW_DEVICE = 7, // !< (**open-only**) Hardware device index (select GPU if multiple available). Device enumeration is acceleration type specific.
+    VIDEOWRITER_PROP_HW_ACCELERATION_USE_OPENCL = 8,
+    // !< (**open-only**) If non-zero, create new OpenCL context and bind it to current thread. The OpenCL context created with Video Acceleration context attached it (if not attached yet) for optimized GPU data copy between cv::UMat and HW accelerated encoder.
+{$IFNDEF CV_DOXYGEN}
+    CV__VIDEOWRITER_PROP_LATEST = 9
 {$ENDIF}
-);
+    );
 
-//! @} videoio_flags_base
+  // ! @} videoio_flags_base
 
-//! @addtogroup videoio_flags_others
-//! @{
+  // ! @addtogroup videoio_flags_others
+  // ! @{
 
-(** @name Hardware acceleration support
+  (* * @name Hardware acceleration support
     @{
-*)
+  *)
 
-(** @brief Video Acceleration type
- *
- * Used as value in #CAP_PROP_HW_ACCELERATION and #VIDEOWRITER_PROP_HW_ACCELERATION
- *
- * @note In case of FFmpeg backend, it translated to enum AVHWDeviceType (https://github.com/FFmpeg/FFmpeg/blob/master/libavutil/hwcontext.h)
- *)
- VideoAccelerationType = (//
-    VIDEO_ACCELERATION_NONE     =  0,  //!< Do not require any specific H/W acceleration, prefer software processing.
-                                       //!< Reading of this value means that special H/W accelerated handling is not added or not detected by OpenCV.
-    VIDEO_ACCELERATION_ANY      =  1,  //!< Prefer to use H/W acceleration. If no one supported, then fallback to software processing.
-                                       //!< @note H/W acceleration may require special configuration of used environment.
-                                       //!< @note Results in encoding scenario may differ between software and hardware accelerated encoders.
-    VIDEO_ACCELERATION_D3D11    =  2,  //!< DirectX 11
-    VIDEO_ACCELERATION_VAAPI    =  3,  //!< VAAPI
-    VIDEO_ACCELERATION_MFX      =  4   //!< libmfx (Intel MediaSDK/oneVPL)
-);
+  (* * @brief Video Acceleration type
+    *
+    * Used as value in #CAP_PROP_HW_ACCELERATION and #VIDEOWRITER_PROP_HW_ACCELERATION
+    *
+    * @note In case of FFmpeg backend, it translated to enum AVHWDeviceType (https://github.com/FFmpeg/FFmpeg/blob/master/libavutil/hwcontext.h)
+  *)
+  VideoAccelerationType = (      //
+    VIDEO_ACCELERATION_NONE = 0, // !< Do not require any specific H/W acceleration, prefer software processing.
+    // !< Reading of this value means that special H/W accelerated handling is not added or not detected by OpenCV.
+    VIDEO_ACCELERATION_ANY = 1, // !< Prefer to use H/W acceleration. If no one supported, then fallback to software processing.
+    // !< @note H/W acceleration may require special configuration of used environment.
+    // !< @note Results in encoding scenario may differ between software and hardware accelerated encoders.
+    VIDEO_ACCELERATION_D3D11 = 2, // !< DirectX 11
+    VIDEO_ACCELERATION_VAAPI = 3, // !< VAAPI
+    VIDEO_ACCELERATION_MFX = 4    // !< libmfx (Intel MediaSDK/oneVPL)
+    );
 
-(** @name IEEE 1394 drivers
+  (* * @name IEEE 1394 drivers
     @{
-*)
+  *)
 
-(** @brief Modes of the IEEE 1394 controlling registers
-(can be: auto, manual, auto single push, absolute Latter allowed with any other mode)
-every feature can have only one mode turned on at a time
-*)
+  (* * @brief Modes of the IEEE 1394 controlling registers
+    (can be: auto, manual, auto single push, absolute Latter allowed with any other mode)
+    every feature can have only one mode turned on at a time
+  *)
 const
-       CAP_PROP_DC1394_OFF                = -4; //!< turn the feature off (not controlled manually nor automatically).
-       CAP_PROP_DC1394_MODE_MANUAL        = -3; //!< set automatically when a value of the feature is set by the user.
-       CAP_PROP_DC1394_MODE_AUTO          = -2;
-       CAP_PROP_DC1394_MODE_ONE_PUSH_AUTO = -1;
-       CAP_PROP_DC1394_MAX                = 31;
+  CAP_PROP_DC1394_OFF                = -4; // !< turn the feature off (not controlled manually nor automatically).
+  CAP_PROP_DC1394_MODE_MANUAL        = -3; // !< set automatically when a value of the feature is set by the user.
+  CAP_PROP_DC1394_MODE_AUTO          = -2;
+  CAP_PROP_DC1394_MODE_ONE_PUSH_AUTO = -1;
+  CAP_PROP_DC1394_MAX                = 31;
 
-(** @name OpenNI (for Kinect)
+  (* * @name OpenNI (for Kinect)
     @{
-*)
+  *)
 
-//! OpenNI map generators
-       CAP_OPENNI_DEPTH_GENERATOR = 1 shl 31;
-       CAP_OPENNI_IMAGE_GENERATOR = 1 shl 30;
-       CAP_OPENNI_IR_GENERATOR    = 1 shl 29;
-       CAP_OPENNI_GENERATORS_MASK = CAP_OPENNI_DEPTH_GENERATOR + CAP_OPENNI_IMAGE_GENERATOR + CAP_OPENNI_IR_GENERATOR;
+  // ! OpenNI map generators
+  CAP_OPENNI_DEPTH_GENERATOR = 1 shl 31;
+  CAP_OPENNI_IMAGE_GENERATOR = 1 shl 30;
+  CAP_OPENNI_IR_GENERATOR    = 1 shl 29;
+  CAP_OPENNI_GENERATORS_MASK = CAP_OPENNI_DEPTH_GENERATOR + CAP_OPENNI_IMAGE_GENERATOR + CAP_OPENNI_IR_GENERATOR;
 
+  // ! Properties of cameras available through OpenNI backend
+  CAP_PROP_OPENNI_OUTPUT_MODE     = 100;
+  CAP_PROP_OPENNI_FRAME_MAX_DEPTH = 101; // !< In mm
+  CAP_PROP_OPENNI_BASELINE        = 102; // !< In mm
+  CAP_PROP_OPENNI_FOCAL_LENGTH    = 103; // !< In pixels
+  CAP_PROP_OPENNI_REGISTRATION    = 104; // !< Flag that synchronizes the remapping depth map to image map
+  // !< by changing depth generator's view point (if the flag is 'on') or
+  // !< sets this view point to its normal one (if the flag is 'off').
+  CAP_PROP_OPENNI_REGISTRATION_ON   = CAP_PROP_OPENNI_REGISTRATION;
+  CAP_PROP_OPENNI_APPROX_FRAME_SYNC = 105;
+  CAP_PROP_OPENNI_MAX_BUFFER_SIZE   = 106;
+  CAP_PROP_OPENNI_CIRCLE_BUFFER     = 107;
+  CAP_PROP_OPENNI_MAX_TIME_DURATION = 108;
+  CAP_PROP_OPENNI_GENERATOR_PRESENT = 109;
+  CAP_PROP_OPENNI2_SYNC             = 110;
+  CAP_PROP_OPENNI2_MIRROR           = 111;
 
-//! Properties of cameras available through OpenNI backend
-       CAP_PROP_OPENNI_OUTPUT_MODE       = 100;
-       CAP_PROP_OPENNI_FRAME_MAX_DEPTH   = 101; //!< In mm
-       CAP_PROP_OPENNI_BASELINE          = 102; //!< In mm
-       CAP_PROP_OPENNI_FOCAL_LENGTH      = 103; //!< In pixels
-       CAP_PROP_OPENNI_REGISTRATION      = 104; //!< Flag that synchronizes the remapping depth map to image map
-                                                //!< by changing depth generator's view point (if the flag is 'on') or
-                                                //!< sets this view point to its normal one (if the flag is 'off').
-       CAP_PROP_OPENNI_REGISTRATION_ON   = CAP_PROP_OPENNI_REGISTRATION;
-       CAP_PROP_OPENNI_APPROX_FRAME_SYNC = 105;
-       CAP_PROP_OPENNI_MAX_BUFFER_SIZE   = 106;
-       CAP_PROP_OPENNI_CIRCLE_BUFFER     = 107;
-       CAP_PROP_OPENNI_MAX_TIME_DURATION = 108;
-       CAP_PROP_OPENNI_GENERATOR_PRESENT = 109;
-       CAP_PROP_OPENNI2_SYNC             = 110;
-       CAP_PROP_OPENNI2_MIRROR           = 111;
+  // ! OpenNI shortcuts
+  CAP_OPENNI_IMAGE_GENERATOR_PRESENT         = CAP_OPENNI_IMAGE_GENERATOR + CAP_PROP_OPENNI_GENERATOR_PRESENT;
+  CAP_OPENNI_IMAGE_GENERATOR_OUTPUT_MODE     = CAP_OPENNI_IMAGE_GENERATOR + CAP_PROP_OPENNI_OUTPUT_MODE;
+  CAP_OPENNI_DEPTH_GENERATOR_PRESENT         = CAP_OPENNI_DEPTH_GENERATOR + CAP_PROP_OPENNI_GENERATOR_PRESENT;
+  CAP_OPENNI_DEPTH_GENERATOR_BASELINE        = CAP_OPENNI_DEPTH_GENERATOR + CAP_PROP_OPENNI_BASELINE;
+  CAP_OPENNI_DEPTH_GENERATOR_FOCAL_LENGTH    = CAP_OPENNI_DEPTH_GENERATOR + CAP_PROP_OPENNI_FOCAL_LENGTH;
+  CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION    = CAP_OPENNI_DEPTH_GENERATOR + CAP_PROP_OPENNI_REGISTRATION;
+  CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION_ON = CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION;
+  CAP_OPENNI_IR_GENERATOR_PRESENT            = CAP_OPENNI_IR_GENERATOR + CAP_PROP_OPENNI_GENERATOR_PRESENT;
 
-//! OpenNI shortcuts
-       CAP_OPENNI_IMAGE_GENERATOR_PRESENT         = CAP_OPENNI_IMAGE_GENERATOR + CAP_PROP_OPENNI_GENERATOR_PRESENT;
-       CAP_OPENNI_IMAGE_GENERATOR_OUTPUT_MODE     = CAP_OPENNI_IMAGE_GENERATOR + CAP_PROP_OPENNI_OUTPUT_MODE;
-       CAP_OPENNI_DEPTH_GENERATOR_PRESENT         = CAP_OPENNI_DEPTH_GENERATOR + CAP_PROP_OPENNI_GENERATOR_PRESENT;
-       CAP_OPENNI_DEPTH_GENERATOR_BASELINE        = CAP_OPENNI_DEPTH_GENERATOR + CAP_PROP_OPENNI_BASELINE;
-       CAP_OPENNI_DEPTH_GENERATOR_FOCAL_LENGTH    = CAP_OPENNI_DEPTH_GENERATOR + CAP_PROP_OPENNI_FOCAL_LENGTH;
-       CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION    = CAP_OPENNI_DEPTH_GENERATOR + CAP_PROP_OPENNI_REGISTRATION;
-       CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION_ON = CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION;
-       CAP_OPENNI_IR_GENERATOR_PRESENT            = CAP_OPENNI_IR_GENERATOR + CAP_PROP_OPENNI_GENERATOR_PRESENT;
+  // ! OpenNI data given from depth generator
+  CAP_OPENNI_DEPTH_MAP         = 0; // !< Depth values in mm (CV_16UC1)
+  CAP_OPENNI_POINT_CLOUD_MAP   = 1; // !< XYZ in meters (CV_32FC3)
+  CAP_OPENNI_DISPARITY_MAP     = 2; // !< Disparity in pixels (CV_8UC1)
+  CAP_OPENNI_DISPARITY_MAP_32F = 3; // !< Disparity in pixels (CV_32FC1)
+  CAP_OPENNI_VALID_DEPTH_MASK  = 4; // !< CV_8UC1
 
-//! OpenNI data given from depth generator
-       CAP_OPENNI_DEPTH_MAP         = 0; //!< Depth values in mm (CV_16UC1)
-       CAP_OPENNI_POINT_CLOUD_MAP   = 1; //!< XYZ in meters (CV_32FC3)
-       CAP_OPENNI_DISPARITY_MAP     = 2; //!< Disparity in pixels (CV_8UC1)
-       CAP_OPENNI_DISPARITY_MAP_32F = 3; //!< Disparity in pixels (CV_32FC1)
-       CAP_OPENNI_VALID_DEPTH_MASK  = 4; //!< CV_8UC1
+  CAP_OPENNI_BGR_IMAGE  = 5; // !< Data given from RGB image generator
+  CAP_OPENNI_GRAY_IMAGE = 6; // !< Data given from RGB image generator
 
-       CAP_OPENNI_BGR_IMAGE         = 5; //!< Data given from RGB image generator
-       CAP_OPENNI_GRAY_IMAGE        = 6; //!< Data given from RGB image generator
+  CAP_OPENNI_IR_IMAGE = 7; // !< Data given from IR image generator
 
-       CAP_OPENNI_IR_IMAGE          = 7;  //!< Data given from IR image generator
+  // ! Supported output modes of OpenNI image generator
+  CAP_OPENNI_VGA_30HZ  = 0;
+  CAP_OPENNI_SXGA_15HZ = 1;
+  CAP_OPENNI_SXGA_30HZ = 2;
+  CAP_OPENNI_QVGA_30HZ = 3;
+  CAP_OPENNI_QVGA_60HZ = 4;
 
-//! Supported output modes of OpenNI image generator
-       CAP_OPENNI_VGA_30HZ  = 0;
-       CAP_OPENNI_SXGA_15HZ = 1;
-       CAP_OPENNI_SXGA_30HZ = 2;
-       CAP_OPENNI_QVGA_30HZ = 3;
-       CAP_OPENNI_QVGA_60HZ = 4;
-
-(** @name GStreamer
+  (* * @name GStreamer
     @{
-*)
-    CAP_PROP_GSTREAMER_QUEUE_LENGTH = 200; //!< Default is 1
+  *)
+  CAP_PROP_GSTREAMER_QUEUE_LENGTH = 200; // !< Default is 1
 
-(** @name PvAPI, Prosilica GigE SDK
+  (* * @name PvAPI, Prosilica GigE SDK
     @{
-*)
+  *)
 
-//! PVAPI
-       CAP_PROP_PVAPI_MULTICASTIP           = 300; //!< IP for enable multicast master mode. 0 for disable multicast.
-       CAP_PROP_PVAPI_FRAMESTARTTRIGGERMODE = 301; //!< FrameStartTriggerMode: Determines how a frame is initiated.
-       CAP_PROP_PVAPI_DECIMATIONHORIZONTAL  = 302; //!< Horizontal sub-sampling of the image.
-       CAP_PROP_PVAPI_DECIMATIONVERTICAL    = 303; //!< Vertical sub-sampling of the image.
-       CAP_PROP_PVAPI_BINNINGX              = 304; //!< Horizontal binning factor.
-       CAP_PROP_PVAPI_BINNINGY              = 305; //!< Vertical binning factor.
-       CAP_PROP_PVAPI_PIXELFORMAT           = 306;  //!< Pixel format.
+  // ! PVAPI
+  CAP_PROP_PVAPI_MULTICASTIP           = 300; // !< IP for enable multicast master mode. 0 for disable multicast.
+  CAP_PROP_PVAPI_FRAMESTARTTRIGGERMODE = 301; // !< FrameStartTriggerMode: Determines how a frame is initiated.
+  CAP_PROP_PVAPI_DECIMATIONHORIZONTAL  = 302; // !< Horizontal sub-sampling of the image.
+  CAP_PROP_PVAPI_DECIMATIONVERTICAL    = 303; // !< Vertical sub-sampling of the image.
+  CAP_PROP_PVAPI_BINNINGX              = 304; // !< Horizontal binning factor.
+  CAP_PROP_PVAPI_BINNINGY              = 305; // !< Vertical binning factor.
+  CAP_PROP_PVAPI_PIXELFORMAT           = 306; // !< Pixel format.
 
-//! PVAPI: FrameStartTriggerMode
-       CAP_PVAPI_FSTRIGMODE_FREERUN     = 0;    //!< Freerun
-       CAP_PVAPI_FSTRIGMODE_SYNCIN1     = 1;    //!< SyncIn1
-       CAP_PVAPI_FSTRIGMODE_SYNCIN2     = 2;    //!< SyncIn2
-       CAP_PVAPI_FSTRIGMODE_FIXEDRATE   = 3;    //!< FixedRate
-       CAP_PVAPI_FSTRIGMODE_SOFTWARE    = 4;     //!< Software
+  // ! PVAPI: FrameStartTriggerMode
+  CAP_PVAPI_FSTRIGMODE_FREERUN   = 0; // !< Freerun
+  CAP_PVAPI_FSTRIGMODE_SYNCIN1   = 1; // !< SyncIn1
+  CAP_PVAPI_FSTRIGMODE_SYNCIN2   = 2; // !< SyncIn2
+  CAP_PVAPI_FSTRIGMODE_FIXEDRATE = 3; // !< FixedRate
+  CAP_PVAPI_FSTRIGMODE_SOFTWARE  = 4; // !< Software
 
-//! PVAPI: DecimationHorizontal, DecimationVertical
-       CAP_PVAPI_DECIMATION_OFF       = 1;    //!< Off
-       CAP_PVAPI_DECIMATION_2OUTOF4   = 2;    //!< 2 out of 4 decimation
-       CAP_PVAPI_DECIMATION_2OUTOF8   = 4;    //!< 2 out of 8 decimation
-       CAP_PVAPI_DECIMATION_2OUTOF16  = 8;     //!< 2 out of 16 decimation
+  // ! PVAPI: DecimationHorizontal, DecimationVertical
+  CAP_PVAPI_DECIMATION_OFF      = 1; // !< Off
+  CAP_PVAPI_DECIMATION_2OUTOF4  = 2; // !< 2 out of 4 decimation
+  CAP_PVAPI_DECIMATION_2OUTOF8  = 4; // !< 2 out of 8 decimation
+  CAP_PVAPI_DECIMATION_2OUTOF16 = 8; // !< 2 out of 16 decimation
 
-//! PVAPI: PixelFormat
-       CAP_PVAPI_PIXELFORMAT_MONO8    = 1;    //!< Mono8
-       CAP_PVAPI_PIXELFORMAT_MONO16   = 2;    //!< Mono16
-       CAP_PVAPI_PIXELFORMAT_BAYER8   = 3;    //!< Bayer8
-       CAP_PVAPI_PIXELFORMAT_BAYER16  = 4;    //!< Bayer16
-       CAP_PVAPI_PIXELFORMAT_RGB24    = 5;    //!< Rgb24
-       CAP_PVAPI_PIXELFORMAT_BGR24    = 6;    //!< Bgr24
-       CAP_PVAPI_PIXELFORMAT_RGBA32   = 7;    //!< Rgba32
-       CAP_PVAPI_PIXELFORMAT_BGRA32   = 8;    //!< Bgra32
+  // ! PVAPI: PixelFormat
+  CAP_PVAPI_PIXELFORMAT_MONO8   = 1; // !< Mono8
+  CAP_PVAPI_PIXELFORMAT_MONO16  = 2; // !< Mono16
+  CAP_PVAPI_PIXELFORMAT_BAYER8  = 3; // !< Bayer8
+  CAP_PVAPI_PIXELFORMAT_BAYER16 = 4; // !< Bayer16
+  CAP_PVAPI_PIXELFORMAT_RGB24   = 5; // !< Rgb24
+  CAP_PVAPI_PIXELFORMAT_BGR24   = 6; // !< Bgr24
+  CAP_PVAPI_PIXELFORMAT_RGBA32  = 7; // !< Rgba32
+  CAP_PVAPI_PIXELFORMAT_BGRA32  = 8; // !< Bgra32
 
-(** @name XIMEA Camera API
+  (* * @name XIMEA Camera API
     @{
-*)
+  *)
 
-//! Properties of cameras available through XIMEA SDK backend
-       CAP_PROP_XI_DOWNSAMPLING                                 = 400; //!< Change image resolution by binning or skipping.
-       CAP_PROP_XI_DATA_FORMAT                                  = 401; //!< Output data format.
-       CAP_PROP_XI_OFFSET_X                                     = 402; //!< Horizontal offset from the origin to the area of interest (in pixels).
-       CAP_PROP_XI_OFFSET_Y                                     = 403; //!< Vertical offset from the origin to the area of interest (in pixels).
-       CAP_PROP_XI_TRG_SOURCE                                   = 404; //!< Defines source of trigger.
-       CAP_PROP_XI_TRG_SOFTWARE                                 = 405; //!< Generates an internal trigger. PRM_TRG_SOURCE must be set to TRG_SOFTWARE.
-       CAP_PROP_XI_GPI_SELECTOR                                 = 406; //!< Selects general purpose input.
-       CAP_PROP_XI_GPI_MODE                                     = 407; //!< Set general purpose input mode.
-       CAP_PROP_XI_GPI_LEVEL                                    = 408; //!< Get general purpose level.
-       CAP_PROP_XI_GPO_SELECTOR                                 = 409; //!< Selects general purpose output.
-       CAP_PROP_XI_GPO_MODE                                     = 410; //!< Set general purpose output mode.
-       CAP_PROP_XI_LED_SELECTOR                                 = 411; //!< Selects camera signalling LED.
-       CAP_PROP_XI_LED_MODE                                     = 412; //!< Define camera signalling LED functionality.
-       CAP_PROP_XI_MANUAL_WB                                    = 413; //!< Calculates White Balance(must be called during acquisition).
-       CAP_PROP_XI_AUTO_WB                                      = 414; //!< Automatic white balance.
-       CAP_PROP_XI_AEAG                                         = 415; //!< Automatic exposure/gain.
-       CAP_PROP_XI_EXP_PRIORITY                                 = 416; //!< Exposure priority (0.5 - exposure 50%, gain 50%).
-       CAP_PROP_XI_AE_MAX_LIMIT                                 = 417; //!< Maximum limit of exposure in AEAG procedure.
-       CAP_PROP_XI_AG_MAX_LIMIT                                 = 418; //!< Maximum limit of gain in AEAG procedure.
-       CAP_PROP_XI_AEAG_LEVEL                                   = 419; //!< Average intensity of output signal AEAG should achieve(in %).
-       CAP_PROP_XI_TIMEOUT                                      = 420; //!< Image capture timeout in milliseconds.
-       CAP_PROP_XI_EXPOSURE                                     = 421; //!< Exposure time in microseconds.
-       CAP_PROP_XI_EXPOSURE_BURST_COUNT                         = 422; //!< Sets the number of times of exposure in one frame.
-       CAP_PROP_XI_GAIN_SELECTOR                                = 423; //!< Gain selector for parameter Gain allows to select different type of gains.
-       CAP_PROP_XI_GAIN                                         = 424; //!< Gain in dB.
-       CAP_PROP_XI_DOWNSAMPLING_TYPE                            = 426; //!< Change image downsampling type.
-       CAP_PROP_XI_BINNING_SELECTOR                             = 427; //!< Binning engine selector.
-       CAP_PROP_XI_BINNING_VERTICAL                             = 428; //!< Vertical Binning - number of vertical photo-sensitive cells to combine together.
-       CAP_PROP_XI_BINNING_HORIZONTAL                           = 429; //!< Horizontal Binning - number of horizontal photo-sensitive cells to combine together.
-       CAP_PROP_XI_BINNING_PATTERN                              = 430; //!< Binning pattern type.
-       CAP_PROP_XI_DECIMATION_SELECTOR                          = 431; //!< Decimation engine selector.
-       CAP_PROP_XI_DECIMATION_VERTICAL                          = 432; //!< Vertical Decimation - vertical sub-sampling of the image - reduces the vertical resolution of the image by the specified vertical decimation factor.
-       CAP_PROP_XI_DECIMATION_HORIZONTAL                        = 433; //!< Horizontal Decimation - horizontal sub-sampling of the image - reduces the horizontal resolution of the image by the specified vertical decimation factor.
-       CAP_PROP_XI_DECIMATION_PATTERN                           = 434; //!< Decimation pattern type.
-       CAP_PROP_XI_TEST_PATTERN_GENERATOR_SELECTOR              = 587; //!< Selects which test pattern generator is controlled by the TestPattern feature.
-       CAP_PROP_XI_TEST_PATTERN                                 = 588; //!< Selects which test pattern type is generated by the selected generator.
-       CAP_PROP_XI_IMAGE_DATA_FORMAT                            = 435; //!< Output data format.
-       CAP_PROP_XI_SHUTTER_TYPE                                 = 436; //!< Change sensor shutter type(CMOS sensor).
-       CAP_PROP_XI_SENSOR_TAPS                                  = 437; //!< Number of taps.
-       CAP_PROP_XI_AEAG_ROI_OFFSET_X                            = 439; //!< Automatic exposure/gain ROI offset X.
-       CAP_PROP_XI_AEAG_ROI_OFFSET_Y                            = 440; //!< Automatic exposure/gain ROI offset Y.
-       CAP_PROP_XI_AEAG_ROI_WIDTH                               = 441; //!< Automatic exposure/gain ROI Width.
-       CAP_PROP_XI_AEAG_ROI_HEIGHT                              = 442; //!< Automatic exposure/gain ROI Height.
-       CAP_PROP_XI_BPC                                          = 445; //!< Correction of bad pixels.
-       CAP_PROP_XI_WB_KR                                        = 448; //!< White balance red coefficient.
-       CAP_PROP_XI_WB_KG                                        = 449; //!< White balance green coefficient.
-       CAP_PROP_XI_WB_KB                                        = 450; //!< White balance blue coefficient.
-       CAP_PROP_XI_WIDTH                                        = 451; //!< Width of the Image provided by the device (in pixels).
-       CAP_PROP_XI_HEIGHT                                       = 452; //!< Height of the Image provided by the device (in pixels).
-       CAP_PROP_XI_REGION_SELECTOR                              = 589; //!< Selects Region in Multiple ROI which parameters are set by width, height, ... ,region mode.
-       CAP_PROP_XI_REGION_MODE                                  = 595; //!< Activates/deactivates Region selected by Region Selector.
-       CAP_PROP_XI_LIMIT_BANDWIDTH                              = 459; //!< Set/get bandwidth(datarate)(in Megabits).
-       CAP_PROP_XI_SENSOR_DATA_BIT_DEPTH                        = 460; //!< Sensor output data bit depth.
-       CAP_PROP_XI_OUTPUT_DATA_BIT_DEPTH                        = 461; //!< Device output data bit depth.
-       CAP_PROP_XI_IMAGE_DATA_BIT_DEPTH                         = 462; //!< bitdepth of data returned by function xiGetImage.
-       CAP_PROP_XI_OUTPUT_DATA_PACKING                          = 463; //!< Device output data packing (or grouping) enabled. Packing could be enabled if output_data_bit_depth > 8 and packing capability is available.
-       CAP_PROP_XI_OUTPUT_DATA_PACKING_TYPE                     = 464; //!< Data packing type. Some cameras supports only specific packing type.
-       CAP_PROP_XI_IS_COOLED                                    = 465; //!< Returns 1 for cameras that support cooling.
-       CAP_PROP_XI_COOLING                                      = 466; //!< Start camera cooling.
-       CAP_PROP_XI_TARGET_TEMP                                  = 467; //!< Set sensor target temperature for cooling.
-       CAP_PROP_XI_CHIP_TEMP                                    = 468; //!< Camera sensor temperature.
-       CAP_PROP_XI_HOUS_TEMP                                    = 469; //!< Camera housing temperature.
-       CAP_PROP_XI_HOUS_BACK_SIDE_TEMP                          = 590; //!< Camera housing back side temperature.
-       CAP_PROP_XI_SENSOR_BOARD_TEMP                            = 596; //!< Camera sensor board temperature.
-       CAP_PROP_XI_CMS                                          = 470; //!< Mode of color management system.
-       CAP_PROP_XI_APPLY_CMS                                    = 471; //!< Enable applying of CMS profiles to xiGetImage (see XI_PRM_INPUT_CMS_PROFILE, XI_PRM_OUTPUT_CMS_PROFILE).
-       CAP_PROP_XI_IMAGE_IS_COLOR                               = 474; //!< Returns 1 for color cameras.
-       CAP_PROP_XI_COLOR_FILTER_ARRAY                           = 475; //!< Returns color filter array type of RAW data.
-       CAP_PROP_XI_GAMMAY                                       = 476; //!< Luminosity gamma.
-       CAP_PROP_XI_GAMMAC                                       = 477; //!< Chromaticity gamma.
-       CAP_PROP_XI_SHARPNESS                                    = 478; //!< Sharpness Strength.
-       CAP_PROP_XI_CC_MATRIX_00                                 = 479; //!< Color Correction Matrix element [0][0].
-       CAP_PROP_XI_CC_MATRIX_01                                 = 480; //!< Color Correction Matrix element [0][1].
-       CAP_PROP_XI_CC_MATRIX_02                                 = 481; //!< Color Correction Matrix element [0][2].
-       CAP_PROP_XI_CC_MATRIX_03                                 = 482; //!< Color Correction Matrix element [0][3].
-       CAP_PROP_XI_CC_MATRIX_10                                 = 483; //!< Color Correction Matrix element [1][0].
-       CAP_PROP_XI_CC_MATRIX_11                                 = 484; //!< Color Correction Matrix element [1][1].
-       CAP_PROP_XI_CC_MATRIX_12                                 = 485; //!< Color Correction Matrix element [1][2].
-       CAP_PROP_XI_CC_MATRIX_13                                 = 486; //!< Color Correction Matrix element [1][3].
-       CAP_PROP_XI_CC_MATRIX_20                                 = 487; //!< Color Correction Matrix element [2][0].
-       CAP_PROP_XI_CC_MATRIX_21                                 = 488; //!< Color Correction Matrix element [2][1].
-       CAP_PROP_XI_CC_MATRIX_22                                 = 489; //!< Color Correction Matrix element [2][2].
-       CAP_PROP_XI_CC_MATRIX_23                                 = 490; //!< Color Correction Matrix element [2][3].
-       CAP_PROP_XI_CC_MATRIX_30                                 = 491; //!< Color Correction Matrix element [3][0].
-       CAP_PROP_XI_CC_MATRIX_31                                 = 492; //!< Color Correction Matrix element [3][1].
-       CAP_PROP_XI_CC_MATRIX_32                                 = 493; //!< Color Correction Matrix element [3][2].
-       CAP_PROP_XI_CC_MATRIX_33                                 = 494; //!< Color Correction Matrix element [3][3].
-       CAP_PROP_XI_DEFAULT_CC_MATRIX                            = 495; //!< Set default Color Correction Matrix.
-       CAP_PROP_XI_TRG_SELECTOR                                 = 498; //!< Selects the type of trigger.
-       CAP_PROP_XI_ACQ_FRAME_BURST_COUNT                        = 499; //!< Sets number of frames acquired by burst. This burst is used only if trigger is set to FrameBurstStart.
-       CAP_PROP_XI_DEBOUNCE_EN                                  = 507; //!< Enable/Disable debounce to selected GPI.
-       CAP_PROP_XI_DEBOUNCE_T0                                  = 508; //!< Debounce time (x * 10us).
-       CAP_PROP_XI_DEBOUNCE_T1                                  = 509; //!< Debounce time (x * 10us).
-       CAP_PROP_XI_DEBOUNCE_POL                                 = 510; //!< Debounce polarity (pol = 1 t0 - falling edge, t1 - rising edge).
-       CAP_PROP_XI_LENS_MODE                                    = 511; //!< Status of lens control interface. This shall be set to XI_ON before any Lens operations.
-       CAP_PROP_XI_LENS_APERTURE_VALUE                          = 512; //!< Current lens aperture value in stops. Examples: 2.8, 4, 5.6, 8, 11.
-       CAP_PROP_XI_LENS_FOCUS_MOVEMENT_VALUE                    = 513; //!< Lens current focus movement value to be used by XI_PRM_LENS_FOCUS_MOVE in motor steps.
-       CAP_PROP_XI_LENS_FOCUS_MOVE                              = 514; //!< Moves lens focus motor by steps set in XI_PRM_LENS_FOCUS_MOVEMENT_VALUE.
-       CAP_PROP_XI_LENS_FOCUS_DISTANCE                          = 515; //!< Lens focus distance in cm.
-       CAP_PROP_XI_LENS_FOCAL_LENGTH                            = 516; //!< Lens focal distance in mm.
-       CAP_PROP_XI_LENS_FEATURE_SELECTOR                        = 517; //!< Selects the current feature which is accessible by XI_PRM_LENS_FEATURE.
-       CAP_PROP_XI_LENS_FEATURE                                 = 518; //!< Allows access to lens feature value currently selected by XI_PRM_LENS_FEATURE_SELECTOR.
-       CAP_PROP_XI_DEVICE_MODEL_ID                              = 521; //!< Returns device model id.
-       CAP_PROP_XI_DEVICE_SN                                    = 522; //!< Returns device serial number.
-       CAP_PROP_XI_IMAGE_DATA_FORMAT_RGB32_ALPHA                = 529; //!< The alpha channel of RGB32 output image format.
-       CAP_PROP_XI_IMAGE_PAYLOAD_SIZE                           = 530; //!< Buffer size in bytes sufficient for output image returned by xiGetImage.
-       CAP_PROP_XI_TRANSPORT_PIXEL_FORMAT                       = 531; //!< Current format of pixels on transport layer.
-       CAP_PROP_XI_SENSOR_CLOCK_FREQ_HZ                         = 532; //!< Sensor clock frequency in Hz.
-       CAP_PROP_XI_SENSOR_CLOCK_FREQ_INDEX                      = 533; //!< Sensor clock frequency index. Sensor with selected frequencies have possibility to set the frequency only by this index.
-       CAP_PROP_XI_SENSOR_OUTPUT_CHANNEL_COUNT                  = 534; //!< Number of output channels from sensor used for data transfer.
-       CAP_PROP_XI_FRAMERATE                                    = 535; //!< Define framerate in Hz.
-       CAP_PROP_XI_COUNTER_SELECTOR                             = 536; //!< Select counter.
-       CAP_PROP_XI_COUNTER_VALUE                                = 537; //!< Counter status.
-       CAP_PROP_XI_ACQ_TIMING_MODE                              = 538; //!< Type of sensor frames timing.
-       CAP_PROP_XI_AVAILABLE_BANDWIDTH                          = 539; //!< Calculate and returns available interface bandwidth(int Megabits).
-       CAP_PROP_XI_BUFFER_POLICY                                = 540; //!< Data move policy.
-       CAP_PROP_XI_LUT_EN                                       = 541; //!< Activates LUT.
-       CAP_PROP_XI_LUT_INDEX                                    = 542; //!< Control the index (offset) of the coefficient to access in the LUT.
-       CAP_PROP_XI_LUT_VALUE                                    = 543; //!< Value at entry LUTIndex of the LUT.
-       CAP_PROP_XI_TRG_DELAY                                    = 544; //!< Specifies the delay in microseconds (us) to apply after the trigger reception before activating it.
-       CAP_PROP_XI_TS_RST_MODE                                  = 545; //!< Defines how time stamp reset engine will be armed.
-       CAP_PROP_XI_TS_RST_SOURCE                                = 546; //!< Defines which source will be used for timestamp reset. Writing this parameter will trigger settings of engine (arming).
-       CAP_PROP_XI_IS_DEVICE_EXIST                              = 547; //!< Returns 1 if camera connected and works properly.
-       CAP_PROP_XI_ACQ_BUFFER_SIZE                              = 548; //!< Acquisition buffer size in buffer_size_unit. Default bytes.
-       CAP_PROP_XI_ACQ_BUFFER_SIZE_UNIT                         = 549; //!< Acquisition buffer size unit in bytes. Default 1. E.g. Value 1024 means that buffer_size is in KiBytes.
-       CAP_PROP_XI_ACQ_TRANSPORT_BUFFER_SIZE                    = 550; //!< Acquisition transport buffer size in bytes.
-       CAP_PROP_XI_BUFFERS_QUEUE_SIZE                           = 551; //!< Queue of field/frame buffers.
-       CAP_PROP_XI_ACQ_TRANSPORT_BUFFER_COMMIT                  = 552; //!< Number of buffers to commit to low level.
-       CAP_PROP_XI_RECENT_FRAME                                 = 553; //!< GetImage returns most recent frame.
-       CAP_PROP_XI_DEVICE_RESET                                 = 554; //!< Resets the camera to default state.
-       CAP_PROP_XI_COLUMN_FPN_CORRECTION                        = 555; //!< Correction of column FPN.
-       CAP_PROP_XI_ROW_FPN_CORRECTION                           = 591; //!< Correction of row FPN.
-       CAP_PROP_XI_SENSOR_MODE                                  = 558; //!< Current sensor mode. Allows to select sensor mode by one integer. Setting of this parameter affects: image dimensions and downsampling.
-       CAP_PROP_XI_HDR                                          = 559; //!< Enable High Dynamic Range feature.
-       CAP_PROP_XI_HDR_KNEEPOINT_COUNT                          = 560; //!< The number of kneepoints in the PWLR.
-       CAP_PROP_XI_HDR_T1                                       = 561; //!< Position of first kneepoint(in % of XI_PRM_EXPOSURE).
-       CAP_PROP_XI_HDR_T2                                       = 562; //!< Position of second kneepoint (in % of XI_PRM_EXPOSURE).
-       CAP_PROP_XI_KNEEPOINT1                                   = 563; //!< Value of first kneepoint (% of sensor saturation).
-       CAP_PROP_XI_KNEEPOINT2                                   = 564; //!< Value of second kneepoint (% of sensor saturation).
-       CAP_PROP_XI_IMAGE_BLACK_LEVEL                            = 565; //!< Last image black level counts. Can be used for Offline processing to recall it.
-       CAP_PROP_XI_HW_REVISION                                  = 571; //!< Returns hardware revision number.
-       CAP_PROP_XI_DEBUG_LEVEL                                  = 572; //!< Set debug level.
-       CAP_PROP_XI_AUTO_BANDWIDTH_CALCULATION                   = 573; //!< Automatic bandwidth calculation.
-       CAP_PROP_XI_FFS_FILE_ID                                  = 594; //!< File number.
-       CAP_PROP_XI_FFS_FILE_SIZE                                = 580; //!< Size of file.
-       CAP_PROP_XI_FREE_FFS_SIZE                                = 581; //!< Size of free camera FFS.
-       CAP_PROP_XI_USED_FFS_SIZE                                = 582; //!< Size of used camera FFS.
-       CAP_PROP_XI_FFS_ACCESS_KEY                               = 583; //!< Setting of key enables file operations on some cameras.
-       CAP_PROP_XI_SENSOR_FEATURE_SELECTOR                      = 585; //!< Selects the current feature which is accessible by XI_PRM_SENSOR_FEATURE_VALUE.
-       CAP_PROP_XI_SENSOR_FEATURE_VALUE                         = 586; //!< Allows access to sensor feature value currently selected by XI_PRM_SENSOR_FEATURE_SELECTOR.
+  // ! Properties of cameras available through XIMEA SDK backend
+  CAP_PROP_XI_DOWNSAMPLING         = 400; // !< Change image resolution by binning or skipping.
+  CAP_PROP_XI_DATA_FORMAT          = 401; // !< Output data format.
+  CAP_PROP_XI_OFFSET_X             = 402; // !< Horizontal offset from the origin to the area of interest (in pixels).
+  CAP_PROP_XI_OFFSET_Y             = 403; // !< Vertical offset from the origin to the area of interest (in pixels).
+  CAP_PROP_XI_TRG_SOURCE           = 404; // !< Defines source of trigger.
+  CAP_PROP_XI_TRG_SOFTWARE         = 405; // !< Generates an internal trigger. PRM_TRG_SOURCE must be set to TRG_SOFTWARE.
+  CAP_PROP_XI_GPI_SELECTOR         = 406; // !< Selects general purpose input.
+  CAP_PROP_XI_GPI_MODE             = 407; // !< Set general purpose input mode.
+  CAP_PROP_XI_GPI_LEVEL            = 408; // !< Get general purpose level.
+  CAP_PROP_XI_GPO_SELECTOR         = 409; // !< Selects general purpose output.
+  CAP_PROP_XI_GPO_MODE             = 410; // !< Set general purpose output mode.
+  CAP_PROP_XI_LED_SELECTOR         = 411; // !< Selects camera signalling LED.
+  CAP_PROP_XI_LED_MODE             = 412; // !< Define camera signalling LED functionality.
+  CAP_PROP_XI_MANUAL_WB            = 413; // !< Calculates White Balance(must be called during acquisition).
+  CAP_PROP_XI_AUTO_WB              = 414; // !< Automatic white balance.
+  CAP_PROP_XI_AEAG                 = 415; // !< Automatic exposure/gain.
+  CAP_PROP_XI_EXP_PRIORITY         = 416; // !< Exposure priority (0.5 - exposure 50%, gain 50%).
+  CAP_PROP_XI_AE_MAX_LIMIT         = 417; // !< Maximum limit of exposure in AEAG procedure.
+  CAP_PROP_XI_AG_MAX_LIMIT         = 418; // !< Maximum limit of gain in AEAG procedure.
+  CAP_PROP_XI_AEAG_LEVEL           = 419; // !< Average intensity of output signal AEAG should achieve(in %).
+  CAP_PROP_XI_TIMEOUT              = 420; // !< Image capture timeout in milliseconds.
+  CAP_PROP_XI_EXPOSURE             = 421; // !< Exposure time in microseconds.
+  CAP_PROP_XI_EXPOSURE_BURST_COUNT = 422; // !< Sets the number of times of exposure in one frame.
+  CAP_PROP_XI_GAIN_SELECTOR        = 423; // !< Gain selector for parameter Gain allows to select different type of gains.
+  CAP_PROP_XI_GAIN                 = 424; // !< Gain in dB.
+  CAP_PROP_XI_DOWNSAMPLING_TYPE    = 426; // !< Change image downsampling type.
+  CAP_PROP_XI_BINNING_SELECTOR     = 427; // !< Binning engine selector.
+  CAP_PROP_XI_BINNING_VERTICAL     = 428; // !< Vertical Binning - number of vertical photo-sensitive cells to combine together.
+  CAP_PROP_XI_BINNING_HORIZONTAL   = 429; // !< Horizontal Binning - number of horizontal photo-sensitive cells to combine together.
+  CAP_PROP_XI_BINNING_PATTERN      = 430; // !< Binning pattern type.
+  CAP_PROP_XI_DECIMATION_SELECTOR  = 431; // !< Decimation engine selector.
+  CAP_PROP_XI_DECIMATION_VERTICAL  = 432;
+  // !< Vertical Decimation - vertical sub-sampling of the image - reduces the vertical resolution of the image by the specified vertical decimation factor.
+  CAP_PROP_XI_DECIMATION_HORIZONTAL = 433;
+  // !< Horizontal Decimation - horizontal sub-sampling of the image - reduces the horizontal resolution of the image by the specified vertical decimation factor.
+  CAP_PROP_XI_DECIMATION_PATTERN              = 434; // !< Decimation pattern type.
+  CAP_PROP_XI_TEST_PATTERN_GENERATOR_SELECTOR = 587; // !< Selects which test pattern generator is controlled by the TestPattern feature.
+  CAP_PROP_XI_TEST_PATTERN                    = 588; // !< Selects which test pattern type is generated by the selected generator.
+  CAP_PROP_XI_IMAGE_DATA_FORMAT               = 435; // !< Output data format.
+  CAP_PROP_XI_SHUTTER_TYPE                    = 436; // !< Change sensor shutter type(CMOS sensor).
+  CAP_PROP_XI_SENSOR_TAPS                     = 437; // !< Number of taps.
+  CAP_PROP_XI_AEAG_ROI_OFFSET_X               = 439; // !< Automatic exposure/gain ROI offset X.
+  CAP_PROP_XI_AEAG_ROI_OFFSET_Y               = 440; // !< Automatic exposure/gain ROI offset Y.
+  CAP_PROP_XI_AEAG_ROI_WIDTH                  = 441; // !< Automatic exposure/gain ROI Width.
+  CAP_PROP_XI_AEAG_ROI_HEIGHT                 = 442; // !< Automatic exposure/gain ROI Height.
+  CAP_PROP_XI_BPC                             = 445; // !< Correction of bad pixels.
+  CAP_PROP_XI_WB_KR                           = 448; // !< White balance red coefficient.
+  CAP_PROP_XI_WB_KG                           = 449; // !< White balance green coefficient.
+  CAP_PROP_XI_WB_KB                           = 450; // !< White balance blue coefficient.
+  CAP_PROP_XI_WIDTH                           = 451; // !< Width of the Image provided by the device (in pixels).
+  CAP_PROP_XI_HEIGHT                          = 452; // !< Height of the Image provided by the device (in pixels).
+  CAP_PROP_XI_REGION_SELECTOR                 = 589; // !< Selects Region in Multiple ROI which parameters are set by width, height, ... ,region mode.
+  CAP_PROP_XI_REGION_MODE                     = 595; // !< Activates/deactivates Region selected by Region Selector.
+  CAP_PROP_XI_LIMIT_BANDWIDTH                 = 459; // !< Set/get bandwidth(datarate)(in Megabits).
+  CAP_PROP_XI_SENSOR_DATA_BIT_DEPTH           = 460; // !< Sensor output data bit depth.
+  CAP_PROP_XI_OUTPUT_DATA_BIT_DEPTH           = 461; // !< Device output data bit depth.
+  CAP_PROP_XI_IMAGE_DATA_BIT_DEPTH            = 462; // !< bitdepth of data returned by function xiGetImage.
+  CAP_PROP_XI_OUTPUT_DATA_PACKING             = 463;
+  // !< Device output data packing (or grouping) enabled. Packing could be enabled if output_data_bit_depth > 8 and packing capability is available.
+  CAP_PROP_XI_OUTPUT_DATA_PACKING_TYPE      = 464; // !< Data packing type. Some cameras supports only specific packing type.
+  CAP_PROP_XI_IS_COOLED                     = 465; // !< Returns 1 for cameras that support cooling.
+  CAP_PROP_XI_COOLING                       = 466; // !< Start camera cooling.
+  CAP_PROP_XI_TARGET_TEMP                   = 467; // !< Set sensor target temperature for cooling.
+  CAP_PROP_XI_CHIP_TEMP                     = 468; // !< Camera sensor temperature.
+  CAP_PROP_XI_HOUS_TEMP                     = 469; // !< Camera housing temperature.
+  CAP_PROP_XI_HOUS_BACK_SIDE_TEMP           = 590; // !< Camera housing back side temperature.
+  CAP_PROP_XI_SENSOR_BOARD_TEMP             = 596; // !< Camera sensor board temperature.
+  CAP_PROP_XI_CMS                           = 470; // !< Mode of color management system.
+  CAP_PROP_XI_APPLY_CMS                     = 471; // !< Enable applying of CMS profiles to xiGetImage (see XI_PRM_INPUT_CMS_PROFILE, XI_PRM_OUTPUT_CMS_PROFILE).
+  CAP_PROP_XI_IMAGE_IS_COLOR                = 474; // !< Returns 1 for color cameras.
+  CAP_PROP_XI_COLOR_FILTER_ARRAY            = 475; // !< Returns color filter array type of RAW data.
+  CAP_PROP_XI_GAMMAY                        = 476; // !< Luminosity gamma.
+  CAP_PROP_XI_GAMMAC                        = 477; // !< Chromaticity gamma.
+  CAP_PROP_XI_SHARPNESS                     = 478; // !< Sharpness Strength.
+  CAP_PROP_XI_CC_MATRIX_00                  = 479; // !< Color Correction Matrix element [0][0].
+  CAP_PROP_XI_CC_MATRIX_01                  = 480; // !< Color Correction Matrix element [0][1].
+  CAP_PROP_XI_CC_MATRIX_02                  = 481; // !< Color Correction Matrix element [0][2].
+  CAP_PROP_XI_CC_MATRIX_03                  = 482; // !< Color Correction Matrix element [0][3].
+  CAP_PROP_XI_CC_MATRIX_10                  = 483; // !< Color Correction Matrix element [1][0].
+  CAP_PROP_XI_CC_MATRIX_11                  = 484; // !< Color Correction Matrix element [1][1].
+  CAP_PROP_XI_CC_MATRIX_12                  = 485; // !< Color Correction Matrix element [1][2].
+  CAP_PROP_XI_CC_MATRIX_13                  = 486; // !< Color Correction Matrix element [1][3].
+  CAP_PROP_XI_CC_MATRIX_20                  = 487; // !< Color Correction Matrix element [2][0].
+  CAP_PROP_XI_CC_MATRIX_21                  = 488; // !< Color Correction Matrix element [2][1].
+  CAP_PROP_XI_CC_MATRIX_22                  = 489; // !< Color Correction Matrix element [2][2].
+  CAP_PROP_XI_CC_MATRIX_23                  = 490; // !< Color Correction Matrix element [2][3].
+  CAP_PROP_XI_CC_MATRIX_30                  = 491; // !< Color Correction Matrix element [3][0].
+  CAP_PROP_XI_CC_MATRIX_31                  = 492; // !< Color Correction Matrix element [3][1].
+  CAP_PROP_XI_CC_MATRIX_32                  = 493; // !< Color Correction Matrix element [3][2].
+  CAP_PROP_XI_CC_MATRIX_33                  = 494; // !< Color Correction Matrix element [3][3].
+  CAP_PROP_XI_DEFAULT_CC_MATRIX             = 495; // !< Set default Color Correction Matrix.
+  CAP_PROP_XI_TRG_SELECTOR                  = 498; // !< Selects the type of trigger.
+  CAP_PROP_XI_ACQ_FRAME_BURST_COUNT         = 499; // !< Sets number of frames acquired by burst. This burst is used only if trigger is set to FrameBurstStart.
+  CAP_PROP_XI_DEBOUNCE_EN                   = 507; // !< Enable/Disable debounce to selected GPI.
+  CAP_PROP_XI_DEBOUNCE_T0                   = 508; // !< Debounce time (x * 10us).
+  CAP_PROP_XI_DEBOUNCE_T1                   = 509; // !< Debounce time (x * 10us).
+  CAP_PROP_XI_DEBOUNCE_POL                  = 510; // !< Debounce polarity (pol = 1 t0 - falling edge, t1 - rising edge).
+  CAP_PROP_XI_LENS_MODE                     = 511; // !< Status of lens control interface. This shall be set to XI_ON before any Lens operations.
+  CAP_PROP_XI_LENS_APERTURE_VALUE           = 512; // !< Current lens aperture value in stops. Examples: 2.8, 4, 5.6, 8, 11.
+  CAP_PROP_XI_LENS_FOCUS_MOVEMENT_VALUE     = 513; // !< Lens current focus movement value to be used by XI_PRM_LENS_FOCUS_MOVE in motor steps.
+  CAP_PROP_XI_LENS_FOCUS_MOVE               = 514; // !< Moves lens focus motor by steps set in XI_PRM_LENS_FOCUS_MOVEMENT_VALUE.
+  CAP_PROP_XI_LENS_FOCUS_DISTANCE           = 515; // !< Lens focus distance in cm.
+  CAP_PROP_XI_LENS_FOCAL_LENGTH             = 516; // !< Lens focal distance in mm.
+  CAP_PROP_XI_LENS_FEATURE_SELECTOR         = 517; // !< Selects the current feature which is accessible by XI_PRM_LENS_FEATURE.
+  CAP_PROP_XI_LENS_FEATURE                  = 518; // !< Allows access to lens feature value currently selected by XI_PRM_LENS_FEATURE_SELECTOR.
+  CAP_PROP_XI_DEVICE_MODEL_ID               = 521; // !< Returns device model id.
+  CAP_PROP_XI_DEVICE_SN                     = 522; // !< Returns device serial number.
+  CAP_PROP_XI_IMAGE_DATA_FORMAT_RGB32_ALPHA = 529; // !< The alpha channel of RGB32 output image format.
+  CAP_PROP_XI_IMAGE_PAYLOAD_SIZE            = 530; // !< Buffer size in bytes sufficient for output image returned by xiGetImage.
+  CAP_PROP_XI_TRANSPORT_PIXEL_FORMAT        = 531; // !< Current format of pixels on transport layer.
+  CAP_PROP_XI_SENSOR_CLOCK_FREQ_HZ          = 532; // !< Sensor clock frequency in Hz.
+  CAP_PROP_XI_SENSOR_CLOCK_FREQ_INDEX       = 533; // !< Sensor clock frequency index. Sensor with selected frequencies have possibility to set the frequency only by this index.
+  CAP_PROP_XI_SENSOR_OUTPUT_CHANNEL_COUNT   = 534; // !< Number of output channels from sensor used for data transfer.
+  CAP_PROP_XI_FRAMERATE                     = 535; // !< Define framerate in Hz.
+  CAP_PROP_XI_COUNTER_SELECTOR              = 536; // !< Select counter.
+  CAP_PROP_XI_COUNTER_VALUE                 = 537; // !< Counter status.
+  CAP_PROP_XI_ACQ_TIMING_MODE               = 538; // !< Type of sensor frames timing.
+  CAP_PROP_XI_AVAILABLE_BANDWIDTH           = 539; // !< Calculate and returns available interface bandwidth(int Megabits).
+  CAP_PROP_XI_BUFFER_POLICY                 = 540; // !< Data move policy.
+  CAP_PROP_XI_LUT_EN                        = 541; // !< Activates LUT.
+  CAP_PROP_XI_LUT_INDEX                     = 542; // !< Control the index (offset) of the coefficient to access in the LUT.
+  CAP_PROP_XI_LUT_VALUE                     = 543; // !< Value at entry LUTIndex of the LUT.
+  CAP_PROP_XI_TRG_DELAY                     = 544; // !< Specifies the delay in microseconds (us) to apply after the trigger reception before activating it.
+  CAP_PROP_XI_TS_RST_MODE                   = 545; // !< Defines how time stamp reset engine will be armed.
+  CAP_PROP_XI_TS_RST_SOURCE                 = 546; // !< Defines which source will be used for timestamp reset. Writing this parameter will trigger settings of engine (arming).
+  CAP_PROP_XI_IS_DEVICE_EXIST               = 547; // !< Returns 1 if camera connected and works properly.
+  CAP_PROP_XI_ACQ_BUFFER_SIZE               = 548; // !< Acquisition buffer size in buffer_size_unit. Default bytes.
+  CAP_PROP_XI_ACQ_BUFFER_SIZE_UNIT          = 549; // !< Acquisition buffer size unit in bytes. Default 1. E.g. Value 1024 means that buffer_size is in KiBytes.
+  CAP_PROP_XI_ACQ_TRANSPORT_BUFFER_SIZE     = 550; // !< Acquisition transport buffer size in bytes.
+  CAP_PROP_XI_BUFFERS_QUEUE_SIZE            = 551; // !< Queue of field/frame buffers.
+  CAP_PROP_XI_ACQ_TRANSPORT_BUFFER_COMMIT   = 552; // !< Number of buffers to commit to low level.
+  CAP_PROP_XI_RECENT_FRAME                  = 553; // !< GetImage returns most recent frame.
+  CAP_PROP_XI_DEVICE_RESET                  = 554; // !< Resets the camera to default state.
+  CAP_PROP_XI_COLUMN_FPN_CORRECTION         = 555; // !< Correction of column FPN.
+  CAP_PROP_XI_ROW_FPN_CORRECTION            = 591; // !< Correction of row FPN.
+  CAP_PROP_XI_SENSOR_MODE = 558; // !< Current sensor mode. Allows to select sensor mode by one integer. Setting of this parameter affects: image dimensions and downsampling.
+  CAP_PROP_XI_HDR                        = 559; // !< Enable High Dynamic Range feature.
+  CAP_PROP_XI_HDR_KNEEPOINT_COUNT        = 560; // !< The number of kneepoints in the PWLR.
+  CAP_PROP_XI_HDR_T1                     = 561; // !< Position of first kneepoint(in % of XI_PRM_EXPOSURE).
+  CAP_PROP_XI_HDR_T2                     = 562; // !< Position of second kneepoint (in % of XI_PRM_EXPOSURE).
+  CAP_PROP_XI_KNEEPOINT1                 = 563; // !< Value of first kneepoint (% of sensor saturation).
+  CAP_PROP_XI_KNEEPOINT2                 = 564; // !< Value of second kneepoint (% of sensor saturation).
+  CAP_PROP_XI_IMAGE_BLACK_LEVEL          = 565; // !< Last image black level counts. Can be used for Offline processing to recall it.
+  CAP_PROP_XI_HW_REVISION                = 571; // !< Returns hardware revision number.
+  CAP_PROP_XI_DEBUG_LEVEL                = 572; // !< Set debug level.
+  CAP_PROP_XI_AUTO_BANDWIDTH_CALCULATION = 573; // !< Automatic bandwidth calculation.
+  CAP_PROP_XI_FFS_FILE_ID                = 594; // !< File number.
+  CAP_PROP_XI_FFS_FILE_SIZE              = 580; // !< Size of file.
+  CAP_PROP_XI_FREE_FFS_SIZE              = 581; // !< Size of free camera FFS.
+  CAP_PROP_XI_USED_FFS_SIZE              = 582; // !< Size of used camera FFS.
+  CAP_PROP_XI_FFS_ACCESS_KEY             = 583; // !< Setting of key enables file operations on some cameras.
+  CAP_PROP_XI_SENSOR_FEATURE_SELECTOR    = 585; // !< Selects the current feature which is accessible by XI_PRM_SENSOR_FEATURE_VALUE.
+  CAP_PROP_XI_SENSOR_FEATURE_VALUE       = 586; // !< Allows access to sensor feature value currently selected by XI_PRM_SENSOR_FEATURE_SELECTOR.
 
-(** @name ARAVIS Camera API
+  (* * @name ARAVIS Camera API
     @{
-*)
+  *)
 
-//! Properties of cameras available through ARAVIS backend
- CAP_PROP_ARAVIS_AUTOTRIGGER                              = 600; //!< Automatically trigger frame capture if camera is configured with software trigger
+  // ! Properties of cameras available through ARAVIS backend
+  CAP_PROP_ARAVIS_AUTOTRIGGER = 600; // !< Automatically trigger frame capture if camera is configured with software trigger
 
-(** @name AVFoundation framework for iOS
+  (* * @name AVFoundation framework for iOS
     @{
-*)
+  *)
 
-//! Properties of cameras available through AVFOUNDATION backend
-       CAP_PROP_IOS_DEVICE_FOCUS        = 9001;
-       CAP_PROP_IOS_DEVICE_EXPOSURE     = 9002;
-       CAP_PROP_IOS_DEVICE_FLASH        = 9003;
-       CAP_PROP_IOS_DEVICE_WHITEBALANCE = 9004;
-       CAP_PROP_IOS_DEVICE_TORCH        = 9005;
+  // ! Properties of cameras available through AVFOUNDATION backend
+  CAP_PROP_IOS_DEVICE_FOCUS        = 9001;
+  CAP_PROP_IOS_DEVICE_EXPOSURE     = 9002;
+  CAP_PROP_IOS_DEVICE_FLASH        = 9003;
+  CAP_PROP_IOS_DEVICE_WHITEBALANCE = 9004;
+  CAP_PROP_IOS_DEVICE_TORCH        = 9005;
 
-//! @} AVFoundation framework for iOS
+  // ! @} AVFoundation framework for iOS
 
-
-(** @name Smartek Giganetix GigEVisionSDK
+  (* * @name Smartek Giganetix GigEVisionSDK
     @{
-*)
+  *)
 
-//! Properties of cameras available through Smartek Giganetix Ethernet Vision backend
-(* --- Vladimir Litvinenko (litvinenko.vladimir@gmail.com) --- *)
-       CAP_PROP_GIGA_FRAME_OFFSET_X   = 10001;
-       CAP_PROP_GIGA_FRAME_OFFSET_Y   = 10002;
-       CAP_PROP_GIGA_FRAME_WIDTH_MAX  = 10003;
-       CAP_PROP_GIGA_FRAME_HEIGH_MAX  = 10004;
-       CAP_PROP_GIGA_FRAME_SENS_WIDTH = 10005;
-       CAP_PROP_GIGA_FRAME_SENS_HEIGH = 10006;
+  // ! Properties of cameras available through Smartek Giganetix Ethernet Vision backend
+  (* --- Vladimir Litvinenko (litvinenko.vladimir@gmail.com) --- *)
+  CAP_PROP_GIGA_FRAME_OFFSET_X   = 10001;
+  CAP_PROP_GIGA_FRAME_OFFSET_Y   = 10002;
+  CAP_PROP_GIGA_FRAME_WIDTH_MAX  = 10003;
+  CAP_PROP_GIGA_FRAME_HEIGH_MAX  = 10004;
+  CAP_PROP_GIGA_FRAME_SENS_WIDTH = 10005;
+  CAP_PROP_GIGA_FRAME_SENS_HEIGH = 10006;
 
-//! @} Smartek
+  // ! @} Smartek
 
-(** @name Intel Perceptual Computing SDK
+  (* * @name Intel Perceptual Computing SDK
     @{
-*)
- CAP_PROP_INTELPERC_PROFILE_COUNT               = 11001;
-       CAP_PROP_INTELPERC_PROFILE_IDX                 = 11002;
-       CAP_PROP_INTELPERC_DEPTH_LOW_CONFIDENCE_VALUE  = 11003;
-       CAP_PROP_INTELPERC_DEPTH_SATURATION_VALUE      = 11004;
-       CAP_PROP_INTELPERC_DEPTH_CONFIDENCE_THRESHOLD  = 11005;
-       CAP_PROP_INTELPERC_DEPTH_FOCAL_LENGTH_HORZ     = 11006;
-       CAP_PROP_INTELPERC_DEPTH_FOCAL_LENGTH_VERT     = 11007;
+  *)
+  CAP_PROP_INTELPERC_PROFILE_COUNT              = 11001;
+  CAP_PROP_INTELPERC_PROFILE_IDX                = 11002;
+  CAP_PROP_INTELPERC_DEPTH_LOW_CONFIDENCE_VALUE = 11003;
+  CAP_PROP_INTELPERC_DEPTH_SATURATION_VALUE     = 11004;
+  CAP_PROP_INTELPERC_DEPTH_CONFIDENCE_THRESHOLD = 11005;
+  CAP_PROP_INTELPERC_DEPTH_FOCAL_LENGTH_HORZ    = 11006;
+  CAP_PROP_INTELPERC_DEPTH_FOCAL_LENGTH_VERT    = 11007;
 
-//! Intel Perceptual Streams
- CAP_INTELPERC_DEPTH_GENERATOR = 1 shl 29;
-       CAP_INTELPERC_IMAGE_GENERATOR = 1 shl 28;
-       CAP_INTELPERC_IR_GENERATOR    = 1 shl 27;
-       CAP_INTELPERC_GENERATORS_MASK = CAP_INTELPERC_DEPTH_GENERATOR + CAP_INTELPERC_IMAGE_GENERATOR + CAP_INTELPERC_IR_GENERATOR;
+  // ! Intel Perceptual Streams
+  CAP_INTELPERC_DEPTH_GENERATOR = 1 shl 29;
+  CAP_INTELPERC_IMAGE_GENERATOR = 1 shl 28;
+  CAP_INTELPERC_IR_GENERATOR    = 1 shl 27;
+  CAP_INTELPERC_GENERATORS_MASK = CAP_INTELPERC_DEPTH_GENERATOR + CAP_INTELPERC_IMAGE_GENERATOR + CAP_INTELPERC_IR_GENERATOR;
 
- CAP_INTELPERC_DEPTH_MAP              = 0; //!< Each pixel is a 16-bit integer. The value indicates the distance from an object to the camera's XY plane or the Cartesian depth.
-       CAP_INTELPERC_UVDEPTH_MAP            = 1; //!< Each pixel contains two 32-bit floating point values in the range of 0-1, representing the mapping of depth coordinates to the color coordinates.
-       CAP_INTELPERC_IR_MAP                 = 2; //!< Each pixel is a 16-bit integer. The value indicates the intensity of the reflected laser beam.
-       CAP_INTELPERC_IMAGE                  = 3;
+  CAP_INTELPERC_DEPTH_MAP   = 0; // !< Each pixel is a 16-bit integer. The value indicates the distance from an object to the camera's XY plane or the Cartesian depth.
+  CAP_INTELPERC_UVDEPTH_MAP = 1;
+  // !< Each pixel contains two 32-bit floating point values in the range of 0-1, representing the mapping of depth coordinates to the color coordinates.
+  CAP_INTELPERC_IR_MAP = 2; // !< Each pixel is a 16-bit integer. The value indicates the intensity of the reflected laser beam.
+  CAP_INTELPERC_IMAGE  = 3;
 
-//! @} Intel Perceptual
+  // ! @} Intel Perceptual
 
-(** @name gPhoto2 connection
+  (* * @name gPhoto2 connection
     @{
-*)
+  *)
 
-(** @brief gPhoto2 properties
+  (* * @brief gPhoto2 properties
 
-If `propertyId` is less than 0 then work on widget with that __additive inversed__ camera setting ID
-Get IDs by using CAP_PROP_GPHOTO2_WIDGET_ENUMERATE.
-@see CvCaptureCAM_GPHOTO2 for more info
-*)
-       CAP_PROP_GPHOTO2_PREVIEW           = 17001; //!< Capture only preview from liveview mode.
-       CAP_PROP_GPHOTO2_WIDGET_ENUMERATE  = 17002; //!< Readonly, returns (const char *).
-       CAP_PROP_GPHOTO2_RELOAD_CONFIG     = 17003; //!< Trigger, only by set. Reload camera settings.
-       CAP_PROP_GPHOTO2_RELOAD_ON_CHANGE  = 17004; //!< Reload all settings on set.
-       CAP_PROP_GPHOTO2_COLLECT_MSGS      = 17005; //!< Collect messages with details.
-       CAP_PROP_GPHOTO2_FLUSH_MSGS        = 17006; //!< Readonly, returns (const char *).
-       CAP_PROP_SPEED                     = 17007; //!< Exposure speed. Can be readonly, depends on camera program.
-       CAP_PROP_APERTURE                  = 17008; //!< Aperture. Can be readonly, depends on camera program.
-       CAP_PROP_EXPOSUREPROGRAM           = 17009; //!< Camera exposure program.
-       CAP_PROP_VIEWFINDER                = 17010;  //!< Enter liveview mode.
+    If `propertyId` is less than 0 then work on widget with that __additive inversed__ camera setting ID
+    Get IDs by using CAP_PROP_GPHOTO2_WIDGET_ENUMERATE.
+    @see CvCaptureCAM_GPHOTO2 for more info
+  *)
+  CAP_PROP_GPHOTO2_PREVIEW          = 17001; // !< Capture only preview from liveview mode.
+  CAP_PROP_GPHOTO2_WIDGET_ENUMERATE = 17002; // !< Readonly, returns (const char *).
+  CAP_PROP_GPHOTO2_RELOAD_CONFIG    = 17003; // !< Trigger, only by set. Reload camera settings.
+  CAP_PROP_GPHOTO2_RELOAD_ON_CHANGE = 17004; // !< Reload all settings on set.
+  CAP_PROP_GPHOTO2_COLLECT_MSGS     = 17005; // !< Collect messages with details.
+  CAP_PROP_GPHOTO2_FLUSH_MSGS       = 17006; // !< Readonly, returns (const char *).
+  CAP_PROP_SPEED                    = 17007; // !< Exposure speed. Can be readonly, depends on camera program.
+  CAP_PROP_APERTURE                 = 17008; // !< Aperture. Can be readonly, depends on camera program.
+  CAP_PROP_EXPOSUREPROGRAM          = 17009; // !< Camera exposure program.
+  CAP_PROP_VIEWFINDER               = 17010; // !< Enter liveview mode.
 
-//! @} gPhoto2
+  // ! @} gPhoto2
 
-
-(** @name Images backend
+  (* * @name Images backend
     @{
-*)
+  *)
 
-(** @brief Images backend properties
+  (* * @brief Images backend properties
 
-*)
- CAP_PROP_IMAGES_BASE = 18000;
- CAP_PROP_IMAGES_LAST = 19000; // excluding
+  *)
+  CAP_PROP_IMAGES_BASE = 18000;
+  CAP_PROP_IMAGES_LAST = 19000; // excluding
 
-//! @} Images
+  // ! @} Images
 
-//! @} videoio_flags_others
+  // ! @} videoio_flags_others
 
 Type
-//class IVideoCapture;
-//! @cond IGNORED
-//namespace internal { class VideoCapturePrivateAccessor; }
-//! @endcond IGNORED
+  // class IVideoCapture;
+  // ! @cond IGNORED
+  // namespace internal { class VideoCapturePrivateAccessor; }
+  // ! @endcond IGNORED
 
-(** @brief Class for video capturing from video files, image sequences or cameras.
+  (* * @brief Class for video capturing from video files, image sequences or cameras.
 
-The class provides C++ API for capturing video from cameras or for reading video files and image sequences.
+    The class provides C++ API for capturing video from cameras or for reading video files and image sequences.
 
-Here is how the class can be used:
-@include samples/cpp/videocapture_basic.cpp
+    Here is how the class can be used:
+    @include samples/cpp/videocapture_basic.cpp
 
-@note In @ref videoio_c 'C API' the black-box structure `CvCapture` is used instead of %VideoCapture.
-@note
--   (C++) A basic sample on using the %VideoCapture interface can be found at
+    @note In @ref videoio_c 'C API' the black-box structure `CvCapture` is used instead of %VideoCapture.
+    @note
+    -   (C++) A basic sample on using the %VideoCapture interface can be found at
     `OPENCV_SOURCE_CODE/samples/cpp/videocapture_starter.cpp`
--   (Python) A basic sample on using the %VideoCapture interface can be found at
+    -   (Python) A basic sample on using the %VideoCapture interface can be found at
     `OPENCV_SOURCE_CODE/samples/python/video.py`
--   (Python) A multi threaded video processing sample can be found at
+    -   (Python) A multi threaded video processing sample can be found at
     `OPENCV_SOURCE_CODE/samples/python/video_threaded.py`
--   (Python) %VideoCapture sample showcasing some features of the Video4Linux2 backend
+    -   (Python) %VideoCapture sample showcasing some features of the Video4Linux2 backend
     `OPENCV_SOURCE_CODE/samples/python/video_v4l2.py`
- *)
+  *)
 
- TVideoCapture = record
+  TVideoCapture = record
+  private
+{$HINTS OFF}
+    _vftable: vftable_func;
+    Dummy: array [0 .. 39] of Byte;
+{$HINTS ON}
+    // Ptr<CvCapture> cap;
+    // Ptr<IVideoCapture> icap;
+    // bool throwOnFail;
+    // friend class internal::VideoCapturePrivateAccessor;
   public
     (* @brief Default constructor
       @note In @ref videoio_c "C API", when you finished working with video, release CvCapture structure with
@@ -614,7 +625,7 @@ Here is how the class can be used:
     *)
     // CV_WRAP VideoCapture();
     class operator Initialize(out Dest: TVideoCapture);
-    class operator assign(var Dest: TVideoCapture;const [ref] Src: TVideoCapture);
+    class operator assign(var Dest: TVideoCapture; const [ref] Src: TVideoCapture);
 
     (* @overload
       @brief  Opens a video file or a capturing device or an IP video stream for video capturing with API Preference
@@ -679,7 +690,7 @@ Here is how the class can be used:
       The method first calls VideoCapture::release to close the already opened file or camera.
     *)
     // CV_WRAP virtual Bool open(const String & filename, int apiPreference = CAP_ANY);
-    function open(const filename: String;const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function open(const filename: String; const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* @brief  Opens a camera for video capturing
 
       @overload
@@ -692,7 +703,7 @@ Here is how the class can be used:
       The method first calls VideoCapture::release to close the already opened file or camera.
     *)
     // CV_WRAP virtual Bool open(const String & filename, int apiPreference, const std: : vector<int> & params);
-    function open(const filename: String;const apiPreference: VideoCaptureAPIs { = CAP_ANY };const params: Vector<Int>): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function open(const filename: String; const apiPreference: VideoCaptureAPIs { = CAP_ANY }; const params: Vector<Int>): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* @brief  Opens a camera for video capturing
 
       @overload
@@ -703,7 +714,7 @@ Here is how the class can be used:
       The method first calls VideoCapture::release to close the already opened file or camera.
     *)
     // CV_WRAP virtual Bool open(int index, int apiPreference = CAP_ANY);
-    function open(const index: Int;const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function open(const index: Int; const apiPreference: VideoCaptureAPIs = CAP_ANY): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* @brief Returns true if video capturing has been initialized already.
 
       @overload
@@ -860,35 +871,26 @@ Here is how the class can be used:
     *)
     // static (* CV_WRAP *) Bool waitAny(const std: : vector<VideoCapture> & streams, CV_OUT std: : vector<int> & readyIndex, int64 timeoutNs = 0);
     //
-    class operator GreaterThan(const VideoCapture: TVideoCapture;Var frame: TMat): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  private
-{$HINTS OFF}
-    _vftable: vftable_func;
-    Dummy: array [0 .. 39] of Byte;
-    // Ptr<CvCapture> cap;
-    // Ptr<IVideoCapture> icap;
-    // bool throwOnFail;
-
-    // friend class internal::VideoCapturePrivateAccessor;
-{$HINTS ON}
+    class operator GreaterThan(const VideoCapture: TVideoCapture; Var frame: TMat): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
-//class IVideoWriter;
+  // class IVideoWriter;
 
-(** @example samples/cpp/tutorial_code/videoio/video-write/video-write.cpp
-Check @ref tutorial_video_write 'the corresponding tutorial' for more details
-*)
+  (* * @example samples/cpp/tutorial_code/videoio/video-write/video-write.cpp
+    Check @ref tutorial_video_write 'the corresponding tutorial' for more details
+  *)
 
-(** @example samples/cpp/videowriter_basic.cpp
-An example using VideoCapture and VideoWriter class
-*)
+  (* * @example samples/cpp/videowriter_basic.cpp
+    An example using VideoCapture and VideoWriter class
+  *)
 
-(** @brief Video writer class.
+  (* * @brief Video writer class.
 
-The class provides C++ API for writing video files or image sequences.
-*)
-pVideoWriter = ^TVideoWriter;
-TVideoWriter = record
+    The class provides C++ API for writing video files or image sequences.
+  *)
+  pVideoWriter = ^TVideoWriter;
+
+  TVideoWriter = record
   private
 {$HINTS OFF}
     _vftable: vftable_func;
@@ -910,7 +912,7 @@ TVideoWriter = record
     *)
     // CV_WRAP VideoWriter();
     class operator Initialize(out Dest: TVideoWriter);
-    class operator assign(var Dest: TVideoWriter;const [ref] Src: TVideoWriter);
+    class operator assign(var Dest: TVideoWriter; const [ref] Src: TVideoWriter);
 
     (* @overload
       @param filename Name of the output video file.
@@ -967,7 +969,7 @@ TVideoWriter = record
       The method first calls VideoWriter::release to close the already opened file.
     *)
     // CV_WRAP virtual BOOL open(const String & filename, Int fourcc, double fps, size frameSize, BOOL isColor = true);
-    function open(const filename: String; fourcc: Int; fps: double;const frameSize: TSize; isColor: BOOL = true): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function open(const filename: String; fourcc: Int; fps: double; const frameSize: TSize; isColor: BOOL = true): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* @overload *)
     // CV_WRAP BOOL open(const String & filename, Int apiPreference, Int fourcc, double fps, size frameSize, BOOL isColor = true);
 
@@ -1043,19 +1045,18 @@ TVideoWriter = record
     *)
     // CV_WRAP String getBackendName()  const;
     //
-    class operator LessThan(const VideoWriter: TVideoWriter;const frame: TMat): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator LessThan(const VideoWriter: TVideoWriter; const frame: TMat): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
-//! @cond IGNORED
-//template<> struct DefaultDeleter<CvCapture>{ CV_EXPORTS void operator ()(CvCapture* obj) const; };
-//template<> struct DefaultDeleter<CvVideoWriter>{ CV_EXPORTS void operator ()(CvVideoWriter* obj) const; };
-//! @endcond IGNORED
+  // ! @cond IGNORED
+  // template<> struct DefaultDeleter<CvCapture>{ CV_EXPORTS void operator ()(CvCapture* obj) const; };
+  // template<> struct DefaultDeleter<CvVideoWriter>{ CV_EXPORTS void operator ()(CvVideoWriter* obj) const; };
+  // ! @endcond IGNORED
 
-//! @} videoio
+  // ! @} videoio
 
-//} // cv
+  // } // cv
 
-{$i external/opencv.VideoCapture.import.inc}
-{$i external/opencv.VideoWriter.import.inc}
-
+{$I external/opencv.VideoCapture.import.inc}
+{$I external/opencv.VideoWriter.import.inc}
 {$ENDIF OPENCV_VIDEOIO_HPP}

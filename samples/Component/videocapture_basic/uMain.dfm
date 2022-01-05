@@ -62,9 +62,10 @@ object Form1: TForm1
     Top = 52
   end
   object cvcptrsrcFile: TCVCaptureSource
-    Enabled = False
+    Enabled = True
     SourceTypeClassName = 'TCVFileSource'
     SourceType.Delay = 40
+    SourceType.Loop = True
     Left = 384
     Top = 56
   end
@@ -72,9 +73,7 @@ object Form1: TForm1
     Enabled = True
     SourceTypeClassName = 'TCVFileSource'
     SourceType.Delay = 40
-    SourceType.FileName = 
-      'http://210.148.114.53/-wvhttp-01-/GetOneShot?image_size=640x480&' +
-      'frame_count=1000000000'
+    SourceType.FileName = 'http://video-auth1.iol.pt:1935/beachcam/supertubos/chunks.m3u8'
     Left = 744
     Top = 56
   end
