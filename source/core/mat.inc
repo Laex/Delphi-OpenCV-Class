@@ -123,7 +123,14 @@ type
     class operator assign(var Dest: TMat; const [ref] Src: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     // CVMat: TCVMat;
-    flags: Int; // int flags;
+    (* ! includes several bit-fields:
+      - the magic signature
+      - continuity flag
+      - depth
+      - number of channels
+    *)
+    // int flags;
+    flags: Int;
     // ! the matrix dimensionality, >= 2
     dims: Int; // int dims;
     // ! the number of rows and columns or (-1, -1) when the matrix has more than 2 dimensions
@@ -293,9 +300,9 @@ type
     class operator Initialize(out Dest: TInputArray); // _InputArray();
     // _InputArray(int _flags, void* _obj);
     // _InputArray(const Mat& m);
-    class function InputArray(const m: TMat): TInputArray; overload; static;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function InputArray(const m: TMat): TInputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // _InputArray(const MatExpr& expr);
-    class function InputArray(const m: TMatExpr): TInputArray; overload; static;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function InputArray(const m: TMatExpr): TInputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // _InputArray(const std::vector<Mat>& vec);
     // _InputArray(const std::vector<bool>& vec);
     // _InputArray(const std::vector<std::vector<bool> >&) = delete;  // not supported
@@ -348,18 +355,18 @@ type
     // bool isGpuMatVector() const;
     class operator Finalize(var Dest: TInputArray); // ~_InputArray();
     //
-    class function noArray: TInputArray; static; {$IFDEF USE_INLINE}inline;{$ENDIF}
-    class operator Implicit(const m: TMat): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMatExpr): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint2f>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<uchar>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: double): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TVec4i>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TMat>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: TScalar): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<float>): TInputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function noArray: TInputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: TMat): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: TMatExpr): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<uchar>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: double): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TVec4i>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TMat>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: TScalar): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<float>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
 {$HINTS OFF}
     flags: Int;   // int flags;
@@ -953,18 +960,20 @@ type
     // void copyTo( OutputArray m ) const;
     // void copyTo( OutputArray m, InputArray mask ) const;
     // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
+    procedure convertTo(const m: TOutputArray; rtype: Int; alpha: double = 1; beta: double = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
     // void assignTo( Mat& m, int type=-1 ) const;
-    //----------- Use Assign(const s: TScalar) or setTo() --------------
+    // ----------- Use Assign(const s: TScalar) or setTo() --------------
     // Mat& operator = (const Scalar& s);
     // class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE } inline; {$ENDIF}
     // assign all values to s
     procedure assign(const s: TScalar); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat& setTo(InputArray value, InputArray mask=noArray());
-    function setTo(const value:TInputArray;const mask:TInputArray{=noArray()}):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function setTo(const value:TInputArray):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    //-------------------------
+    function setTo(const Value: TInputArray; const mask: TInputArray { =noArray() } ): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function setTo(const Value: TInputArray): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // -------------------------
     // Mat reshape(int cn, int rows=0) const;
     // Mat reshape(int cn, int newndims, const int* newsz) const;
+    function reshape(cn: Int; newndims: Int; const newsz: pInt): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat reshape(int cn, const std::vector<int>& newshape) const;
     // MatExpr t() const;
     // MatExpr inv(int method=DECOMP_LU) const;
@@ -1051,8 +1060,6 @@ type
 
     procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
     procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
-    // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
-    procedure convertTo(const m: TOutputArray; rtype: Int; alpha: double = 1; beta: double = 0);
     class operator Subtract(const m: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const m: TMatExpr): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat& operator = (const MatExpr& expr);
     class operator Implicit(const v: Vector<TPoint>): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} //
@@ -2470,209 +2477,210 @@ type
     }
     @endcode
   *)
-  (*
-    template<typename _Tp> class Mat_ : public Mat
-    {
-    public:
-    typedef _Tp value_type;
-    typedef typename DataType<_Tp>::channel_type channel_type;
-    typedef MatIterator_<_Tp> iterator;
-    typedef MatConstIterator_<_Tp> const_iterator;
+  TMat_<T: record > = record
+  private
+    FMat: TMat;
+  public
+    // ! default constructor
+    // Mat_() CV_NOEXCEPT;
+    class operator Initialize(out Dest: TMat_<T>);
+    // destructor
+    class operator Finalize(var Dest: TMat_<T>);
+    // ! equivalent to Mat(_rows, _cols, DataType<_Tp>::type)
+    // Mat_(int _rows, int _cols);
+    // ! constructor that sets each matrix element to specified value
+    // Mat_(int _rows, int _cols, const _Tp& value);
+    // ! equivalent to Mat(_size, DataType<_Tp>::type)
+    // explicit Mat_(Size _size);
+    // ! constructor that sets each matrix element to specified value
+    // Mat_(Size _size, const _Tp& value);
+    // ! n-dim array constructor
+    // Mat_(int _ndims, const int* _sizes);
+    // ! n-dim array constructor that sets each matrix element to specified value
+    // Mat_(int _ndims, const int* _sizes, const _Tp& value);
+    // ! copy/conversion constructor. If m is of different type, it's converted
+    // Mat_(const Mat& m);
+    class function Mat(const m: TMat): TMat_<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // ! copy constructor
+    // Mat_(const Mat_& m);
+    // ! constructs a matrix on top of user-allocated data. step is in bytes(!!!), regardless of the type
+    // Mat_(int _rows, int _cols, _Tp* _data, size_t _step=AUTO_STEP);
+    // ! constructs n-dim matrix on top of user-allocated data. steps are in bytes(!!!), regardless of the type
+    // Mat_(int _ndims, const int* _sizes, _Tp* _data, const size_t* _steps=0);
+    // ! selects a submatrix
+    // Mat_(const Mat_& m, const Range& rowRange, const Range& colRange=Range::all());
+    // ! selects a submatrix
+    // Mat_(const Mat_& m, const Rect& roi);
+    // ! selects a submatrix, n-dim version
+    // Mat_(const Mat_& m, const Range* ranges);
+    // ! selects a submatrix, n-dim version
+    // Mat_(const Mat_& m, const std::vector<Range>& ranges);
+    // ! from a matrix expression
+    // explicit Mat_(const MatExpr& e);
+    // ! makes a matrix out of Vec, std::vector, Point_ or Point3_. The matrix will have a single column
+    // explicit Mat_(const std::vector<_Tp>& vec, bool copyData=false);
+    // template<int n> explicit Mat_(const Vec<typename DataType<_Tp>::channel_type, n>& vec, bool copyData=true);
+    // template<int m, int n> explicit Mat_(const Matx<typename DataType<_Tp>::channel_type, m, n>& mtx, bool copyData=true);
+    // explicit Mat_(const Point_<typename DataType<_Tp>::channel_type>& pt, bool copyData=true);
+    // explicit Mat_(const Point3_<typename DataType<_Tp>::channel_type>& pt, bool copyData=true);
+    // explicit Mat_(const MatCommaInitializer_<_Tp>& commaInitializer);
 
-    //! default constructor
-    Mat_() CV_NOEXCEPT;
-    //! equivalent to Mat(_rows, _cols, DataType<_Tp>::type)
-    Mat_(int _rows, int _cols);
-    //! constructor that sets each matrix element to specified value
-    Mat_(int _rows, int _cols, const _Tp& value);
-    //! equivalent to Mat(_size, DataType<_Tp>::type)
-    explicit Mat_(Size _size);
-    //! constructor that sets each matrix element to specified value
-    Mat_(Size _size, const _Tp& value);
-    //! n-dim array constructor
-    Mat_(int _ndims, const int* _sizes);
-    //! n-dim array constructor that sets each matrix element to specified value
-    Mat_(int _ndims, const int* _sizes, const _Tp& value);
-    //! copy/conversion constructor. If m is of different type, it's converted
-    Mat_(const Mat& m);
-    //! copy constructor
-    Mat_(const Mat_& m);
-    //! constructs a matrix on top of user-allocated data. step is in bytes(!!!), regardless of the type
-    Mat_(int _rows, int _cols, _Tp* _data, size_t _step=AUTO_STEP);
-    //! constructs n-dim matrix on top of user-allocated data. steps are in bytes(!!!), regardless of the type
-    Mat_(int _ndims, const int* _sizes, _Tp* _data, const size_t* _steps=0);
-    //! selects a submatrix
-    Mat_(const Mat_& m, const Range& rowRange, const Range& colRange=Range::all());
-    //! selects a submatrix
-    Mat_(const Mat_& m, const Rect& roi);
-    //! selects a submatrix, n-dim version
-    Mat_(const Mat_& m, const Range* ranges);
-    //! selects a submatrix, n-dim version
-    Mat_(const Mat_& m, const std::vector<Range>& ranges);
-    //! from a matrix expression
-    explicit Mat_(const MatExpr& e);
-    //! makes a matrix out of Vec, std::vector, Point_ or Point3_. The matrix will have a single column
-    explicit Mat_(const std::vector<_Tp>& vec, bool copyData=false);
-    template<int n> explicit Mat_(const Vec<typename DataType<_Tp>::channel_type, n>& vec, bool copyData=true);
-    template<int m, int n> explicit Mat_(const Matx<typename DataType<_Tp>::channel_type, m, n>& mtx, bool copyData=true);
-    explicit Mat_(const Point_<typename DataType<_Tp>::channel_type>& pt, bool copyData=true);
-    explicit Mat_(const Point3_<typename DataType<_Tp>::channel_type>& pt, bool copyData=true);
-    explicit Mat_(const MatCommaInitializer_<_Tp>& commaInitializer);
+    // Mat_(std::initializer_list<_Tp> values);
+    // explicit Mat_(const std::initializer_list<int> sizes, const std::initializer_list<_Tp> values);
 
-    Mat_(std::initializer_list<_Tp> values);
-    explicit Mat_(const std::initializer_list<int> sizes, const std::initializer_list<_Tp> values);
+    // template <std::size_t _Nm> explicit Mat_(const std::array<_Tp, _Nm>& arr, bool copyData=false);
 
-    template <std::size_t _Nm> explicit Mat_(const std::array<_Tp, _Nm>& arr, bool copyData=false);
+    // Mat_& operator = (const Mat& m);
+    procedure Assign(const m: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // Mat_& operator = (const Mat_& m);
+    class operator Assign(var Dest: TMat_<T>; const [ref] Src: TMat_<T>); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // ! set all the elements to s.
+    // Mat_& operator = (const _Tp& s);
+    // ! assign a matrix expression
+    // Mat_& operator = (const MatExpr& e);
 
-    Mat_& operator = (const Mat& m);
-    Mat_& operator = (const Mat_& m);
-    //! set all the elements to s.
-    Mat_& operator = (const _Tp& s);
-    //! assign a matrix expression
-    Mat_& operator = (const MatExpr& e);
+    // ! iterators; they are smart enough to skip gaps in the end of rows
+    // iterator begin();
+    // iterator end();
+    // const_iterator begin() const;
+    // const_iterator end() const;
 
-    //! iterators; they are smart enough to skip gaps in the end of rows
-    iterator begin();
-    iterator end();
-    const_iterator begin() const;
-    const_iterator end() const;
+    // reverse iterators
+    // std::reverse_iterator<iterator> rbegin();
+    // std::reverse_iterator<iterator> rend();
+    // std::reverse_iterator<const_iterator> rbegin() const;
+    // std::reverse_iterator<const_iterator> rend() const;
 
-    //reverse iterators
-    std::reverse_iterator<iterator> rbegin();
-    std::reverse_iterator<iterator> rend();
-    std::reverse_iterator<const_iterator> rbegin() const;
-    std::reverse_iterator<const_iterator> rend() const;
-
-    //! template methods for for operation over all matrix elements.
+    // ! template methods for for operation over all matrix elements.
     // the operations take care of skipping gaps in the end of rows (if any)
-    template<typename Functor> void forEach(const Functor& operation);
-    template<typename Functor> void forEach(const Functor& operation) const;
+    // template<typename Functor> void forEach(const Functor& operation);
+    // template<typename Functor> void forEach(const Functor& operation) const;
 
-    //! equivalent to Mat::create(_rows, _cols, DataType<_Tp>::type)
-    void create(int _rows, int _cols);
-    //! equivalent to Mat::create(_size, DataType<_Tp>::type)
-    void create(Size _size);
-    //! equivalent to Mat::create(_ndims, _sizes, DatType<_Tp>::type)
-    void create(int _ndims, const int* _sizes);
-    //! equivalent to Mat::release()
-    void release();
-    //! cross-product
-    Mat_ cross(const Mat_& m) const;
-    //! data type conversion
-    template<typename T2> operator Mat_<T2>() const;
-    //! overridden forms of Mat::row() etc.
-    Mat_ row(int y) const;
-    Mat_ col(int x) const;
-    Mat_ diag(int d=0) const;
-    CV_NODISCARD_STD Mat_ clone() const;
+    // ! equivalent to Mat::create(_rows, _cols, DataType<_Tp>::type)
+    // void create(int _rows, int _cols);
+    // ! equivalent to Mat::create(_size, DataType<_Tp>::type)
+    // void create(Size _size);
+    // ! equivalent to Mat::create(_ndims, _sizes, DatType<_Tp>::type)
+    // void create(int _ndims, const int* _sizes);
+    // ! equivalent to Mat::release()
+    // void release();
+    // ! cross-product
+    // Mat_ cross(const Mat_& m) const;
+    // ! data type conversion
+    // template<typename T2> operator Mat_<T2>() const;
+    // ! overridden forms of Mat::row() etc.
+    // Mat_ row(int y) const;
+    // Mat_ col(int x) const;
+    // Mat_ diag(int d=0) const;
+    // CV_NODISCARD_STD Mat_ clone() const;
 
-    //! overridden forms of Mat::elemSize() etc.
-    size_t elemSize() const;
-    size_t elemSize1() const;
-    int type() const;
-    int depth() const;
-    int channels() const;
-    size_t step1(int i=0) const;
-    //! returns step()/sizeof(_Tp)
-    size_t stepT(int i=0) const;
+    // ! overridden forms of Mat::elemSize() etc.
+    // size_t elemSize() const;
+    // size_t elemSize1() const;
+    // int type() const;
+    // int depth() const;
+    // int channels() const;
+    // size_t step1(int i=0) const;
+    // ! returns step()/sizeof(_Tp)
+    // size_t stepT(int i=0) const;
 
-    //! overridden forms of Mat::zeros() etc. Data type is omitted, of course
-    CV_NODISCARD_STD static MatExpr zeros(int rows, int cols);
-    CV_NODISCARD_STD static MatExpr zeros(Size size);
-    CV_NODISCARD_STD static MatExpr zeros(int _ndims, const int* _sizes);
-    CV_NODISCARD_STD static MatExpr ones(int rows, int cols);
-    CV_NODISCARD_STD static MatExpr ones(Size size);
-    CV_NODISCARD_STD static MatExpr ones(int _ndims, const int* _sizes);
-    CV_NODISCARD_STD static MatExpr eye(int rows, int cols);
-    CV_NODISCARD_STD static MatExpr eye(Size size);
+    // ! overridden forms of Mat::zeros() etc. Data type is omitted, of course
+    // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols);
+    // CV_NODISCARD_STD static MatExpr zeros(Size size);
+    // CV_NODISCARD_STD static MatExpr zeros(int _ndims, const int* _sizes);
+    // CV_NODISCARD_STD static MatExpr ones(int rows, int cols);
+    // CV_NODISCARD_STD static MatExpr ones(Size size);
+    // CV_NODISCARD_STD static MatExpr ones(int _ndims, const int* _sizes);
+    // CV_NODISCARD_STD static MatExpr eye(int rows, int cols);
+    // CV_NODISCARD_STD static MatExpr eye(Size size);
 
-    //! some more overridden methods
-    Mat_& adjustROI( int dtop, int dbottom, int dleft, int dright );
-    Mat_ operator()( const Range& rowRange, const Range& colRange ) const;
-    Mat_ operator()( const Rect& roi ) const;
-    Mat_ operator()( const Range* ranges ) const;
-    Mat_ operator()(const std::vector<Range>& ranges) const;
+    // ! some more overridden methods
+    // Mat_& adjustROI( int dtop, int dbottom, int dleft, int dright );
+    // Mat_ operator()( const Range& rowRange, const Range& colRange ) const;
+    // Mat_ operator()( const Rect& roi ) const;
+    // Mat_ operator()( const Range* ranges ) const;
+    // Mat_ operator()(const std::vector<Range>& ranges) const;
 
-    //! more convenient forms of row and element access operators
-    _Tp* operator [](int y);
-    const _Tp* operator [](int y) const;
+    // ! more convenient forms of row and element access operators
+    // _Tp* operator [](int y);
+    // const _Tp* operator [](int y) const;
 
-    //! returns reference to the specified element
-    _Tp& operator ()(const int* idx);
-    //! returns read-only reference to the specified element
-    const _Tp& operator ()(const int* idx) const;
+    // ! returns reference to the specified element
+    // _Tp& operator ()(const int* idx);
+    // ! returns read-only reference to the specified element
+    // const _Tp& operator ()(const int* idx) const;
 
-    //! returns reference to the specified element
-    template<int n> _Tp& operator ()(const Vec<int, n>& idx);
-    //! returns read-only reference to the specified element
-    template<int n> const _Tp& operator ()(const Vec<int, n>& idx) const;
+    // ! returns reference to the specified element
+    // template<int n> _Tp& operator ()(const Vec<int, n>& idx);
+    // ! returns read-only reference to the specified element
+    // template<int n> const _Tp& operator ()(const Vec<int, n>& idx) const;
 
-    //! returns reference to the specified element (1D case)
-    _Tp& operator ()(int idx0);
-    //! returns read-only reference to the specified element (1D case)
-    const _Tp& operator ()(int idx0) const;
-    //! returns reference to the specified element (2D case)
-    _Tp& operator ()(int row, int col);
-    //! returns read-only reference to the specified element (2D case)
-    const _Tp& operator ()(int row, int col) const;
-    //! returns reference to the specified element (3D case)
-    _Tp& operator ()(int idx0, int idx1, int idx2);
-    //! returns read-only reference to the specified element (3D case)
-    const _Tp& operator ()(int idx0, int idx1, int idx2) const;
+    // ! returns reference to the specified element (1D case)
+    // _Tp& operator ()(int idx0);
+    // ! returns read-only reference to the specified element (1D case)
+    // const _Tp& operator ()(int idx0) const;
+    // ! returns reference to the specified element (2D case)
+    // _Tp& operator ()(int row, int col);
+    // ! returns read-only reference to the specified element (2D case)
+    // const _Tp& operator ()(int row, int col) const;
+    // ! returns reference to the specified element (3D case)
+    // _Tp& operator ()(int idx0, int idx1, int idx2);
+    // ! returns read-only reference to the specified element (3D case)
+    // const _Tp& operator ()(int idx0, int idx1, int idx2) const;
 
-    _Tp& operator ()(Point pt);
-    const _Tp& operator ()(Point pt) const;
+    // _Tp& operator ()(Point pt);
+    // const _Tp& operator ()(Point pt) const;
 
-    //! conversion to vector.
-    operator std::vector<_Tp>() const;
+    // ! conversion to vector.
+    // operator std::vector<_Tp>() const;
 
-    //! conversion to array.
-    template<std::size_t _Nm> operator std::array<_Tp, _Nm>() const;
+    // ! conversion to array.
+    // template<std::size_t _Nm> operator std::array<_Tp, _Nm>() const;
 
-    //! conversion to Vec
-    template<int n> operator Vec<typename DataType<_Tp>::channel_type, n>() const;
-    //! conversion to Matx
-    template<int m, int n> operator Matx<typename DataType<_Tp>::channel_type, m, n>() const;
+    // ! conversion to Vec
+    // template<int n> operator Vec<typename DataType<_Tp>::channel_type, n>() const;
+    // ! conversion to Matx
+    // template<int m, int n> operator Matx<typename DataType<_Tp>::channel_type, m, n>() const;
 
-    Mat_(Mat_&& m);
-    Mat_& operator = (Mat_&& m);
+    // Mat_(Mat_&& m);
+    // Mat_& operator = (Mat_&& m);
 
-    Mat_(Mat&& m);
-    Mat_& operator = (Mat&& m);
+    // Mat_(Mat&& m);
+    // Mat_& operator = (Mat&& m);
 
-    Mat_(MatExpr&& e);
-    };
+    // Mat_(MatExpr&& e);
+  end;
 
-    typedef Mat_<uchar> Mat1b;
-    typedef Mat_<Vec2b> Mat2b;
-    typedef Mat_<Vec3b> Mat3b;
-    typedef Mat_<Vec4b> Mat4b;
+  TMat1b = TMat_<uchar>;
+  // TMat2b = TMat_<TVec2b>;
+  TMat3b = TMat_<TVec3b>;
+  // TMat4b = TMat_<TVec4b>;
 
-    typedef Mat_<short> Mat1s;
-    typedef Mat_<Vec2s> Mat2s;
-    typedef Mat_<Vec3s> Mat3s;
-    typedef Mat_<Vec4s> Mat4s;
+  TMat1s = TMat_<short>;
+  // TMat2s = TMat_<TVec2s>;
+  // TMat3s = TMat_<TVec3s>;
+  // TMat4s = TMat_<TVec4s>;
 
-    typedef Mat_<ushort> Mat1w;
-    typedef Mat_<Vec2w> Mat2w;
-    typedef Mat_<Vec3w> Mat3w;
-    typedef Mat_<Vec4w> Mat4w;
+  TMat1w = TMat_<ushort>;
+  // TMat2w = TMat_<TVec2w>;
+  // TMat3w = TMat_<TVec3w>;
+  // TMat4w = TMat_<TVec4w>;
 
-    typedef Mat_<int>   Mat1i;
-    typedef Mat_<Vec2i> Mat2i;
-    typedef Mat_<Vec3i> Mat3i;
-    typedef Mat_<Vec4i> Mat4i;
+  TMat1i = TMat_<int>;
+  // TMat2i = TMat_<TVec2i>;
+  // TMat3i = TMat_<TVec3i>;
+  // TMat4i = TMat_<TVec4i>;
 
-    typedef Mat_<float> Mat1f;
-    typedef Mat_<Vec2f> Mat2f;
-    typedef Mat_<Vec3f> Mat3f;
-    typedef Mat_<Vec4f> Mat4f;
+  TMat1f = TMat_<float>;
+  // TMat2f = TMat_<TVec2f>;
+  // TMat3f = TMat_<TVec3f>;
+  // TMat4f = TMat_<TVec4f>;
 
-    typedef Mat_<double> Mat1d;
-    typedef Mat_<Vec2d> Mat2d;
-    typedef Mat_<Vec3d> Mat3d;
-    typedef Mat_<Vec4d> Mat4d;
-  *)
+  TMat1d = TMat_<double>;
+  // TMat2d = TMat_<TVec2d>;
+  // TMat3d = TMat_<TVec3d>;
+  // TMat4d = TMat_<TVec4d>;
+
   (* * @todo document *)
   (*
     class CV_EXPORTS UMat

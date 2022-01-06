@@ -20,11 +20,43 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_CORE_TRAITS_HPP}
-
+{$IFDEF OPENCV_CORE_TRAITS_HPP}
 { TDataType<T> }
 
-class operator TDataType<T>.Initialize(out Dest: TDataType<T>);
+class function TDataType<T>.generic_type: Int;
+Var
+  a:TDataType_<T>;
+begin
+  result := a.generic_type;
+end;
+class function TDataType<T>.depth: Int;
+Var
+  a:TDataType_<T>;
+begin
+  result := a.depth;
+end;
+class function TDataType<T>.channels: Int;
+Var
+  a:TDataType_<T>;
+begin
+  result := a.channels;
+end;
+class function TDataType<T>.fmt: Int;
+Var
+  a:TDataType_<T>;
+begin
+  result := a.fmt;
+end;
+class function TDataType<T>.&type: Int;
+Var
+  a:TDataType_<T>;
+begin
+  result := a.&type;
+end;
+
+{ TDataType_<T> }
+
+class operator TDataType_<T>.Initialize(out Dest: TDataType_<T>);
 begin
   if TypeInfo(T) = TypeInfo(BOOL) then
     with Dest do
@@ -151,60 +183,78 @@ end;
 { TDepth<T> }
 
 class function TDepth<T>.Value: Int;
-var
-  a: TDataType<T>;
 begin
-  Result := a.depth;
+  Result := TDataType<T>.depth;
+end;
+
+{ TTraits }
+class function TTraits.&type<T>: TTraitsValue<T>;
+begin
+  if TypeInfo(T) = TypeInfo(TScalar) then
+    Result.Value := CV_MAKETYPE(TDepth<double>.Value, 4)
+  else if TypeInfo(T) = TypeInfo(TVec4i) then
+    Result.Value := CV_MAKETYPE(TDepth<Int>.Value, 4)
+  else if TypeInfo(T) = TypeInfo(TPoint) then
+    Result.Value := CV_MAKETYPE(TDepth<Int>.Value, 2)
+  else if TypeInfo(T) = TypeInfo(TPoint2f) then
+    Result.Value := CV_MAKETYPE(TDepth<float>.Value, 2)
+  else
+    Result.Value := TDataType<T>.&type;
+end;
+
+class function TTraits.depth<T>: TTraitsValue<T>;
+begin
+  Result.Value := TDataType<T>.depth;
 end;
 
 { TTraitsType<T> }
 
-class function TTraitsType<T>.Value: Int;
-begin
-  if TypeInfo(T) = TypeInfo(TScalar) then
-    Result := CV_MAKETYPE(TDepth<double>.Value, 4)
-  else if TypeInfo(T) = TypeInfo(TVec4i) then
-    Result := CV_MAKETYPE(TDepth<Int>.Value, 4)
-  else if TypeInfo(T) = TypeInfo(TPoint) then
-    Result := CV_MAKETYPE(TDepth<Int>.Value, 2)
-  else if TypeInfo(T) = TypeInfo(TPoint2f) then
-    Result := CV_MAKETYPE(TDepth<float>.Value, 2)
-  else
-  begin
-    Var
-      a: TDataType<T>;
-    Result := a.&type;
-  end;
-  (*
-    if TypeInfo(T) = TypeInfo(uchar) then
-    begin
-    Var
-    a: TDataType<uchar>;
-    Result := a.&type;
-    end
-    else if TypeInfo(T) = TypeInfo(float) then
-    begin
-    Var
-    a: TDataType<float>;
-    Result := a.&type;
-    end
-    else if TypeInfo(T) = TypeInfo(float) then
-    begin
-    Var
-    a: TDataType<float>;
-    Result := a.&type;
-    end
-    else
-    begin
-    Var
-    AssertMsg := 'TTraitsType - not defined type'
-    {$IFDEF USE_TYPEINFO}
-    + ' "' + GetTypeName(TypeInfo(T)) + '"'
-    {$ENDIF}
-    ;
-    Assert(false, AssertMsg);
-    end;
-  *)
-end;
+//class function TTraitsType<T>.Value: Int;
+//begin
+//  if TypeInfo(T) = TypeInfo(TScalar) then
+//    Result := CV_MAKETYPE(TDepth<double>.Value, 4)
+//  else if TypeInfo(T) = TypeInfo(TVec4i) then
+//    Result := CV_MAKETYPE(TDepth<Int>.Value, 4)
+//  else if TypeInfo(T) = TypeInfo(TPoint) then
+//    Result := CV_MAKETYPE(TDepth<Int>.Value, 2)
+//  else if TypeInfo(T) = TypeInfo(TPoint2f) then
+//    Result := CV_MAKETYPE(TDepth<float>.Value, 2)
+//  else
+//  begin
+//    Var
+//      a: TDataType<T>;
+//    Result := a.&type;
+//  end;
+//  (*
+//    if TypeInfo(T) = TypeInfo(uchar) then
+//    begin
+//    Var
+//    a: TDataType<uchar>;
+//    Result := a.&type;
+//    end
+//    else if TypeInfo(T) = TypeInfo(float) then
+//    begin
+//    Var
+//    a: TDataType<float>;
+//    Result := a.&type;
+//    end
+//    else if TypeInfo(T) = TypeInfo(float) then
+//    begin
+//    Var
+//    a: TDataType<float>;
+//    Result := a.&type;
+//    end
+//    else
+//    begin
+//    Var
+//    AssertMsg := 'TTraitsType - not defined type'
+//    {$IFDEF USE_TYPEINFO}
+//    + ' "' + GetTypeName(TypeInfo(T)) + '"'
+//    {$ENDIF}
+//    ;
+//    Assert(false, AssertMsg);
+//    end;
+//  *)
+//end;
 
 {$ENDIF OPENCV_CORE_TRAITS_HPP}

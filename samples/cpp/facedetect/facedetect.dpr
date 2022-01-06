@@ -89,7 +89,7 @@ begin
       or CASCADE_SCALE_IMAGE, Size(30, 30));
     // for( vector<Rect>::const_iterator r = faces2.begin(); r != faces2.end(); ++r )
     for var i := 0 to faces2.Size - 1 do
-      faces.push_back(Rect(smallImg.cols - faces2[i].x - faces2[i].width, faces2[i].y, faces2[i].width, faces2[i].height));
+      faces.push_back(cv.opencv.Rect(smallImg.cols - faces2[i].x - faces2[i].width, faces2[i].y, faces2[i].width, faces2[i].height));
   end;
   t := getTickCount() - t;
   WriteLn('detection time = ', t * 1000 / getTickFrequency():1:8, ' ms');

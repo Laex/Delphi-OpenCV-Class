@@ -23,7 +23,6 @@
 {$IFDEF OPENCV_CORE_MAT_HPP}
 { TMat }
 
-
 class operator TMat.Initialize(out Dest: TMat);
 begin
   Constructor_Mat(Dest);
@@ -40,14 +39,19 @@ begin
     Operator_Mat_Assign_Const_Mat(Dest, Src);
 end;
 
-function TMatHelper.setTo(const value:TInputArray;const mask:TInputArray{=noArray()}):TMat;
+function TMatHelper.setTo(const value: TInputArray; const mask: TInputArray { =noArray() } ): TMat;
 begin
-  Result := setTo_Mat(Self,value,mask)^;
+  Result := setTo_Mat(Self, value, mask)^;
 end;
 
-function TMatHelper.setTo(const value:TInputArray):TMat;
+function TMatHelper.setTo(const value: TInputArray): TMat;
 begin
-  Result := setTo(value,TInputArray.noArray);
+  Result := setTo(value, TInputArray.noArray);
+end;
+
+function TMatHelper.reshape(cn: int; newndims: int; const newsz: pInt): TMat;
+begin
+  Result := reshape_Mat(Self, cn, newndims, newsz);
 end;
 
 class operator TMatHelper.Implicit(const m: TMatExpr): TMat;
@@ -60,14 +64,24 @@ begin
   clone_Mat(Self, Result);
 end;
 
-procedure TMatHelper.Create(const size: TSize; &type: Int);
+procedure TMatHelper.convertTo(const m: TOutputArray; rtype: int; alpha: double = 1; beta: double = 0);
+begin
+  convertTo_Mat(Self, m, rtype, alpha, beta);
+end;
+
+procedure TMatHelper.Create(const size: TSize; &type: int);
 begin
   create_Mat(Self, size, &type);
 end;
 
-function TMatHelper.diag(d: Int): TMat;
+function TMatHelper.diag(d: int): TMat;
 begin
   diag_Mat(Self, Result, d);
+end;
+
+function TMatHelper.mat(const roi: TRect): TMat;
+begin
+  Result := TMat.mat(Self, roi);
 end;
 
 function TMatHelper.isContinuous: BOOL;
@@ -87,7 +101,7 @@ end;
 
 class operator TMatHelper.BitwiseAnd(const a: TMat; const b: TScalar): TMatExpr;
 begin
-  operator_MatExpr_BitwiseAnd_Mat_Scalar(Result,a,b);
+  operator_MatExpr_BitwiseAnd_Mat_Scalar(Result, a, b);
 end;
 
 class operator TMatHelper.LogicalNot(const m: TMat): TMatExpr;
@@ -95,7 +109,7 @@ begin
   operator_MatExpr_LogicalNot_Mat(Result, m);
 end;
 
-class operator TMatHelper.GreaterThanOrEqual(const a: TMat; const b: Int): TMatExpr;
+class operator TMatHelper.GreaterThanOrEqual(const a: TMat; const b: int): TMatExpr;
 begin
   operator_MatExpr_GreaterThanOrEqual_double(Result, a, b);
 end;
@@ -110,27 +124,22 @@ begin
   operator_MatExpr_Add_Mat_Scalar(Result, a, s);
 end;
 
-class function TMatHelper.Mat(const size: TSize; &type: Int): TMat;
+class function TMatHelper.mat(const size: TSize; &type: int): TMat;
 begin
   Result := Constructor_Mat(Result, size, &type)^;
 end;
 
-function TMatHelper.Mat(const roi: TRect): TMat;
-begin
-  Result := TMat.Mat(Self, roi);
-end;
-
-class function TMatHelper.Mat(const size: TSize; &type: Int; const s: TScalar): TMat;
+class function TMatHelper.mat(const size: TSize; &type: int; const s: TScalar): TMat;
 begin
   Constructor_Mat(Result, size, &type, s);
 end;
 
-class function TMatHelper.Mat(rows, cols, &type: Int): TMat;
+class function TMatHelper.mat(rows, cols, &type: int): TMat;
 begin
   Result.Create(rows, cols, &type);
 end;
 
-class function TMatHelper.Mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t): TMat;
+class function TMatHelper.mat<T>(rows, cols: int; Data: TArray<TArray<T>>; step: size_t): TMat;
 Type
   pType = ^T;
 Var
@@ -142,36 +151,36 @@ begin
     for Var i := 0 to cols - 1 do
       for Var j := 0 to rows - 1 do
         p[j * cols + i] := Data[j, i];
-    Result := TMat.Mat(rows, cols, d.&type, p, step);
+    Result := TMat.mat(rows, cols, d.&type, p, step);
   finally
     FreeMem(p);
   end;
 end;
 
-class function TMatHelper.Mat<T>(rows, cols: Int; Data: TArray<T>; step: size_t): TMat;
+class function TMatHelper.mat<T>(rows, cols: int; Data: TArray<T>; step: size_t): TMat;
 Var
   d: TDataType<T>;
 begin
-  Result := TMat.Mat(rows, cols, d.&type, @Data[0], step);
+  Result := TMat.mat(rows, cols, d.&type, @Data[0], step);
 end;
 
-class function TMatHelper.Mat(rows, cols, &type: Int; Data: Pointer; step: size_t): TMat;
+class function TMatHelper.mat(rows, cols, &type: int; Data: Pointer; step: size_t): TMat;
 begin
   Result := Constructor_Mat(Result, rows, cols, &type, Data, step)^;
 end;
 
-class function TMatHelper.Mat: TMat;
+class function TMatHelper.mat: TMat;
 begin
-//  Result := Constructor_Mat(Result)^;
+  // Result := Constructor_Mat(Result)^;
   Constructor_Mat(Result);
 end;
 
-class function TMatHelper.Mat(const m: TMat; const roi: TRect): TMat;
+class function TMatHelper.mat(const m: TMat; const roi: TRect): TMat;
 begin
   Result := Constructor_Mat(Result, m, roi)^;
 end;
 
-function TMatHelper.pT<T>(const i0: Int): Pointer;
+function TMatHelper.pT<T>(const i0: int): Pointer;
 Type
   pType = ^T;
 begin
@@ -181,7 +190,7 @@ begin
 {$WARNINGS ON}
 end;
 
-function TMatHelper.pT<T>(const i0, i1, i2: Int): Pointer;
+function TMatHelper.pT<T>(const i0, i1, i2: int): Pointer;
 Type
   pType = ^T;
 begin
@@ -190,7 +199,7 @@ begin
 {$WARNINGS ON}
 end;
 
-function TMatHelper.pT<T>(const i0, i1: Int): Pointer;
+function TMatHelper.pT<T>(const i0, i1: int): Pointer;
 begin
 {$WARNINGS OFF}
   Result := Pointer(Data + step.p[0] * i0 + i1 * SizeOf(T));
@@ -202,7 +211,7 @@ begin
   release_Mat(Self);
 end;
 
-procedure TMatHelper.st<T>(const i0, i1: Int; const v: T);
+procedure TMatHelper.st<T>(const i0, i1: int; const v: T);
 Type
   pType = ^T;
 var
@@ -214,7 +223,7 @@ begin
 {$WARNINGS ON}
 end;
 
-procedure TMatHelper.st<T>(const i0: Int; const v: T);
+procedure TMatHelper.st<T>(const i0: int; const v: T);
 Type
   pType = ^T;
 begin
@@ -233,14 +242,14 @@ begin
     Exit;
   end;
   Var
-    i: Int := i0 div cols;
+    i: int := i0 div cols;
   Var
-    j: Int := i0 - i * cols;
+    j: int := i0 - i * cols;
   pType(Data + step.p[0] * i0 + j * SizeOf(T))^ := v;
 {$WARNINGS ON}
 end;
 
-function TMatHelper.step1(i: Int): size_t;
+function TMatHelper.step1(i: int): size_t;
 begin
   Result := step1_Mat(Self, i);
 end;
@@ -255,7 +264,7 @@ begin
   Operator_Mat_Assign_Scalar(Self, s);
 end;
 
-function TMatHelper.at<T>(const i0, i1: Int): T;
+function TMatHelper.at<T>(const i0, i1: int): T;
 Type
   pType = ^T;
 begin
@@ -269,7 +278,7 @@ begin
 {$WARNINGS ON}
 end;
 
-function TMatHelper.at<T>(const i0: Int): T;
+function TMatHelper.at<T>(const i0: int): T;
 Type
   pType = ^T;
 begin
@@ -283,29 +292,29 @@ begin
   if (size.p[1] = 1) then
     Exit((pType(Data + step.p[0] * i0))[0]); // *(_Tp*)(data + step.p[0] * i0);
   Var
-    i: Int := i0 div cols;
+    i: int := i0 div cols;
   Var
-    j: Int := i0 - i * cols;
+    j: int := i0 - i * cols;
   Exit((pType(Data + step.p[0] * i0))[j]);
 {$WARNINGS ON}
 end;
 
-function TMatHelper.channels: Int;
+function TMatHelper.channels: int;
 begin
   Result := channels_Mat(Self);
 end;
 
-function TMatHelper.checkVector(elemChannels, depth: Int; requireContinuous: BOOL): Int;
+function TMatHelper.checkVector(elemChannels, depth: int; requireContinuous: BOOL): int;
 begin
   Result := checkVector_Mat(Self, elemChannels, depth, requireContinuous);
 end;
 
-procedure TMatHelper.Create(rows, cols, &type: Int);
+procedure TMatHelper.Create(rows, cols, &type: int);
 begin
   Constructor_Mat(Self, rows, cols, &type);
 end;
 
-function TMatHelper.depth: Int;
+function TMatHelper.depth: int;
 begin
   Result := depth_Mat(Self);
 end;
@@ -325,7 +334,7 @@ begin
   Result := empty_Mat(Self);
 end;
 
-function TMatHelper.total(startDim, endDim: Int): size_t;
+function TMatHelper.total(startDim, endDim: int): size_t;
 begin
   Result := total_Mat(Self, startDim, endDim);
 end;
@@ -335,26 +344,26 @@ begin
   Result := total_Mat(Self);
 end;
 
-function TMatHelper.&type: Int;
+function TMatHelper.&type: int;
 begin
   Result := type_Mat(Self);
 end;
 
-class function TMatHelper.zeros(const rows, cols: Int; &type: Int): TMatExpr;
+class function TMatHelper.zeros(const rows, cols: int; &type: int): TMatExpr;
 begin
   zeros_Mat(Result, rows, cols, &type);
 end;
 
-class function TMatHelper.zeros(const size: TSize; &type: Int): TMatExpr;
+class function TMatHelper.zeros(const size: TSize; &type: int): TMatExpr;
 begin
   zeros_Mat(Result, size, &type);
 end;
 
-class function TMatHelper.Mat<T>(const vec: Vector<T>; copyData: BOOL): TMat;
+class function TMatHelper.mat<T>(const vec: Vector<T>; copyData: BOOL): TMat;
 begin
-  Result.Create(vec.size, 1, TTraitsType<T>.Value);
+  Result.Create(vec.size, 1, TTraits.&type<T>.value);
   if (vec.empty()) then
-    Exit(TMat.Mat);
+    Exit(TMat.mat);
   if (not copyData) then
   begin
     Result.step[0] := SizeOf(T);
@@ -365,7 +374,7 @@ begin
     Result.dataend := Result.datastart + Result.rows * Result.step[0];
   end
   else
-    TMat.Mat(vec.size, 1, TTraitsType<T>.Value, vec.pT(0)).copyTo(Result);
+    TMat.mat(vec.size, 1, TTraits.&type<T>.value, vec.pT(0)).copyTo(Result);
 end;
 
 procedure TMatHelper.copyTo(m: TOutputArray);
@@ -373,47 +382,42 @@ begin
   copyTo_Mat(Self, m);
 end;
 
-procedure TMatHelper.convertTo(const m: TOutputArray; rtype: Int; alpha, beta: double);
-begin
-  convertTo_Mat(Self, m, rtype, alpha, beta);
-end;
-
 procedure TMatHelper.copyTo(m: TOutputArray; mask: TInputArray);
 begin
   copyTo_Mat(Self, m, mask);
 end;
 
-class function TMatHelper.eye(rows, cols, &type: Int): TMatExpr;
+class function TMatHelper.eye(rows, cols, &type: int): TMatExpr;
 begin
   eye_Mat(Result, rows, cols, &type);
 end;
 
-class function TMatHelper.eye(size: TSize; &type: Int): TMatExpr;
+class function TMatHelper.eye(size: TSize; &type: int): TMatExpr;
 begin
   eye_Mat(Result, size, &type);
 end;
 
 class operator TMatHelper.Implicit(const v: Vector<TPoint>): TMat;
 begin
-  Result := TMat.Mat<TPoint>(v);
+  Result := TMat.mat<TPoint>(v);
 end;
 
-class function TMatHelper.ones(rows, cols, &type: Int): TMatExpr;
+class function TMatHelper.ones(rows, cols, &type: int): TMatExpr;
 begin
   Result := ones_Mat(Result, rows, cols, &type)^;
 end;
 
-class function TMatHelper.Mat(rows, cols, &type: Int; const s: TScalar): TMat;
+class function TMatHelper.mat(rows, cols, &type: int; const s: TScalar): TMat;
 begin
   Result := Constructor_Mat(Result, rows, cols, &type, s)^;
 end;
 
-class function TMatHelper.ones(ndims: Int; const sz: pInt; &type: Int): TMatExpr;
+class function TMatHelper.ones(ndims: int; const sz: pInt; &type: int): TMatExpr;
 begin
   Result := ones_Mat(Result, ndims, sz, &type)^;
 end;
 
-class function TMatHelper.ones(size: TSize; &type: Int): TMatExpr;
+class function TMatHelper.ones(size: TSize; &type: int): TMatExpr;
 begin
   Result := ones_Mat(Result, size, &type)^;
 end;
@@ -423,17 +427,17 @@ begin
   operator_MatExpr_Subtract_Mat_MatExpr(Result, m, s);
 end;
 
-function TMatHelper.ptr(const i0: Int): puchar;
+function TMatHelper.ptr(const i0: int): puchar;
 begin
   Result := pT<uchar>(i0);
 end;
 
-function TMatHelper.ptr(const row, col: Int): puchar;
+function TMatHelper.ptr(const row, col: int): puchar;
 begin
   Result := pT<uchar>(row, col);
 end;
 
-function TMatHelper.ptr(const i0, i1, i2: Int): puchar;
+function TMatHelper.ptr(const i0, i1, i2: int): puchar;
 begin
   Result := pT<uchar>(i0, i1, i2);
 end;
@@ -441,9 +445,9 @@ end;
 function TMatHelper.ptr(const idx: pInt): puchar;
 begin
   Var
-    i: Int;
+    i: int;
   Var
-    d: Int := dims;
+    d: int := dims;
   Result := Data;
   // CV_DbgAssert( d >= 1 && p );
   for i := 0 to d - 1 do
@@ -497,7 +501,7 @@ begin
   Result := TInputArray.InputArray(m);
 end;
 
-function TInputArray.getMat(idx: Int): TMat;
+function TInputArray.getMat(idx: int): TMat;
 begin
   getMat_InputArray(Self, Result, idx);
 end;
@@ -529,63 +533,63 @@ end;
 
 class operator TInputArray.Implicit(const v: Vector < Vector < TPoint >> ): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR_VECTOR) + TTraits.&type<TPoint>.value + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<TPoint2f>): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TPoint2f>.value + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<TPoint>): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TPoint>.value + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<uchar>): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<uchar>.value + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: double): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(MATX) + Int(CV_64F) + Int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(FIXED_SIZE) + int(MATX) + int(CV_64F) + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(1, 1);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<TVec4i>): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TVec4i>.Value + Int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TVec4i>.value + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<TMat>): TInputArray;
 begin
-  Result.flags := Int(STD_VECTOR_MAT) + Int(ACCESS_READ);
+  Result.flags := int(STD_VECTOR_MAT) + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TInputArray.Implicit(const v: TScalar): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(FIXED_SIZE) + Int(MATX) + TTraitsType<double>.Value + Int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(FIXED_SIZE) + int(MATX) + TTraits.&type<double>.value + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(1, 4);
 end;
 
 class operator TInputArray.Implicit(const v: Vector<float>): TInputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<float>.Value + Int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<float>.value + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(1, 4);
 end;
@@ -624,42 +628,42 @@ end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<TPoint>): TOutputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_WRITE);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TPoint>.value + int(ACCESS_WRITE);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<TPoint2f>): TOutputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_WRITE);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TPoint2f>.value + int(ACCESS_WRITE);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<uchar>): TOutputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<uchar>.Value + Int(ACCESS_WRITE);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<uchar>.value + int(ACCESS_WRITE);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<float>): TOutputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<float>.Value + Int(ACCESS_WRITE);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<float>.value + int(ACCESS_WRITE);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector<TVec4i>): TOutputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TVec4i>.Value + Int(ACCESS_WRITE);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TVec4i>.value + int(ACCESS_WRITE);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
 
 class operator TOutputArrayHelper.Implicit(const v: Vector < Vector < TPoint >> ): TOutputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR_VECTOR) + TTraitsType<TPoint>.Value + Int(ACCESS_WRITE);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR_VECTOR) + TTraits.&type<TPoint>.value + int(ACCESS_WRITE);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
@@ -696,7 +700,7 @@ end;
 
 class operator TInputOutputArrayHelper.Implicit(const v: Vector<TPoint2f>): TInputOutputArray;
 begin
-  Result.flags := Int(FIXED_TYPE) + Int(STD_VECTOR) + TTraitsType<TPoint2f>.Value + Int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TPoint2f>.value + int(ACCESS_READ);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
@@ -722,14 +726,55 @@ end;
 
 { TMatStep }
 
-function TMatStepHelper.GetItems(const index: Int): Int;
+function TMatStepHelper.GetItems(const index: int): int;
 begin
   Result := p[index];
 end;
 
-procedure TMatStepHelper.setItems(const index, Value: Int);
+procedure TMatStepHelper.setItems(const index, value: int);
 begin
-  p[index] := Value;
+  p[index] := value;
+end;
+
+  { TMat_<T> }
+
+class operator TMat_<T>.Assign(var Dest: TMat_<T>; const [ref] Src: TMat_<T>);
+begin
+  Dest.FMat := Src.FMat;
+end;
+
+procedure TMat_<T>.Assign(const m: TMat);
+begin
+  if (m.empty()) then
+    FMat.release()
+  else if (ttraits.&Type<T>.value = m.&Type()) then
+    FMat := m
+  else if (ttraits.Depth<T>.value = m.Depth()) then
+    FMat := m.reshape(TDataType<T>.channels, m.dims, nil)
+  else
+  begin
+    Assert((TDataType<T>.channels = m.channels()) or m.empty());
+    m.convertTo(&FMat, FMat.&Type);
+  end;
+end;
+
+class operator TMat_<T>.Finalize(var Dest: TMat_<T>);
+begin
+  Finalize(Dest.FMat);
+end;
+
+class operator TMat_<T>.Initialize(out Dest: TMat_<T>);
+begin
+  // FMat := TMat.Mat(_rows, _cols, traits::Type<_Tp>::value)
+  With Dest.FMat do
+    flags := (flags and (not CV_MAT_TYPE_MASK)) + ttraits.&Type<T>.value;
+end;
+
+class function TMat_<T>.Mat(const m: TMat): TMat_<T>;
+begin
+  With Result.FMat do
+    flags := (flags and (not CV_MAT_TYPE_MASK)) + ttraits.&Type<T>.value;
+  Result.Assign(m);
 end;
 
 {$ENDIF}

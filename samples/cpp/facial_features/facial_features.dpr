@@ -131,7 +131,7 @@ begin
 
     // Eyes, nose and mouth will be detected inside the face (region of interest)
     Var
-      ROI: TMat := img.Mat(Rect(face.x, face.y, face.width, face.height));
+      ROI: TMat := img.Mat(cv.opencv.Rect(face.x, face.y, face.width, face.height));
 
       // Check if all features (eyes, nose and mouth) are being detected
     Var

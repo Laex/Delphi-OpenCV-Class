@@ -249,7 +249,11 @@ function borderInterpolate(p: int; len: int; borderType: int): int; external ope
     ?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z
     void cv::copyMakeBorder(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,int,int,class cv::Scalar_<double> const &)
   }
-procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right, borderType: int; const value: TScalar { = Scalar() } ); overload; external opencv_world_dll
+procedure copyMakeBorder( const src: TInputArray;
+                          const dst: TOutputArray;
+                          top, bottom, left, right: int;
+                          borderType: borderTypes;
+                          const value: TScalar { = Scalar() } ); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?copyMakeBorder@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHHHAEBV?$Scalar_@N@1@@Z'
 {$ELSE}
@@ -257,7 +261,8 @@ procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, b
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right, borderType: int); overload;
+procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int;
+                          borderType: borderTypes); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
   (* * @brief Calculates the per-element sum of two arrays or an array and a scalar.
 
@@ -3454,7 +3459,7 @@ name '?Mahalanobis@cv@@YANAEBV_InputArray@1@00@Z'
 ?dft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z
 void cv::dft(class cv::_InputArray const &,class cv::_OutputArray const &,int,int)
 }
-procedure dft(const src:TInputArray;const dst:TOutputArray; flags :int= 0; nonzeroRows :int= 0);
+procedure dft(const src:TInputArray; const dst:TOutputArray; flags :int= 0; nonzeroRows :int= 0);
 overload; external opencv_world_dll
 {$IFDEF DEBUG}
 name '?dft@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'

@@ -115,7 +115,8 @@ begin
   merge(@mv[0], length(mv), dst);
 end;
 
-procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right, borderType: int);
+procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int;
+                          borderType: borderTypes);
 begin
   copyMakeBorder(src,dst,top, bottom, left, right, borderType, TScalar.Scalar());
 end;

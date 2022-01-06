@@ -335,7 +335,7 @@ procedure reserveBuffer_Mat(const Obj: TMat; a: UInt64); overload; external open
 function reshape_Mat(const Obj: TMat; a: int; b: int): TMat; overload; external opencv_world_dll name '?reshape@Mat@cv@@QEBA?AV12@HH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?reshape@Mat@cv@@QEBA?AV12@HHPEBH@Z
 // public: class cv::Mat __cdecl cv::Mat::reshape(int,int,int const * __ptr64)const __ptr64
-function reshape_Mat(const Obj: TMat; a: int; b: int; var c: Int): TMat; overload; external opencv_world_dll name '?reshape@Mat@cv@@QEBA?AV12@HHPEBH@Z'
+function reshape_Mat(const Obj: TMat; a: int; b: int; const c: pInt): TMat; overload; external opencv_world_dll name '?reshape@Mat@cv@@QEBA?AV12@HHPEBH@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ?resize@Mat@cv@@QEAAX_K@Z
 // public: void __cdecl cv::Mat::resize(unsigned __int64) __ptr64

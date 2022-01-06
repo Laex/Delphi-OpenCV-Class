@@ -471,6 +471,7 @@ TRect_<T: record > = record
     class function Rect(const _x: T; _y: T; _width: T; _height: T): TRect_<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator BitwiseAnd(const a, b: TRect_<T>): TRect_<T>;
     class operator Implicit(const a: TArray<T>): TRect_<T>;
+//    class operator Implicit(const r: TRect): TRect_<T>;
   public
     x: T;      // !< x coordinate of the top-left corner
     y: T;      // !< y coordinate of the top-left corner
