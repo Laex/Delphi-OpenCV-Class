@@ -20,36 +20,97 @@
   limitations under the License.
 *)
 
-// ??0QRCodeDetector@cv@@QEAA@AEBV01@@Z	public: __cdecl cv::QRCodeDetector::QRCodeDetector(class cv::QRCodeDetector const & __ptr64) __ptr64
-// ??0QRCodeDetector@cv@@QEAA@XZ	public: __cdecl cv::QRCodeDetector::QRCodeDetector(void) __ptr64
-procedure Constructor_QRCodeDetector(obj: pQRCodeDetector); external opencv_world_dll name '??0QRCodeDetector@cv@@QEAA@XZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// ??1QRCodeDetector@cv@@QEAA@XZ	public: __cdecl cv::QRCodeDetector::~QRCodeDetector(void) __ptr64
-procedure Destructor_QRCodeDetector(obj: pQRCodeDetector); external opencv_world_dll name '??1QRCodeDetector@cv@@QEAA@XZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// ??4QRCodeDetector@cv@@QEAAAEAV01@AEBV01@@Z	public: class cv::QRCodeDetector & __ptr64 __cdecl cv::QRCodeDetector::operator=(class cv::QRCodeDetector const & __ptr64) __ptr64
-// ?decode@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@2@0AEBV_OutputArray@62@@Z	public: class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > __cdecl cv::QRCodeDetector::decode(class cv::debug_build_guard::_InputArray const & __ptr64,class cv::debug_build_guard::_InputArray const & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64) __ptr64
-// ?decodeCurved@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@2@0AEBV_OutputArray@62@@Z	public: class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > __cdecl cv::QRCodeDetector::decodeCurved(class cv::debug_build_guard::_InputArray const & __ptr64,class cv::debug_build_guard::_InputArray const & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64) __ptr64
-// ?decodeMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@0AEAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@AEBV_OutputArray@42@@Z	public: bool __cdecl cv::QRCodeDetector::decodeMulti(class cv::debug_build_guard::_InputArray const & __ptr64,class cv::debug_build_guard::_InputArray const & __ptr64,class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64)const __ptr64
-function decodeMulti_QRCodeDetector(obj: pQRCodeDetector; img: pInputArray; points: pInputArray; const decoded_info: pstdvectorcppstring; straight_qrcode: pOutputArrayOfArrays): bool;
-  external opencv_world_dll name '?decodeMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@0AEAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?'
-  + '$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@AEBV_OutputArray@42@@Z'
+{
+  996
+  ??0QRCodeDetector@cv@@QEAA@AEBV01@@Z
+  ??0QRCodeDetector@cv@@QEAA@AEBV01@@Z
+  cv::QRCodeDetector::QRCodeDetector(class cv::QRCodeDetector const &)
+}
+{
+  997
+  ??0QRCodeDetector@cv@@QEAA@XZ
+  ??0QRCodeDetector@cv@@QEAA@XZ
+  cv::QRCodeDetector::QRCodeDetector(void)
+}
+procedure Constructor_QRCodeDetector(Var obj: TQRCodeDetector); external opencv_world_dll name '??0QRCodeDetector@cv@@QEAA@XZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+{
+  1708
+  ??1QRCodeDetector@cv@@QEAA@XZ
+  ??1QRCodeDetector@cv@@QEAA@XZ
+  cv::QRCodeDetector::~QRCodeDetector(void)
+}
+procedure Destructor_QRCodeDetector(Var obj: TQRCodeDetector); external opencv_world_dll name '??1QRCodeDetector@cv@@QEAA@XZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+{
+  4426
+  ?detectAndDecode@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@62@1@Z
+  ?detectAndDecode@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@2@AEBV_OutputArray@2@1@Z
+  class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > cv::QRCodeDetector::detectAndDecode(
+  class cv::_InputArray const &,
+  class cv::_OutputArray const &,
+  class cv::_OutputArray const &
+  )
+}
+function detectAndDecode_QRCodeDetector(const obj: TQRCodeDetector; const img: TInputArray; const points: TOutputArray; const straight_qrcode: TOutputArray): CppString;
+  external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?detectAndDecode@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@62@1@Z'
+{$ELSE}
+  name '?detectAndDecode@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@2@AEBV_OutputArray@2@1@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// ?detect@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z	public: bool __cdecl cv::QRCodeDetector::detect(class cv::debug_build_guard::_InputArray const & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64)const __ptr64
-function detect_QRCodeDetector(obj: pQRCodeDetector; img: pInputArray; points: pOutputArray): bool;
-  external opencv_world_dll name '?detect@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z'
+{
+  4427
+  ?detectAndDecodeCurved@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@62@1@Z
+  ?detectAndDecodeCurved@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@2@AEBV_OutputArray@2@1@Z
+  class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > cv::QRCodeDetector::detectAndDecodeCurved(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
+}
+
+{
+  4421
+  ?detect@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z
+  ?detect@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@2@AEBV_OutputArray@2@@Z
+  bool cv::QRCodeDetector::detect(class cv::_InputArray const &,class cv::_OutputArray const &)
+}
+function detect_QRCodeDetector(const obj: TQRCodeDetector; const img: TInputArray; const points: TOutputArray): bool;
+external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?detect@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z'
+{$ELSE}
+  name '?detect@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@2@AEBV_OutputArray@2@@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// ?detectAndDecode@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@62@1@Z	public: class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > __cdecl cv::QRCodeDetector::detectAndDecode(class cv::debug_build_guard::_InputArray const & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64) __ptr64
-function detectAndDecode_QRCodeDetector(obj: pQRCodeDetector; img: pInputArray; points: pOutputArray; straight_qrcode: pOutputArray): CppString;
-  external opencv_world_dll name '??detectAndDecode@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@62@1@Z'
+{
+4428
+?detectAndDecodeMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@AEBV_OutputArray@42@2@Z
+?detectAndDecodeMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@2@AEAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@AEBV_OutputArray@2@2@Z
+bool cv::QRCodeDetector::detectAndDecodeMulti(class cv::_InputArray const &,class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > &,class cv::_OutputArray const &,class cv::_OutputArray const &)
+}
+function detectAndDecodeMulti_QRCodeDetector(const obj: TQRCodeDetector;
+const img:TInputArray;const decoded_info:vector<cppstring>;
+     const points :TOutputArray {= noArray()};
+     const straight_qrcode :TOutputArrayOfArrays):bool;
+external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?detectAndDecodeMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$basic_string@DU?$'+
+       'char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@'+
+       '2@@std@@AEBV_OutputArray@42@2@Z'
+{$ELSE}
+  name '?detectAndDecodeMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@2@AEAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@AEBV_OutputArray@2@2@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// ?detectAndDecodeCurved@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@62@1@Z	public: class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > __cdecl cv::QRCodeDetector::detectAndDecodeCurved(class cv::debug_build_guard::_InputArray const & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64) __ptr64
-// ?detectAndDecodeMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@AEBV_OutputArray@42@2@Z	public: bool __cdecl cv::QRCodeDetector::detectAndDecodeMulti(class cv::debug_build_guard::_InputArray const & __ptr64,class std::vector<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,class std::allocator<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64)const __ptr64
-function DetectAndDecodeMulti_QRCodeDetector(obj: pQRCodeDetector; img: pInputArray; decoded_info: pstdvectorcppstring; points: pOutputArray; straight_qrcode: pOutputArrayOfArrays): bool;
-  external opencv_world_dll name '?detectAndDecodeMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$basic_string@DU' +
-  '?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@AEBV_OutputArray@42@2@Z'
+{
+4430
+?detectMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z
+?detectMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@2@AEBV_OutputArray@2@@Z
+bool cv::QRCodeDetector::detectMulti(class cv::_InputArray const &,class cv::_OutputArray const &)
+}
+function detectMulti_QRCodeDetector(const obj: TQRCodeDetector; const img:TInputArray;const points:TOutputArray):Bool;
+external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?detectMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z'
+{$ELSE}
+  name '?detectMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@2@AEBV_OutputArray@2@@Z'
+{$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// ?detectMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z	public: bool __cdecl cv::QRCodeDetector::detectMulti(class cv::debug_build_guard::_InputArray const & __ptr64,class cv::debug_build_guard::_OutputArray const & __ptr64)const __ptr64
-function detectMulti_QRCodeDetector(obj: pQRCodeDetector; img: pInputArray; points: pOutputArray): bool;
-  external opencv_world_dll name '?detectMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// ?setEpsX@QRCodeDetector@cv@@QEAAXN@Z	public: void __cdecl cv::QRCodeDetector::setEpsX(double) __ptr64
-// ?setEpsY@QRCodeDetector@cv@@QEAAXN@Z	public: void __cdecl cv::QRCodeDetector::setEpsY(double) __ptr64

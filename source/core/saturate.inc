@@ -57,8 +57,8 @@
  *)
 
 Type
-  saturate_cast = record
-    class function cast<Int>(const a:int):int; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  saturate_cast<T> = record
+    class function cast(const v:int):T; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
 //template<typename _Tp> static inline _Tp saturate_cast(uchar v)    { return _Tp(v); }

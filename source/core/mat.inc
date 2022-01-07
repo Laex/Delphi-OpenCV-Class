@@ -91,14 +91,14 @@ type
   end;
 
   TMatSize = record // forward declration
-  private
+//  private
 {$HINTS OFF}
     p: pInt; // pInt; // int* p;
 {$HINTS ON}
   end;
 
   TMatStep = record // forward declaration
-  private
+//  private
 {$HINTS OFF}
     p: psize_t;                    // size_t* p;
     buf: array [0 .. 1] of size_t; // size_t buf[2];

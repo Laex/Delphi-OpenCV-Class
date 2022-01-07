@@ -39,6 +39,10 @@ Uses
 const
   INT_MAX = MaxInt;
   DBL_MAX = MaxDouble;
+  CHAR_BIT   =   8;
+  SCHAR_MIN  = (-128);
+  SCHAR_MAX  =   127;
+  UCHAR_MAX  =   $ff;
 
 Type
   BOOL = ByteBool;

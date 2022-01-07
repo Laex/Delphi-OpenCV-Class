@@ -1,27 +1,27 @@
-  (*
-    This file is part of Delphi-OpenCV-Class project.
-    https://github.com/Laex/Delphi-OpenCV-Class
+(*
+  This file is part of Delphi-OpenCV-Class project.
+  https://github.com/Laex/Delphi-OpenCV-Class
 
-    It is subject to the license terms in the LICENSE file found in the top-level directory
-    of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+  It is subject to the license terms in the LICENSE file found in the top-level directory
+  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
 
-    Copyright 2021, Laentir Valetov, laex@bk.ru
+  Copyright 2021, Laentir Valetov, laex@bk.ru
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  *)
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*)
 
 {$IFDEF OPENCV_OBJDETECT_HPP}
-  { TCascadeClassifier }
+{ TCascadeClassifier }
 
 procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: vector<TRect>; scaleFactor: double; minNeighbors, flags: Int);
 begin
@@ -75,31 +75,20 @@ begin
   destructor_HOGDescriptor(Dest);
 end;
 
-class function THOGDescriptor.HOGDescriptor(
-               const _winSize: TSize;
-               const _blockSize: TSize;
-               const _blockStride: TSize;
-               const _cellSize: TSize;
-               _nbins: Int;
-               _derivAperture: Int = 1;
-               _winSigma: double = -1;
-               _histogramNormType: HistogramNormType = L2Hys;
-               _L2HysThreshold: double = 0.2;
-               _gammaCorrection: BOOL = false;
-               _nlevels: Int = DEFAULT_NLEVELS;
-               _signedGradient: BOOL = false): THOGDescriptor;
+class function THOGDescriptor.HOGDescriptor(const _winSize: TSize; const _blockSize: TSize; const _blockStride: TSize; const _cellSize: TSize; _nbins: Int; _derivAperture: Int = 1;
+  _winSigma: double = -1; _histogramNormType: HistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false; _nlevels: Int = DEFAULT_NLEVELS;
+  _signedGradient: BOOL = false): THOGDescriptor;
 begin
-  constructor_HOGDescriptor(Result, _winSize, _blockSize, _blockStride, _cellSize, _nbins, _derivAperture, _winSigma, _histogramNormType, _L2HysThreshold, _gammaCorrection, _nlevels, _signedGradient);
+  constructor_HOGDescriptor(Result, _winSize, _blockSize, _blockStride, _cellSize, _nbins, _derivAperture, _winSigma, _histogramNormType, _L2HysThreshold, _gammaCorrection,
+    _nlevels, _signedGradient);
 end;
 
-class procedure THOGDescriptor.HOGDescriptor(Var R:THOGDescriptor;
-                  const _winSize:TSize;const _blockSize:TSize;const _blockStride:TSize;
-                  const _cellSize:TSize; _nbins:int; _derivAperture:int=1; _winSigma:double=-1;
-                  _histogramNormType:HistogramNormType=L2Hys;
-                  _L2HysThreshold:double=0.2; _gammaCorrection:bool=false;
-                  _nlevels:int=DEFAULT_NLEVELS; _signedGradient:bool=false);
+class procedure THOGDescriptor.HOGDescriptor(Var R: THOGDescriptor; const _winSize: TSize; const _blockSize: TSize; const _blockStride: TSize; const _cellSize: TSize; _nbins: Int;
+  _derivAperture: Int = 1; _winSigma: double = -1; _histogramNormType: HistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false;
+  _nlevels: Int = DEFAULT_NLEVELS; _signedGradient: BOOL = false);
 begin
-  constructor_HOGDescriptor(R, _winSize, _blockSize, _blockStride, _cellSize, _nbins, _derivAperture, _winSigma, _histogramNormType, _L2HysThreshold, _gammaCorrection, _nlevels, _signedGradient);
+  constructor_HOGDescriptor(R, _winSize, _blockSize, _blockStride, _cellSize, _nbins, _derivAperture, _winSigma, _histogramNormType, _L2HysThreshold, _gammaCorrection, _nlevels,
+    _signedGradient);
 end;
 
 procedure THOGDescriptor.setSVMDetector(const svmdetector: TInputArray);
@@ -117,81 +106,92 @@ begin
   Result := getDaimlerPeopleDetector_HOGDescriptor( { Self } );
 end;
 
-procedure THOGDescriptor.detectMultiScale( const img: TInputArray;
-                                           const foundLocations: vector<TRect>;
-                                           const foundWeights: vector<double>;
-                                           hitThreshold: double {= 0};
-                                           const winStride: TSize { = Size() };
-                                           const padding: TSize { = Size() };
-                                           scale: double = 1.05;
-                                           finalThreshold: double = 2.0;
-                                           useMeanshiftGrouping: BOOL = false);
+procedure THOGDescriptor.detectMultiScale(const img: TInputArray; const foundLocations: vector<TRect>; const foundWeights: vector<double>; hitThreshold: double { = 0 };
+  const winStride: TSize { = Size() }; const padding: TSize { = Size() }; scale: double = 1.05; finalThreshold: double = 2.0; useMeanshiftGrouping: BOOL = false);
 begin
- detectMultiScale_HOGDescriptor(
-             Self,
-             img,
-             foundLocations,
-             foundWeights,
-             hitThreshold,
-             winStride,
-             padding,
-             scale,
-             finalThreshold,
-             useMeanshiftGrouping);
+  detectMultiScale_HOGDescriptor(Self, img, foundLocations, foundWeights, hitThreshold, winStride, padding, scale, finalThreshold, useMeanshiftGrouping);
 end;
 
-procedure THOGDescriptor.detectMultiScale( const img: TInputArray;
-                                           const foundLocations: vector<TRect>;
-                                           const foundWeights: vector<double>;
-                                           hitThreshold: double {= 0};
-                                           const winStride: TSize { = Size() } );
+procedure THOGDescriptor.detectMultiScale(const img: TInputArray; const foundLocations: vector<TRect>; const foundWeights: vector<double>; hitThreshold: double { = 0 };
+  const winStride: TSize { = Size() } );
 begin
-  detectMultiScale(img,foundLocations,foundWeights,hitThreshold,winStride,Size());
+  detectMultiScale(img, foundLocations, foundWeights, hitThreshold, winStride, size());
 end;
 
-procedure THOGDescriptor.detectMultiScale( const img: TInputArray;
-                                           const foundLocations: vector<TRect>;
-                                           const foundWeights: vector<double>);
+procedure THOGDescriptor.detectMultiScale(const img: TInputArray; const foundLocations: vector<TRect>; const foundWeights: vector<double>);
 begin
-  detectMultiScale(img,foundLocations,foundWeights,0,TSize.Size());
+  detectMultiScale(img, foundLocations, foundWeights, 0, TSize.size());
 end;
 
-procedure THOGDescriptor.detectMultiScale(
-                                const img:TInputArray;
-                                const foundLocations:vector<TRect>;
-                                hitThreshold :double {= 0};
-                                const winStride :TSize {= Size()};
-                                const padding :TSize {= Size()};
-                                scale :double = 1.05;
-                                finalThreshold :double = 2.0;
-                                useMeanshiftGrouping :bool = false);
+procedure THOGDescriptor.detectMultiScale(const img: TInputArray; const foundLocations: vector<TRect>; hitThreshold: double { = 0 }; const winStride: TSize { = Size() };
+  const padding: TSize { = Size() }; scale: double = 1.05; finalThreshold: double = 2.0; useMeanshiftGrouping: BOOL = false);
 begin
-  detectMultiScale_HOGDescriptor(
-             Self,
-             img,
-             foundLocations,
-             hitThreshold,
-             winStride,
-             padding,
-             scale,
-             finalThreshold,
-             useMeanshiftGrouping);
+  detectMultiScale_HOGDescriptor(Self, img, foundLocations, hitThreshold, winStride, padding, scale, finalThreshold, useMeanshiftGrouping);
 end;
 
-procedure THOGDescriptor.detectMultiScale(
-                                const img:TInputArray;
-                                const foundLocations:vector<TRect>;
-                                hitThreshold :double {= 0};
-                                const winStride :TSize);
+procedure THOGDescriptor.detectMultiScale(const img: TInputArray; const foundLocations: vector<TRect>; hitThreshold: double { = 0 }; const winStride: TSize);
 begin
-  detectMultiScale(img,foundLocations,hitThreshold,winStride,Size());
+  detectMultiScale(img, foundLocations, hitThreshold, winStride, size());
 end;
 
-procedure THOGDescriptor.detectMultiScale(
-                                const img:TInputArray;
-                                const foundLocations:vector<TRect>);
+procedure THOGDescriptor.detectMultiScale(const img: TInputArray; const foundLocations: vector<TRect>);
 begin
-  detectMultiScale(img,foundLocations,0,Size(),Size());
+  detectMultiScale(img, foundLocations, 0, size(), size());
+end;
+
+{ TQRCodeDetector }
+
+class operator TQRCodeDetector.Initialize(out Dest: TQRCodeDetector);
+begin
+  Constructor_QRCodeDetector(Dest);
+end;
+
+class operator TQRCodeDetector.Finalize(var Dest: TQRCodeDetector);
+begin
+  Destructor_QRCodeDetector(Dest);
+end;
+
+function TQRCodeDetector.detectAndDecode(const img: TInputArray; const points: TOutputArray { =noArray() }; const straight_qrcode: TOutputArray { = noArray() } ): CppString;
+begin
+  Result := detectAndDecode_QRCodeDetector(Self, img, points, straight_qrcode);
+end;
+
+function TQRCodeDetector.detectAndDecode(const img: TInputArray; const points: TOutputArray { =noArray() } ): CppString;
+begin
+  Result := detectAndDecode(img, points, TOutputArray.noArray);
+end;
+
+function TQRCodeDetector.detectAndDecode(const img: TInputArray): CppString;
+begin
+  Result := detectAndDecode(img, TOutputArray.noArray);
+end;
+
+function TQRCodeDetector.detect(const img: TInputArray; const points: TOutputArray): BOOL;
+begin
+  Result := detect_QRCodeDetector(Self, img, points);
+end;
+
+function TQRCodeDetector.detectAndDecodeMulti(const img: TInputArray; const decoded_info: vector<CppString>; const points: TOutputArray { = noArray() };
+  const straight_qrcode: TOutputArrayOfArrays { = noArray() }
+  ): BOOL;
+begin
+  Result := detectAndDecodeMulti_QRCodeDetector(Self, img, decoded_info, points, straight_qrcode);
+end;
+
+function TQRCodeDetector.detectAndDecodeMulti(const img: TInputArray; const decoded_info: vector<CppString>; const points: TOutputArray { = noArray() }
+  ): BOOL;
+begin
+  Result := detectAndDecodeMulti(img, decoded_info, points, TOutputArray.noArray);
+end;
+
+function TQRCodeDetector.detectAndDecodeMulti(const img: TInputArray; const decoded_info: vector<CppString>): BOOL;
+begin
+  Result := detectAndDecodeMulti(img, decoded_info, TOutputArray.noArray);
+end;
+
+function TQRCodeDetector.detectMulti(const img: TInputArray; const points: TOutputArray): BOOL;
+begin
+  Result := detectMulti_QRCodeDetector(Self, img, points);
 end;
 
 {$ENDIF}

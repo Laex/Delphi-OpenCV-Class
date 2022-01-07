@@ -20,11 +20,16 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_CORE_SATURATE_HPP}
+{$IFDEF OPENCV_CORE_SATURATE_HPP}
 
-class function saturate_cast.cast<Int>(const a:int):int;
+class function saturate_cast<T>.cast(const v: Int): T;
 begin
-  Result := a;
+  {$MESSAGE WARN 'TODO: saturate_cast<T>'}
+  Result := TValue(v).AsType<T>;
+  // if TypeInfo(T)=TypeInfo(Int) then
+  // pInt(@Result)^ := v else
+  // if TypeInfo(T)=TypeInfo(uchar) then
+  // pUchar(@Result)^ := uchar(iif.iif<Int>(uint(v) <= UCHAR_MAX, v, iif.iif<Int>(v > 0, UCHAR_MAX, 0)));
 end;
 
-{$endif}
+{$ENDIF}

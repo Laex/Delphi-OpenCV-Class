@@ -58,6 +58,7 @@ Type
   size_t        = NativeUInt;
   psize_t       = ^size_t;
   Int           = integer;
+  uint          = Cardinal;
   pInt          = ^Int;
   short 	= Int16;
   ushort	= UInt16;

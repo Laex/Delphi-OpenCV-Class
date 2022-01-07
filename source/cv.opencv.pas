@@ -30,6 +30,7 @@ Uses
    System.Math,
 {$IFDEF USE_TYPEINFO}
    System.TypInfo,
+   System.Rtti,
 {$ENDIF}
    cpp.utils;
 
@@ -136,4 +137,3 @@ initialization
 {$I core.init.inc}
 
 end.
-
