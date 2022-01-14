@@ -21,7 +21,6 @@
 *)
 
 {$IFDEF OPENCV_CORE_HPP}
-
 {$I 'core/cvdef.impl.inc'}
 {$I 'core/base.impl.inc'}
 {$I 'core/cvstd.impl.inc'}
@@ -44,9 +43,14 @@ end;
 
 { TRNG }
 
-class operator TRNGHelper.Implicit(const p: TRNG): unsigned;
+class operator TRNGHelper.Implicit(const rng: TRNG): unsigned;
 begin
-  Result := operator_RNG_ToUnsignedInt(p);
+  Result := operator_RNG_ToUnsignedInt(rng);
+end;
+
+class operator TRNGHelper.Implicit(const rng: TRNG): int;
+begin
+  Result := operator_RNG_ToInt(rng);
 end;
 
 class operator TRNGHelper.Implicit(const u: UInt64): TRNG;
@@ -64,7 +68,7 @@ begin
   constructor_RNG(Result, state);
 end;
 
-function TRNGHelper.UNIFORM(a, b: Int): Int;
+function TRNGHelper.UNIFORM(a, b: int): int;
 begin
   Result := uniform_RNG(Self, a, b);
 end;
@@ -115,92 +119,86 @@ begin
   merge(@mv[0], length(mv), dst);
 end;
 
-procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int;
-                          borderType: borderTypes);
+procedure copyMakeBorder(const Src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes);
 begin
-  copyMakeBorder(src,dst,top, bottom, left, right, borderType, TScalar.Scalar());
+  copyMakeBorder(Src, dst, top, bottom, left, right, borderType, TScalar.Scalar());
 end;
 
-procedure subtract(const src1:TInputArray; const src2:TInputArray; const dst:TOutputArray);
+procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
 begin
-  subtract(src1,src2,dst,TInputArray.noArray());
+  subtract(src1, src2, dst, TInputArray.noArray());
 end;
 
-function mean(const src:TInputArray):TScalar;
+function mean(const Src: TInputArray): TScalar;
 begin
-  Result := mean(src, TInputArray.noArray());
+  Result := mean(Src, TInputArray.noArray());
 end;
 
-procedure meanStdDev(const src:TInputArray;const mean:TOutputArray;const stddev:TOutputArray);
+procedure meanStdDev(const Src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray);
 begin
-  meanStdDev(src,mean,stddev,TInputArray.noArray());
+  meanStdDev(Src, mean, stddev, TInputArray.noArray());
 end;
 
-function norm(const src1:TInputArray; normType :NormTypes= NORM_L2):double;
+function norm(const src1: TInputArray; normType: NormTypes = NORM_L2): double;
 begin
-  Result := norm(src1,Int(normType),TInputArray.noArray());
+  Result := norm(src1, int(normType), TInputArray.noArray());
 end;
 
-function norm(const src1:TInputArray;const src2:TInputArray; normType: NormTypes= NORM_L2):double;
+function norm(const src1: TInputArray; const src2: TInputArray; normType: NormTypes = NORM_L2): double;
 begin
-  Result :=norm(src1,src2,Int(normType),TInputArray.noArray());
+  Result := norm(src1, src2, int(normType), TInputArray.noArray());
 end;
 
-procedure batchDistance(const src1:TInputArray;const src2:TInputArray;
-          const dist:TOutputArray; dtype:int; const nidx:TOutputArray;
-          normType :normTypes= NORM_L2; K :int= 0);
+procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray; normType: NormTypes = NORM_L2;
+  K: int = 0);
 begin
-  batchDistance(src1,src2,dist,dtype,nidx,Int(normType),K,TInputArray.noArray());
+  batchDistance(src1, src2, dist, dtype, nidx, int(normType), K, TInputArray.noArray());
 end;
 
-procedure minMaxIdx(const src:TInputArray; minVal:pDouble;  maxVal :pDouble = nil;
-          minIdx :Pointer = nil; maxIdx :pInt = nil);
+procedure minMaxIdx(const Src: TInputArray; minVal: pDouble; maxVal: pDouble = nil; minIdx: Pointer = nil; maxIdx: pInt = nil);
 begin
-  minMaxIdx(src,minVal,maxVal,minIdx,maxIdx,TInputArray.noArray());
+  minMaxIdx(Src, minVal, maxVal, minIdx, maxIdx, TInputArray.noArray());
 end;
 
-procedure bitwise_or(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
+procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
 begin
-  bitwise_or(src1,src2,dst,TInputArray.noArray());
+  bitwise_or(src1, src2, dst, TInputArray.noArray());
 end;
 
-procedure bitwise_xor(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
+procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
 begin
-  bitwise_xor(src1,src2,dst,TInputArray.noArray());
+  bitwise_xor(src1, src2, dst, TInputArray.noArray());
 end;
 
-procedure mulTransposed(const src:TInputArray;const dst:TOutputArray; aTa:bool);
+procedure mulTransposed(const Src: TInputArray; const dst: TOutputArray; aTa: bool);
 begin
-  mulTransposed(src,dst,aTa,TInputArray.noArray());
+  mulTransposed(Src, dst, aTa, TInputArray.noArray());
 end;
 
-procedure setIdentity(const mtx:TInputOutputArray);
+procedure setIdentity(const mtx: TInputOutputArray);
 begin
-  setIdentity(mtx,Scalar(1));
+  setIdentity(mtx, Scalar(1));
 end;
 
-function eigen(const src:TInputArray;const eigenvalues:TOutputArray):bool;
+function eigen(const Src: TInputArray; const eigenvalues: TOutputArray): bool;
 begin
-  Result := eigen(src,eigenvalues,TOutputArray.noArray());
+  Result := eigen(Src, eigenvalues, TOutputArray.noArray());
 end;
 
-function kmeans(const data:TInputArray; K:int;const bestLabels:TInputOutputArray;
-  const criteria:TTermCriteria; attempts:int;
-  flags:int):double;
+function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int): double;
 begin
-  Result := kmeans(data,K,bestLabels,criteria,attempts,flags,TOutputArray.noArray());
+  Result := kmeans(data, K, bestLabels, criteria, attempts, flags, TOutputArray.noArray());
 end;
 
-procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 }; dtype: Int { = -1 };
-  const mask: TInputArray { = noArray() } );
+procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 };
+  dtype: int { = -1 }; const mask: TInputArray { = noArray() } );
 begin
-  normalize(Src, dst, alpha, beta, Int(norm_type), dtype, mask);
+  normalize(Src, dst, alpha, beta, int(norm_type), dtype, mask);
 end;
 
-procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: Int = -1);
+procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: int = -1);
 begin
   normalize(Src, dst, alpha, beta, norm_type, dtype, TInputArray.noArray);
 end;
 
 {$ENDIF OPENCV_CORE_HPP}
-

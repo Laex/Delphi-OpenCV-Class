@@ -31,7 +31,13 @@ procedure constructor_RNG(const Obj: TRNG; u: UInt64); overload; external opencv
 // ??BRNG@cv@@QEAAEXZ	public: __cdecl cv::RNG::operator unsigned char(void) __ptr64
 // ??BRNG@cv@@QEAAFXZ	public: __cdecl cv::RNG::operator short(void) __ptr64
 // ??BRNG@cv@@QEAAGXZ	public: __cdecl cv::RNG::operator unsigned short(void) __ptr64
-// ??BRNG@cv@@QEAAHXZ	public: __cdecl cv::RNG::operator int(void) __ptr64
+{
+2803
+??BRNG@cv@@QEAAHXZ
+??BRNG@cv@@QEAAHXZ
+cv::RNG::operator int(void)
+}
+function operator_RNG_ToInt(const Obj: TRNG): Int; overload; external opencv_world_dll name '??BRNG@cv@@QEAAHXZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ??BRNG@cv@@QEAAIXZ	public: __cdecl cv::RNG::operator unsigned int(void) __ptr64
 function operator_RNG_ToUnsignedInt(const Obj: TRNG): Unsigned; overload; external opencv_world_dll name '??BRNG@cv@@QEAAIXZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ??BRNG@cv@@QEAAMXZ	public: __cdecl cv::RNG::operator float(void) __ptr64

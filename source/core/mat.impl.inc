@@ -700,7 +700,14 @@ end;
 
 class operator TInputOutputArrayHelper.Implicit(const v: Vector<TPoint2f>): TInputOutputArray;
 begin
-  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TPoint2f>.value + int(ACCESS_READ);
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TPoint2f>.value + int(ACCESS_RW);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
+end;
+
+class operator TInputOutputArrayHelper.Implicit(const v: Vector<TPoint>): TInputOutputArray;
+begin
+  Result.flags := int(FIXED_TYPE) + int(STD_VECTOR) + TTraits.&type<TPoint>.value + int(ACCESS_RW);
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
@@ -713,6 +720,11 @@ begin
 end;
 
 class operator TInputArrayOfArraysHelper.Implicit(const v: Vector<TMat>): TInputArrayOfArrays;
+begin
+  Result := TInputArrayOfArrays(TInputArray(v));
+end;
+
+class operator TInputArrayOfArraysHelper.Implicit(const v: Vector<TPoint>): TInputArrayOfArrays;
 begin
   Result := TInputArrayOfArrays(TInputArray(v));
 end;

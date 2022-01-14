@@ -60,6 +60,11 @@ begin
   Result.open(index);
 end;
 
+class function TVideoCapture.Capture(const index: Int; const apiPreference: VideoCaptureAPIs = CAP_ANY): TVideoCapture;
+begin
+  Result.open(index, apiPreference);
+end;
+
 class operator TVideoCapture.Initialize(out Dest: TVideoCapture);
 begin
   constructor_VideoCapture(Dest);
@@ -100,6 +105,16 @@ end;
 function TVideoCapture.read(const image: TOutputArray): BOOL;
 begin
   Result := read_VideoCapture(Self, image);
+end;
+
+function TVideoCapture.grab(): BOOL;
+begin
+  Result := grab_VideoCapture(Self);
+end;
+
+function TVideoCapture.retrieve(const image: TOutputArray; flag: Int = 0): BOOL;
+begin
+  Result := retrieve_VideoCapture(Self, image, flag);
 end;
 
 procedure TVideoCapture.release;

@@ -3673,15 +3673,15 @@ name '?getOptimalDFTSize@cv@@YAHH@Z'
        , the constructor uses the above default value instead to avoid the
        singular random number sequence, consisting of all zeros.
        *)
-       class operator Initialize(out Dest: TRNG); // RNG();
+       // RNG();
+       class operator Initialize(out Dest: TRNG);
     private
      {$HINTS OFF}
      state: UInt64; // UInt64 state;
      // BOOL operator==(const RNG & other)  const;
      {$HINTS ON}
     end;
- function theRNG:TRNG;
-overload; external opencv_world_dll
+ function theRNG:TRNG; overload; external opencv_world_dll
 {$IFDEF DEBUG}
 name '?theRNG@cv@@YAAEAVRNG@1@XZ'
 {$ELSE}
@@ -3702,8 +3702,7 @@ name '?theRNG@cv@@YAAEAVRNG@1@XZ'
 ?setRNGSeed@cv@@YAXH@Z
 void cv::setRNGSeed(int)
 }
-procedure setRNGSeed(seed:int);
-overload; external opencv_world_dll
+procedure setRNGSeed(seed:int); overload; external opencv_world_dll
 {$IFDEF DEBUG}
 name '?setRNGSeed@cv@@YAXH@Z'
 {$ELSE}
@@ -4262,9 +4261,11 @@ Type
      (* @overload *)
      // operator short();
      (* @overload *)
-   class operator Implicit(const p: TRNG): unsigned; {$IFDEF USE_INLINE}inline; {$ENDIF} // operator unsigned();
+     // operator unsigned();
+   class operator Implicit(const rng: TRNG): unsigned; {$IFDEF USE_INLINE}inline; {$ENDIF}
      (* @overload *)
      // operator Int();
+   class operator Implicit(const rng:TRNG):int; {$IFDEF USE_INLINE}inline; {$ENDIF}
      (* @overload *)
      // operator float();
      (* @overload *)

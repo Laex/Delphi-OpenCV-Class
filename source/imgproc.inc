@@ -4599,6 +4599,21 @@ https://www.learnopencv.com/convex-hull-using-opencv-in-python-and-c/
  *)
 //CV_EXPORTS_W void convexHull( InputArray points, OutputArray hull,
 //                              bool clockwise = false, bool returnPoints = true );
+{
+4058
+?convexHull@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@_N2@Z
+?convexHull@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@_N2@Z
+void cv::convexHull(class cv::_InputArray const &,class cv::_OutputArray const &,bool,bool)
+}
+procedure convexHull(const points:TInputArray;const hull:TOutputArray;
+                              clockwise :bool= false; returnPoints :bool= true );
+external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?convexHull@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@_N2@Z'
+{$ELSE}
+  name '?convexHull@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@_N2@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Finds the convexity defects of a contour.
 
@@ -4868,6 +4883,20 @@ An example using applyColorMap function
 @param colormap The colormap to apply, see #ColormapTypes
 *)
 //CV_EXPORTS_W void applyColorMap(InputArray src, OutputArray dst, int colormap);
+{
+3554
+?applyColorMap@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z
+?applyColorMap@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
+void cv::applyColorMap(class cv::_InputArray const &,class cv::_OutputArray const &,int)
+}
+procedure applyColorMap(const src:TInputArray;const dst:TOutputArray; colormap:ColormapTypes); overload;
+external opencv_world_dll
+{$IFDEF DEBUG}
+  name '?applyColorMap@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+{$ELSE}
+  name '?applyColorMap@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Applies a user colormap on a given image.
 
@@ -5019,7 +5048,8 @@ mean that a filled circle is to be drawn.
   ?circle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z
   void cv::circle(class cv::_InputOutputArray const &,class cv::Point_<int>,int,class cv::Scalar_<double> const &,int,int,int)
 }
-procedure circle(const img: TInputOutputArray; center: UInt64 { TPoint }; radius: Int; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0); overload;
+procedure circle( const img: TInputOutputArray; center: UInt64 { TPoint }; radius: Int;
+                  const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0); overload;
   external opencv_world_dll
 {$IFDEF DEBUG}
   name '?circle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z'
@@ -5027,7 +5057,8 @@ procedure circle(const img: TInputOutputArray; center: UInt64 { TPoint }; radius
   name '?circle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure circle(const img: TInputOutputArray; const center: TPoint; radius: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0); overload;
+procedure circle( const img: TInputOutputArray; const center: TPoint; radius: Int;
+                  const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 (** @brief Draws a simple or thick elliptic arc or fills an ellipse sector.
 
@@ -5218,18 +5249,21 @@ parts), and so forth.
 //                         const Scalar& color, int lineType = LINE_8, int shift = 0,
 //                         Point offset = Point() );
 
-procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; ncontours: Int; const color: TScalar; lineType: Int = Int(LINE_8); shift: Int = 0;
-  offset: UInt64 { TPoint } { = Point() } = 0); overload; external opencv_world_dll
+procedure fillPoly( const img: TInputOutputArray; const pts: pPoint; const npts: pInt; ncontours: Int;
+                    const color: TScalar; lineType: Int = Int(LINE_8); shift: Int = 0;
+                    offset: UInt64 { TPoint } { = Point() } = 0); overload; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?fillPoly@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV41@@Z'
 {$ELSE}
   name '?fillPoly@cv@@YAXAEBV_InputOutputArray@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV31@@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes { = LINE_8 }; const shift: Int { = 0 };
-  const offset: TPoint); overload;
+procedure fillPoly( const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int;
+                    const color: TScalar; const lineType: LineTypes { = LINE_8 }; const shift: Int { = 0 };
+                    const offset: TPoint); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes = LINE_8; const shift: Int = 0); overload;
+procedure fillPoly( const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int;
+                    const color: TScalar; const lineType: LineTypes = LINE_8; const shift: Int = 0); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Draws several polygonal curves.

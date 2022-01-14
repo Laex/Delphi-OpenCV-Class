@@ -464,24 +464,15 @@ type
     // void move(UMat& u) const;
     // void move(Mat& m) const;
 
-    class function noArray: TOutputArray; static; {$IFDEF USE_INLINE}inline;
-{$ENDIF}
-    class operator Implicit(const m: TMat): TOutputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: Vector<TMat>): TOutputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const OA: TOutputArray): TMat;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint>): TOutputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint2f>): TOutputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<uchar>): TOutputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<float>): TOutputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TVec4i>): TOutputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function noArray: TOutputArray; static; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    class operator Implicit(const m: TMat): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: Vector<TMat>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const OA: TOutputArray): TMat;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<uchar>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<float>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TVec4i>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector < Vector < TPoint >> ): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
@@ -537,16 +528,12 @@ type
     // template<typename _Tp> static _InputOutputArray rawInOut(std::vector<_Tp>& vec);
     // template<typename _Tp, std::size_t _Nm> _InputOutputArray rawInOut(std::array<_Tp, _Nm>& arr);
 
-    class function noArray: TInputOutputArray; static;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMat): TInputOutputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const IOA: TInputOutputArray): TMat;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const IOA: TInputOutputArray): TInputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint2f>): TInputOutputArray;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function noArray: TInputOutputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: TMat): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const IOA: TInputOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const IOA: TInputOutputArray): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TInputOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TInputOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   (* * Helper to wrap custom types. @see InputArray *)
@@ -573,10 +560,9 @@ type
 
   TInputArrayOfArraysHelper = record helper for TInputArrayOfArrays
   public
-    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline;
-{$ENDIF}
-    class operator Implicit(const v: Vector<TMat>): TInputArrayOfArrays;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    class operator Implicit(const v: Vector<TMat>): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   /// //////////////////////////////// MatAllocator //////////////////////////////////////

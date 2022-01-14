@@ -665,6 +665,7 @@ Type
     *)
     // CV_WRAP explicit VideoCapture(int index, int apiPreference = CAP_ANY);
     class operator Implicit(const index: Int): TVideoCapture; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function Capture(const index:int; const apiPreference :VideoCaptureAPIs = CAP_ANY):TVideoCapture; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* @overload
       @brief Opens a camera for video capturing with API Preference and parameters
 
@@ -764,6 +765,7 @@ Type
       @ref tutorial_kinect_openni
     *)
     // CV_WRAP virtual Bool grab();
+    function grab():bool; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     (* @brief Decodes and returns the grabbed video frame.
 
@@ -782,6 +784,7 @@ Type
       cvCloneImage and then do whatever you want with the copy.
     *)
     // CV_WRAP virtual Bool retrieve(OutputArray image, int flag = 0);
+    function retrieve(const image:TOutputArray; flag :int = 0):bool; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     (* @brief Stream operator to read the next video frame.
       @sa read()
