@@ -126,6 +126,12 @@
         <Projects Include="cpp\convexhull\cvconvexhull.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="cpp\neural_network\neural_network.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="cpp\videocapture_audio\videocapture_audio.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -503,14 +509,32 @@
     <Target Name="cvconvexhull:Make">
         <MSBuild Projects="cpp\convexhull\cvconvexhull.dproj" Targets="Make"/>
     </Target>
+    <Target Name="neural_network">
+        <MSBuild Projects="cpp\neural_network\neural_network.dproj"/>
+    </Target>
+    <Target Name="neural_network:Clean">
+        <MSBuild Projects="cpp\neural_network\neural_network.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="neural_network:Make">
+        <MSBuild Projects="cpp\neural_network\neural_network.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="videocapture_audio">
+        <MSBuild Projects="cpp\videocapture_audio\videocapture_audio.dproj"/>
+    </Target>
+    <Target Name="videocapture_audio:Clean">
+        <MSBuild Projects="cpp\videocapture_audio\videocapture_audio.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="videocapture_audio:Make">
+        <MSBuild Projects="cpp\videocapture_audio\videocapture_audio.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm;cvdecolor;npr_demo;phase_corr;videocapture_basic;videocapture_image_sequence;dis_opticalflow;facedetect;segment_objects;video_write;facial_features;camshiftdemo;imgproc_segmentation;minarea;lkdemo;delaunay2;cv_laplace;peopledetect;cvinpaint;morphology2;contours2;distrans;opencv_version;stitching;cvgrabcut;cvdft;BasicLinearTransformsTrackbar;CannyDetector_Demo;videocapture_realsense;cvconvexhull"/>
+        <CallTarget Targets="AddingImages;Smoothing;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm;cvdecolor;npr_demo;phase_corr;videocapture_basic;videocapture_image_sequence;dis_opticalflow;facedetect;segment_objects;video_write;facial_features;camshiftdemo;imgproc_segmentation;minarea;lkdemo;delaunay2;cv_laplace;peopledetect;cvinpaint;morphology2;contours2;distrans;opencv_version;stitching;cvgrabcut;cvdft;BasicLinearTransformsTrackbar;CannyDetector_Demo;videocapture_realsense;cvconvexhull;neural_network;videocapture_audio"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean;cvdecolor:Clean;npr_demo:Clean;phase_corr:Clean;videocapture_basic:Clean;videocapture_image_sequence:Clean;dis_opticalflow:Clean;facedetect:Clean;segment_objects:Clean;video_write:Clean;facial_features:Clean;camshiftdemo:Clean;imgproc_segmentation:Clean;minarea:Clean;lkdemo:Clean;delaunay2:Clean;cv_laplace:Clean;peopledetect:Clean;cvinpaint:Clean;morphology2:Clean;contours2:Clean;distrans:Clean;opencv_version:Clean;stitching:Clean;cvgrabcut:Clean;cvdft:Clean;BasicLinearTransformsTrackbar:Clean;CannyDetector_Demo:Clean;videocapture_realsense:Clean;cvconvexhull:Clean"/>
+        <CallTarget Targets="AddingImages:Clean;Smoothing:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean;cvdecolor:Clean;npr_demo:Clean;phase_corr:Clean;videocapture_basic:Clean;videocapture_image_sequence:Clean;dis_opticalflow:Clean;facedetect:Clean;segment_objects:Clean;video_write:Clean;facial_features:Clean;camshiftdemo:Clean;imgproc_segmentation:Clean;minarea:Clean;lkdemo:Clean;delaunay2:Clean;cv_laplace:Clean;peopledetect:Clean;cvinpaint:Clean;morphology2:Clean;contours2:Clean;distrans:Clean;opencv_version:Clean;stitching:Clean;cvgrabcut:Clean;cvdft:Clean;BasicLinearTransformsTrackbar:Clean;CannyDetector_Demo:Clean;videocapture_realsense:Clean;cvconvexhull:Clean;neural_network:Clean;videocapture_audio:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make;cvdecolor:Make;npr_demo:Make;phase_corr:Make;videocapture_basic:Make;videocapture_image_sequence:Make;dis_opticalflow:Make;facedetect:Make;segment_objects:Make;video_write:Make;facial_features:Make;camshiftdemo:Make;imgproc_segmentation:Make;minarea:Make;lkdemo:Make;delaunay2:Make;cv_laplace:Make;peopledetect:Make;cvinpaint:Make;morphology2:Make;contours2:Make;distrans:Make;opencv_version:Make;stitching:Make;cvgrabcut:Make;cvdft:Make;BasicLinearTransformsTrackbar:Make;CannyDetector_Demo:Make;videocapture_realsense:Make;cvconvexhull:Make"/>
+        <CallTarget Targets="AddingImages:Make;Smoothing:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make;cvdecolor:Make;npr_demo:Make;phase_corr:Make;videocapture_basic:Make;videocapture_image_sequence:Make;dis_opticalflow:Make;facedetect:Make;segment_objects:Make;video_write:Make;facial_features:Make;camshiftdemo:Make;imgproc_segmentation:Make;minarea:Make;lkdemo:Make;delaunay2:Make;cv_laplace:Make;peopledetect:Make;cvinpaint:Make;morphology2:Make;contours2:Make;distrans:Make;opencv_version:Make;stitching:Make;cvgrabcut:Make;cvdft:Make;BasicLinearTransformsTrackbar:Make;CannyDetector_Demo:Make;videocapture_realsense:Make;cvconvexhull:Make;neural_network:Make;videocapture_audio:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

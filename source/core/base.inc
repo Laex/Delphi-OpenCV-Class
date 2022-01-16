@@ -631,6 +631,6 @@ BorderTypes = (           //
 *)
 { .$I 'core/neon_utils.inc' }
 { .$I 'core/vsx_utils.inc' }
-{ .$I 'core/check.inc' }
+{$I 'core/check.inc' }
 
 {$ENDIF} // OPENCV_CORE_BASE_HPP

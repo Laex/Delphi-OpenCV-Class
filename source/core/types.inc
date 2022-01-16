@@ -613,19 +613,22 @@ custom processing, you will probably have to check and handle it explicitly:
     }
 @endcode
 *)
+
+   TRange = record
+   public
+//    Range();
+//    Range(int _start, int _end);
+//    int size() const;
+//    bool empty() const;
+//    static Range all();
+    class function all:TRange; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+   private
+    start, &end:int;
+end;
+function Range(_start:int; _end:int):TRange; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+
 (*
-class CV_EXPORTS Range
-{
-public:
-    Range();
-    Range(int _start, int _end);
-    int size() const;
-    bool empty() const;
-    static Range all();
-
-    int start, end;
-};
-
 template<> class DataType<Range>
 {
 public:

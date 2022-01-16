@@ -37,6 +37,7 @@ Uses
 {$I core/version.inc}
 
 const
+  INT_MIN = Pred(-MaxInt);
   INT_MAX = MaxInt;
   DBL_MAX = MaxDouble;
   CHAR_BIT   =   8;
@@ -294,6 +295,8 @@ begin
     vt := vtVec6f
   else if TypeInfo(T) = TypeInfo(Vector<TPoint2f>) then // vector<float>
     vt := vtVectorPoint2f
+   else if TypeInfo(T) = TypeInfo(Vector<TMat>) then // vector<float>
+    vt := vtVectorMat
     // else if TypeInfo(T) = TypeInfo(TGMat) then // vector<GMat>
     // vt := vtGMat
     // else if TypeInfo(T) = TypeInfo(TGCompileArg) then // vector<GCompileArg>

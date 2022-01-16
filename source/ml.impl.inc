@@ -1,27 +1,27 @@
-  (*
-    This file is part of Delphi-OpenCV-Class project.
-    https://github.com/Laex/Delphi-OpenCV-Class
+(*
+  This file is part of Delphi-OpenCV-Class project.
+  https://github.com/Laex/Delphi-OpenCV-Class
 
-    It is subject to the license terms in the LICENSE file found in the top-level directory
-    of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+  It is subject to the license terms in the LICENSE file found in the top-level directory
+  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
 
-    Copyright 2021, Laentir Valetov, laex@bk.ru
+  Copyright 2021, Laentir Valetov, laex@bk.ru
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  *)
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*)
 
 {$IFDEF OPENCV_ML_HPP}
-  { TSVM }
+{ TSVM }
 
 class function TSVM.Create: TPtr<TSVM>;
 begin
@@ -87,6 +87,106 @@ Type
   Ttrain = function(const Obj: TSVM; const samples: TInputArray; layout: Int; const responses: TInputArray): BOOL;
 begin
   Result := Ttrain(vftable(Self.vft, $50 div SizeOf(Pointer)))(Self, samples, Int(layout), responses);
+end;
+
+{ TANN_MLP }
+
+class operator TANN_MLP.Finalize(var Dest: TANN_MLP);
+begin
+  destructor_ANN_MLP(Dest);
+end;
+
+class function TANN_MLP.Create(): TPtr<TANN_MLP>;
+begin
+  create_ANN_MLP(Result);
+end;
+
+procedure TANN_MLP.setLayerSizes(const _layer_sizes: TInputArray);
+Type
+  TsetLayerSizes = procedure(const Obj: TANN_MLP; const _layer_sizes: TInputArray);
+begin
+  TsetLayerSizes(vftable(Self.vft, $88 div SizeOf(Pointer)))(Self, _layer_sizes);
+end;
+
+procedure TANN_MLP.setActivationFunction(&type: ActivationFunctions; param1: double = 0; param2: double = 0);
+Type
+  TsetActivationFunction = procedure(const Obj: TANN_MLP; &type: ActivationFunctions; param1: double = 0; param2: double = 0);
+begin
+  TsetActivationFunction(vftable(Self.vft, $80 div SizeOf(Pointer)))(Self, &type, param1, param2);
+end;
+
+procedure TANN_MLP.setTrainMethod(method: TrainingMethods; param1: double = 0; param2: double = 0);
+Type
+  TsetTrainMethod = procedure(const Obj: TANN_MLP; method: TrainingMethods; param1: double = 0; param2: double = 0);
+begin
+  TsetTrainMethod(vftable(Self.vft, $70 div SizeOf(Pointer)))(Self, method, param1, param2);
+end;
+
+function TANN_MLP.train(const trainData: TPtr<TTrainData>; flags: Int = 0): BOOL;
+Type
+  Ttrain = function(const Obj: TANN_MLP; const trainData: TPtr<TTrainData>; flags: Int): BOOL;
+begin
+  Result := Ttrain(vftable(Self.vft, $58 div SizeOf(Pointer)))(Self, trainData, flags);
+end;
+
+function TANN_MLP.isTrained(): BOOL;
+Type
+  TisTrained = function(const Obj: TANN_MLP): BOOL;
+begin
+  Result := TisTrained(vftable(Self.vft, $40 div SizeOf(Pointer)))(Self);
+end;
+
+function TANN_MLP.predict(const samples: TInputArray; const results: TOutputArray { =noArray() }; flags: Int { =0 } ): float;
+Type
+  Tpredict = function(const Obj: TANN_MLP; const samples: TInputArray; const results: TOutputArray { =noArray() }; flags: Int { =0 } ): float;
+begin
+  Result := Tpredict(vftable(Self.vft, $68 div SizeOf(Pointer)))(Self, samples, results, flags);
+end;
+
+function TANN_MLP.predict(const samples: TInputArray; const results: TOutputArray { =noArray() } ): float;
+begin
+  Result := predict(samples, results, 0);
+end;
+
+function TANN_MLP.predict(const samples: TInputArray): float;
+begin
+  Result := predict(samples, TOutputArray.noArray);
+end;
+
+{ TTrainData }
+
+class operator TTrainData.Finalize(var Dest: TTrainData);
+begin
+  destructor_TrainData(Dest);
+end;
+
+class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray; const varIdx: TInputArray { =noArray() };
+  const sampleIdx: TInputArray { =noArray() }; const sampleWeights: TInputArray { =noArray() }; const varType: TInputArray { =noArray() } ): TPtr<TTrainData>;
+begin
+  create_TrainData(Result, samples, layout, responses, varIdx, sampleIdx, sampleWeights, varType);
+end;
+
+class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray; const varIdx: TInputArray { =noArray() };
+  const sampleIdx: TInputArray { =noArray() }; const sampleWeights: TInputArray { =noArray() } ): TPtr<TTrainData>;
+begin
+  Result := TTrainData.Create(samples, layout, responses, varIdx, sampleIdx, sampleWeights, TInputArray.noArray);
+end;
+
+class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray; const varIdx: TInputArray { =noArray() };
+  const sampleIdx: TInputArray { =noArray() }
+  ): TPtr<TTrainData>;
+begin
+  Result := TTrainData.Create(samples, layout, responses, varIdx, sampleIdx, TInputArray.noArray);
+end;
+
+class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray; const varIdx: TInputArray { =noArray() } ): TPtr<TTrainData>;
+begin
+  Result := TTrainData.Create(samples, layout, responses, varIdx, TInputArray.noArray);
+end;
+
+class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray): TPtr<TTrainData>;
+begin
+  Result := TTrainData.Create(samples, layout, responses, TInputArray.noArray);
 end;
 
 {$ENDIF}

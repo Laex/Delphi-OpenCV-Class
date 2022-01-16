@@ -3754,7 +3754,7 @@ name '?randu@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z'
  ?randn@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z
  void cv::randn(class cv::_InputOutputArray const &,class cv::_InputArray const &,class cv::_InputArray const &)
  }
-procedure randn(const dst:TInputOutputArray;const mean:TInputArray;const stddev:TInputArray);
+procedure randn(const dst:TInputOutputArray; const mean:TInputArray; const stddev:TInputArray);
 overload; external opencv_world_dll
 {$IFDEF DEBUG}
 name '?randn@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@1@Z'

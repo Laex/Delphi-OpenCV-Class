@@ -457,6 +457,16 @@ begin
   end;
 end;
 
+class function TMatHelper.mat(const m: TMat; const rowRange: TRange; const colRange: TRange { =Range::all() } ): TMat;
+begin
+  Constructor_Mat(Result, m, rowRange, colRange);
+end;
+
+class function TMatHelper.mat(const m: TMat; const rowRange: TRange): TMat;
+begin
+  Result := TMat.mat(m, rowRange, TRange.All);
+end;
+
 { TMatExpr }
 
 class operator TMatExpr.assign(var Dest: TMatExpr; const [ref] Src: TMatExpr);
@@ -593,6 +603,20 @@ begin
   Result.Obj := @v;
   Result.sz := size(1, 4);
 end;
+
+class operator TInputArrayHelper.Implicit(const v: TMat1i): TInputArray;
+begin
+  Result.flags := int(FIXED_TYPE) + int(mat) + TTraits.&type<int>.value + int(ACCESS_READ);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
+end;
+
+class operator TInputArrayHelper.Implicit(const v: TMat1f): TInputArray;
+begin
+  Result.flags := int(FIXED_TYPE) + int(mat) + TTraits.&type<float>.value + int(ACCESS_READ);
+  Result.Obj := @v;
+  Result.sz := size(0, 0);
+end;
 { TOutputArray }
 
 class function TOutputArrayHelper.noArray: TOutputArray;
@@ -683,6 +707,13 @@ begin
   Result.InputOutputArray(m);
 end;
 
+class operator TInputOutputArrayHelper.Implicit(const m: TMat1f): TInputOutputArray;
+begin
+  Result.flags := int(FIXED_TYPE) + int(mat) + TTraits.&type<float>.value + int(ACCESS_RW);
+  Result.Obj := @m;
+  Result.sz := size(0, 0);
+end;
+
 procedure TInputOutputArrayHelper.InputOutputArray(const m: TMat);
 begin
   Constructor_InputOutputArray(Self, m);
@@ -748,25 +779,25 @@ begin
   p[index] := value;
 end;
 
-  { TMat_<T> }
+{ TMat_<T> }
 
-class operator TMat_<T>.Assign(var Dest: TMat_<T>; const [ref] Src: TMat_<T>);
+class operator TMat_<T>.assign(var Dest: TMat_<T>; const [ref] Src: TMat_<T>);
 begin
   Dest.FMat := Src.FMat;
 end;
 
-procedure TMat_<T>.Assign(const m: TMat);
+procedure TMat_<T>.assign(const m: TMat);
 begin
   if (m.empty()) then
     FMat.release()
-  else if (ttraits.&Type<T>.value = m.&Type()) then
+  else if (TTraits.&type<T>.value = m.&type()) then
     FMat := m
-  else if (ttraits.Depth<T>.value = m.Depth()) then
+  else if (TTraits.depth<T>.value = m.depth()) then
     FMat := m.reshape(TDataType<T>.channels, m.dims, nil)
   else
   begin
     Assert((TDataType<T>.channels = m.channels()) or m.empty());
-    m.convertTo(&FMat, FMat.&Type);
+    m.convertTo(&FMat, FMat.&type);
   end;
 end;
 
@@ -779,14 +810,56 @@ class operator TMat_<T>.Initialize(out Dest: TMat_<T>);
 begin
   // FMat := TMat.Mat(_rows, _cols, traits::Type<_Tp>::value)
   With Dest.FMat do
-    flags := (flags and (not CV_MAT_TYPE_MASK)) + ttraits.&Type<T>.value;
+    flags := (flags and (not CV_MAT_TYPE_MASK)) + TTraits.&type<T>.value;
 end;
 
-class function TMat_<T>.Mat(const m: TMat): TMat_<T>;
+class function TMat_<T>.mat(const m: TMat): TMat_<T>;
 begin
   With Result.FMat do
-    flags := (flags and (not CV_MAT_TYPE_MASK)) + ttraits.&Type<T>.value;
-  Result.Assign(m);
+    flags := (flags and (not CV_MAT_TYPE_MASK)) + TTraits.&type<T>.value;
+  Result.assign(m);
+end;
+
+class function TMat_<T>.mat(_rows: int; _cols: int): TMat_<T>;
+begin
+  Result.FMat := TMat.mat(_rows, _cols, TTraits.&type<T>.value);
+end;
+
+function TMat_<T>.&type(): int;
+begin
+  Assert(FMat.&type() = TTraits.&type<T>.value);
+  Result := TTraits.&type<T>.value;
+end;
+
+function TMat_<T>.pT(row: int; col: int): pType;
+begin
+  With FMat do
+  begin
+    Assert(dims <= 2);
+    Assert(Assigned(Data));
+    Assert(unsigned(row) < unsigned(size.p[0]));
+    Assert(unsigned(col) < unsigned(size.p[1]));
+    Assert(&type() = TTraits.&type<T>.value);
+{$WARNINGS OFF}
+    // Result := pType(@(data + step.p[0] * row)[col]);
+    Result := pType(FMat.Data + step.p[0] * row + col * SizeOf(T));
+{$WARNINGS ON}
+  end;
+end;
+
+function TMat_<T>.row(y: int): TMat_<T>;
+begin
+  Result := TMat_<T>.mat(Self, Range(y, y + 1), TRange.All);
+end;
+
+class function TMat_<T>.mat(const m: TMat_<T>; const rowRange: TRange; const colRange: TRange { = Range::all() } ): TMat_<T>;
+begin
+  Result.FMat := TMat.mat(m.FMat, rowRange, colRange);
+end;
+
+class function TMat_<T>.mat(const m: TMat_<T>; const rowRange: TRange): TMat_<T>;
+begin
+  Result := TMat_<T>.mat(m, rowRange, TRange.All);
 end;
 
 {$ENDIF}

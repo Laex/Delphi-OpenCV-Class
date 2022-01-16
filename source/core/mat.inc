@@ -91,14 +91,14 @@ type
   end;
 
   TMatSize = record // forward declration
-//  private
+    // private
 {$HINTS OFF}
     p: pInt; // pInt; // int* p;
 {$HINTS ON}
   end;
 
   TMatStep = record // forward declaration
-//  private
+    // private
 {$HINTS OFF}
     p: psize_t;                    // size_t* p;
     buf: array [0 .. 1] of size_t; // size_t buf[2];
@@ -464,77 +464,19 @@ type
     // void move(UMat& u) const;
     // void move(Mat& m) const;
 
-    class function noArray: TOutputArray; static; {$IFDEF USE_INLINE}inline;{$ENDIF}
-    class operator Implicit(const m: TMat): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: Vector<TMat>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const OA: TOutputArray): TMat;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint2f>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<uchar>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<float>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TVec4i>): TOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function noArray: TOutputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: TMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: Vector<TMat>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const OA: TOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<uchar>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<float>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TVec4i>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector < Vector < TPoint >> ): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   TInputOutputArray = type TOutputArray;
-
-  TInputOutputArrayHelper = record helper for TInputOutputArray
-    // private
-    // {$HINTS OFF}
-    // OutputArray: TOutputArray;
-    // {$HINTS ON}
-  public
-    // class operator Initialize(out Dest: TInputOutputArray); // _InputOutputArray();
-    // _InputOutputArray(int _flags, void* _obj);
-    procedure InputOutputArray(const m: TMat); {$IFDEF USE_INLINE}inline;
-{$ENDIF}// _InputOutputArray(Mat& m);
-    // _InputOutputArray(std::vector<Mat>& vec);
-    // _InputOutputArray(cuda::GpuMat& d_mat);
-    // _InputOutputArray(ogl::Buffer& buf);
-    // _InputOutputArray(cuda::HostMem& cuda_mem);
-    // template<typename _Tp> _InputOutputArray(cudev::GpuMat_<_Tp>& m);
-    // template<typename _Tp> _InputOutputArray(std::vector<_Tp>& vec);
-    // _InputOutputArray(std::vector<bool>& vec) = delete;  // not supported
-    // template<typename _Tp> _InputOutputArray(std::vector<std::vector<_Tp> >& vec);
-    // template<typename _Tp> _InputOutputArray(std::vector<Mat_<_Tp> >& vec);
-    // template<typename _Tp> _InputOutputArray(Mat_<_Tp>& m);
-    // template<typename _Tp> _InputOutputArray(_Tp* vec, int n);
-    // template<typename _Tp, int m, int n> _InputOutputArray(Matx<_Tp, m, n>& matx);
-    // _InputOutputArray(UMat& m);
-    // _InputOutputArray(std::vector<UMat>& vec);
-    // class operator Finalize(var Dest: TInputOutputArray); // destructor
-    //
-    // _InputOutputArray(const Mat& m);
-    // _InputOutputArray(const std::vector<Mat>& vec);
-    // _InputOutputArray(const cuda::GpuMat& d_mat);
-    // _InputOutputArray(const std::vector<cuda::GpuMat>& d_mat);
-    // _InputOutputArray(const ogl::Buffer& buf);
-    // _InputOutputArray(const cuda::HostMem& cuda_mem);
-    // template<typename _Tp> _InputOutputArray(const cudev::GpuMat_<_Tp>& m);
-    // template<typename _Tp> _InputOutputArray(const std::vector<_Tp>& vec);
-    // template<typename _Tp> _InputOutputArray(const std::vector<std::vector<_Tp> >& vec);
-    // template<typename _Tp> _InputOutputArray(const std::vector<Mat_<_Tp> >& vec);
-    // template<typename _Tp> _InputOutputArray(const Mat_<_Tp>& m);
-    // template<typename _Tp> _InputOutputArray(const _Tp* vec, int n);
-    // template<typename _Tp, int m, int n> _InputOutputArray(const Matx<_Tp, m, n>& matx);
-    // _InputOutputArray(const UMat& m);
-    // _InputOutputArray(const std::vector<UMat>& vec);
-    //
-    // template<typename _Tp, std::size_t _Nm> _InputOutputArray(std::array<_Tp, _Nm>& arr);
-    // template<typename _Tp, std::size_t _Nm> _InputOutputArray(const std::array<_Tp, _Nm>& arr);
-    // template<std::size_t _Nm> _InputOutputArray(std::array<Mat, _Nm>& arr);
-    // template<std::size_t _Nm> _InputOutputArray(const std::array<Mat, _Nm>& arr);
-    //
-    // template<typename _Tp> static _InputOutputArray rawInOut(std::vector<_Tp>& vec);
-    // template<typename _Tp, std::size_t _Nm> _InputOutputArray rawInOut(std::array<_Tp, _Nm>& arr);
-
-    class function noArray: TInputOutputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMat): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const IOA: TInputOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const IOA: TInputOutputArray): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint2f>): TInputOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint>): TInputOutputArray;{$IFDEF USE_INLINE}inline; {$ENDIF}
-  end;
 
   (* * Helper to wrap custom types. @see InputArray *)
   // template<typename _Tp> static inline _InputArray rawIn(_Tp& v);
@@ -560,7 +502,7 @@ type
 
   TInputArrayOfArraysHelper = record helper for TInputArrayOfArrays
   public
-    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline;{$ENDIF}
+    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<TMat>): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const v: Vector<TPoint>): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
@@ -924,6 +866,8 @@ type
     // Mat(int ndims, const int* sizes, int type, void* data, const size_t* steps=0);
     // Mat(const std::vector<int>& sizes, int type, void* data, const size_t* steps=0);
     // Mat(const Mat& m, const Range& rowRange, const Range& colRange=Range::all());
+    class function mat(const m: TMat; const rowRange: TRange; const colRange:TRange {=Range::all()}): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(const m: TMat; const rowRange: TRange): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(const Mat& m, const Rect& roi);
     class function mat(const m: TMat; const roi: TRect): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function mat(const roi: TRect): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2464,6 +2408,8 @@ type
     @endcode
   *)
   TMat_<T: record > = record
+  private type
+    pType = ^T;
   private
     FMat: TMat;
   public
@@ -2474,6 +2420,7 @@ type
     class operator Finalize(var Dest: TMat_<T>);
     // ! equivalent to Mat(_rows, _cols, DataType<_Tp>::type)
     // Mat_(int _rows, int _cols);
+    class function mat(_rows: Int; _cols: Int): TMat_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! constructor that sets each matrix element to specified value
     // Mat_(int _rows, int _cols, const _Tp& value);
     // ! equivalent to Mat(_size, DataType<_Tp>::type)
@@ -2486,7 +2433,7 @@ type
     // Mat_(int _ndims, const int* _sizes, const _Tp& value);
     // ! copy/conversion constructor. If m is of different type, it's converted
     // Mat_(const Mat& m);
-    class function Mat(const m: TMat): TMat_<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(const m: TMat): TMat_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! copy constructor
     // Mat_(const Mat_& m);
     // ! constructs a matrix on top of user-allocated data. step is in bytes(!!!), regardless of the type
@@ -2495,6 +2442,8 @@ type
     // Mat_(int _ndims, const int* _sizes, _Tp* _data, const size_t* _steps=0);
     // ! selects a submatrix
     // Mat_(const Mat_& m, const Range& rowRange, const Range& colRange=Range::all());
+    class function mat(const m:TMat_<T>; const rowRange:TRange; const colRange:TRange {= Range::all()}):TMat_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(const m:TMat_<T>; const rowRange:TRange):TMat_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! selects a submatrix
     // Mat_(const Mat_& m, const Rect& roi);
     // ! selects a submatrix, n-dim version
@@ -2517,9 +2466,9 @@ type
     // template <std::size_t _Nm> explicit Mat_(const std::array<_Tp, _Nm>& arr, bool copyData=false);
 
     // Mat_& operator = (const Mat& m);
-    procedure Assign(const m: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure assign(const m: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat_& operator = (const Mat_& m);
-    class operator Assign(var Dest: TMat_<T>; const [ref] Src: TMat_<T>); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator assign(var Dest: TMat_<T>; const [ref] Src: TMat_<T>); {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! set all the elements to s.
     // Mat_& operator = (const _Tp& s);
     // ! assign a matrix expression
@@ -2556,6 +2505,7 @@ type
     // template<typename T2> operator Mat_<T2>() const;
     // ! overridden forms of Mat::row() etc.
     // Mat_ row(int y) const;
+    function row(y:Int):TMat_<T>;{$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat_ col(int x) const;
     // Mat_ diag(int d=0) const;
     // CV_NODISCARD_STD Mat_ clone() const;
@@ -2564,6 +2514,7 @@ type
     // size_t elemSize() const;
     // size_t elemSize1() const;
     // int type() const;
+    function &type(): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // int depth() const;
     // int channels() const;
     // size_t step1(int i=0) const;
@@ -2609,6 +2560,7 @@ type
     // _Tp& operator ()(int row, int col);
     // ! returns read-only reference to the specified element (2D case)
     // const _Tp& operator ()(int row, int col) const;
+    function pT(row: Int; col: Int): pType; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! returns reference to the specified element (3D case)
     // _Tp& operator ()(int idx0, int idx1, int idx2);
     // ! returns read-only reference to the specified element (3D case)
@@ -2635,6 +2587,11 @@ type
     // Mat_& operator = (Mat&& m);
 
     // Mat_(MatExpr&& e);
+
+    property rows: Int read FMat.rows;
+    property cols: Int read FMat.cols;
+    property dims: Int read FMat.dims;
+    property Data: pUChar read FMat.Data;
   end;
 
   TMat1b = TMat_<uchar>;
@@ -2652,7 +2609,7 @@ type
   // TMat3w = TMat_<TVec3w>;
   // TMat4w = TMat_<TVec4w>;
 
-  TMat1i = TMat_<int>;
+  TMat1i = TMat_<Int>;
   // TMat2i = TMat_<TVec2i>;
   // TMat3i = TMat_<TVec3i>;
   // TMat4i = TMat_<TVec4i>;
@@ -2666,6 +2623,71 @@ type
   // TMat2d = TMat_<TVec2d>;
   // TMat3d = TMat_<TVec3d>;
   // TMat4d = TMat_<TVec4d>;
+
+  TInputArrayHelper = record helper for TInputArray
+  public
+    class operator Implicit(const v: TMat1i): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: TMat1f): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
+
+  TInputOutputArrayHelper = record helper for TInputOutputArray
+    // private
+    // {$HINTS OFF}
+    // OutputArray: TOutputArray;
+    // {$HINTS ON}
+  public
+    // class operator Initialize(out Dest: TInputOutputArray); // _InputOutputArray();
+    // _InputOutputArray(int _flags, void* _obj);
+    procedure InputOutputArray(const m: TMat); {$IFDEF USE_INLINE}inline;
+{$ENDIF}// _InputOutputArray(Mat& m);
+    // _InputOutputArray(std::vector<Mat>& vec);
+    // _InputOutputArray(cuda::GpuMat& d_mat);
+    // _InputOutputArray(ogl::Buffer& buf);
+    // _InputOutputArray(cuda::HostMem& cuda_mem);
+    // template<typename _Tp> _InputOutputArray(cudev::GpuMat_<_Tp>& m);
+    // template<typename _Tp> _InputOutputArray(std::vector<_Tp>& vec);
+    // _InputOutputArray(std::vector<bool>& vec) = delete;  // not supported
+    // template<typename _Tp> _InputOutputArray(std::vector<std::vector<_Tp> >& vec);
+    // template<typename _Tp> _InputOutputArray(std::vector<Mat_<_Tp> >& vec);
+    // template<typename _Tp> _InputOutputArray(Mat_<_Tp>& m);
+    // template<typename _Tp> _InputOutputArray(_Tp* vec, int n);
+    // template<typename _Tp, int m, int n> _InputOutputArray(Matx<_Tp, m, n>& matx);
+    // _InputOutputArray(UMat& m);
+    // _InputOutputArray(std::vector<UMat>& vec);
+    // class operator Finalize(var Dest: TInputOutputArray); // destructor
+    //
+    // _InputOutputArray(const Mat& m);
+    // _InputOutputArray(const std::vector<Mat>& vec);
+    // _InputOutputArray(const cuda::GpuMat& d_mat);
+    // _InputOutputArray(const std::vector<cuda::GpuMat>& d_mat);
+    // _InputOutputArray(const ogl::Buffer& buf);
+    // _InputOutputArray(const cuda::HostMem& cuda_mem);
+    // template<typename _Tp> _InputOutputArray(const cudev::GpuMat_<_Tp>& m);
+    // template<typename _Tp> _InputOutputArray(const std::vector<_Tp>& vec);
+    // template<typename _Tp> _InputOutputArray(const std::vector<std::vector<_Tp> >& vec);
+    // template<typename _Tp> _InputOutputArray(const std::vector<Mat_<_Tp> >& vec);
+    // template<typename _Tp> _InputOutputArray(const Mat_<_Tp>& m);
+    // template<typename _Tp> _InputOutputArray(const _Tp* vec, int n);
+    // template<typename _Tp, int m, int n> _InputOutputArray(const Matx<_Tp, m, n>& matx);
+    // _InputOutputArray(const UMat& m);
+    // _InputOutputArray(const std::vector<UMat>& vec);
+    //
+    // template<typename _Tp, std::size_t _Nm> _InputOutputArray(std::array<_Tp, _Nm>& arr);
+    // template<typename _Tp, std::size_t _Nm> _InputOutputArray(const std::array<_Tp, _Nm>& arr);
+    // template<std::size_t _Nm> _InputOutputArray(std::array<Mat, _Nm>& arr);
+    // template<std::size_t _Nm> _InputOutputArray(const std::array<Mat, _Nm>& arr);
+    //
+    // template<typename _Tp> static _InputOutputArray rawInOut(std::vector<_Tp>& vec);
+    // template<typename _Tp, std::size_t _Nm> _InputOutputArray rawInOut(std::array<_Tp, _Nm>& arr);
+
+    class function noArray: TInputOutputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: TMat): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const IOA: TInputOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const IOA: TInputOutputArray): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const m: TMat1f): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  end;
 
   (* * @todo document *)
   (*

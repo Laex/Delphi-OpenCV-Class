@@ -353,4 +353,17 @@ begin
   Result := System.Sqrt(System.Sqr(pt.x) + System.Sqr(pt.y));
 end;
 
+{ TRange }
+
+function Range(_start:int; _end:int):TRange;
+begin
+  Result.start := _start;
+  Result.&end := _end;
+end;
+
+class function TRange.all:TRange;
+begin
+  Result := Range(INT_MIN, INT_MAX);
+end;
+
 {$ENDIF}

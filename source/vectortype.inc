@@ -14,3 +14,4 @@
     vtGCompileArg = 14,     // vector<GCompileArg>
     vtVec6f       = 15,     // vector<Vec6f>
     vtVectorPoint2f = 16    // vector<vector<Point2f>>
+    //vtVectorMat     = 17    // vector<vector<Mat>>
