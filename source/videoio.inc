@@ -736,6 +736,7 @@ Type
       The method first calls VideoCapture::release to close the already opened file or camera.
     *)
     // CV_WRAP virtual Bool open(int index, int apiPreference, const std: : vector<int> & params);
+    function open(const index: Int; const apiPreference: VideoCaptureAPIs; const params:vector<int>): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     (* @brief Returns true if video capturing has been initialized already.
 

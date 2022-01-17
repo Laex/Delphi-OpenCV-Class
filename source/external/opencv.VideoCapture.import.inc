@@ -81,15 +81,28 @@ function isOpened_VideoCapture(const Obj: TVideoCapture): Bool; external opencv_
 function open_VideoCapture(const Obj: TVideoCapture; const filename: CppString; apiPreference: Int): Bool; overload;
   external opencv_world_dll name '?open@VideoCapture@cv@@UEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// 5787
-// ?open@VideoCapture@cv@@UEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HAEBV?$vector@HV?$allocator@H@std@@@4@@Z
-// public: virtual bool __cdecl cv::VideoCapture::open(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & __ptr64,int,class std::vector<int,class std::allocator<int> > const & __ptr64) __ptr64
+{
+  5787
+  ?open@VideoCapture@cv@@UEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HAEBV?$vector@HV?$allocator@H@std@@@4@@Z
+  public: virtual bool __cdecl cv::VideoCapture::open(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & __ptr64,int,class std::vector<int,class std::allocator<int> > const & __ptr64) __ptr64
+}
 function open_VideoCapture(const Obj: TVideoCapture; const filename: CppString; apiPreference: Int; const params: Vector<Int>): Bool; overload;
   external opencv_world_dll name '?open@VideoCapture@cv@@UEAA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HAEBV?$vector@HV?$allocator@H@std@@@4@@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-// 5788
-// ?open@VideoCapture@cv@@UEAA_NHH@Z
-// public: virtual bool __cdecl cv::VideoCapture::open(int,int) __ptr64
+{
+  5789
+  ?open@VideoCapture@cv@@UEAA_NHHAEBV?$vector@HV?$allocator@H@std@@@std@@@Z
+  ?open@VideoCapture@cv@@UEAA_NHHAEBV?$vector@HV?$allocator@H@std@@@std@@@Z
+  bool cv::VideoCapture::open(int,int,class std::vector<int,class std::allocator<int> > const &)
+}
+function open_VideoCapture(const Obj: TVideoCapture; const index: Int; const apiPreference: VideoCaptureAPIs; const params: Vector<Int>): Bool; overload;
+  external opencv_world_dll name '?open@VideoCapture@cv@@UEAA_NHH@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  5788
+  ?open@VideoCapture@cv@@UEAA_NHH@Z
+  public: virtual bool __cdecl cv::VideoCapture::open(int,int) __ptr64
+}
 function open_VideoCapture(const Obj: TVideoCapture; a: Int; b: Int): Bool; overload; external opencv_world_dll name '?open@VideoCapture@cv@@UEAA_NHH@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -115,12 +128,12 @@ function read_VideoCapture(const Obj: TVideoCapture; const o: TOutputArray): Boo
 procedure release_VideoCapture(const Obj: TVideoCapture); external opencv_world_dll name '?release@VideoCapture@cv@@UEAAXXZ'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 {
-6164
-?retrieve@VideoCapture@cv@@UEAA_NAEBV_OutputArray@debug_build_guard@2@H@Z
-?retrieve@VideoCapture@cv@@UEAA_NAEBV_OutputArray@2@H@Z
-bool cv::VideoCapture::retrieve(class cv::_OutputArray const &,int)
+  6164
+  ?retrieve@VideoCapture@cv@@UEAA_NAEBV_OutputArray@debug_build_guard@2@H@Z
+  ?retrieve@VideoCapture@cv@@UEAA_NAEBV_OutputArray@2@H@Z
+  bool cv::VideoCapture::retrieve(class cv::_OutputArray const &,int)
 }
-function retrieve_VideoCapture(const Obj: TVideoCapture; const image:TOutputArray; flag :int = 0): Bool; external opencv_world_dll
+function retrieve_VideoCapture(const Obj: TVideoCapture; const image: TOutputArray; flag: Int = 0): Bool; external opencv_world_dll
 {$IFDEF DEBUG}
   name '?retrieve@VideoCapture@cv@@UEAA_NAEBV_OutputArray@debug_build_guard@2@H@Z'
 {$ELSE}

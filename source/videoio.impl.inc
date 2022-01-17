@@ -93,6 +93,15 @@ begin
   end;
 end;
 
+function TVideoCapture.open(const index: Int; const apiPreference: VideoCaptureAPIs; const params:vector<int>): BOOL;
+begin
+  try
+    Result := open_VideoCapture(Self, index, apiPreference, params);
+  except
+    Result := False;
+  end;
+end;
+
 function TVideoCapture.open(const index: Int; const apiPreference: VideoCaptureAPIs): BOOL;
 begin
   try
