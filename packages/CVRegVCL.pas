@@ -37,10 +37,13 @@ uses
 
 {$i '../../source/core/version.inc'}
 
+const
+  PackageText = 'Delphi binding for OpenCV C++ classes';
+
 resourcestring
-  resPackageName = 'Delphi-OpenCV for C++ classes '+CV_VERSION;
-  resAboutDescription = 'Delphi-OpenCV for C++ classes';
-  resAboutURL = 'Web: https://github.com/Laex/Delphi-OpenCV-Class/';
+  resPackageName = PackageText+' '+CV_VERSION;
+  resAboutDescription = PackageText;
+  resAboutURL = 'https://github.com/Laex/Delphi-OpenCV-Class/';
   resAboutCopyright = 'Copyright (c) 2021 Laentir Valetov';
   resLicense = 'Apache-2.0 License';
   //
