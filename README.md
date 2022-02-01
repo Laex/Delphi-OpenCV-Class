@@ -1,7 +1,9 @@
-# Delphi-OpenCV for C++ classes
+# Delphi binding for OpenCV
 * Experimental Delphi binding for OpenCV 4.5.5
 * Development environment - Delphi 10.4, 11
 * x64 platform only
+
+![](https://tokei.rs/b1/github/Laex/Delphi-OpenCV-Class)
 ##### Contributors:
 + Laentir Valetov (email: laex@bk.ru)
 ## Usage:
@@ -17,7 +19,7 @@ __From `<opencv>\build\x64\vc15\bin\`__
 **From `<project>\bin\`**
 * opencv_delphi455.dll - `release`<br>
 * opencv_delphi455d.dll - `debug`<br>
-
+                                                                                       
 __For the library to work properly, you need__
 - place next to the executable file of your program. To run examples - in `<project>\bin\`<br>
 **or**

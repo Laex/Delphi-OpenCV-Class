@@ -38,7 +38,7 @@ uses
 {$i '../../source/core/version.inc'}
 
 const
-  PackageText = 'Delphi binding for OpenCV C++ classes';
+  PackageText = 'Delphi binding for OpenCV';
 
 resourcestring
   resPackageName = PackageText+' '+CV_VERSION;
