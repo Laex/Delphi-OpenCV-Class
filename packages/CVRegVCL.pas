@@ -21,6 +21,8 @@
 *)
 unit CVRegVCL;
 
+{$I opt.inc}
+
 interface
 
 procedure Register;
