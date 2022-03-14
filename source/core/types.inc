@@ -174,6 +174,9 @@ Example:
     class operator Implicit(const m: TPoint_<T>): UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const p: TPoint_<T>): TPoint_<Int>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Subtract(const a: TPoint_<T>; const b: TPoint_<T>) : TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Add(const a: TPoint_<T>; const b: TPoint_<T>) : TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Multiply(const a: TPoint_<T>; const b: float) : TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Multiply(const a: TPoint_<T>; const b: double) : TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
   public
     x: T; // !< x coordinate of the point
     y: T; // !< y coordinate of the point

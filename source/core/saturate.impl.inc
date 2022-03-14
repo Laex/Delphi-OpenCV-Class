@@ -22,14 +22,25 @@
 
 {$IFDEF OPENCV_CORE_SATURATE_HPP}
 
+{$MESSAGE WARN 'TODO: saturate_cast<T>'}
+
 class function saturate_cast<T>.cast(const v: Int): T;
 begin
-  {$MESSAGE WARN 'TODO: saturate_cast<T>'}
   Result := TValue(v).AsType<T>;
   // if TypeInfo(T)=TypeInfo(Int) then
   // pInt(@Result)^ := v else
   // if TypeInfo(T)=TypeInfo(uchar) then
   // pUchar(@Result)^ := uchar(iif.iif<Int>(uint(v) <= UCHAR_MAX, v, iif.iif<Int>(v > 0, UCHAR_MAX, 0)));
+end;
+
+class function saturate_cast<T>.cast(const v: float): T;
+begin
+  Result := TValue(v).AsType<T>;
+end;
+
+class function saturate_cast<T>.cast(const v: double): T;
+begin
+  Result := TValue(v).AsType<T>;
 end;
 
 {$ENDIF}

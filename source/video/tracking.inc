@@ -371,57 +371,55 @@ an extended Kalman filter functionality.
 with cvReleaseKalman(&kalmanFilter)
  *)
 
-//class CV_EXPORTS_W KalmanFilter
-//{
-//public:
+TKalmanFilter = record
+public
 //    CV_WRAP KalmanFilter();
-//    (** @overload
-//    @param dynamParams Dimensionality of the state.
-//    @param measureParams Dimensionality of the measurement.
-//    @param controlParams Dimensionality of the control vector.
-//    @param type Type of the created matrices that should be CV_32F or CV_64F.
-//    *)
+    (** @overload
+    @param dynamParams Dimensionality of the state.
+    @param measureParams Dimensionality of the measurement.
+    @param controlParams Dimensionality of the control vector.
+    @param type Type of the created matrices that should be CV_32F or CV_64F.
+    *)
 //    CV_WRAP KalmanFilter( int dynamParams, int measureParams, int controlParams = 0, int type = CV_32F );
-//
-//    (** @brief Re-initializes Kalman filter. The previous content is destroyed.
-//
-//    @param dynamParams Dimensionality of the state.
-//    @param measureParams Dimensionality of the measurement.
-//    @param controlParams Dimensionality of the control vector.
-//    @param type Type of the created matrices that should be CV_32F or CV_64F.
-//     *)
+    class function KalmanFilter(const dynamParams, measureParams:int; const controlParams :int = 0; const &type :int= CV_32F ):TKalmanFilter;
+          static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+    (** @brief Re-initializes Kalman filter. The previous content is destroyed.
+    @param dynamParams Dimensionality of the state.
+    @param measureParams Dimensionality of the measurement.
+    @param controlParams Dimensionality of the control vector.
+    @param type Type of the created matrices that should be CV_32F or CV_64F.
+     *)
 //    void init( int dynamParams, int measureParams, int controlParams = 0, int type = CV_32F );
-//
-//    (** @brief Computes a predicted state.
-//
-//    @param control The optional input control
-//     *)
+
+    (** @brief Computes a predicted state.
+    @param control The optional input control
+     *)
 //    CV_WRAP const Mat& predict( const Mat& control = Mat() );
-//
-//    (** @brief Updates the predicted state from the measurement.
-//
-//    @param measurement The measured system parameters
-//     *)
+
+    (** @brief Updates the predicted state from the measurement.
+    @param measurement The measured system parameters
+     *)
 //    CV_WRAP const Mat& correct( const Mat& measurement );
-//
-//    CV_PROP_RW Mat statePre;           //!< predicted state (x'(k)): x(k)=A*x(k-1)+B*u(k)
-//    CV_PROP_RW Mat statePost;          //!< corrected state (x(k)): x(k)=x'(k)+K(k)*(z(k)-H*x'(k))
-//    CV_PROP_RW Mat transitionMatrix;   //!< state transition matrix (A)
-//    CV_PROP_RW Mat controlMatrix;      //!< control matrix (B) (not used if there is no control)
-//    CV_PROP_RW Mat measurementMatrix;  //!< measurement matrix (H)
-//    CV_PROP_RW Mat processNoiseCov;    //!< process noise covariance matrix (Q)
-//    CV_PROP_RW Mat measurementNoiseCov;//!< measurement noise covariance matrix (R)
-//    CV_PROP_RW Mat errorCovPre;        //!< priori error estimate covariance matrix (P'(k)): P'(k)=A*P(k-1)*At + Q)*)
-//    CV_PROP_RW Mat gain;               //!< Kalman gain matrix (K(k)): K(k)=P'(k)*Ht*inv(H*P'(k)*Ht+R)
-//    CV_PROP_RW Mat errorCovPost;       //!< posteriori error estimate covariance matrix (P(k)): P(k)=(I-K(k)*H)*P'(k)
-//
-//    // temporary matrices
-//    Mat temp1;
-//    Mat temp2;
-//    Mat temp3;
-//    Mat temp4;
-//    Mat temp5;
-//};
+   public
+      statePre               :TMat;           //!< predicted state (x'(k)): x(k)=A*x(k-1)+B*u(k)
+      statePost              :TMat;          //!< corrected state (x(k)): x(k)=x'(k)+K(k)*(z(k)-H*x'(k))
+      transitionMatrix       :TMat;   //!< state transition matrix (A)
+      controlMatrix          :TMat;      //!< control matrix (B) (not used if there is no control)
+      measurementMatrix      :TMat;  //!< measurement matrix (H)
+      processNoiseCov        :TMat;    //!< process noise covariance matrix (Q)
+      measurementNoiseCov    :TMat;//!< measurement noise covariance matrix (R)
+      errorCovPre            :TMat;        //!< priori error estimate covariance matrix (P'(k)): P'(k)=A*P(k-1)*At + Q)*)
+      gain                   :TMat;               //!< Kalman gain matrix (K(k)): K(k)=P'(k)*Ht*inv(H*P'(k)*Ht+R)
+      errorCovPost           :TMat;       //!< posteriori error estimate covariance matrix (P(k)): P(k)=(I-K(k)*H)*P'(k)
+
+    // temporary matrices
+     temp1 :TMat;
+     temp2 :TMat;
+     temp3 :TMat;
+     temp4 :TMat;
+     temp5 :TMat;
+end;
 
 
 (** @brief Read a .flo file
@@ -886,5 +884,6 @@ Original code can be found here <http://vision.ucsd.edu/~bbabenko/project_miltra
 //} // cv
 
 {$i 'external/opencv.OpticalFlow.import.inc'}
+{$i 'external/opencv.KalmanFilter.import.inc'}
 
 {$endif}

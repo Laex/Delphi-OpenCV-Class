@@ -71,6 +71,53 @@ begin
     Assert(false, 'Point type must be Integer, Single(Float) or Double');
 end;
 
+class operator TPoint_<T>.Add(const a: TPoint_<T>; const b: TPoint_<T>): TPoint_<T>;
+begin
+  if TypeInfo(T) = TypeInfo(float) then
+  begin
+    pFloat(@Result.x)^ := pFloat(@a.x)^ + pFloat(@b.x)^;
+    pFloat(@Result.y)^ := pFloat(@a.y)^ + pFloat(@b.y)^;
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    pDouble(@Result.x)^ := pDouble(@a.x)^ + pDouble(@b.x)^;
+    pDouble(@Result.y)^ := pDouble(@a.y)^ + pDouble(@b.y)^;
+  end
+  else if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    pInt(@Result.x)^ := saturate_cast<Int>.cast(pInt(@a.x)^ + pInt(@b.x)^);
+    pInt(@Result.y)^ := saturate_cast<Int>.cast(pInt(@a.y)^ + pInt(@b.y)^);
+  end
+  else
+    Assert(false, 'Point type must be Integer, Single(Float) or Double');
+end;
+
+class operator TPoint_<T>.Multiply(const a: TPoint_<T>; const b: float): TPoint_<T>;
+begin
+  if TypeInfo(T) = TypeInfo(float) then
+  begin
+    pFloat(@Result.x)^ := pFloat(@a.x)^ * b;
+    pFloat(@Result.y)^ := pFloat(@a.y)^ * b;
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    pDouble(@Result.x)^ := pDouble(@a.x)^ * b;
+    pDouble(@Result.y)^ := pDouble(@a.y)^ * b;
+  end
+  else if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    pInt(@Result.x)^ := saturate_cast<Int>.cast(pInt(@a.x)^ * b);
+    pInt(@Result.y)^ := saturate_cast<Int>.cast(pInt(@a.y)^ * b);
+  end
+  else
+    Assert(false, 'Point type must be Integer, Single(Float) or Double');
+end;
+
+class operator TPoint_<T>.Multiply(const a: TPoint_<T>; const b: double): TPoint_<T>;
+begin
+  Result := a * float(b);
+end;
+
 class function TPoint_<T>.Point(_x, _y: T): TPoint_<T>;
 begin
   Result.x := _x;
@@ -355,13 +402,13 @@ end;
 
 { TRange }
 
-function Range(_start:int; _end:int):TRange;
+function Range(_start: Int; _end: Int): TRange;
 begin
   Result.start := _start;
   Result.&end := _end;
 end;
 
-class function TRange.all:TRange;
+class function TRange.all: TRange;
 begin
   Result := Range(INT_MIN, INT_MAX);
 end;
