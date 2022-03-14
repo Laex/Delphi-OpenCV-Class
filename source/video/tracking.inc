@@ -884,6 +884,6 @@ Original code can be found here <http://vision.ucsd.edu/~bbabenko/project_miltra
 //} // cv
 
 {$i 'external/opencv.OpticalFlow.import.inc'}
-{$i 'external/opencv.KalmanFilter.import.inc'}
+{i 'external/opencv.KalmanFilter.import.inc'}
 
 {$endif}

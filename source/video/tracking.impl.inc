@@ -59,7 +59,7 @@ end;
 
 class function TKalmanFilter.KalmanFilter(const dynamParams, measureParams:int; const controlParams :int = 0; const &type :int= CV_32F ):TKalmanFilter;
 begin
-   Constructor_KalmanFilter(Result,dynamParams, measureParams,controlParams,&type);
+//   Constructor_KalmanFilter(Result,dynamParams, measureParams,controlParams,&type);
 end;
 
 {$endif}
