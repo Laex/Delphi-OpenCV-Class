@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_TRACKING_HPP}
+{$IFDEF OPENCV_TRACKING_HPP}
 
 procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
   const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int { = 3 } );
@@ -57,9 +57,26 @@ end;
 
 { TKalmanFilter }
 
-class function TKalmanFilter.KalmanFilter(const dynamParams, measureParams:int; const controlParams :int = 0; const &type :int= CV_32F ):TKalmanFilter;
+class function TKalmanFilter.KalmanFilter(const dynamParams, measureParams: Int; const controlParams: Int = 0; const &type: Int = CV_32F): TKalmanFilter;
 begin
-//   Constructor_KalmanFilter(Result,dynamParams, measureParams,controlParams,&type);
+  Constructor_KalmanFilter(Result, dynamParams, measureParams, controlParams, &type);
 end;
 
-{$endif}
+function TKalmanFilter.predict(const control: TMat { = Mat() } ): TMat;
+begin
+  Result := KalmanFilter_predict(Self, control);
+end;
+
+function TKalmanFilter.predict(): TMat;
+Var
+  M: TMat;
+begin
+  Result := predict(M);
+end;
+
+function TKalmanFilter.correct(const measurement: TMat): TMat;
+begin
+  Result := KalmanFilter_correct(Self, measurement);
+end;
+
+{$ENDIF}

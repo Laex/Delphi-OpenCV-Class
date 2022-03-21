@@ -1,7 +1,7 @@
-{$i jedi\jedi.inc}
-
 {$IFNDEF CVOPT}
 {$DEFINE CVOPT}
+
+{$i jedi\jedi.inc}
 
 {$IFDEF RELEASE}
 { }{$DEFINE DELAYED_LOAD_DLL}

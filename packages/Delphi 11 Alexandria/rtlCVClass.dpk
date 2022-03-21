@@ -35,7 +35,7 @@ requires
   vcl;
 
 contains
-  cv.opencv in '..\..\source\cv.opencv.pas',
+  cv.opencv in '..\..\source\cv.opencv.pas' {/  ,cpp.utils in '..\..\source\cpp.utils.pas'},
   cpp.utils in '..\..\source\cpp.utils.pas';
 
 end.

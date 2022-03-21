@@ -468,7 +468,7 @@ begin
   // if (1 = img^.nChannels) and (not isgray) then
   // Exit(false);
 
-  dibhdr := @buf;
+  dibhdr := pBITMAPINFOHEADER(@buf);
   _rgb := pCOLORREF(Integer(dibhdr) + SizeOf(BITMAPINFOHEADER));
 
   if (isgray) then

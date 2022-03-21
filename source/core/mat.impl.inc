@@ -119,9 +119,22 @@ begin
   operator_MatExpr_Mul_Mat_double(Result, a, b);
 end;
 
+class operator TMatHelper.Multiply(const a: TMat; const b: TMat): TMatExpr;
+begin
+  operator_MatExpr_Mul_Mat_Mat(Result, a, b);
+end;
+
 class operator TMatHelper.Add(const a: TMat; const s: TScalar): TMatExpr;
 begin
   operator_MatExpr_Add_Mat_Scalar(Result, a, s);
+end;
+
+class operator TMatHelper.Add(const a: TMat; const s: TMatExpr): TMat;
+Var
+  r: TMatExpr;
+begin
+  operator_MatExpr_Add_Mat_MatExpr(r, a, s);
+  Result := r;
 end;
 
 class function TMatHelper.mat(const size: TSize; &type: int): TMat;
@@ -465,6 +478,16 @@ end;
 class function TMatHelper.mat(const m: TMat; const rowRange: TRange): TMat;
 begin
   Result := TMat.mat(m, rowRange, TRange.All);
+end;
+
+class function TMatHelper.mat(const m: TMat): TMat;
+begin
+  Result := m;
+end;
+
+class operator TMatHelper.Add(const a: TMatExpr; const s: TMat): TMatExpr;
+begin
+  operator_MatExpr_Add_MatExpr_Mat(Result, a, s);
 end;
 
 { TMatExpr }
@@ -860,6 +883,18 @@ end;
 class function TMat_<T>.mat(const m: TMat_<T>; const rowRange: TRange): TMat_<T>;
 begin
   Result := TMat_<T>.mat(m, rowRange, TRange.All);
+end;
+
+class operator TMat_<T>.LeftShift(const a: TMat_<T>; const b: TArray<T>): TMat_<T>;
+begin
+  Result := a;
+  for var i := 0 to System.Math.min(Result.cols * Result.rows - 1, High(b)) do
+    Result.FMat.st<T>(i, b[i]);
+end;
+
+class operator TMat_<T>.Implicit(const a: TMat_<T>): TMat;
+begin
+  Result := a.FMat;
 end;
 
 {$ENDIF}

@@ -71,9 +71,9 @@ procedure MatExpr_size(const Obj: TMatExpr; const p: TSize); external opencv_wor
   ??Scv@@YA?AVMatExpr@0@AEBVMat@0@@Z
   class cv::MatExpr cv::operator~(class cv::Mat const &)
 }
- procedure operator_MatExpr_LogicalNot_Mat(Var Obj: TMatExpr; const m: TMat); //
-  external opencv_world_dll                               //
-  name '??Scv@@YA?AVMatExpr@0@AEBVMat@0@@Z'               //
+procedure operator_MatExpr_LogicalNot_Mat(Var Obj: TMatExpr; const m: TMat); //
+  external opencv_world_dll //
+  name '??Scv@@YA?AVMatExpr@0@AEBVMat@0@@Z' //
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 {
   2860
@@ -85,62 +85,84 @@ procedure operator_MatExpr_Subtract_Mat_MatExpr(Var Obj: TMatExpr; const m: TMat
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {
-2932
-??Pcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
-??Pcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
-class cv::MatExpr cv::operator>=(class cv::Mat const &,double)
+  2932
+  ??Pcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
+  ??Pcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
+  class cv::MatExpr cv::operator>=(class cv::Mat const &,double)
 }
-procedure operator_MatExpr_GreaterThanOrEqual_double(Var Obj: TMatExpr; const m: TMat; const d: double);
-external opencv_world_dll name '??Pcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z'
+procedure operator_MatExpr_GreaterThanOrEqual_double(Var Obj: TMatExpr; const m: TMat; const d: double); external opencv_world_dll name '??Pcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 {
-2826
-??Dcv@@YA?AVMatExpr@0@AEBV10@N@Z
-??Dcv@@YA?AVMatExpr@0@AEBV10@N@Z
-class cv::MatExpr cv::operator*(class cv::MatExpr const &,double)
+  2826
+  ??Dcv@@YA?AVMatExpr@0@AEBV10@N@Z
+  ??Dcv@@YA?AVMatExpr@0@AEBV10@N@Z
+  class cv::MatExpr cv::operator*(class cv::MatExpr const &,double)
 }
-procedure operator_MatExpr_Mul_MatExpr_double(Var Obj: TMatExpr; const m: TMatExpr; const d: double);
-external opencv_world_dll name '??Dcv@@YA?AVMatExpr@0@AEBV10@N@Z'
+procedure operator_MatExpr_Mul_MatExpr_double(Var Obj: TMatExpr; const m: TMatExpr; const d: double); external opencv_world_dll name '??Dcv@@YA?AVMatExpr@0@AEBV10@N@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-//2827	??Dcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	??Dcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	class cv::MatExpr cv::operator*(class cv::Mat const &,class cv::Mat const &)
-//2828	??Dcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV10@@Z	??Dcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV10@@Z	class cv::MatExpr cv::operator*(class cv::Mat const &,class cv::MatExpr const &)
+// 2827	??Dcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	??Dcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	class cv::MatExpr cv::operator*(class cv::Mat const &,class cv::Mat const &)
+// 2828	??Dcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV10@@Z	??Dcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV10@@Z	class cv::MatExpr cv::operator*(class cv::Mat const &,class cv::MatExpr const &)
 {
-2829
-??Dcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
-??Dcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
-class cv::MatExpr cv::operator*(class cv::Mat const &,double)
+  2829
+  ??Dcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
+  ??Dcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z
+  class cv::MatExpr cv::operator*(class cv::Mat const &,double)
 }
-procedure operator_MatExpr_Mul_Mat_double(Var Obj: TMatExpr; const m: TMat; const d: double);
-external opencv_world_dll name '??Dcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z'
+procedure operator_MatExpr_Mul_Mat_double(Var Obj: TMatExpr; const m: TMat; const d: double); external opencv_world_dll name '??Dcv@@YA?AVMatExpr@0@AEBVMat@0@N@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-//2830	??Dcv@@YA?AVMatExpr@0@NAEBV10@@Z	??Dcv@@YA?AVMatExpr@0@NAEBV10@@Z	class cv::MatExpr cv::operator*(double,class cv::MatExpr const &)
-//2831	??Dcv@@YA?AVMatExpr@0@NAEBVMat@0@@Z	??Dcv@@YA?AVMatExpr@0@NAEBVMat@0@@Z	class cv::MatExpr cv::operator*(double,class cv::Mat const &)
+// 2830	??Dcv@@YA?AVMatExpr@0@NAEBV10@@Z	??Dcv@@YA?AVMatExpr@0@NAEBV10@@Z	class cv::MatExpr cv::operator*(double,class cv::MatExpr const &)
+// 2831	??Dcv@@YA?AVMatExpr@0@NAEBVMat@0@@Z	??Dcv@@YA?AVMatExpr@0@NAEBVMat@0@@Z	class cv::MatExpr cv::operator*(double,class cv::Mat const &)
 
-//2869	??Hcv@@YA?AVMatExpr@0@AEBV10@0@Z	??Hcv@@YA?AVMatExpr@0@AEBV10@0@Z	class cv::MatExpr cv::operator+(class cv::MatExpr const &,class cv::MatExpr const &)
-//2870	??Hcv@@YA?AVMatExpr@0@AEBV10@AEBV?$Scalar_@N@0@@Z	??Hcv@@YA?AVMatExpr@0@AEBV10@AEBV?$Scalar_@N@0@@Z	class cv::MatExpr cv::operator+(class cv::MatExpr const &,class cv::Scalar_<double> const &)
-//2871	??Hcv@@YA?AVMatExpr@0@AEBV10@AEBVMat@0@@Z	??Hcv@@YA?AVMatExpr@0@AEBV10@AEBVMat@0@@Z	class cv::MatExpr cv::operator+(class cv::MatExpr const &,class cv::Mat const &)
-//2872	??Hcv@@YA?AVMatExpr@0@AEBV?$Scalar_@N@0@AEBV10@@Z	??Hcv@@YA?AVMatExpr@0@AEBV?$Scalar_@N@0@AEBV10@@Z	class cv::MatExpr cv::operator+(class cv::Scalar_<double> const &,class cv::MatExpr const &)
-//2873	??Hcv@@YA?AVMatExpr@0@AEBV?$Scalar_@N@0@AEBVMat@0@@Z	??Hcv@@YA?AVMatExpr@0@AEBV?$Scalar_@N@0@AEBVMat@0@@Z	class cv::MatExpr cv::operator+(class cv::Scalar_<double> const &,class cv::Mat const &)
-//2874	??Hcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	??Hcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	class cv::MatExpr cv::operator+(class cv::Mat const &,class cv::Mat const &)
-//2875	??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV10@@Z	??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV10@@Z	class cv::MatExpr cv::operator+(class cv::Mat const &,class cv::MatExpr const &)
+// 2869	??Hcv@@YA?AVMatExpr@0@AEBV10@0@Z	??Hcv@@YA?AVMatExpr@0@AEBV10@0@Z	class cv::MatExpr cv::operator+(class cv::MatExpr const &,class cv::MatExpr const &)
+// 2870	??Hcv@@YA?AVMatExpr@0@AEBV10@AEBV?$Scalar_@N@0@@Z	??Hcv@@YA?AVMatExpr@0@AEBV10@AEBV?$Scalar_@N@0@@Z	class cv::MatExpr cv::operator+(class cv::MatExpr const &,class cv::Scalar_<double> const &)
+
 {
-2876
-??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z
-??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z
-class cv::MatExpr cv::operator+(class cv::Mat const &,class cv::Scalar_<double> const &)
+2871
+??Hcv@@YA?AVMatExpr@0@AEBV10@AEBVMat@0@@Z
+??Hcv@@YA?AVMatExpr@0@AEBV10@AEBVMat@0@@Z
+class cv::MatExpr cv::operator+(class cv::MatExpr const &,class cv::Mat const &)
 }
-procedure operator_MatExpr_Add_Mat_Scalar(Var Obj: TMatExpr; const m: TMat; const d: TScalar);
-external opencv_world_dll name '??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z'
+procedure operator_MatExpr_Add_MatExpr_Mat(Var Obj: TMatExpr; const m: TMatExpr; const d: TMat);
+external opencv_world_dll name '??Hcv@@YA?AVMatExpr@0@AEBV10@AEBVMat@0@@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-//2883	??Icv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	??Icv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	class cv::MatExpr cv::operator&(class cv::Mat const &,class cv::Mat const &)
+// 2872	??Hcv@@YA?AVMatExpr@0@AEBV?$Scalar_@N@0@AEBV10@@Z	??Hcv@@YA?AVMatExpr@0@AEBV?$Scalar_@N@0@AEBV10@@Z	class cv::MatExpr cv::operator+(class cv::Scalar_<double> const &,class cv::MatExpr const &)
+// 2873	??Hcv@@YA?AVMatExpr@0@AEBV?$Scalar_@N@0@AEBVMat@0@@Z	??Hcv@@YA?AVMatExpr@0@AEBV?$Scalar_@N@0@AEBVMat@0@@Z	class cv::MatExpr cv::operator+(class cv::Scalar_<double> const &,class cv::Mat const &)
+
+{ 2874
+  ??Hcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z
+  ??Hcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z
+  class cv::MatExpr cv::operator+(class cv::Mat const &,class cv::Mat const &)
+}
+procedure operator_MatExpr_Mul_Mat_Mat(Var Obj: TMatExpr; const m: TMat; const d: TMat);
+external opencv_world_dll name '??Hcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 {
-2884
-??Icv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z
-??Icv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z
-class cv::MatExpr cv::operator&(class cv::Mat const &,class cv::Scalar_<double> const &)
+  2875
+  ??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV10@@Z
+  ??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV10@@Z
+  class cv::MatExpr cv::operator+(class cv::Mat const &,class cv::MatExpr const &)
+}
+procedure operator_MatExpr_Add_Mat_MatExpr(Var Obj: TMatExpr; const m: TMat; const d: TMatExpr);
+external opencv_world_dll name '??Hcv@@YA?AVMatExpr@0@AEBVMat@0@0@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{
+  2876
+  ??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z
+  ??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z
+  class cv::MatExpr cv::operator+(class cv::Mat const &,class cv::Scalar_<double> const &)
+}
+procedure operator_MatExpr_Add_Mat_Scalar(Var Obj: TMatExpr; const m: TMat; const d: TScalar); external opencv_world_dll name '??Hcv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z'
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+// 2883	??Icv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	??Icv@@YA?AVMatExpr@0@AEBVMat@0@0@Z	class cv::MatExpr cv::operator&(class cv::Mat const &,class cv::Mat const &)
+{
+  2884
+  ??Icv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z
+  ??Icv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z
+  class cv::MatExpr cv::operator&(class cv::Mat const &,class cv::Scalar_<double> const &)
 }
 procedure operator_MatExpr_BitwiseAnd_Mat_Scalar(Var Obj: TMatExpr; const m: TMat; const d: TScalar);
-external opencv_world_dll name '??Icv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z'
+  external opencv_world_dll name '??Icv@@YA?AVMatExpr@0@AEBVMat@0@AEBV?$Scalar_@N@0@@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-

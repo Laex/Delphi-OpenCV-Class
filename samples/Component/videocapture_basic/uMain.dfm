@@ -11,7 +11,6 @@ object Form1: TForm1
   Font.Name = 'Segoe UI'
   Font.Style = []
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 15
   object lbl1: TLabel
     Left = 8
@@ -33,27 +32,6 @@ object Form1: TForm1
     Width = 49
     Height = 15
     Caption = 'IP stream'
-  end
-  object cvwWebCam: TCVView
-    Left = 8
-    Top = 32
-    Width = 345
-    Height = 325
-    Source = cvcptrsrcWebCam
-  end
-  object cvwFile: TCVView
-    Left = 372
-    Top = 32
-    Width = 345
-    Height = 325
-    Source = cvcptrsrcFile
-  end
-  object cvwStream: TCVView
-    Left = 732
-    Top = 32
-    Width = 345
-    Height = 325
-    Source = cvcptrsrcStream
   end
   object cvcptrsrcWebCam: TCVCaptureSource
     Enabled = True

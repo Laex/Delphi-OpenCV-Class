@@ -855,6 +855,7 @@ type
     // Mat(int ndims, const int* sizes, int type, const Scalar& s);
     // Mat(const std::vector<int>& sizes, int type, const Scalar& s);
     // Mat(const Mat& m);
+    class function mat(const m:TMat): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function mat(rows, cols: Int; &type: Int; Data: Pointer; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function mat<T>(rows, cols: Int; Data: TArray<T>; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1005,7 +1006,10 @@ type
     class operator BitwiseAnd(const a: TMat; const b: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator GreaterThanOrEqual(const a: TMat; const b: Int): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Multiply(const a: TMat; const b: double): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Multiply(const a: TMat; const b: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Add(const a: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Add(const a: TMat; const s: TMatExpr): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Add(const a: TMatExpr; const s: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   // Move comment to TMat
@@ -2592,6 +2596,9 @@ type
     property cols: Int read FMat.cols;
     property dims: Int read FMat.dims;
     property Data: pUChar read FMat.Data;
+  public
+    class operator LeftShift(const a: TMat_<T>; const b: TArray<T>): TMat_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const a: TMat_<T>):TMat;{$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   TMat1b = TMat_<uchar>;

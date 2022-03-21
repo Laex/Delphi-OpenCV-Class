@@ -111,7 +111,7 @@ Type
     class operator Implicit(const s: CppString): string; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
-  TPtr<T: record > = record
+  TPtr<T{: record }> = record
   public type
     pT = ^T;
   public
