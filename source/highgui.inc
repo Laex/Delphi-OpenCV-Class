@@ -446,7 +446,7 @@ press (suitable for displaying a video frame-by-frame). To remove the window, us
   void cv::imshow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &)
 }
 procedure imshow(const winname: CppString; const Mat: TInputArray); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@@Z'
 {$ELSE}
   name '?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@@Z'
@@ -646,7 +646,7 @@ class cv::_InputArray const &,bool,bool)
 }
 function selectROI(const windowName:CppString; const img:TInputArray; showCrosshair :bool= true; fromCenter :bool= false):TRect;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@_N2@Z'
 {$ELSE}
 name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@_N2@Z'
@@ -664,7 +664,7 @@ class cv::Rect_<int> cv::selectROI(class cv::_InputArray const &,bool,bool)
 }
 function selectROI(const img:TInputArray; showCrosshair :bool= true; fromCenter :bool= false):TRect;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@debug_build_guard@1@_N1@Z'
 {$ELSE}
 name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@1@_N1@Z'
@@ -698,7 +698,7 @@ void cv::selectROIs(class std::basic_string<char,struct std::char_traits<char>,c
 procedure selectROIs(const windowName:CppString;const img:TInputArray;
 const boundingBoxes: vector<TRect>;showCrosshair :bool= true; fromCenter :bool= false);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z'
 {$ELSE}
 name '?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z'

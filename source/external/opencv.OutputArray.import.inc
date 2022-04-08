@@ -28,7 +28,7 @@
   public: __cdecl cv::_OutputArray::_OutputArray(class std::vector<class cv::Mat,class std::allocator<class cv::Mat> > & __ptr64) __ptr64
 }
 procedure Constructor_OutputArray(const Obj: TOutputArray;const m: vector<TMat>); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??0_OutputArray@debug_build_guard@cv@@QEAA@AEAV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@@Z'
 {$ELSE}
   name '??0_OutputArray@cv@@QEAA@AEAV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@@Z'
@@ -44,7 +44,7 @@ procedure Constructor_OutputArray(const Obj: TOutputArray;const m: vector<TMat>)
   public: __cdecl cv::_OutputArray::_OutputArray(class cv::Mat & __ptr64) __ptr64
 }
 procedure Constructor_OutputArray(const Obj: TOutputArray;const m: TMat); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??0_OutputArray@debug_build_guard@cv@@QEAA@AEAVMat@2@@Z'
 {$ELSE}
   name '??0_OutputArray@cv@@QEAA@AEAVMat@1@@Z'

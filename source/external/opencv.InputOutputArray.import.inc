@@ -32,7 +32,7 @@
   public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::Mat & __ptr64) __ptr64
 }
 procedure Constructor_InputOutputArray(const Obj: TInputOutputArray;const m: TMat); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??0_InputOutputArray@debug_build_guard@cv@@QEAA@AEAVMat@2@@Z'
 {$ELSE}
   name '??0_InputOutputArray@cv@@QEAA@AEAVMat@1@@Z'
@@ -53,7 +53,7 @@ procedure Constructor_InputOutputArray(const Obj: TInputOutputArray;const m: TMa
   public: __cdecl cv::_InputOutputArray::_InputOutputArray(class cv::Mat const & __ptr64) __ptr64
 }
 procedure Constructor_InputOutputArray_const(const Obj: TInputOutputArray;const m: TMat); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??0_InputOutputArray@debug_build_guard@cv@@QEAA@AEBVMat@2@@Z'
 {$ELSE}
   name '??0_InputOutputArray@cv@@QEAA@AEBVMat@1@@Z'
@@ -70,7 +70,7 @@ procedure Constructor_InputOutputArray_const(const Obj: TInputOutputArray;const 
   public: __cdecl cv::_InputOutputArray::_InputOutputArray(void) __ptr64
 }
 procedure Constructor_InputOutputArray(const Obj: TInputOutputArray); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??0_InputOutputArray@debug_build_guard@cv@@QEAA@XZ'
 {$ELSE}
   name '??0_InputOutputArray@cv@@QEAA@XZ'
@@ -83,7 +83,7 @@ procedure Constructor_InputOutputArray(const Obj: TInputOutputArray); overload; 
   public: __cdecl cv::_InputOutputArray::~_InputOutputArray(void) __ptr64
 }
 procedure Destructor_InputOutputArray(const Obj: TInputOutputArray); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??1_InputOutputArray@debug_build_guard@cv@@QEAA@XZ'
 {$ELSE}
   name '??1_InputOutputArray@cv@@QEAA@XZ'
@@ -100,7 +100,7 @@ procedure Destructor_InputOutputArray(const Obj: TInputOutputArray); overload; e
   class cv::_InputOutputArray const & cv::noArray(void)
 }
 procedure noArray_InputOutputArray(const Obj: TInputOutputArray); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?noArray@cv@@YAAEBV_InputOutputArray@debug_build_guard@1@XZ'
 {$ELSE}
   name '?noArray@cv@@YAAEBV_InputOutputArray@1@XZ'

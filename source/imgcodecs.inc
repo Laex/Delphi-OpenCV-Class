@@ -266,7 +266,7 @@ It also demonstrates how to save multiple images in a TIFF file:
 }
 function imwrite(const filename: CppString; const img: TInputArray; const params: Vector<Int> { = std::vector<int>() }
   ): BOOL; overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
 {$ELSE}
   name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'

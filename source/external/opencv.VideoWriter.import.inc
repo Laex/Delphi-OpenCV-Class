@@ -107,7 +107,7 @@ function set_VideoWriter(const Obj: TVideoWriter; propId: Int; value: double): B
   CV_WRAP virtual void write(InputArray image);
 }
 procedure write_VideoWriter(const Obj: TVideoWriter; const image: TInputArray); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?write@VideoWriter@cv@@UEAAXAEBV_InputArray@debug_build_guard@2@@Z'
 {$ELSE}
   name '?write@VideoWriter@cv@@UEAAXAEBV_InputArray@2@@Z'

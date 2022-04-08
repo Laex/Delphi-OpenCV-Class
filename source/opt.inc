@@ -1,11 +1,16 @@
 {$IFNDEF CVOPT}
 {$DEFINE CVOPT}
-
-{$i jedi\jedi.inc}
-
+//
+{$I jedi\jedi.inc}
+//
+{$IFDEF DEBUG}
+{ }{$DEFINE USE_DEBUG_DLLS} // Use debug OpenCV and VisualStudio's DLLs.
+{$IFEND}
+//
 {$IFDEF RELEASE}
 { }{$DEFINE DELAYED_LOAD_DLL}
 { }{$DEFINE USE_INLINE}
+{ }{$UNDEF  USE_DEBUG_DLLS} // Do not use debug OpenCV and VisualStudio's DLLs.
 {$ENDIF}
 //
 {$DEFINE USE_TYPEINFO}
@@ -18,5 +23,4 @@
 {$POINTERMATH ON}
 {$MINENUMSIZE 4}
 {$TYPEDADDRESS ON}
-
 {$ENDIF CVOPT}

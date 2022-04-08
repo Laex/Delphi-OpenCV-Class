@@ -96,7 +96,7 @@ void cv::inpaint(class cv::_InputArray const &,class cv::_InputArray const &,cla
 procedure inpaint( const src:TInputArray;const inpaintMask:TInputArray;
                    const dst:TOutputArray; inpaintRadius:double; flags:int);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?inpaint@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
 {$ELSE}
   name '?inpaint@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
@@ -170,7 +170,7 @@ procedure fastNlMeansDenoising( const src:TInputArray;const dst:TOutputArray;
      templateWindowSize :int= 7; searchWindowSize :int= 21;
      normType :int= int(NORM_L2));
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
 {$ELSE}
   name '?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
@@ -208,7 +208,7 @@ procedure fastNlMeansDenoisingColored(const src:TInputArray;const dst:TOutputArr
 h :float= 3; hColor :float= 3;
 templateWindowSize :int= 7; searchWindowSize :int= 21);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MMHH@Z'
 {$ELSE}
   name '?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MMHH@Z'
@@ -251,7 +251,7 @@ procedure fastNlMeansDenoisingMulti(const srcImgs:TInputArrayOfArrays;const dst:
  imgToDenoiseIndex:int; temporalWindowSize:int;
  h :float= 3; templateWindowSize :int= 7; searchWindowSize :int= 21);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMHH@Z'
 {$ELSE}
   name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMHH@Z'
@@ -300,7 +300,7 @@ procedure fastNlMeansDenoisingMulti(const srcImgs:TInputArrayOfArrays;const dst:
  templateWindowSize :int= 7; searchWindowSize: int= 21;
  normType :int= int(NORM_L2));
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
 {$ELSE}
   name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
@@ -345,7 +345,7 @@ procedure fastNlMeansDenoisingColoredMulti(const srcImgs:TInputArrayOfArrays;con
  h :float= 3; hColor :float= 3;
  templateWindowSize :int= 7; searchWindowSize :int= 21);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMMHH@Z'
 {$ELSE}
   name '?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMMHH@Z'
@@ -398,7 +398,7 @@ void cv::denoise_TVL1(class std::vector<class cv::Mat,class std::allocator<class
 }
 procedure denoise_TVL1(const observations:vector<TMat>; Var res:TMat; lambda:double=1.0; niters:int=30);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z'
 {$ELSE}
   name '?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z'
@@ -440,7 +440,7 @@ struct cv::Ptr<class cv::Tonemap> cv::createTonemap(float)
 }
 //function createTonemap(gamma :float= 1.0):TPtr<TTonemap>;
 //overload; external opencv_world_dll
-//{$IFDEF DEBUG}
+//{$IFDEF USE_DEBUG_DLLS}
 //  name '?createTonemap@cv@@YA?AU?$Ptr@VTonemap@cv@@@1@M@Z'
 //{$ELSE}
 //  name '?createTonemap@cv@@YA?AU?$Ptr@VTonemap@cv@@@1@M@Z'
@@ -801,7 +801,7 @@ struct cv::Ptr<class cv::Tonemap> cv::createTonemap(float)
     }
 procedure decolor(const Src: TInputArray; const grayscale: TOutputArray; const color_boost: TOutputArray);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?decolor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
 {$ELSE}
 name '?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
@@ -850,7 +850,7 @@ void cv::seamlessClone(class cv::_InputArray const &,class cv::_InputArray const
 procedure seamlessClone(const src:TInputArray;const dst:TInputArray;const mask:TInputArray;const p:TPoint;
      const blend:TOutputArray; flags:int);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?seamlessClone@cv@@YAXAEBV_InputArray@debug_build_guard@1@00V?$Point_@H@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?seamlessClone@cv@@YAXAEBV_InputArray@1@00V?$Point_@H@1@AEBV_OutputArray@1@H@Z'
@@ -880,7 +880,7 @@ void cv::colorChange(class cv::_InputArray const &,class cv::_InputArray const &
 procedure colorChange(const src:TInputArray;const mask:TInputArray;const dst:TOutputArray; red_mul :float= 1.0;
  green_mul :float= 1.0; blue_mul :float= 1.0);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?colorChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMM@Z'
 {$ELSE}
 name '?colorChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMM@Z'
@@ -909,7 +909,7 @@ void cv::illuminationChange(class cv::_InputArray const &,class cv::_InputArray 
 procedure illuminationChange(const src:TInputArray;const mask:TInputArray;const dst:TOutputArray;
  alpha :float= 0.2; beta :float= 0.4);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?illuminationChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MM@Z'
 {$ELSE}
 name '?illuminationChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MM@Z'
@@ -944,7 +944,7 @@ procedure textureFlattening(const src:TInputArray;const mask:TInputArray;const d
  low_threshold :float= 30; high_threshold :float= 45;
  kernel_size :int= 3);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?textureFlattening@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMH@Z'
 {$ELSE}
 name '?textureFlattening@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMH@Z'
@@ -979,7 +979,7 @@ const
 }
 procedure edgePreservingFilter(const Src: TInputArray; const dst: TOutputArray; flags: Int = 1; sigma_s: float = 60; sigma_r: float = 0.4);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z'
 {$ELSE}
 name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z'
@@ -1002,7 +1002,7 @@ name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z'
     void cv::detailEnhance(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
   }
 procedure detailEnhance(const Src: TInputArray; const dst: TOutputArray; sigma_s: float = 10; sigma_r: float = 0.15); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?detailEnhance@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z'
 {$ELSE}
   name '?detailEnhance@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z'
@@ -1030,7 +1030,7 @@ procedure detailEnhance(const Src: TInputArray; const dst: TOutputArray; sigma_s
     void cv::pencilSketch(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,float,float,float)
   }
 procedure pencilSketch(const Src: TInputArray; const dst1: TOutputArray; const dst2: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.07; shade_factor: float = 0.02); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?pencilSketch@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1MMM@Z'
 {$ELSE}
   name '?pencilSketch@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1MMM@Z'
@@ -1055,7 +1055,7 @@ procedure pencilSketch(const Src: TInputArray; const dst1: TOutputArray; const d
   }
 procedure stylization(const Src: TInputArray; const dst: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.45);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?stylization@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z'
 {$ELSE}
   name '?stylization@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z'

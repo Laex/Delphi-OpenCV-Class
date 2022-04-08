@@ -156,7 +156,7 @@ function colRange_Mat(const Obj: TMat; a: int; b: int): TMat; overload; external
   public: void __cdecl cv::Mat::convertTo(class cv::_OutputArray const & __ptr64,int,double,double)const __ptr64
 }
 procedure convertTo_Mat(const Obj: TMat;const a: TOutputArray; b: int; c: double; d: double); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?convertTo@Mat@cv@@QEBAXAEBV_OutputArray@debug_build_guard@2@HNN@Z'
 {$ELSE}
   name '?convertTo@Mat@cv@@QEBAXAEBV_OutputArray@2@HNN@Z'
@@ -175,7 +175,7 @@ procedure copySize_Mat(const Obj: TMat;const a: TMat); overload; external opencv
 }
 procedure copyTo_Mat(const Obj: TMat;const a: TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?copyTo@Mat@cv@@QEBAXAEBV_OutputArray@debug_build_guard@2@@Z'
 {$ELSE}
   name '?copyTo@Mat@cv@@QEBAXAEBV_OutputArray@2@@Z'
@@ -190,7 +190,7 @@ overload; external opencv_world_dll
   void cv::Mat::copyTo(class cv::_OutputArray const &,class cv::_InputArray const &)
 }
 procedure copyTo_Mat(const Obj: TMat;const a: TOutputArray;const b: TInputArray); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?copyTo@Mat@cv@@QEBAXAEBV_OutputArray@debug_build_guard@2@AEBV_InputArray@42@@Z'
 {$ELSE}
   name '?copyTo@Mat@cv@@QEBAXAEBV_OutputArray@2@AEBV_InputArray@2@@Z'
@@ -381,7 +381,7 @@ class cv::Mat & cv::Mat::setTo(class cv::_InputArray const &,class cv::_InputArr
 }
 function setTo_Mat(const Obj: TMat; const value:TInputArray;const mask:TInputArray):pMat;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?setTo@Mat@cv@@QEAAAEAV12@AEBV_InputArray@debug_build_guard@2@0@Z'
 {$ELSE}
   name '?setTo@Mat@cv@@QEAAAEAV12@AEBV_InputArray@2@0@Z'

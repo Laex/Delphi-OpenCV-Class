@@ -61,7 +61,7 @@ const
     class cv::RotatedRect cv::CamShift(class cv::_InputArray const &,class cv::Rect_<int> &,class cv::TermCriteria)
   }
 function CamShift(const probImage: TInputArray; const window: TRect; const criteria: TTermCriteria): TRotatedRect; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@debug_build_guard@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z'
 {$ELSE}
   name '?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z'
@@ -181,7 +181,7 @@ procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInput
   const err: TOutputArray; winSize: UInt64 { TSize = Size(21,21) }; maxLevel: Int { = 3 };
   const criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4); overload;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_InputOutputArray@31@AEBV_OutputArray@31@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
 {$ELSE}
   name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'

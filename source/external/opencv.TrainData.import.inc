@@ -40,7 +40,7 @@ procedure create_TrainData(Var obj: TPtr<TTrainData>;
     const varIdx:TInputArray {=noArray()};const sampleIdx:TInputArray {=noArray()};
     const sampleWeights:TInputArray{=noArray()};const varType:TInputArray{=noArray()});
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?create@TrainData@ml@cv@@SA?AU?$Ptr@VTrainData@ml@cv@@@3@AEBV_InputArray@debug_build_guard@3@H00000@Z'
 {$ELSE}
 name '?create@TrainData@ml@cv@@SA?AU?$Ptr@VTrainData@ml@cv@@@3@AEBV_InputArray@3@H00000@Z'

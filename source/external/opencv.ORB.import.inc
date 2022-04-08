@@ -38,7 +38,7 @@ function create_ORB(nfeatures:int=500; scaleFactor:float=1.2; nlevels:int=8; edg
         firstLevel:int=0; WTA_K:int=2; scoreType:int = Int(HARRIS_SCORE)
         {TORB.ScoreType=TORB.HARRIS_SCORE}; patchSize:int=31; fastThreshold:int=20): TPtr<TFeature2D>;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?create@ORB@cv@@SA?AU?$Ptr@VORB@cv@@@2@HMHHHHW4ScoreType@12@HH@Z'
 {$ELSE}
 name '?create@ORB@cv@@SA?AU?$Ptr@VORB@cv@@@2@HMHHHHW4ScoreType@12@HH@Z'

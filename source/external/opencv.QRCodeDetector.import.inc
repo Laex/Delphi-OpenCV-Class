@@ -54,7 +54,7 @@ procedure Destructor_QRCodeDetector(Var obj: TQRCodeDetector); external opencv_w
 }
 function detectAndDecode_QRCodeDetector(const obj: TQRCodeDetector; const img: TInputArray; const points: TOutputArray; const straight_qrcode: TOutputArray): CppString;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?detectAndDecode@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@62@1@Z'
 {$ELSE}
   name '?detectAndDecode@QRCodeDetector@cv@@QEAA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@2@AEBV_OutputArray@2@1@Z'
@@ -75,7 +75,7 @@ function detectAndDecode_QRCodeDetector(const obj: TQRCodeDetector; const img: T
 }
 function detect_QRCodeDetector(const obj: TQRCodeDetector; const img: TInputArray; const points: TOutputArray): bool;
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?detect@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z'
 {$ELSE}
   name '?detect@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@2@AEBV_OutputArray@2@@Z'
@@ -92,7 +92,7 @@ const img:TInputArray;const decoded_info:vector<cppstring>;
      const points :TOutputArray {= noArray()};
      const straight_qrcode :TOutputArrayOfArrays):bool;
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?detectAndDecodeMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$basic_string@DU?$'+
        'char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@'+
        '2@@std@@AEBV_OutputArray@42@2@Z'
@@ -108,7 +108,7 @@ bool cv::QRCodeDetector::detectMulti(class cv::_InputArray const &,class cv::_Ou
 }
 function detectMulti_QRCodeDetector(const obj: TQRCodeDetector; const img:TInputArray;const points:TOutputArray):Bool;
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?detectMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@42@@Z'
 {$ELSE}
   name '?detectMulti@QRCodeDetector@cv@@QEBA_NAEBV_InputArray@2@AEBV_OutputArray@2@@Z'

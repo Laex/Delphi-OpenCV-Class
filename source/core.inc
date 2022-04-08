@@ -254,7 +254,7 @@ procedure copyMakeBorder( const src: TInputArray;
                           top, bottom, left, right: int;
                           borderType: borderTypes;
                           const value: TScalar { = Scalar() } ); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?copyMakeBorder@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHHHAEBV?$Scalar_@N@1@@Z'
 {$ELSE}
   name '?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z'
@@ -309,7 +309,7 @@ procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, b
     void cv::add(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
   }
 procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() }; dtype: int { = -1 } ); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?add@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z'
 {$ELSE}
   name '?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
@@ -363,7 +363,7 @@ procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutp
         void cv::subtract(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
       }
     procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() }; dtype: int = -1); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
       name '?subtract@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z'
 {$ELSE}
       name '?subtract@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
@@ -402,7 +402,7 @@ procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutp
         }
 procedure Multiply(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; scale: double = 1; dtype: int = -1);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?multiply@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
 {$ELSE}
 name '?multiply@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
@@ -445,7 +445,7 @@ void cv::divide(class cv::_InputArray const &,class cv::_InputArray const &,clas
 procedure divide(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray;
           scale :double= 1; dtype :int = -1);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?divide@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
 {$ELSE}
 name '?divide@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
@@ -463,7 +463,7 @@ void cv::divide(double,class cv::_InputArray const &,class cv::_OutputArray cons
 }
 procedure divide(scale:double;const src2:TInputArray;const dst:TOutputArray; dtype :int= -1);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?divide@cv@@YAXNAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?divide@cv@@YAXNAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -497,7 +497,7 @@ void cv::scaleAdd(class cv::_InputArray const &,double,class cv::_InputArray con
 }
 procedure scaleAdd(const src1:TInputArray; alpha:double;const src2:TInputArray;const dst:TOutputArray);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?scaleAdd@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?scaleAdd@cv@@YAXAEBV_InputArray@1@N0AEBV_OutputArray@1@@Z'
@@ -540,7 +540,7 @@ name '?scaleAdd@cv@@YAXAEBV_InputArray@1@N0AEBV_OutputArray@1@@Z'
 procedure addWeighted(const src1: TInputArray; alpha: double; const src2: TInputArray; beta, gamma: double;
                       const dst: TOutputArray; dtype: int = -1);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?addWeighted@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0NNAEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z'
@@ -583,7 +583,7 @@ void cv::convertScaleAbs(class cv::_InputArray const &,class cv::_OutputArray co
 procedure convertScaleAbs(const src:TInputArray;const dst:TOutputArray;
           alpha :double= 1; beta :double= 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?convertScaleAbs@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NN@Z'
 {$ELSE}
 name '?convertScaleAbs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NN@Z'
@@ -609,7 +609,7 @@ void cv::convertFp16(class cv::_InputArray const &,class cv::_OutputArray const 
 }
 procedure convertFp16(const src:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?convertFp16@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?convertFp16@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -639,7 +639,7 @@ void cv::LUT(class cv::_InputArray const &,class cv::_InputArray const &,class c
 }
 procedure LUT(const src:TInputArray;const lut:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?LUT@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?LUT@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
@@ -662,7 +662,7 @@ class cv::Scalar_<double> cv::sum(class cv::_InputArray const &)
 }
 function sum(const src:TInputArray):TScalar;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@@Z'
 {$ELSE}
 name '?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@@Z'
@@ -685,7 +685,7 @@ int cv::countNonZero(class cv::_InputArray const &)
 }
 function countNonZero(const src:TInputArray):Int;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?countNonZero@cv@@YAHAEBV_InputArray@debug_build_guard@1@@Z'
 {$ELSE}
 name '?countNonZero@cv@@YAHAEBV_InputArray@1@@Z'
@@ -727,7 +727,7 @@ void cv::findNonZero(class cv::_InputArray const &,class cv::_OutputArray const 
 }
 procedure findNonZero(const src:TInputArray;const idx:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?findNonZero@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?findNonZero@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -754,7 +754,7 @@ class cv::Scalar_<double> cv::mean(class cv::_InputArray const &,class cv::_Inpu
 }
 function mean(const src:TInputArray;const mask:TInputArray {= noArray()}):TScalar; overload;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z'
 {$ELSE}
 name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z'
@@ -793,7 +793,7 @@ void cv::meanStdDev(class cv::_InputArray const &,class cv::_OutputArray const &
 procedure meanStdDev(const src:TInputArray;const mean:TOutputArray;const stddev:TOutputArray;
           const mask:TInputArray{=noArray()}); overload;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z'
 {$ELSE}
 name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z'
@@ -845,7 +845,7 @@ double cv::norm(class cv::_InputArray const &,int,class cv::_InputArray const &)
 }
 function norm(const src1:TInputArray; normType :int{= int(NORM_L2)}; const mask :TInputArray {= noArray()}):double;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@H0@Z'
 {$ELSE}
 name '?norm@cv@@YANAEBV_InputArray@1@H0@Z'
@@ -875,7 +875,7 @@ double cv::norm(class cv::_InputArray const &,class cv::_InputArray const &,int,
 function norm(const src1:TInputArray;const src2:TInputArray;
           normType :int {= int(NORM_L2)};const mask:TInputArray {= noArray()}):double;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@0H0@Z'
 {$ELSE}
 name '?norm@cv@@YANAEBV_InputArray@1@0H0@Z'
@@ -918,7 +918,7 @@ double cv::PSNR(class cv::_InputArray const &,class cv::_InputArray const &,doub
 }
 function PSNR(const src1:TInputArray;const src2:TInputArray; R:double=255):double;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?PSNR@cv@@YANAEBV_InputArray@debug_build_guard@1@0N@Z'
 {$ELSE}
 name '?PSNR@cv@@YANAEBV_InputArray@1@0N@Z'
@@ -947,7 +947,7 @@ procedure batchDistance(const src1:TInputArray;const src2:TInputArray;
           const mask:TInputArray {= noArray()}; update :int= 0;
           crosscheck :bool= false);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?batchDistance@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H1HH0H_N@Z'
 {$ELSE}
 name '?batchDistance@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H1HH0H_N@Z'
@@ -1026,7 +1026,7 @@ procedure batchDistance(const src1:TInputArray;const src2:TInputArray;
         }
 procedure normalize(const src: TInputArray;const dst: TInputOutputArray; alpha: double { = 1 }; beta: double { = 0 }; norm_type: int { = int(NORM_L2) }; dtype: int { = -1 };
 const mask: TInputArray { = noArray() } ); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?normalize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@NNHH0@Z'
 {$ELSE}
 name '?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z'
@@ -1077,7 +1077,7 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure minMaxLoc(const src: TInputArray;Var minVal: double;const maxVal: pDouble { = nil };
                     const minLoc: pPoint { = nil };const maxLoc: pPoint { = nil };
                     const mask: TInputArray { = noArray() }); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?minMaxLoc@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAV?$Point_@H@1@20@Z'
 {$ELSE}
 name '?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z'
@@ -1132,7 +1132,7 @@ void cv::minMaxIdx(class cv::_InputArray const &,double *,double *,int *,int *,c
 procedure minMaxIdx(const src:TInputArray; minVal:pDouble;  maxVal :pDouble {= nil};
           minIdx :Pointer {= nil}; maxIdx :pInt {= nil};const mask :TInputArray {= noArray()});
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?minMaxIdx@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAH20@Z'
 {$ELSE}
 name '?minMaxIdx@cv@@YAXAEBV_InputArray@1@PEAN1PEAH20@Z'
@@ -1186,7 +1186,7 @@ void cv::reduce(class cv::_InputArray const &,class cv::_OutputArray const &,int
 }
 procedure reduce(const src:TInputArray;const dst:TOutputArray; dim, rtype:int; dtype :int = -1);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?reduce@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z'
 {$ELSE}
 name '?reduce@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
@@ -1220,7 +1220,7 @@ name '?reduce@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
  void cv::merge(class cv::Mat const *,unsigned __int64,class cv::_OutputArray const &)
 }
 procedure merge(const mv: pMat; COUNT: size_t;const dst: TOutputArray); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z'
 {$ELSE}
 name '?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z'
@@ -1242,7 +1242,7 @@ procedure merge(const mv: TArray<TMat>; dst: TOutputArray); overload; {$IFDEF US
  void cv::merge(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 procedure merge(const mv: TInputArrayOfArrays; const dst: TOutputArray); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?merge@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?merge@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -1288,7 +1288,7 @@ procedure split(const m: TMat;const mv: TArray<TMat>); overload; {$IFDEF USE_INL
   void cv::split(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 procedure split(const m: TInputArray;const mv: TOutputArrayOfArrays); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?split@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -1373,7 +1373,7 @@ void cv::mixChannels(class cv::_InputArray const &,class cv::_InputOutputArray c
 procedure mixChannels(const src:TInputArrayOfArrays;const dst:TInputOutputArrayOfArrays;
 const fromTo:pInt; npairs:size_t);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@PEBH_K@Z'
 {$ELSE}
 name '?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@PEBH_K@Z'
@@ -1404,7 +1404,7 @@ void cv::mixChannels(class cv::_InputArray const &,class cv::_InputOutputArray c
 procedure mixChannels(const src:TInputArrayOfArrays;const dst:TInputOutputArrayOfArrays;
 const fromTo: vector<int>);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z'
 {$ELSE}
 name '?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z'
@@ -1426,7 +1426,7 @@ void cv::extractChannel(class cv::_InputArray const &,class cv::_OutputArray con
 }
 procedure extractChannel(const src:TInputArray;const dst:TOutputArray; coi:int);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?extractChannel@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?extractChannel@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -1448,7 +1448,7 @@ void cv::insertChannel(class cv::_InputArray const &,class cv::_InputOutputArray
 }
 procedure insertChannel(const src:TInputArray;const dst:TInputOutputArray; coi:int);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?insertChannel@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@H@Z'
 {$ELSE}
 name '?insertChannel@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@H@Z'
@@ -1496,7 +1496,7 @@ name '?insertChannel@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@H@Z'
 }
 procedure flip(const src: TInputArray;const dst: TOutputArray; flipCode: int);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?flip@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?flip@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -1531,7 +1531,7 @@ void cv::rotate(class cv::_InputArray const &,class cv::_OutputArray const &,int
 }
 procedure rotate(const src:TInputArray;const dst:TOutputArray; rotateCode:int);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?rotate@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?rotate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -1560,7 +1560,7 @@ void cv::repeat(class cv::_InputArray const &,int,int,class cv::_OutputArray con
 }
 procedure &repeat(const src:TInputArray; ny, nx:int;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?repeat@cv@@YAXAEBV_InputArray@debug_build_guard@1@HHAEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?repeat@cv@@YAXAEBV_InputArray@1@HHAEBV_OutputArray@1@@Z'
@@ -1616,7 +1616,7 @@ void cv::hconcat(class cv::Mat const *,unsigned __int64,class cv::_OutputArray c
 }
 procedure hconcat(const src:pMat; nsrc:size_t;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z'
 {$ELSE}
 name '?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z'
@@ -1652,7 +1652,7 @@ void cv::hconcat(class cv::_InputArray const &,class cv::_InputArray const &,cla
 }
 procedure hconcat(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?hconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
@@ -1686,7 +1686,7 @@ void cv::hconcat(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 procedure hconcat(const src:TInputArrayOfArrays;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?hconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -1747,7 +1747,7 @@ void cv::vconcat(class cv::_InputArray const &,class cv::_InputArray const &,cla
 }
 procedure vconcat(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?vconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
@@ -1780,7 +1780,7 @@ void cv::vconcat(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 procedure vconcat(const src:TInputArrayOfArrays;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?vconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -1824,7 +1824,7 @@ name '?vconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
 procedure bitwise_and(const src1: TInputArray;const src2: TInputArray;const dst: TOutputArray;
                       const mask: TInputArray { = noArray() } );
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?bitwise_and@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
 {$ELSE}
 name '?bitwise_and@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
@@ -1867,7 +1867,7 @@ void cv::bitwise_or(class cv::_InputArray const &,class cv::_InputArray const &,
 procedure bitwise_or(const src1:TInputArray;const src2:TInputArray;
 const dst:TOutputArray; const mask :TInputArray {= noArray()});
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?bitwise_or@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
 {$ELSE}
 name '?bitwise_or@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
@@ -1912,7 +1912,7 @@ void cv::bitwise_xor(class cv::_InputArray const &,class cv::_InputArray const &
 procedure bitwise_xor(const src1:TInputArray;const src2:TInputArray;
 const dst:TOutputArray;const mask :TInputArray {= noArray()});
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?bitwise_xor@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
 {$ELSE}
 name '?bitwise_xor@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
@@ -1945,7 +1945,7 @@ overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
 }
 procedure bitwise_not(const src: TInputArray;const dst: TOutputArray; mask: TInputArray { = noArray() } );
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?bitwise_not@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
 {$ELSE}
 name '?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
@@ -1986,7 +1986,7 @@ void cv::absdiff(class cv::_InputArray const &,class cv::_InputArray const &,cla
 }
 procedure absdiff(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?absdiff@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?absdiff@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
@@ -2012,7 +2012,7 @@ void cv::copyTo(class cv::_InputArray const &,class cv::_OutputArray const &,cla
 }
 procedure copyTo(const src:TInputArray;const dst:TOutputArray;const mask:TInputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?copyTo@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
 {$ELSE}
 name '?copyTo@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
@@ -2049,7 +2049,7 @@ name '?copyTo@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
 procedure inRange(const src: TInputArray;const lowerb: TInputArray;const upperb: TInputArray;
                   const dst: TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?inRange@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?inRange@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
@@ -2091,7 +2091,7 @@ void cv::compare(class cv::_InputArray const &,class cv::_InputArray const &,cla
 }
 procedure compare(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray; cmpop:int);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?compare@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?compare@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H@Z'
@@ -2118,7 +2118,7 @@ void cv::min(class cv::_InputArray const &,class cv::_InputArray const &,class c
 }
 procedure min(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?min@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?min@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
@@ -2165,7 +2165,7 @@ void cv::max(class cv::_InputArray const &,class cv::_InputArray const &,class c
 }
 procedure max(const src1:TInputArray;const src2:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?max@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?max@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
@@ -2210,7 +2210,7 @@ void cv::sqrt(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 procedure sqrt(const src:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?sqrt@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?sqrt@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -2249,7 +2249,7 @@ void cv::pow(class cv::_InputArray const &,double,class cv::_OutputArray const &
 }
 procedure pow(const src:TInputArray; power:double;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?pow@cv@@YAXAEBV_InputArray@debug_build_guard@1@NAEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?pow@cv@@YAXAEBV_InputArray@1@NAEBV_OutputArray@1@@Z'
@@ -2279,7 +2279,7 @@ void cv::exp(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 procedure exp(const src:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?exp@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?exp@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -2306,7 +2306,7 @@ void cv::log(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 procedure log(const src:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?log@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?log@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -2344,7 +2344,7 @@ void cv::polarToCart(class cv::_InputArray const &,class cv::_InputArray const &
 procedure polarToCart(const magnitude:TInputArray;const angle:TInputArray;
  const x:TOutputArray;const y:TOutputArray; angleInDegrees :bool= false);
  overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?polarToCart@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@1_N@Z'
 {$ELSE}
 name '?polarToCart@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z'
@@ -2381,7 +2381,7 @@ void cv::cartToPolar(class cv::_InputArray const &,class cv::_InputArray const &
 procedure cartToPolar(const x: TInputArray;const y: TInputArray;const magnitude: TOutputArray;
                       const angle: TOutputArray; angleInDegrees: BOOL = false);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?cartToPolar@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@1_N@Z'
 {$ELSE}
 name '?cartToPolar@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z'
@@ -2415,7 +2415,7 @@ void cv::phase(class cv::_InputArray const &,class cv::_InputArray const &,class
 procedure phase(const x:TInputArray;const y:TInputArray;const angle:TOutputArray;
                       angleInDegrees :bool= false);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?phase@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@_N@Z'
 {$ELSE}
 name '?phase@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@_N@Z'
@@ -2442,7 +2442,7 @@ void cv::magnitude(class cv::_InputArray const &,class cv::_InputArray const &,c
 }
 procedure magnitude(const x:TInputArray;const y:TInputArray;const magnitude:TOutputArray);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?magnitude@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?magnitude@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
@@ -2475,7 +2475,7 @@ bool cv::checkRange(class cv::_InputArray const &,bool,class cv::Point_<int> *,d
 function checkRange(const a:TInputArray; quiet :bool= true; pos :pPoint = nil;
 minVal :double = -DBL_MAX; maxVal :double= DBL_MAX):bool;
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?checkRange@cv@@YA_NAEBV_InputArray@debug_build_guard@1@_NPEAV?$Point_@H@1@NN@Z'
 {$ELSE}
 name '?checkRange@cv@@YA_NAEBV_InputArray@1@_NPEAV?$Point_@H@1@NN@Z'
@@ -2495,7 +2495,7 @@ void cv::patchNaNs(class cv::_InputOutputArray const &,double)
 }
 procedure patchNaNs(const a:TInputOutputArray; val :double= 0);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?patchNaNs@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@N@Z'
 {$ELSE}
 name '?patchNaNs@cv@@YAXAEBV_InputOutputArray@1@N@Z'
@@ -2541,7 +2541,7 @@ void cv::gemm(class cv::_InputArray const &,class cv::_InputArray const &,double
 procedure gemm(const src1:TInputArray; const src2:TInputArray; alpha:double;
 const src3:TInputArray; beta:double;const dst:TOutputArray; flags :int= 0);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?gemm@cv@@YAXAEBV_InputArray@debug_build_guard@1@0N0NAEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?gemm@cv@@YAXAEBV_InputArray@1@0N0NAEBV_OutputArray@1@H@Z'
@@ -2587,7 +2587,7 @@ void cv::mulTransposed(class cv::_InputArray const &,class cv::_OutputArray cons
 procedure mulTransposed(const src:TInputArray;const dst:TOutputArray; aTa:bool;
  const delta :TInputArray {= noArray()}; scale :double= 1; dtype :int= -1 );
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?mulTransposed@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@_N0NH@Z'
 {$ELSE}
 name '?mulTransposed@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@_N0NH@Z'
@@ -2614,7 +2614,7 @@ void cv::transpose(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 procedure transpose(const src:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?transpose@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?transpose@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -2654,7 +2654,7 @@ void cv::transform(class cv::_InputArray const &,class cv::_OutputArray const &,
 }
 procedure transform(const src:TInputArray;const dst:TOutputArray;const m:TInputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?transform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
 {$ELSE}
 name '?transform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
@@ -2695,7 +2695,7 @@ void cv::perspectiveTransform(class cv::_InputArray const &,class cv::_OutputArr
 }
 procedure perspectiveTransform(const src:TInputArray;const dst:TOutputArray;const m:TInputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?perspectiveTransform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
 {$ELSE}
 name '?perspectiveTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
@@ -2725,7 +2725,7 @@ void cv::completeSymm(class cv::_InputOutputArray const &,bool)
 }
 procedure completeSymm(const m:TInputOutputArray; lowerToUpper :bool= false);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?completeSymm@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@_N@Z'
 {$ELSE}
 name '?completeSymm@cv@@YAXAEBV_InputOutputArray@1@_N@Z'
@@ -2756,7 +2756,7 @@ void cv::setIdentity(class cv::_InputOutputArray const &,class cv::Scalar_<doubl
 }
 procedure setIdentity(const mtx:TInputOutputArray; const s:TScalar {= Scalar(1)});
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?setIdentity@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV?$Scalar_@N@1@@Z'
 {$ELSE}
 name '?setIdentity@cv@@YAXAEBV_InputOutputArray@1@AEBV?$Scalar_@N@1@@Z'
@@ -2788,7 +2788,7 @@ double cv::determinant(class cv::_InputArray const &)
 }
 function determinant(const mtx:TInputArray):double;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?determinant@cv@@YANAEBV_InputArray@debug_build_guard@1@@Z'
 {$ELSE}
 name '?determinant@cv@@YANAEBV_InputArray@1@@Z'
@@ -2811,7 +2811,7 @@ name '?determinant@cv@@YANAEBV_InputArray@1@@Z'
  }
 function trace(const mtx:TInputArray):TScalar;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?trace@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@@Z'
 {$ELSE}
 name '?trace@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@@Z'
@@ -2852,7 +2852,7 @@ double cv::invert(class cv::_InputArray const &,class cv::_OutputArray const &,i
 }
 function invert(const src:TInputArray;const dst:TOutputArray; flags :int= int(DECOMP_LU)):double;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?invert@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?invert@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -2892,7 +2892,7 @@ bool cv::solve(class cv::_InputArray const &,class cv::_InputArray const &,class
 function solve(const src1:TInputArray; const src2:TInputArray;
  const dst:TOutputArray; flags :int= int(DECOMP_LU)):bool;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?solve@cv@@YA_NAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?solve@cv@@YA_NAEBV_InputArray@1@0AEBV_OutputArray@1@H@Z'
@@ -2921,7 +2921,7 @@ name '?solve@cv@@YA_NAEBV_InputArray@1@0AEBV_OutputArray@1@H@Z'
  }
  procedure sort(const src:TInputArray;const dst:TOutputArray; flags:int);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?sort@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?sort@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -2955,7 +2955,7 @@ void cv::sortIdx(class cv::_InputArray const &,class cv::_OutputArray const &,in
 }
 procedure sortIdx(const src:TInputArray; const dst:TOutputArray; flags:int);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?sortIdx@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?sortIdx@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -2984,7 +2984,7 @@ int cv::solveCubic(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 function solveCubic(const coeffs:TInputArray;const roots:TOutputArray):int;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?solveCubic@cv@@YAHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?solveCubic@cv@@YAHAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -3008,7 +3008,7 @@ double cv::solvePoly(class cv::_InputArray const &,class cv::_OutputArray const 
 }
 function solvePoly(const coeffs:TInputArray;const roots:TOutputArray; maxIters :int = 300):double;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?solvePoly@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?solvePoly@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -3045,7 +3045,7 @@ bool cv::eigen(class cv::_InputArray const &,class cv::_OutputArray const &,clas
 function eigen(const src:TInputArray;const eigenvalues:TOutputArray;
                const eigenvectors :TOutputArray {= noArray()}):bool;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?eigen@cv@@YA_NAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
 {$ELSE}
 name '?eigen@cv@@YA_NAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
@@ -3080,7 +3080,7 @@ void cv::eigenNonSymmetric(class cv::_InputArray const &,class cv::_OutputArray 
 procedure eigenNonSymmetric(const src:TInputArray;const eigenvalues:TOutputArray;
  const eigenvectors:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?eigenNonSymmetric@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
 {$ELSE}
 name '?eigenNonSymmetric@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
@@ -3133,7 +3133,7 @@ void cv::calcCovarMatrix(class cv::_InputArray const &,class cv::_OutputArray co
 procedure calcCovarMatrix(const samples:TInputArray;const covar:TOutputArray;
  const mean:TInputOutputArray; flags:int; ctype :int= CV_64F);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?calcCovarMatrix@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@AEBV_InputOutputArray@31@HH@Z'
 {$ELSE}
 name '?calcCovarMatrix@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV_InputOutputArray@1@HH@Z'
@@ -3152,7 +3152,7 @@ void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray co
 procedure PCACompute(const data:TInputArray;const mean:TInputOutputArray;
  const eigenvectors:TOutputArray; maxComponents :int= 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@H@Z'
@@ -3174,7 +3174,7 @@ procedure PCACompute(const data:TInputArray;const mean:TInputOutputArray;
  const eigenvectors:TOutputArray;const eigenvalues:TOutputArray;
  maxComponents :int= 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@2H@Z'
 {$ELSE}
 name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2H@Z'
@@ -3193,7 +3193,7 @@ void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray co
 procedure PCACompute(const data:TInputArray;const mean:TInputOutputArray;
  const eigenvectors:TOutputArray; retainedVariance:double);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@N@Z'
 {$ELSE}
 name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@N@Z'
@@ -3214,7 +3214,7 @@ procedure PCACompute(const data:TInputArray;const mean:TInputOutputArray;
  const eigenvectors:TOutputArray;const eigenvalues:TOutputArray;
  retainedVariance:double);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@2N@Z'
 {$ELSE}
 name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2N@Z'
@@ -3232,7 +3232,7 @@ void cv::PCAProject(class cv::_InputArray const &,class cv::_InputArray const &,
 procedure PCAProject(const data:TInputArray;const mean:TInputArray;
  const eigenvectors:TInputArray;const res:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?PCAProject@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?PCAProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
@@ -3251,7 +3251,7 @@ void cv::PCABackProject(class cv::_InputArray const &,class cv::_InputArray cons
 procedure PCABackProject(const data:TInputArray;const mean:TInputArray;
  const eigenvectors:TInputArray;const res:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?PCABackProject@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?PCABackProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
@@ -3268,7 +3268,7 @@ void cv::SVDecomp(class cv::_InputArray const &,class cv::_OutputArray const &,c
 }
  procedure SVDecomp(const src:TInputArray;const w:TOutputArray;const u:TOutputArray;const vt:TOutputArray; flags :int= 0 );
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?SVDecomp@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@11H@Z'
 {$ELSE}
 name '?SVDecomp@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@11H@Z'
@@ -3287,7 +3287,7 @@ void cv::SVBackSubst(class cv::_InputArray const &,class cv::_InputArray const &
 procedure SVBackSubst(const w:TInputArray;const u:TInputArray;const vt:TInputArray;
  const rhs:TInputArray;const dst:TOutputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?SVBackSubst@cv@@YAXAEBV_InputArray@debug_build_guard@1@000AEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?SVBackSubst@cv@@YAXAEBV_InputArray@1@000AEBV_OutputArray@1@@Z'
@@ -3313,7 +3313,7 @@ double cv::Mahalanobis(class cv::_InputArray const &,class cv::_InputArray const
 }
 function Mahalanobis(const v1:TInputArray;const v2:TInputArray;const icovar:TInputArray):double;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?Mahalanobis@cv@@YANAEBV_InputArray@debug_build_guard@1@00@Z'
 {$ELSE}
 name '?Mahalanobis@cv@@YANAEBV_InputArray@1@00@Z'
@@ -3461,7 +3461,7 @@ void cv::dft(class cv::_InputArray const &,class cv::_OutputArray const &,int,in
 }
 procedure dft(const src:TInputArray; const dst:TOutputArray; flags :int= 0; nonzeroRows :int= 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?dft@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'
 {$ELSE}
 name '?dft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z'
@@ -3488,7 +3488,7 @@ name '?dft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z'
  }
 procedure idft(const src:TInputArray;const dst:TOutputArray; flags :int= 0; nonzeroRows :int= 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?idft@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'
 {$ELSE}
 name '?idft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z'
@@ -3543,7 +3543,7 @@ void cv::dct(class cv::_InputArray const &,class cv::_OutputArray const &,int)
 }
 procedure dct(const src:TInputArray;const dst:TOutputArray; flags :int= 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?dct@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?dct@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -3567,7 +3567,7 @@ void cv::idct(class cv::_InputArray const &,class cv::_OutputArray const &,int)
 }
 procedure idct(const src:TInputArray;const dst:TOutputArray; flags :int= 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?idct@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
 name '?idct@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -3602,7 +3602,7 @@ void cv::mulSpectrums(class cv::_InputArray const &,class cv::_InputArray const 
 procedure mulSpectrums(const a:TInputArray;const b:TInputArray;const c:TOutputArray;
  flags:int; conjB :bool= false);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?mulSpectrums@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H_N@Z'
 {$ELSE}
 name '?mulSpectrums@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H_N@Z'
@@ -3639,7 +3639,7 @@ name '?mulSpectrums@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H_N@Z'
  }
 function getOptimalDFTSize(vecsize:int):int;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?getOptimalDFTSize@cv@@YAHH@Z'
 {$ELSE}
 name '?getOptimalDFTSize@cv@@YAHH@Z'
@@ -3682,7 +3682,7 @@ name '?getOptimalDFTSize@cv@@YAHH@Z'
      {$HINTS ON}
     end;
  function theRNG:TRNG; overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?theRNG@cv@@YAAEAVRNG@1@XZ'
 {$ELSE}
 name '?theRNG@cv@@YAAEAVRNG@1@XZ'
@@ -3703,7 +3703,7 @@ name '?theRNG@cv@@YAAEAVRNG@1@XZ'
 void cv::setRNGSeed(int)
 }
 procedure setRNGSeed(seed:int); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?setRNGSeed@cv@@YAXH@Z'
 {$ELSE}
 name '?setRNGSeed@cv@@YAXH@Z'
@@ -3729,7 +3729,7 @@ name '?setRNGSeed@cv@@YAXH@Z'
  }
  procedure randu(const dst:TInputOutputArray;const low:TInputArray;const high:TInputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?randu@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@1@Z'
 {$ELSE}
 name '?randu@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z'
@@ -3756,7 +3756,7 @@ name '?randu@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z'
  }
 procedure randn(const dst:TInputOutputArray; const mean:TInputArray; const stddev:TInputArray);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?randn@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@1@Z'
 {$ELSE}
 name '?randn@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z'
@@ -3783,7 +3783,7 @@ name '?randn@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z'
  }
 procedure randShuffle(const dst:TInputOutputArray; iterFactor :double= 1; rng :pRNG = nil);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?randShuffle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@NPEAVRNG@1@@Z'
 {$ELSE}
 name '?randShuffle@cv@@YAXAEBV_InputOutputArray@1@NPEAVRNG@1@@Z'
@@ -4464,7 +4464,7 @@ function kmeans(const data:TInputArray; K:int;const bestLabels:TInputOutputArray
   const criteria:TTermCriteria; attempts:int;
   flags:int; const centers:TOutputArray {= noArray()} ):double;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?kmeans@cv@@YANAEBV_InputArray@debug_build_guard@1@HAEBV_InputOutputArray@31@VTermCriteria@1@HHAEBV_OutputArray@31@@Z'
 {$ELSE}
 name '?kmeans@cv@@YANAEBV_InputArray@1@HAEBV_InputOutputArray@1@VTermCriteria@1@HHAEBV_OutputArray@1@@Z'

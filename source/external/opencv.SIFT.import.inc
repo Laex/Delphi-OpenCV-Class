@@ -39,7 +39,7 @@ struct cv::Ptr<class cv::SIFT> cv::SIFT::create(int,int,double,double,double)
 function create_SIFT(nfeatures: int = 0; nOctaveLayers: int = 3; contrastThreshold: double = 0.04;
                             edgeThreshold: double = 10; sigma: double = 1.6):TPtr<TFeature2D>;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?create@SIFT@cv@@SA?AU?$Ptr@VSIFT@cv@@@2@HHNNN@Z'
 {$ELSE}
 name '?create@SIFT@cv@@SA?AU?$Ptr@VSIFT@cv@@@2@HHNNN@Z'

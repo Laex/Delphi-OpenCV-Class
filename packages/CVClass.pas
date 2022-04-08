@@ -36,6 +36,7 @@ Uses
   System.SyncObjs,
   VCL.Controls,
   VCL.Graphics,
+  VCL.Themes,
   cv.opencv;
 
 Type
@@ -69,10 +70,10 @@ Type
     // property FPS: double read GetFPS;
   end;
 
-  TCVReceiverList         = TThreadList<ICVDataReceiver>;
-  TOnCVNotify             = procedure(Sender: TObject; const AMat: TMat) of object;
-  TOnCVNotifyVar          = procedure(Sender: TObject; Var AMat: TMat) of object;
-  TOnCVAfterPaint         = TOnCVNotify;
+  TCVReceiverList = TThreadList<ICVDataReceiver>;
+  TOnCVNotify = procedure(Sender: TObject; const AMat: TMat) of object;
+  TOnCVNotifyVar = procedure(Sender: TObject; Var AMat: TMat) of object;
+  TOnCVAfterPaint = TOnCVNotify;
   TOnBeforeNotifyReceiver = TOnCVNotifyVar;
 
   TCVDataSource = class(TComponent, ICVDataSource)
@@ -177,7 +178,14 @@ Type
     property OnMouseWheelDown;
   end;
 
-  TOCVLock                   = TLightweightMREW;
+  // TCVViewStyleHook = class(TStyleHook)
+  // private
+  // protected
+  // procedure WndProc(var Message: TMessage); override;
+  // public
+  // end;
+
+  TOCVLock = TLightweightMREW;
   TPersistentAccessProtected = class(TPersistent);
 
   TCVCaptureThread = class(TThread)
@@ -197,8 +205,10 @@ Type
     procedure TerminatedSet; override;
     procedure Execute; override;
   public
-    constructor Create(const AFileName: string; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: VideoCaptureAPIs = CAP_ANY); overload;
-    constructor Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: VideoCaptureAPIs = CAP_ANY); overload;
+    constructor Create(const AFileName: string; const AThreadDelay: Cardinal = 1000 div 25;
+      const VideoAPIs: VideoCaptureAPIs = CAP_ANY); overload;
+    constructor Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal = 1000 div 25;
+      const VideoAPIs: VideoCaptureAPIs = CAP_ANY); overload;
     procedure SetResolution(const Width, Height: Double);
     property OnNoData: TNotifyEvent Read FOnNoData write FOnNoData;
     property OnNotifyData: TOnCVNotify Read FOnNotifyData write FOnNotifyData;
@@ -238,24 +248,25 @@ Type
     OPENNI_ASUS,          // !< OpenNI (for Asus Xtion)
     ANDROID,              // !< Android - not used
     XIAPI,                // !< XIMEA Camera API
-    AVFOUNDATION,         // !< AVFoundation framework for iOS (OS X Lion will have the same API)
-    GIGANETIX,            // !< Smartek Giganetix GigEVisionSDK
-    MSMF,                 // !< Microsoft Media Foundation (via videoInput)
-    WINRT,                // !< Microsoft Windows Runtime using Media Foundation
-    INTELPERC,            // !< RealSense (former Intel Perceptual Computing SDK)
-    REALSENSE,            // !< Synonym for CAP_INTELPERC
-    OPENNI2,              // !< OpenNI2 (for Kinect)
-    OPENNI2_ASUS,         // !< OpenNI2 (for Asus Xtion and Occipital Structure sensors)
-    OPENNI2_ASTRA,        // !< OpenNI2 (for Orbbec Astra)
-    GPHOTO2,              // !< gPhoto2 connection
-    GSTREAMER,            // !< GStreamer
-    FFMPEG,               // !< Open and record video file or stream using the FFMPEG library
-    IMAGES,               // !< OpenCV Image Sequence (e.g. img_%02d.jpg)
-    ARAVIS,               // !< Aravis SDK
-    OPENCV_MJPEG,         // !< Built-in OpenCV MotionJPEG codec
-    INTEL_MFX,            // !< Intel MediaSDK
-    XINE,                 // !< XINE engine (Linux)
-    UEYE                  // !< uEye Camera API
+    AVFOUNDATION,
+    // !< AVFoundation framework for iOS (OS X Lion will have the same API)
+    GIGANETIX,     // !< Smartek Giganetix GigEVisionSDK
+    MSMF,          // !< Microsoft Media Foundation (via videoInput)
+    WINRT,         // !< Microsoft Windows Runtime using Media Foundation
+    INTELPERC,     // !< RealSense (former Intel Perceptual Computing SDK)
+    REALSENSE,     // !< Synonym for CAP_INTELPERC
+    OPENNI2,       // !< OpenNI2 (for Kinect)
+    OPENNI2_ASUS,  // !< OpenNI2 (for Asus Xtion and Occipital Structure sensors)
+    OPENNI2_ASTRA, // !< OpenNI2 (for Orbbec Astra)
+    GPHOTO2,       // !< gPhoto2 connection
+    GSTREAMER,     // !< GStreamer
+    FFMPEG,        // !< Open and record video file or stream using the FFMPEG library
+    IMAGES,        // !< OpenCV Image Sequence (e.g. img_%02d.jpg)
+    ARAVIS,        // !< Aravis SDK
+    OPENCV_MJPEG,  // !< Built-in OpenCV MotionJPEG codec
+    INTEL_MFX,     // !< Intel MediaSDK
+    XINE,          // !< XINE engine (Linux)
+    UEYE           // !< uEye Camera API
     );
 
   TCVCustomSource = class(TComponent)
@@ -281,7 +292,8 @@ Type
     property CaptureAPIs: TCVVideoCaptureAPIs read FCaptureAPIs write setCaptureAPIs default ANY;
   end;
 
-  TCVWebCameraResolution = (r160x120, r176x144, r320x240, r352x288, r424x240, r640x360, r640x480, r800x448, r800x600, r960x544, r1280x720, rCustom);
+  TCVWebCameraResolution = (r160x120, r176x144, r320x240, r352x288, r424x240, r640x360, r640x480, r800x448, r800x600,
+    r960x544, r1280x720, rCustom);
 
   TCVWebCameraResolutionValue = record
     W, H: Double;
@@ -436,15 +448,17 @@ Type
   end;
 
 function GetRegisteredCaptureSource: TRegisteredCaptureSource;
-function CV_FOURCC(const c1, c2, c3, c4: AnsiChar): Integer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-function CV_FOURCC(const c: AnsiString): Integer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function CV_FOURCC(const c1, c2, c3, c4: AnsiChar): Integer; overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+function CV_FOURCC(const c: AnsiString): Integer; overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 
 implementation
 
 function ipDraw(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
 
 Type
-  pCOLORREF         = ^COLORREF;
+  pCOLORREF = ^COLORREF;
   pBITMAPINFOHEADER = ^BITMAPINFOHEADER;
 
 Var
@@ -497,13 +511,15 @@ begin
     SetStretchBltMode(dc, COLORONCOLOR);
     SetMapMode(dc, MM_TEXT);
     // Stretch the image to fit the rectangle
-    iResult := StretchDIBits(dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data, _dibhdr, DIB_RGB_COLORS, SRCCOPY);
+    iResult := StretchDIBits(dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data,
+      _dibhdr, DIB_RGB_COLORS, SRCCOPY);
     Result := (iResult > 0); // and (iResult <> GDI_ERROR);
   end
   else
   begin
     // Draw without scaling
-    iResult := SetDIBitsToDevice(dc, rect.Left, rect.Top, img.cols, img.rows, 0, 0, 0, img.rows, img.Data, _dibhdr, DIB_RGB_COLORS);
+    iResult := SetDIBitsToDevice(dc, rect.Left, rect.Top, img.cols, img.rows, 0, 0, 0, img.rows, img.Data, _dibhdr,
+      DIB_RGB_COLORS);
     Result := (iResult > 0); // and (iResult <> GDI_ERROR);
   end;
 end;
@@ -625,7 +641,11 @@ end;
 
 constructor TCVView.Create(AOwner: TComponent);
 begin
+  // MessageBox(0, 'До inherited;', '', MB_OK);
   inherited;
+  // MessageBox(0, 'После inherited;', '', MB_OK);
+  StyleElements := [];
+  ControlStyle := ControlStyle + [csOverrideStylePaint];
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   Stretch := True;
@@ -813,41 +833,44 @@ end;
 Var
   CVVideoCaptureAPIs: array [TCVVideoCaptureAPIs] of VideoCaptureAPIs = //
     ( //
-    CAP_ANY,           // !< Auto detect == 0
-    CAP_VFW,           // !< Video For Windows obsolete, removed)
-    CAP_V4L,           // !< V4L/V4L2 capturing support
-    CAP_V4L2,          // !< Same as CAP_V4L
-    CAP_FIREWIRE,      // !< IEEE 1394 drivers
-    CAP_FIREWARE,      // !< Same value as CAP_FIREWIRE
-    CAP_IEEE1394,      // !< Same value as CAP_FIREWIRE
-    CAP_DC1394,        // !< Same value as CAP_FIREWIRE
-    CAP_CMU1394,       // !< Same value as CAP_FIREWIRE
-    CAP_QT,            // !< QuickTime obsolete, removed)
-    CAP_UNICAP,        // !< Unicap drivers obsolete, removed)
-    CAP_DSHOW,         // !< DirectShow via videoInput)
-    CAP_PVAPI,         // !< PvAPI, Prosilica GigE SDK
-    CAP_OPENNI,        // !< OpenNI for Kinect)
-    CAP_OPENNI_ASUS,   // !< OpenNI for Asus Xtion)
-    CAP_ANDROID,       // !< Android - not used
-    CAP_XIAPI,         // !< XIMEA Camera API
-    CAP_AVFOUNDATION,  // !< AVFoundation framework for iOS OS X Lion will have the same API)
-    CAP_GIGANETIX,     // !< Smartek Giganetix GigEVisionSDK
-    CAP_MSMF,          // !< Microsoft Media Foundation via videoInput)
-    CAP_WINRT,         // !< Microsoft Windows Runtime using Media Foundation
-    CAP_INTELPERC,     // !< RealSense former Intel Perceptual Computing SDK)
-    CAP_REALSENSE,     // !< Synonym for CAP_INTELPERC
-    CAP_OPENNI2,       // !< OpenNI2 for Kinect)
-    CAP_OPENNI2_ASUS,  // !< OpenNI2 for Asus Xtion and Occipital Structure sensors)
+    CAP_ANY,         // !< Auto detect == 0
+    CAP_VFW,         // !< Video For Windows obsolete, removed)
+    CAP_V4L,         // !< V4L/V4L2 capturing support
+    CAP_V4L2,        // !< Same as CAP_V4L
+    CAP_FIREWIRE,    // !< IEEE 1394 drivers
+    CAP_FIREWARE,    // !< Same value as CAP_FIREWIRE
+    CAP_IEEE1394,    // !< Same value as CAP_FIREWIRE
+    CAP_DC1394,      // !< Same value as CAP_FIREWIRE
+    CAP_CMU1394,     // !< Same value as CAP_FIREWIRE
+    CAP_QT,          // !< QuickTime obsolete, removed)
+    CAP_UNICAP,      // !< Unicap drivers obsolete, removed)
+    CAP_DSHOW,       // !< DirectShow via videoInput)
+    CAP_PVAPI,       // !< PvAPI, Prosilica GigE SDK
+    CAP_OPENNI,      // !< OpenNI for Kinect)
+    CAP_OPENNI_ASUS, // !< OpenNI for Asus Xtion)
+    CAP_ANDROID,     // !< Android - not used
+    CAP_XIAPI,       // !< XIMEA Camera API
+    CAP_AVFOUNDATION,
+    // !< AVFoundation framework for iOS OS X Lion will have the same API)
+    CAP_GIGANETIX, // !< Smartek Giganetix GigEVisionSDK
+    CAP_MSMF,      // !< Microsoft Media Foundation via videoInput)
+    CAP_WINRT,     // !< Microsoft Windows Runtime using Media Foundation
+    CAP_INTELPERC, // !< RealSense former Intel Perceptual Computing SDK)
+    CAP_REALSENSE, // !< Synonym for CAP_INTELPERC
+    CAP_OPENNI2,   // !< OpenNI2 for Kinect)
+    CAP_OPENNI2_ASUS,
+    // !< OpenNI2 for Asus Xtion and Occipital Structure sensors)
     CAP_OPENNI2_ASTRA, // !< OpenNI2 for Orbbec Astra)
     CAP_GPHOTO2,       // !< gPhoto2 connection
     CAP_GSTREAMER,     // !< GStreamer
-    CAP_FFMPEG,        // !< Open and record video file or stream using the FFMPEG library
-    CAP_IMAGES,        // !< OpenCV Image Sequence e.g. img_%02d.jpg)
-    CAP_ARAVIS,        // !< Aravis SDK
-    CAP_OPENCV_MJPEG,  // !< Built-in OpenCV MotionJPEG codec
-    CAP_INTEL_MFX,     // !< Intel MediaSDK
-    CAP_XINE,          // !< XINE engine Linux)
-    CAP_UEYE           // !< uEye Camera API
+    CAP_FFMPEG,
+    // !< Open and record video file or stream using the FFMPEG library
+    CAP_IMAGES,       // !< OpenCV Image Sequence e.g. img_%02d.jpg)
+    CAP_ARAVIS,       // !< Aravis SDK
+    CAP_OPENCV_MJPEG, // !< Built-in OpenCV MotionJPEG codec
+    CAP_INTEL_MFX,    // !< Intel MediaSDK
+    CAP_XINE,         // !< XINE engine Linux)
+    CAP_UEYE          // !< uEye Camera API
   );
 
 constructor TCVCaptureSource.Create(AOwner: TComponent);
@@ -1198,7 +1221,8 @@ end;
 
 { TCVCaptureThread }
 
-constructor TCVCaptureThread.Create(const AFileName: string; const AThreadDelay: Cardinal; const VideoAPIs: VideoCaptureAPIs);
+constructor TCVCaptureThread.Create(const AFileName: string; const AThreadDelay: Cardinal;
+  const VideoAPIs: VideoCaptureAPIs);
 begin
   Inherited Create(True);
   FThreadDelay := AThreadDelay;
@@ -1207,7 +1231,8 @@ begin
   FVideoAPIs := VideoAPIs;
 end;
 
-constructor TCVCaptureThread.Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal; const VideoAPIs: VideoCaptureAPIs);
+constructor TCVCaptureThread.Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal;
+  const VideoAPIs: VideoCaptureAPIs);
 begin
   Inherited Create(True);
   FThreadDelay := AThreadDelay;
@@ -1389,7 +1414,8 @@ end;
 
 procedure TCVVideoWriter.setSameResolution(const Value: Boolean);
 begin
-  if (FSameResolution <> Value) and ((not FEnabled) or (csDesigning in ComponentState)) or (csLoading in ComponentState) then
+  if (FSameResolution <> Value) and ((not FEnabled) or (csDesigning in ComponentState)) or (csLoading in ComponentState)
+  then
     FSameResolution := Value;
 end;
 
@@ -1431,7 +1457,18 @@ begin
   Result := CV_FOURCC(c[1], c[2], c[3], c[4]);
 end;
 
+// { TCVViewStyleHook }
+//
+// procedure TCVViewStyleHook.WndProc(var Message: TMessage);
+// begin
+// inherited WndProc(Message);
+// end;
+
 initialization
+
+// TStyleManager.Engine.RegisterStyleHook(TCVView,TCVViewStyleHook);
+
+// TStyleManager.Engine.RegisterStyleHook(TCVView, TStyleHook);
 
 GetRegisteredCaptureSource.RegisterIOClass(TCVWebCameraSource, 'Web camera');
 GetRegisteredCaptureSource.RegisterIOClass(TCVFileSource, 'From file or stream');

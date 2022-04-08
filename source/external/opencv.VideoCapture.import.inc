@@ -114,7 +114,7 @@ function open_VideoCapture(const Obj: TVideoCapture; a: Int; b: Int): Bool; over
   public: virtual bool __cdecl cv::VideoCapture::read(class cv::_OutputArray const & __ptr64) __ptr64
 }
 function read_VideoCapture(const Obj: TVideoCapture; const o: TOutputArray): Bool; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?read@VideoCapture@cv@@UEAA_NAEBV_OutputArray@debug_build_guard@2@@Z'
 {$ELSE}
   name '?read@VideoCapture@cv@@UEAA_NAEBV_OutputArray@2@@Z'
@@ -134,7 +134,7 @@ procedure release_VideoCapture(const Obj: TVideoCapture); external opencv_world_
   bool cv::VideoCapture::retrieve(class cv::_OutputArray const &,int)
 }
 function retrieve_VideoCapture(const Obj: TVideoCapture; const image: TOutputArray; flag: Int = 0): Bool; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?retrieve@VideoCapture@cv@@UEAA_NAEBV_OutputArray@debug_build_guard@2@H@Z'
 {$ELSE}
   name '?retrieve@VideoCapture@cv@@UEAA_NAEBV_OutputArray@2@H@Z'

@@ -70,7 +70,7 @@ procedure detectMultiScale_CascadeClassifier(const Obj: TCascadeClassifier; //
   minSize: UInt64 { TSize }; //
   maxSize: UInt64 { TSize } ); //
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NHHV?$Size_@H@2@2@Z'
 {$ELSE}
   name '?detectMultiScale@CascadeClassifier@cv@@QEAAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NHHV?$Size_@H@2@2@Z'

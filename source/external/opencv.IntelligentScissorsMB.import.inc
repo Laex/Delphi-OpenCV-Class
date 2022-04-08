@@ -45,7 +45,7 @@ procedure Destructor_IntelligentScissorsMB(Obj: pIntelligentScissorsMB); externa
   class cv::segmentation::IntelligentScissorsMB & cv::segmentation::IntelligentScissorsMB::applyImage(class cv::_InputArray const &)
 }
 procedure applyImage_IntelligentScissorsMB(Obj: pIntelligentScissorsMB; const image: TInputArray); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?applyImage@IntelligentScissorsMB@segmentation@cv@@QEAAAEAV123@AEBV_InputArray@debug_build_guard@3@@Z'
 {$ELSE}
   name '?applyImage@IntelligentScissorsMB@segmentation@cv@@QEAAAEAV123@AEBV_InputArray@3@@Z'
@@ -67,7 +67,7 @@ procedure buildMap_IntelligentScissorsMB(Obj: pIntelligentScissorsMB; const sour
   void cv::segmentation::IntelligentScissorsMB::getContour(class cv::Point_<int> const &,class cv::_OutputArray const &,bool)
 }
 procedure getContour_IntelligentScissorsMB(Obj: pIntelligentScissorsMB; const targetPt: TPoint; const contour: TOutputArray; backward: BOOL); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?getContour@IntelligentScissorsMB@segmentation@cv@@QEBAXAEBV?$Point_@H@3@AEBV_OutputArray@debug_build_guard@3@_N@Z'
 {$ELSE}
   name '?getContour@IntelligentScissorsMB@segmentation@cv@@QEBAXAEBV?$Point_@H@3@AEBV_OutputArray@3@_N@Z'

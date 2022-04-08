@@ -1460,7 +1460,7 @@ CV_8U, CV_16U, or CV_32F, for larger aperture sizes, it can only be CV_8U.
   void cv::medianBlur(class cv::_InputArray const &,class cv::_OutputArray const &,int)
 }
 procedure medianBlur(const Src: TInputArray; const dst: TOutputArray; ksize: Int); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?medianBlur@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
   name '?medianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -1499,7 +1499,7 @@ sigmaX, and sigmaY.
 }
 procedure GaussianBlur(const Src: TInputArray; const dst: TOutputArray; ksize: UInt64 { TSize }; sigmaX: double; sigmaY: double = 0; borderType: Int = Int(BORDER_DEFAULT)); overload;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?GaussianBlur@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@V?$Size_@H@1@NNH@Z'
 {$ELSE}
   name '?GaussianBlur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z'
@@ -1546,7 +1546,7 @@ proportional to sigmaSpace.
   void cv::bilateralFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,double,double,int)
 }
 procedure bilateralFilter(const Src: TInputArray; const dst: TOutputArray; d: Int; sigmaColor, sigmaSpace: double; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?bilateralFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNNH@Z'
 {$ELSE}
   name '?bilateralFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNNH@Z'
@@ -1633,7 +1633,7 @@ center.
 }
 procedure blur(const Src: TInputArray; const dst: TOutputArray; ksize: UInt64 { TSize }; anchor: UInt64 { TPoint  = Point(-1, -1) }; borderType: Int { = BORDER_DEFAULT } ); overload;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?blur@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@V?$Size_@H@1@V?$Point_@H@1@H@Z'
 {$ELSE}
   name '?blur@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@V?$Point_@H@1@H@Z'
@@ -1801,7 +1801,7 @@ applied (see #getDerivKernels for details).
 //                          int borderType = BORDER_DEFAULT );
 procedure Scharr(const Src: TInputArray; const dst: TOutputArray; depth: Int; dx, dy: Int; scale: double { = 1 }; delta: double { = 0 }; borderType: Int { = Int(BORDER_DEFAULT) }
   ); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?Scharr@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHNNH@Z'
 {$ELSE}
   name '?Scharr@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHNNH@Z'
@@ -1849,7 +1849,7 @@ procedure Laplacian(const src:TInputArray;const dst:TOutputArray; ddepth:int;
                              ksize :int= 1; scale :double= 1; delta :double= 0;
                              borderType :int= int(BORDER_DEFAULT));
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?Laplacian@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHNNH@Z'
 {$ELSE}
   name '?Laplacian@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHNNH@Z'
@@ -1894,7 +1894,7 @@ L2gradient=false ).
   void cv::Canny(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int,bool)
 }
 procedure Canny(const image: TInputArray; const edges: TOutputArray; threshold1, threshold2: double; apertureSize: Int = 3; L2gradient: BOOL = false); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?Canny@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NNH_N@Z'
 {$ELSE}
   name '?Canny@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NNH_N@Z'
@@ -1925,7 +1925,7 @@ L2gradient=false ).
   void cv::Canny(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,double,bool)
 }
 procedure Canny(const dx: TInputArray; const dy: TInputArray; const edges: TOutputArray; threshold1, threshold2: double; L2gradient: BOOL = false); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?Canny@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NN_N@Z'
 {$ELSE}
   name '?Canny@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NN_N@Z'
@@ -1954,7 +1954,7 @@ src .
   void cv::cornerMinEigenVal(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
 }
 procedure cornerMinEigenVal(const Src: TInputArray; const dst: TOutputArray; blockSize: Int; ksize: Int = 3; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?cornerMinEigenVal@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z'
 {$ELSE}
   name '?cornerMinEigenVal@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
@@ -2019,7 +2019,7 @@ The output of the function can be used for robust edge or corner detection.
   void cv::cornerEigenValsAndVecs(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
 }
 procedure cornerEigenValsAndVecs(const Src: TInputArray; const dst: TOutputArray; blockSize, ksize: Int; borderType: BorderTypes = BORDER_DEFAULT); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z'
 {$ELSE}
   name '?cornerEigenValsAndVecs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
@@ -2104,7 +2104,7 @@ procedure cornerSubPix(const image:TInputArray;const corners:TInputOutputArray;
                                 winSize:UInt64 {TSize}; zeroZone:UInt64{TSize};
                                 const criteria:TTermCriteria);
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?cornerSubPix@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@V?$Size_@H@1@2VTermCriteria@1@@Z'
 {$ELSE}
   name '?cornerSubPix@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@V?$Size_@H@1@2VTermCriteria@1@@Z'
@@ -2172,7 +2172,7 @@ maxCorners: Int; qualityLevel: double;
 minDistance: double;
 const mask: TInputArray { = noArray() };
 blockSize: Int = 3; useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNN0H_NN@Z'
 {$ELSE}
   name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z'
@@ -2186,7 +2186,7 @@ blockSize: Int = 3; useHarrisDetector: BOOL = false; k: double = 0.04); overload
 //                                     double k = 0.04 );
 procedure goodFeaturesToTrack(const image: TInputArray; const corners: TOutputArray; maxCorners: Int; qualityLevel: double; minDistance: double; const mask: TInputArray; blockSize: Int;
   gradientSize: Int; useHarrisDetector: BOOL = false; k: double = 0.04); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HNN0HH_NN@Z'
 {$ELSE}
   name '?goodFeaturesToTrack@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HNN0H_NN@Z'
@@ -2410,7 +2410,7 @@ anchor is at the element center.
 }
 procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; anchor: UInt64 { Point = Point(-1,-1) }; iterations: Int { = 1 }; borderType: Int { = BORDER_CONSTANT };
   const borderValue: TScalar { = morphologyDefaultBorderValue() } ); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?erode@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
 {$ELSE}
   name '?erode@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
@@ -2466,7 +2466,7 @@ anchor is at the element center.
 }
 procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; anchor: UInt64 { Point= Point(-1,-1) }; iterations: Int { = 1 }; borderType: Int { = BORDER_CONSTANT };
   const borderValue: TScalar { = morphologyDefaultBorderValue() } ); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?dilate@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
 {$ELSE}
   name '?dilate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
@@ -2524,7 +2524,7 @@ procedure morphologyEx(const src:TInputArray;const dst:TOutputArray;
                                 borderType :BorderTypes {= BORDER_CONSTANT};
                                 const borderValue :TScalar {= morphologyDefaultBorderValue()} );
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?morphologyEx@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
 {$ELSE}
   name '?morphologyEx@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H0V?$Point_@H@1@HHAEBV?$Scalar_@N@1@@Z'
@@ -2592,7 +2592,7 @@ src.size(), fx, and fy; the type of dst is the same as of src.
 }
 procedure resize(const Src: TInputArray; const dst: TOutputArray; dsize: UInt64 { TSize }; fx: double = 0; fy: double = 0; interpolation: InterpolationFlags = INTER_LINEAR); overload;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?resize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@V?$Size_@H@1@NNH@Z'
 {$ELSE}
   name '?resize@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z'
@@ -3189,7 +3189,7 @@ peak) and will be smaller when there are multiple peaks.
 //CV_EXPORTS_W Point2d phaseCorrelate(InputArray src1, InputArray src2,
 //                                    InputArray window = noArray(), CV_OUT double* response = 0);
 function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() }; response: pDouble { = 0 } ): TPoint2d; overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@debug_build_guard@1@00PEAN@Z'
 {$ELSE}
   name '?phaseCorrelate@cv@@YA?AV?$Point_@N@1@AEBV_InputArray@1@00PEAN@Z'
@@ -3224,7 +3224,7 @@ An example is shown below:
   void cv::createHanningWindow(class cv::_OutputArray const &,class cv::Size_<int>,int)
 }
 procedure createHanningWindow(const dst: TOutputArray; winSize: UInt64 { TSize }; &type: Int); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?createHanningWindow@cv@@YAXAEBV_OutputArray@debug_build_guard@1@V?$Size_@H@1@H@Z'
 {$ELSE}
   name '?createHanningWindow@cv@@YAXAEBV_OutputArray@1@V?$Size_@H@1@H@Z'
@@ -3285,7 +3285,7 @@ types.
   double cv::threshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,double,int)
 }
 function threshold(const Src: TInputArray; const dst: TOutputArray; thresh, maxVal: double; &type: Int): double; overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?threshold@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NNH@Z'
 {$ELSE}
   name '?threshold@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@NNH@Z'
@@ -3328,7 +3328,7 @@ is positive but may be zero or negative as well.
   void cv::adaptiveThreshold(class cv::_InputArray const &,class cv::_OutputArray const &,double,int,int,int,double)
 }
 procedure adaptiveThreshold(const Src: TInputArray; const dst: TOutputArray; maxValue: double; adaptiveMethod: Int; thresholdType: Int; blockSize: Int; c: double); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?adaptiveThreshold@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NHHHN@Z'
 {$ELSE}
   name '?adaptiveThreshold@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NHHHN@Z'
@@ -3456,7 +3456,7 @@ arrays, or to update the histogram in time.
 }
 procedure calcHist(const images: TMat; nimages: Int; channels: pInt; const mask: TInputArray; const hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; UNIFORM: BOOL = true;
   accumulate: BOOL = false); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@41@H1PEAPEBM_N5@Z'
 {$ELSE}
   name '?calcHist@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@1@AEBV_OutputArray@1@H1PEAPEBM_N5@Z'
@@ -3531,7 +3531,7 @@ size and depth as images[0] .
 }
 procedure calcBackProject(const images: pMat; nimages: Int; const channels: pInt; const hist: TInputArray; const backProject: TOutputArray; const ranges: pFloat { float** }; scale: double = 1;
   UNIFORM: BOOL = true); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?calcBackProject@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@41@PEAPEBMN_N@Z'
 {$ELSE}
   name '?calcBackProject@cv@@YAXPEBVMat@1@HPEBHAEBV_InputArray@1@AEBV_OutputArray@1@PEAPEBMN_N@Z'
@@ -3551,7 +3551,7 @@ procedure calcBackProject(const images: pMat; nimages: Int; const channels: pInt
 //                                   double scale );
 procedure calcBackProject(const images: TInputArrayOfArrays; const channels: Vector<Int>; const hist: TInputArray; const dst: TOutputArray; const ranges: Vector<float>; scale: double); overload;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?calcBackProject@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV?$vector@HV?$allocator@H@std@@@std@@0AEBV_OutputArray@31@AEBV?$vector@MV?$allocator@M@std@@@5@N@Z'
 {$ELSE}
   name '?calcBackProject@cv@@YAXAEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@std@@0AEBV_OutputArray@1@AEBV?$vector@MV?$allocator@M@std@@@4@N@Z'
@@ -3601,7 +3601,7 @@ The algorithm normalizes the brightness and increases the contrast of the image.
   void cv::equalizeHist(class cv::_InputArray const &,class cv::_OutputArray const &)
 }
 procedure equalizeHist(const Src: TInputArray; const dst: TOutputArray); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?equalizeHist@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
 {$ELSE}
   name '?equalizeHist@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
@@ -3779,7 +3779,7 @@ procedure grabCut(const img:TInputArray;const mask:TInputOutputArray;const rect:
                            const bgdModel:TInputOutputArray;const fgdModel:TInputOutputArray;
                            iterCount:int; mode :GrabCutModes = GC_EVAL );
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?grabCut@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@V?$Rect_@H@1@11HH@Z'
 {$ELSE}
   name '?grabCut@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@V?$Rect_@H@1@11HH@'
@@ -3861,7 +3861,7 @@ procedure distanceTransform( const src:TInputArray;const dst:TOutputArray;
                              const labels:TOutputArray; distanceType:DistanceTypes; maskSize:DistanceTransformMasks;
                              labelType : DistanceTransformLabelTypes = DIST_LABEL_CCOMP );
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?distanceTransform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1HHH@Z'
 {$ELSE}
   name '?distanceTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1HHH@Z'
@@ -3891,7 +3891,7 @@ procedure distanceTransform( const src:TInputArray;const dst:TOutputArray;
                              distanceType:DistanceTypes; maskSize:DistanceTransformMasks;
                              dstType:int = CV_32F);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?distanceTransform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z'
 {$ELSE}
   name '?distanceTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
@@ -4051,7 +4051,7 @@ channels is derived automatically from src and code.
 }
 procedure cvtColor(const Src: TInputArray; const dst: TOutputArray; code: Int; dstCn: Int = 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?cvtColor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'
 {$ELSE}
   name '?cvtColor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z'
@@ -4360,7 +4360,7 @@ context.
 }
 procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: Int; method: Int; const offset: UInt64 = 0 { = Point() } ); overload;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?findContours@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1HHV?$Point_@H@1@@Z'
 {$ELSE}
   name '?findContours@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1HHV?$Point_@H@1@@Z'
@@ -4382,7 +4382,7 @@ procedure findContours(const image: TInputArray; const contours: TOutputArrayOfA
 }
 procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: Int; method: Int; const offset: UInt64 = 0 { = Point() } );
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?findContours@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHV?$Point_@H@1@@Z'
 {$ELSE}
   name '?findContours@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHV?$Point_@H@1@@Z'
@@ -4428,7 +4428,7 @@ procedure approxPolyDP( const curve:TInputArray;
                         const approxCurve:TOutputArray;
                         epsilon:double; closed:bool);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?approxPolyDP@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@N_N@Z'
 {$ELSE}
   name '?approxPolyDP@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@N_N@Z'
@@ -4491,7 +4491,7 @@ false, which means that the absolute value is returned.
   double cv::contourArea(class cv::_InputArray const &,bool)
 }
 function contourArea(const contour: TInputArray; oriented: BOOL = false): double; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?contourArea@cv@@YANAEBV_InputArray@debug_build_guard@1@_N@Z'
 {$ELSE}
   name '?contourArea@cv@@YANAEBV_InputArray@1@_N@Z'
@@ -4608,7 +4608,7 @@ void cv::convexHull(class cv::_InputArray const &,class cv::_OutputArray const &
 procedure convexHull(const points:TInputArray;const hull:TOutputArray;
                               clockwise :bool= false; returnPoints :bool= true );
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?convexHull@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@_N2@Z'
 {$ELSE}
   name '?convexHull@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@_N2@Z'
@@ -4891,7 +4891,7 @@ void cv::applyColorMap(class cv::_InputArray const &,class cv::_OutputArray cons
 }
 procedure applyColorMap(const src:TInputArray;const dst:TOutputArray; colormap:ColormapTypes); overload;
 external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?applyColorMap@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
 {$ELSE}
   name '?applyColorMap@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
@@ -4940,7 +4940,7 @@ lines are drawn using Gaussian filtering.
 }
 procedure line(const img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0); overload;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?line@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
 {$ELSE}
   name '?line@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
@@ -4972,7 +4972,7 @@ The function cv::arrowedLine draws an arrow between pt1 and pt2 points in the im
 }
 procedure arrowedLine(const img: TInputOutputArray; pt1: UInt64 { TPoint }; pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; line_type: Int = 8; shift: Int = 0;
   tipLength: double = 0.1); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?arrowedLine@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z'
 {$ELSE}
   name '?arrowedLine@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHHN@Z'
@@ -5005,7 +5005,7 @@ mean that the function has to draw a filled rectangle.
 }
 procedure rectangle(const img: TInputOutputArray; pt1, pt2: UInt64 { TPoint }; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0); overload;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?rectangle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
 {$ELSE}
   name '?rectangle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@1AEBV?$Scalar_@N@1@HHH@Z'
@@ -5051,7 +5051,7 @@ mean that a filled circle is to be drawn.
 procedure circle( const img: TInputOutputArray; center: UInt64 { TPoint }; radius: Int;
                   const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8); shift: Int = 0); overload;
   external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?circle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z'
 {$ELSE}
   name '?circle@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@HAEBV?$Scalar_@N@1@HHH@Z'
@@ -5097,7 +5097,7 @@ a filled ellipse sector is to be drawn.
 }
 procedure ellipse(const img: TInputOutputArray; center: UInt64 { TPoint }; axes: UInt64 { TSize }; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1;
   lineType: Int = Int(LINE_8); shift: Int = 0); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?ellipse@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@V?$Size_@H@1@NNNAEBV?$Scalar_@N@1@HHH@Z'
 {$ELSE}
   name '?ellipse@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@V?$Size_@H@1@NNNAEBV?$Scalar_@N@1@HHH@Z'
@@ -5118,7 +5118,7 @@ a filled ellipse sector is to be drawn.
 //CV_EXPORTS_W void ellipse(InputOutputArray img, const RotatedRect& box, const Scalar& color,
 //                        int thickness = 1, int lineType = LINE_8);
 procedure ellipse(const img: TInputOutputArray; const box: TRotatedRect; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8)); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?ellipse@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBVRotatedRect@1@AEBV?$Scalar_@N@1@HH@Z'
 {$ELSE}
   name '?ellipse@cv@@YAXAEBV_InputOutputArray@1@AEBVRotatedRect@1@AEBV?$Scalar_@N@1@HH@Z'
@@ -5156,7 +5156,7 @@ marker types are supported, see #MarkerTypes for more information.
 procedure drawMarker(const img: TInputOutputArray; position: UInt64 { TPoint }; const color: TScalar; markerType: Int = Int(MARKER_CROSS); markerSize: Int = 20; thickness: Int = 1;
   line_type: Int = 8);
  overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?drawMarker@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@V?$Point_@H@1@AEBV?$Scalar_@N@1@HHHH@Z'
 {$ELSE}
   name '?drawMarker@cv@@YAXAEBV_InputOutputArray@1@V?$Point_@H@1@AEBV?$Scalar_@N@1@HHHH@Z'
@@ -5194,7 +5194,7 @@ procedure fillConvexPoly(const img:TInputOutputArray;const points:TInputArray;
                                  const color:TScalar; lineType :int = int(LINE_8);
                                  shift :int = 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?fillConvexPoly@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@AEBV?$Scalar_@N@1@HH@Z'
 {$ELSE}
   name '?fillConvexPoly@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@AEBV?$Scalar_@N@1@HH@Z'
@@ -5215,7 +5215,7 @@ procedure fillConvexPoly(const img:TInputOutputArray; const pts:pPoint; npts:int
                                const color:TScalar; lineType :int= int(LINE_8);
                                shift :int = 0);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?fillConvexPoly@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@PEBV?$Point_@H@1@HAEBV?$Scalar_@N@1@HH@Z'
 {$ELSE}
   name '?fillConvexPoly@cv@@YAXAEBV_InputOutputArray@1@PEBV?$Point_@H@1@HAEBV?$Scalar_@N@1@HH@Z'
@@ -5252,7 +5252,7 @@ parts), and so forth.
 procedure fillPoly( const img: TInputOutputArray; const pts: pPoint; const npts: pInt; ncontours: Int;
                     const color: TScalar; lineType: Int = Int(LINE_8); shift: Int = 0;
                     offset: UInt64 { TPoint } { = Point() } = 0); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?fillPoly@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV41@@Z'
 {$ELSE}
   name '?fillPoly@cv@@YAXAEBV_InputOutputArray@1@PEAPEBV?$Point_@H@1@PEBHHAEBV?$Scalar_@N@1@HHV31@@Z'
@@ -5292,7 +5292,7 @@ procedure polylines(const img:TInputOutputArray; const pts:TInputArrayOfArrays;
                             isClosed:bool; const color:TScalar;
                             thickness :int= 1; lineType :int= int(LINE_8); shift :int= 0 );
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?polylines@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@_NAEBV?$Scalar_@N@1@HHH@Z'
 {$ELSE}
   name '?polylines@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@_NAEBV?$Scalar_@N@1@HHH@Z'
@@ -5311,7 +5311,7 @@ overload; external opencv_world_dll
 
 procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; ncontours: Int; isClosed: BOOL; const color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8);
   shift: Int = 0); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?polylines@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@PEBQEBV?$Point_@H@1@PEBHH_NAEBV?$Scalar_@N@1@HHH@Z'
 {$ELSE}
   name '?polylines@cv@@YAXAEBV_InputOutputArray@1@PEBQEBV?$Point_@H@1@PEBHH_NAEBV?$Scalar_@N@1@HHH@Z'
@@ -5370,7 +5370,7 @@ of contours, or iterate over the collection using contourIdx parameter.
 }
 procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: Int { = LINE_8 };
   const hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: UInt64 = 0 { TPoint  = Point() } ); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?drawContours@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z'
 {$ELSE}
   name '?drawContours@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@HAEBV?$Scalar_@N@1@HH1HV?$Point_@H@1@@Z'
@@ -5475,7 +5475,7 @@ procedure putText( const img: TInputOutputArray; const text: CppString; org: UIn
                    fontScale: double; color: TScalar; thickness: Int = 1; lineType: Int = Int(LINE_8);
                    bottomLeftOrigin: BOOL = false);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?putText@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z'
 {$ELSE}
   name '?putText@cv@@YAXAEBV_InputOutputArray@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z'

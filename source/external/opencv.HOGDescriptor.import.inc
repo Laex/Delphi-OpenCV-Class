@@ -94,7 +94,7 @@ procedure detectMultiScale_HOGDescriptor( const Obj: THOGDescriptor;
                                           finalThreshold: double = 2.0;
                                           useMeanshiftGrouping: BOOL = false);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?detectMultiScale@HOGDescriptor@cv@@UEBAXAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAV?$vector@NV?$allocator@N@std@@@6@NV?$Size_@H@2@3NN_N@Z'
 {$ELSE}
   name '?detectMultiScale@HOGDescriptor@cv@@UEBAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@AEAV?$vector@NV?$allocator@N@std@@@5@NV?$Size_@H@2@3NN_N@Z'
@@ -126,7 +126,7 @@ procedure detectMultiScale_HOGDescriptor(
                                 finalThreshold :double = 2.0;
                                 useMeanshiftGrouping :bool = false);
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?detectMultiScale@HOGDescriptor@cv@@UEBAXAEBV_InputArray@debug_build_guard@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NV?$Size_@H@2@2NN_N@Z'
 {$ELSE}
   name '?detectMultiScale@HOGDescriptor@cv@@UEBAXAEBV_InputArray@2@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@std@@NV?$Size_@H@2@2NN_N@Z'
@@ -167,7 +167,7 @@ function getDefaultPeopleDetector_HOGDescriptor( { const Obj: THOGDescriptor } )
     void cv::HOGDescriptor::setSVMDetector(class cv::_InputArray const &)
   }
 procedure setSVMDetector_HOGDescriptor(const Obj: THOGDescriptor; const svmdetector: TInputArray); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?setSVMDetector@HOGDescriptor@cv@@UEAAXAEBV_InputArray@debug_build_guard@2@@Z'
 {$ELSE}
   name '?setSVMDetector@HOGDescriptor@cv@@UEAAXAEBV_InputArray@2@@Z'

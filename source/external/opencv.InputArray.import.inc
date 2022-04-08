@@ -41,7 +41,7 @@
   public: __cdecl cv::_InputArray::_InputArray(class cv::Mat const & __ptr64) __ptr64
 }
 procedure Constructor_InputArray(const Obj: TInputArray;const m: TMat); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??0_InputArray@debug_build_guard@cv@@QEAA@AEBVMat@2@@Z'
 {$ELSE}
   name '??0_InputArray@cv@@QEAA@AEBVMat@1@@Z'
@@ -54,7 +54,7 @@ procedure Constructor_InputArray(const Obj: TInputArray;const m: TMat); overload
   public: __cdecl cv::_InputArray::_InputArray(class cv::MatExpr const & __ptr64) __ptr64
 }
 procedure Constructor_InputArray(const Obj: TInputArray;const m: TMatExpr); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??0_InputArray@debug_build_guard@cv@@QEAA@AEBVMatExpr@2@@Z'
 {$ELSE}
   name '??0_InputArray@cv@@QEAA@AEBVMatExpr@1@@Z'
@@ -71,7 +71,7 @@ procedure Constructor_InputArray(const Obj: TInputArray;const m: TMatExpr); over
   cv::_InputArray::_InputArray(void)
 }
 procedure Constructor_InputArray(const Obj: TInputArray); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??0_InputArray@debug_build_guard@cv@@QEAA@XZ'
 {$ELSE}
   name '??0_InputArray@cv@@QEAA@XZ'
@@ -84,7 +84,7 @@ procedure Constructor_InputArray(const Obj: TInputArray); overload; external ope
   cv::_InputArray::~_InputArray(void)
 }
 procedure Destructor_InputArray(const Obj: TInputArray); overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '??1_InputArray@debug_build_guard@cv@@QEAA@XZ'
 {$ELSE}
   name '??1_InputArray@cv@@QEAA@XZ'
@@ -108,7 +108,7 @@ procedure Destructor_InputArray(const Obj: TInputArray); overload; external open
   public: class cv::Mat __cdecl cv::_InputArray::getMat(int)const __ptr64
 }
 procedure getMat_InputArray(const Obj: TInputArray; Var m: TMat; idx: int); external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?getMat@_InputArray@debug_build_guard@cv@@QEBA?AVMat@3@H@Z'
 {$ELSE}
   name '?getMat@_InputArray@cv@@QEBA?AVMat@2@H@Z'
@@ -124,7 +124,7 @@ procedure getMat_InputArray(const Obj: TInputArray; Var m: TMat; idx: int); exte
   void * cv::_InputArray::getObj(void)
 }
 function getObj_InputArray(const Obj: TInputArray): Pointer; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?getObj@_InputArray@debug_build_guard@cv@@QEBAPEAXXZ'
 {$ELSE}
   name '?getObj@_InputArray@cv@@QEBAPEAXXZ'
@@ -146,7 +146,7 @@ function getObj_InputArray(const Obj: TInputArray): Pointer; external opencv_wor
   bool cv::_InputArray::isMat(void)
 }
 function isMat_InputArray(const Obj: TInputArray): BOOL; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?isMat@_InputArray@debug_build_guard@cv@@QEBA_NXZ'
 {$ELSE}
   name '?isMat@_InputArray@cv@@QEBA_NXZ'

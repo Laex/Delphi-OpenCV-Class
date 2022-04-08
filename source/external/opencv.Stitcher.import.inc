@@ -37,7 +37,7 @@ enum cv::Stitcher::Status cv::Stitcher::stitch(class cv::_InputArray const &,cla
 }
 function stitch_Stitcher(const Obj:TStitcher;const images:TInputArrayOfArrays;const pano:TOutputArray):TStitcher.Status;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
   name '?stitch@Stitcher@cv@@QEAA?AW4Status@12@AEBV_InputArray@debug_build_guard@2@AEBV_OutputArray@52@@Z'
 {$ELSE}
   name '?stitch@Stitcher@cv@@QEAA?AW4Status@12@AEBV_InputArray@2@AEBV_OutputArray@2@@Z'

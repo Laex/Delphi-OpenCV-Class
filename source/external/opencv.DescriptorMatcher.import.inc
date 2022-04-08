@@ -43,7 +43,7 @@ struct cv::Ptr<class cv::DescriptorMatcher> cv::DescriptorMatcher::create(class 
 }
 function create_DescriptorMatcher(const descriptorMatcherType:CppString):TPtr<TDescriptorMatcher>;
 overload; external opencv_world_dll
-{$IFDEF DEBUG}
+{$IFDEF USE_DEBUG_DLLS}
 name '?create@DescriptorMatcher@cv@@SA?AU?$Ptr@VDescriptorMatcher@cv@@@2@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
 {$ELSE}
 name '?create@DescriptorMatcher@cv@@SA?AU?$Ptr@VDescriptorMatcher@cv@@@2@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
