@@ -9,16 +9,21 @@ uses
 
 type
   TForm1 = class(TForm)
-    cvwWebCam: TCVView;
-    cvwFile: TCVView;
     cvcptrsrcWebCam: TCVCaptureSource;
     cvcptrsrcFile: TCVCaptureSource;
-    cvwStream: TCVView;
     cvcptrsrcStream: TCVCaptureSource;
+    cvw1: TCVView;
+    cvw2: TCVView;
+    cvw3: TCVView;
+    chk1: TCheckBox;
+    chk2: TCheckBox;
+    chk3: TCheckBox;
     lbl1: TLabel;
     lbl2: TLabel;
-    lbl3: TLabel;
     procedure FormCreate(Sender: TObject);
+    procedure chk1Click(Sender: TObject);
+    procedure chk2Click(Sender: TObject);
+    procedure chk3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -32,13 +37,36 @@ implementation
 
 {$R *.dfm}
 
+procedure TForm1.chk1Click(Sender: TObject);
+begin
+  cvcptrsrcWebCam.Enabled := chk1.Checked;
+end;
+
+procedure TForm1.chk2Click(Sender: TObject);
+begin
+  cvcptrsrcFile.Enabled := chk2.Checked;
+end;
+
+procedure TForm1.chk3Click(Sender: TObject);
+begin
+  cvcptrsrcStream.Enabled := chk3.Checked;
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   With (cvcptrsrcFile.SourceType as TCVFileSource) do
   begin
     FileName := OpenCVData + 'Megamind.avi';
-    Enabled := True;
+    lbl1.Caption := FileName;
   end;
+
+  With (cvcptrsrcStream.SourceType as TCVFileSource) do
+    lbl2.Caption := FileName;
+
+  chk1.Checked := cvcptrsrcWebCam.Enabled;
+  chk2.Checked := cvcptrsrcFile.Enabled;
+  chk3.Checked := cvcptrsrcStream.Enabled;
+
 end;
 
 end.
