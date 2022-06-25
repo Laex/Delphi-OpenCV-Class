@@ -34,4 +34,12 @@ begin
   Result := imwrite(filename, img, a);
 end;
 
+function imdecode(const mat: TMat; flags: Integer): TMat;
+var
+  InputArray: TInputArray;
+begin
+  InputArray := TInputArray(mat);
+  Result := imdecode(InputArray, flags);
+end;
+
 {$ENDIF}
