@@ -294,6 +294,17 @@ See cv::imread for the list of supported formats and flags description.
 @param flags The same flags as in cv::imread, see cv::ImreadModes.
 *)
 //CV_EXPORTS_W Mat imdecode( InputArray buf, int flags );
+function imdecode(
+  const buf: TInputArray;
+  const flags: Integer
+): TMat; overload; external opencv_world_dll
+{$IFDEF USE_DEBUG_DLLS}
+  name '?imdecode@cv@@YA?AVMat@1@AEBV_InputArray@debug_build_guard@1@H@Z'
+{$ELSE}
+  name '?imdecode@cv@@YA?AVMat@1@AEBV_InputArray@1@H@Z'
+{$ENDIF}
+{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function imdecode(const mat: TMat; flags: Integer): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @overload
 @param buf
