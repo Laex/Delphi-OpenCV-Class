@@ -37,13 +37,13 @@ uses
   ToolsAPI,
   CVClass;
 
-{$i '../../source/core/version.inc'}
+{$I '..\..\source\core\version.inc'}
 
 const
   PackageText = 'Delphi binding for OpenCV';
 
 resourcestring
-  resPackageName = PackageText+' '+CV_VERSION;
+  resPackageName = PackageText + ' ' + CV_VERSION;
   resAboutDescription = PackageText;
   resAboutURL = 'https://github.com/Laex/Delphi-OpenCV-Class/';
   resAboutCopyright = 'Copyright (c) 2021 Laentir Valetov';
@@ -54,13 +54,13 @@ resourcestring
 
 procedure Register;
 begin
-  RegisterComponents('OpenCV', [TCVView, TCVCaptureSource,TCVVideoWriter]);
+  RegisterComponents('OpenCV', [TCVView, TCVCaptureSource, TCVVideoWriter]);
   RegisterClasses([TCVWebCameraSource, TCVFileSource]);
 end;
 
 var
   AboutBoxServices: IOTAAboutBoxServices = nil;
-  AboutBoxIndex: Integer = 0;
+  AboutBoxIndex: Integer                 = 0;
 
 procedure RegisterAboutBox;
 var

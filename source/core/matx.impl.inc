@@ -42,6 +42,13 @@ begin
   _Data[index] := Value;
 end;
 
+{ TMatSize }
+
+function TMatSize.getValues(const Index:Integer):Int;
+begin
+ Result := p[Index];
+end;
+
 {$I 'core/saturate.impl.inc'}
 
 {$endif}

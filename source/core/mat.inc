@@ -91,10 +91,13 @@ type
   end;
 
   TMatSize = record // forward declration
-    // private
+   private
 {$HINTS OFF}
     p: pInt; // pInt; // int* p;
 {$HINTS ON}
+    function getValues(const Index:Integer):Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+   public
+    property Values[const Index:Integer]:Int read getValues; default;
   end;
 
   TMatStep = record // forward declaration

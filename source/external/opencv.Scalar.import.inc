@@ -34,7 +34,7 @@ name '??0Scalar@own@gapi@cv@@QEAA@NNNN@Z'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 // ??0Scalar@own@gapi@cv@@QEAA@XZ
 // public: __cdecl cv::gapi::own::Scalar::Scalar(void) __ptr64
-procedure constructor_Scalar(Obj: TScalar); overload; external opencv_world_dll
+procedure constructor_Scalar(Var Obj: TScalar); overload; external opencv_world_dll
 //index 1073
 name '??0Scalar@own@gapi@cv@@QEAA@XZ'
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};

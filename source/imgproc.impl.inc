@@ -334,5 +334,10 @@ begin
   morphologyEx(Src, dst, op, kernel, Point(-1, -1));
 end;
 
+procedure resize(const Src: TInputArray; const dst: TOutputArray; dsize: TSize; fx: double = 0; fy: double = 0; interpolation: InterpolationFlags = INTER_LINEAR);
+begin
+  resize(src,dst,UInt64(dsize),fx,fy,interpolation);
+end;
+
 {$I 'imgproc/segmentation.impl.inc'}
 {$ENDIF}

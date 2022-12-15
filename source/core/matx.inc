@@ -431,7 +431,7 @@ public:
    TVec2d   = array[0..2-1] of double;
    TVec3d   = array[0..3-1] of double;
    TVec4d   = array[0..4-1] of double;
-   TVec6d   = array[0..6-1] of double;
+   TVec6d   = array[0..6-1] of double;   
 
 
 (** @} *)

@@ -362,6 +362,11 @@ begin
   Result := Scalar(v[0], v[1], v[2]);
 end;
 
+function Scalar: TScalar;
+begin
+  Result := TScalar.Scalar();
+end;
+
 { TTermCriteria }
 
 function TTermCriteria.isValid: BOOL;

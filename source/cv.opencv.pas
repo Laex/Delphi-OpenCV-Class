@@ -52,7 +52,7 @@ Uses
 {$I features2d.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_DNN}
-{.$I dnn.inc}
+{$I dnn.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_FLANN}
 {$I flann.inc}
@@ -99,7 +99,7 @@ implementation
 {$I features2d.impl.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_DNN}
-{.$I dnn.impl.inc}
+{$I dnn.impl.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_FLANN}
 {$I flann.impl.inc}

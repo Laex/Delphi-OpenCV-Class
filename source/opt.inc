@@ -1,6 +1,10 @@
 {$IFNDEF CVOPT}
 {$DEFINE CVOPT}
 //
+//Define version of OpenCV
+{.$DEFINE OPENCV_455}
+{$DEFINE OPENCV_460}
+//
 {$I jedi\jedi.inc}
 //
 {$IFDEF DEBUG}

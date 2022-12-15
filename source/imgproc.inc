@@ -2598,6 +2598,8 @@ procedure resize(const Src: TInputArray; const dst: TOutputArray; dsize: UInt64 
   name '?resize@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@V?$Size_@H@1@NNH@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure resize(const Src: TInputArray; const dst: TOutputArray; dsize: TSize; fx: double = 0; fy: double = 0; interpolation: InterpolationFlags = INTER_LINEAR); 
+overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (** @brief Applies an affine transformation to an image.
 
 The function warpAffine transforms the source image using the specified matrix:

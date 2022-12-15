@@ -34,6 +34,8 @@ Test/
 *.dll
 !opencv_delphi455.dll
 !opencv_delphi455d.dll
+!opencv_delphi460.dll
+!opencv_delphi460d.dll
 *.bpl
 *.bpi
 *.dcp

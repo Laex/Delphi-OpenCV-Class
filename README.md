@@ -1,5 +1,5 @@
 # Delphi binding for OpenCV
-* Experimental Delphi binding for OpenCV 4.5.5
+* Experimental Delphi binding for OpenCV 4.6.0
 * Development environment - Delphi 10.4, 11
 * x64 platform only
 
@@ -8,17 +8,17 @@
 + Laentir Valetov (email: laex@bk.ru)
 ## Usage:
 1. Download the current state of the project as [zip][1] or as [git][2]
-2. Download [OpenCV 4.5.4][3], run and unpack to the selected directory.<br>
+2. Download [OpenCV 4.6.0][3], run and unpack to the selected directory.<br>
 The following DLLs are required to work properly<br>
 __From `<opencv>\build\x64\vc15\bin\`__
-* opencv_videoio_ffmpeg455_64.dll - `release`<br>
-* opencv_videoio_msmf455_64.dll   - `release`<br>
-* opencv_world455.dll             - `release`<br>
-* opencv_videoio_msmf455_64d.dll  - `debug`<br>
-* opencv_world455d.dll            - `debug`<br>
+* opencv_videoio_ffmpeg460_64.dll - `release`<br>
+* opencv_videoio_msmf460_64.dll   - `release`<br>
+* opencv_world460.dll             - `release`<br>
+* opencv_videoio_msmf460_64d.dll  - `debug`<br>
+* opencv_world460d.dll            - `debug`<br>
 **From `<project>\bin\`**
-* opencv_delphi455.dll - `release`<br>
-* opencv_delphi455d.dll - `debug`<br>
+* opencv_delphi460.dll - `release`<br>
+* opencv_delphi460d.dll - `debug`<br>
                                                                                        
 __For the library to work properly, you need__
 - place next to the executable file of your program. To run examples - in `<project>\bin\`<br>
@@ -45,4 +45,4 @@ __For the library to work properly, you need__
 
 [1]: https://github.com/Laex/Delphi-OpenCV-Class/archive/refs/heads/main.zip
 [2]: https://github.com/Laex/Delphi-OpenCV-Class.git
-[3]: https://github.com/opencv/opencv/releases/download/4.5.4/opencv-4.5.4-vc14_vc15.exe
+[3]: https://github.com/opencv/opencv/releases/download/4.6.0/opencv-4.6.0-vc14_vc15.exe
