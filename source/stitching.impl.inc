@@ -25,12 +25,12 @@
 
 class function TStitcher.Create(const mode: TStitcher.mode = mode.PANORAMA): TPtr<TStitcher>;
 begin
-  create_Stitcher(Result._Ptr, mode);
+  class_proc_CV_STITCHER_create(Result._Ptr, mode);
 end;
 
 function TStitcher.stitch(const images: TInputArrayOfArrays; const pano: TOutputArray): TStitcher.Status;
 begin
-  Result := stitch_Stitcher(Self, images, pano);
+  Result := class_func_CV_STITCHER_stitch_1(Self, images, pano);
 end;
 
 {$ENDIF}

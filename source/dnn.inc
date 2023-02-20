@@ -54,8 +54,6 @@ Check @ref tutorial_dnn_yolo "the corresponding tutorial" for more details
 *)
 (** @example samples/dnn/text_detection.cpp
 *)
-{$include 'dnn/dnn.inc'}
-
-{$include 'external/opencv.dnn.import.inc'}
+{$i 'dnn/dnn.inc'}
 
 {$endif OPENCV_DNN_HPP}

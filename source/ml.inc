@@ -1981,11 +1981,8 @@ Type
   // }
   // }
 
-  { .$i 'ml/ml.inl.inc' }
+  {$i 'ml/ml.inl.inc' }
 
-{$I 'externAL/opencv.SVM.import.inc'}
-{$I 'externAL/opencv.ANN_MLP.import.inc'}
-{$I 'externAL/opencv.TrainData.import.inc'}
   // #endif // __cplusplus
 {$ENDIF  OPENCV_ML_HPP}
   (* End of file. *)

@@ -327,6 +327,6 @@ external opencv_world_dll name '?createBackgroundSubtractorKNN@cv@@YA?AU?$Ptr@VB
 
 //} // cv
 
-{$I 'external/opencv.BackgroundSubtractorMOG2.import.inc'}
+{.$I 'external/opencv.BackgroundSubtractorMOG2.import.inc'}
 
 {$endif}

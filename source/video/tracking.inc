@@ -177,10 +177,10 @@ function CamShift(const probImage: TInputArray; const window: TRect; const crite
   ?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z
   void cv::calcOpticalFlowPyrLK(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,int,class cv::TermCriteria,int,double)
 }
-procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
-  const err: TOutputArray; winSize: UInt64 { TSize = Size(21,21) }; maxLevel: Int { = 3 };
-  const criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4); overload;
-  external opencv_world_dll
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
+  const status: TOutputArray; const err: TOutputArray; winSize: UInt64 { TSize = Size(21,21) }; maxLevel: Int { = 3 };
+  const criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4);
+  overload; external opencv_world_dll
 {$IFDEF USE_DEBUG_DLLS}
   name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_InputOutputArray@31@AEBV_OutputArray@31@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
 {$ELSE}
@@ -188,11 +188,12 @@ procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInput
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
-  const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int = 3); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
+  const status: TOutputArray; const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int = 3); overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 // ; criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4
-  procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
-    const err: TOutputArray); overload;
+  procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
+    const status: TOutputArray; const err: TOutputArray); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
   (* * @brief Computes a dense optical flow using the Gunnar Farneback's algorithm.
 
@@ -378,9 +379,9 @@ procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInput
         @param type Type of the created matrices that should be CV_32F or CV_64F.
       *)
       // CV_WRAP KalmanFilter( int dynamParams, int measureParams, int controlParams = 0, int type = CV_32F );
-      class function KalmanFilter( const dynamParams, measureParams: Int; const controlParams: Int = 0;
-                                   const &type: Int = CV_32F): TKalmanFilter; static;
-                                   {$IFDEF USE_INLINE}inline;{$ENDIF}
+      class function KalmanFilter(const dynamParams, measureParams: Int; const controlParams: Int = 0; const &type: Int = CV_32F)
+        : TKalmanFilter; static;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
       (* * @brief Re-initializes Kalman filter. The previous content is destroyed.
         @param dynamParams Dimensionality of the state.
         @param measureParams Dimensionality of the measurement.
@@ -696,7 +697,8 @@ procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInput
         @param preset one of PRESET_ULTRAFAST, PRESET_FAST and PRESET_MEDIUM
       *)
       // CV_WRAP static Ptr<DISOpticalFlow> create(int preset = DISOpticalFlow::PRESET_FAST);
-      class function Create<T: record >(preset: Int = PRESET_FAST): TPtr<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+      class function Create<T: record >(preset: Int = PRESET_FAST): TPtr<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+      class function Create(preset: Int = PRESET_FAST): TPtr<TDISOpticalFlow>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     end;
 
     (* * @brief Class used for calculating a sparse optical flow.
@@ -876,6 +878,6 @@ procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInput
 
     // } // cv
 
-{$I 'external/opencv.OpticalFlow.import.inc'}
-{$I 'external/opencv.KalmanFilter.import.inc'}
+    { .$I 'external/opencv.OpticalFlow.import.inc' }
+    { .$I 'external/opencv.KalmanFilter.import.inc' }
 {$ENDIF}

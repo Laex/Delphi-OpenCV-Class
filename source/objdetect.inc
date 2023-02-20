@@ -803,7 +803,5 @@ Type
 
 {$I 'objdetect/detection_based_tracker.inc'}
 {$I 'objdetect/face.inc'}
-{$I 'external/opencv.CascadeClassifier.import.inc'}
-{$I 'external/opencv.HOGDescriptor.import.inc'}
-{$I 'external/opencv.QRCodeDetector.import.inc'}
+
 {$ENDIF}

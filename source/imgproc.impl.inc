@@ -1,29 +1,29 @@
-  (*
-    This file is part of Delphi-OpenCV-Class project.
-    https://github.com/Laex/Delphi-OpenCV-Class
+(*
+  This file is part of Delphi-OpenCV-Class project.
+  https://github.com/Laex/Delphi-OpenCV-Class
 
-    It is subject to the license terms in the LICENSE file found in the top-level directory
-    of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+  It is subject to the license terms in the LICENSE file found in the top-level directory
+  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
 
-    Copyright 2021, Laentir Valetov, laex@bk.ru
+  Copyright 2021, Laentir Valetov, laex@bk.ru
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  *)
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*)
 
 {$IFDEF OPENCV_IMGPROC_HPP}
 
-procedure putText(const img: TInputOutputArray; const text: String; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
-  bottomLeftOrigin: BOOL = false);
+procedure putText(const img: TInputOutputArray; const text: String; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar;
+  thickness: Int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: BOOL = false);
 begin
   putText(img, CppString(text), org, Int(fontFace), fontScale, color, thickness, Int(lineType), bottomLeftOrigin);
 end;
@@ -48,7 +48,8 @@ begin
   cvtColor(Src, dst, Int(code), dstCn);
 end;
 
-procedure adaptiveThreshold(const Src: TInputArray; const dst: TOutputArray; maxValue: double; adaptiveMethod: AdaptiveThresholdTypes; thresholdType: ThresholdTypes; blockSize: Int; c: double);
+procedure adaptiveThreshold(const Src: TInputArray; const dst: TOutputArray; maxValue: double; adaptiveMethod: AdaptiveThresholdTypes;
+  thresholdType: ThresholdTypes; blockSize: Int; c: double);
 begin
   adaptiveThreshold(Src, dst, maxValue, Int(adaptiveMethod), Int(thresholdType), blockSize, c);
 end;
@@ -63,13 +64,14 @@ begin
   Result := getStructuringElement(Int(shape), UInt64(ksize), UInt64(anchor));
 end;
 
-procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint; const iterations: Int; const borderType: BorderTypes;
-  const borderValue: TScalar { = morphologyDefaultBorderValue() } );
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint; const iterations: Int;
+  const borderType: BorderTypes; const borderValue: TScalar { = morphologyDefaultBorderValue() } );
 begin
   erode(Src, dst, kernel, UInt64(anchor), iterations, Int(borderType), borderValue);
 end;
 
-procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint; const iterations: Int; const borderType: BorderTypes { = BORDER_CONSTANT } );
+procedure erode(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint; const iterations: Int;
+  const borderType: BorderTypes { = BORDER_CONSTANT } );
 begin
   erode(Src, dst, kernel, anchor, iterations, borderType, morphologyDefaultBorderValue());
 end;
@@ -94,19 +96,21 @@ begin
   Result := TScalar.all(DBL_MAX);
 end;
 
-procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: Int { = 1 };
-  const borderType: BorderTypes { = BORDER_CONSTANT }; const borderValue: TScalar { = morphologyDefaultBorderValue() } );
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) };
+  const iterations: Int { = 1 }; const borderType: BorderTypes { = BORDER_CONSTANT };
+  const borderValue: TScalar { = morphologyDefaultBorderValue() } );
 begin
   dilate(Src, dst, kernel, UInt64(anchor), iterations, Int(borderType), borderValue);
 end;
 
-procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: Int { = 1 };
-  const borderType: BorderTypes { = BORDER_CONSTANT } );
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) };
+  const iterations: Int { = 1 }; const borderType: BorderTypes { = BORDER_CONSTANT } );
 begin
   dilate(Src, dst, kernel, anchor, iterations, borderType, morphologyDefaultBorderValue());
 end;
 
-procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) }; const iterations: Int { = 1 } );
+procedure dilate(const Src: TInputArray; const dst: TOutputArray; const kernel: TInputArray; const anchor: TPoint { = Point(-1,-1) };
+  const iterations: Int { = 1 } );
 begin
   dilate(Src, dst, kernel, anchor, iterations, BORDER_CONSTANT);
 end;
@@ -121,8 +125,8 @@ begin
   dilate(Src, dst, kernel, Point(-1, -1));
 end;
 
-procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8;
-  shift: Int = 0);
+procedure ellipse(const img: TInputOutputArray; const center: TPoint; const axes: TSize; angle, startAngle, endAngle: double; const color: TScalar;
+  thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
 begin
   ellipse(img, UInt64(center), UInt64(axes), angle, startAngle, endAngle, color, thickness, Int(lineType), shift);
 end;
@@ -132,46 +136,50 @@ begin
   ellipse(img, box, color, thickness, Int(lineType));
 end;
 
-procedure circle(const img: TInputOutputArray; const center: TPoint; radius: Int; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
+procedure circle(const img: TInputOutputArray; const center: TPoint; radius: Int; const color: TScalar; thickness: Int = 1;
+  lineType: LineTypes = LINE_8; shift: Int = 0);
 begin
   circle(img, center, radius, color, thickness, Int(lineType), shift);
 end;
 
-procedure line(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; thickness: Int = 1; lineType: LineTypes = LINE_8; shift: Int = 0);
+procedure line(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; thickness: Int = 1;
+  lineType: LineTypes = LINE_8; shift: Int = 0);
 begin
   line(img, UInt64(pt1), UInt64(pt2), color, thickness, Int(lineType), shift);
 end;
 
-procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8);
-  const shift: Int = 0; const tipLength: double = 0.1);
+procedure arrowedLine(const img: TInputOutputArray; const pt1: TPoint; const pt2: TPoint; const color: TScalar; const thickness: Int = 1;
+  const line_type: LineTypes = LineTypes(8); const shift: Int = 0; const tipLength: double = 0.1);
 begin
   arrowedLine(img, UInt64(pt1), UInt64(pt2), color, thickness, Int(line_type), shift, tipLength);
 end;
 
-procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8; const shift: Int = 0);
+procedure rectangle(const img: TInputOutputArray; const pt1, pt2: TPoint; const color: TScalar; const thickness: Int = 1;
+  const lineType: LineTypes = LINE_8; const shift: Int = 0);
 begin
   rectangle(img, pt1, pt2, color, thickness, Int(lineType), shift);
 end;
 
-procedure drawMarker(const img: TInputOutputArray; const position: TPoint; const color: TScalar; const markerType: MarkerTypes = MARKER_CROSS; const markerSize: Int = 20; const thickness: Int = 1;
-  const line_type: LineTypes = LineTypes(8));
+procedure drawMarker(const img: TInputOutputArray; const position: TPoint; const color: TScalar; const markerType: MarkerTypes = MARKER_CROSS;
+  const markerSize: Int = 20; const thickness: Int = 1; const line_type: LineTypes = LineTypes(8));
 begin
   drawMarker(img, UInt64(position), color, Int(markerType), markerSize, thickness, Int(line_type));
 end;
 
-procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const isClosed: BOOL; const color: TScalar; const thickness: Int = 1;
-  const lineType: LineTypes = LINE_8; const shift: Int = 0);
+procedure polylines(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const isClosed: BOOL;
+  const color: TScalar; const thickness: Int = 1; const lineType: LineTypes = LINE_8; const shift: Int = 0);
 begin
   polylines(img, pts, npts, ncontours, isClosed, color, thickness, Int(lineType), shift);
 end;
 
-procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes { = LINE_8 }; const shift: Int { = 0 };
-  const offset: TPoint); overload;
+procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar;
+  const lineType: LineTypes { = LINE_8 }; const shift: Int { = 0 }; const offset: TPoint); overload;
 begin
   fillPoly(img, pts, npts, ncontours, color, Int(lineType), shift, UInt64(offset));
 end;
 
-procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar; const lineType: LineTypes = LINE_8; const shift: Int = 0);
+procedure fillPoly(const img: TInputOutputArray; const pts: pPoint; const npts: pInt; const ncontours: Int; const color: TScalar;
+  const lineType: LineTypes = LINE_8; const shift: Int = 0);
 begin
   fillPoly(img, pts, npts, ncontours, color, lineType, shift, Point(0, 0));
 end;
@@ -181,7 +189,8 @@ begin
   getTextSize(Result, text, Int(fontFace), fontScale, thickness, baseLine);
 end;
 
-procedure Scharr(const Src: TInputArray; const dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0; borderType: BorderTypes = BORDER_DEFAULT);
+procedure Scharr(const Src: TInputArray; const dst: TOutputArray; depth: Int; dx, dy: Int; scale: double = 1; delta: double = 0;
+  borderType: BorderTypes = BORDER_DEFAULT);
 begin
   Scharr(Src, dst, depth, dx, dy, scale, delta, Int(borderType));
 end;
@@ -193,10 +202,11 @@ end;
 
 function threshold(const Src: TInputArray; const dst: TOutputArray; thresh, maxVal: double; &type: ThresholdTypes): double;
 begin
-  Result := threshold(Src,dst,thresh, maxVal,Int(&type));
+  Result := threshold(Src, dst, thresh, maxVal, Int(&type));
 end;
 
-function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() }; Var response: double { = 0 } ): TPoint2d;
+function phaseCorrelate(const src1: TInputArray; const src2: TInputArray; const window: TInputArray { = noArray() }; Var response: double { = 0 } )
+  : TPoint2d;
 begin
   Result := phaseCorrelate(src1, src2, window, @response);
 end;
@@ -211,12 +221,14 @@ begin
   Result := phaseCorrelate(src1, src2, TInputArray.noArray);
 end;
 
-procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: RetrievalModes; method: ContourApproximationModes; const offset: TPoint);
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: RetrievalModes;
+  method: ContourApproximationModes; const offset: TPoint);
 begin
   findContours(image, contours, hierarchy, Int(mode), Int(method), offset);
 end;
 
-procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: RetrievalModes; method: ContourApproximationModes);
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; const hierarchy: TOutputArray; mode: RetrievalModes;
+  method: ContourApproximationModes);
 begin
   findContours(image, contours, hierarchy, mode, method, Point(0, 0));
 end;
@@ -226,84 +238,87 @@ begin
   findContours(image, contours, mode, method, Point(0, 0));
 end;
 
-procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: RetrievalModes; method: ContourApproximationModes; const offset: TPoint);
+procedure findContours(const image: TInputArray; const contours: TOutputArrayOfArrays; mode: RetrievalModes; method: ContourApproximationModes;
+  const offset: TPoint);
 begin
   findContours(image, contours, mode, method, offset);
 end;
 
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes { = LINE_8 };
-  const hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX }; offset: TPoint { = Point() } );
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar;
+  thickness: Int { = 1 }; lineType: LineTypes { = LINE_8 }; const hierarchy: TInputArray { = noArray() }; maxLevel: Int { = INT_MAX };
+  offset: TPoint { = Point() } );
 begin
   drawContours(image, contours, contourIdx, color, thickness, Int(lineType), hierarchy, maxLevel, UInt64(offset));
 end;
 
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes;
-  const hierarchy: TInputArray { = noArray() }; maxLevel: Int);
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar;
+  thickness: Int { = 1 }; lineType: LineTypes; const hierarchy: TInputArray { = noArray() }; maxLevel: Int);
 begin
   drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, maxLevel, Point(0, 0));
 end;
 
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes;
-  const hierarchy: TInputArray { = noArray() } );
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar;
+  thickness: Int { = 1 }; lineType: LineTypes; const hierarchy: TInputArray { = noArray() } );
 begin
   drawContours(image, contours, contourIdx, color, thickness, lineType, hierarchy, INT_MAX);
 end;
 
-procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar; thickness: Int { = 1 }; lineType: LineTypes);
+procedure drawContours(const image: TInputOutputArray; const contours: TInputArrayOfArrays; contourIdx: Int; const color: TScalar;
+  thickness: Int { = 1 }; lineType: LineTypes);
 begin
   drawContours(image, contours, contourIdx, color, thickness, lineType, TInputArray.noArray);
 end;
 
-  { TSubdiv2D }
+{ TSubdiv2D }
 
 class operator TSubdiv2D.Initialize(out Dest: TSubdiv2D);
 begin
-  constructor_Subdiv2D(Dest);
+  constructor_CV_SUBDIV2D_3(Dest);
 end;
 
 class operator TSubdiv2D.Finalize(var Dest: TSubdiv2D);
 begin
-  destructor_Subdiv2D(Dest);
+  destructor_CV_SUBDIV2D(Dest);
 end;
 
 class operator TSubdiv2D.assign(var Dest: TSubdiv2D; const [ref] Src: TSubdiv2D);
 begin
-  operator_assign_Subdiv2D(Dest, Src);
+  operator_CV_SUBDIV2D_assign_1(Dest, Src);
 end;
 
 procedure TSubdiv2D.getTriangleList(const triangleList: vector<TVec6f>);
 begin
-  getTriangleList_Subdiv2D(Self, triangleList);
+  class_proc_CV_SUBDIV2D_getTriangleList(Self, triangleList);
 end;
 
 function TSubdiv2D.locate(const pt: TPoint2f; Var edge: Int; Var vertex: Int): Int;
 begin
-  Result := locale_Subdiv2D(Self, pt, edge, vertex);
+  Result := class_func_CV_SUBDIV2D_locate(Self, pt, edge, vertex);
 end;
 
 function TSubdiv2D.edgeOrg(edge: Int; var orgpt: TPoint2f): Int;
 begin
-  Result := edgeOrg_Subdiv2D(Self, edge, orgpt);
+  Result := class_func_CV_SUBDIV2D_edgeOrg(Self, edge, orgpt);
 end;
 
 function TSubdiv2D.edgeDst(edge: Int; var dstpt: TPoint2f): Int;
 begin
-  Result := edgeDst_Subdiv2D(Self, edge, dstpt);
+  Result := class_func_CV_SUBDIV2D_edgeOrg(Self, edge, dstpt);
 end;
 
 function TSubdiv2D.getEdge(edge: Int; nextEdgeType: Int): Int;
 begin
-  Result := getEdge_Subdiv2D(Self, edge, nextEdgeType);
+  Result := class_func_CV_SUBDIV2D_getEdge(Self, edge, nextEdgeType);
 end;
 
 procedure TSubdiv2D.getVoronoiFacetList(const idx: vector<Int>; const facetList: vector<vector<TPoint2f>>; const facetCenters: vector<TPoint2f>);
 begin
-  getVoronoiFacetList_Subdiv2D(Self, idx, facetList, facetCenters);
+  class_proc_CV_SUBDIV2D_getVoronoiFacetList(Self, idx, facetList, facetCenters);
 end;
 
 class function TSubdiv2D.Subdiv2D(const rect: TRect): TSubdiv2D;
 begin
-  constructor_Subdiv2D(Result, rect);
+  constructor_CV_SUBDIV2D_2(Result, rect);
 end;
 
 class operator TSubdiv2D.Implicit(const r: TRect): TSubdiv2D;
@@ -313,30 +328,24 @@ end;
 
 function TSubdiv2D.insert(const pt: TPoint2f): Int;
 begin
-  Result := insert_Subdiv2D(Self, pt);
+  Result := class_func_CV_SUBDIV2D_insert(Self, pt);
 end;
 
-procedure morphologyEx( const Src: TInputArray;
-                        const dst: TOutputArray;
-                        op: MorphTypes;
-                        const kernel: TInputArray;
-                        const anchor: TPoint;
-                        iterations: Int = 1;
-                        borderType: BorderTypes = BORDER_CONSTANT);
+procedure morphologyEx(const Src: TInputArray; const dst: TOutputArray; op: MorphTypes; const kernel: TInputArray; const anchor: TPoint;
+  iterations: Int = 1; borderType: BorderTypes = BORDER_CONSTANT);
 begin
   morphologyEx(Src, dst, op, kernel, anchor, iterations, borderType, morphologyDefaultBorderValue());
 end;
-procedure morphologyEx( const Src: TInputArray;
-                        const dst: TOutputArray;
-                        op: MorphTypes;
-                        const kernel: TInputArray);
+
+procedure morphologyEx(const Src: TInputArray; const dst: TOutputArray; op: MorphTypes; const kernel: TInputArray);
 begin
   morphologyEx(Src, dst, op, kernel, Point(-1, -1));
 end;
 
-procedure resize(const Src: TInputArray; const dst: TOutputArray; dsize: TSize; fx: double = 0; fy: double = 0; interpolation: InterpolationFlags = INTER_LINEAR);
+procedure resize(const Src: TInputArray; const dst: TOutputArray; dsize: TSize; fx: double = 0; fy: double = 0;
+  interpolation: InterpolationFlags = INTER_LINEAR);
 begin
-  resize(src,dst,UInt64(dsize),fx,fy,interpolation);
+  resize(Src, dst, UInt64(dsize), fx, fy, interpolation);
 end;
 
 {$I 'imgproc/segmentation.impl.inc'}

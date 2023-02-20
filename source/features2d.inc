@@ -1538,8 +1538,4 @@ vocabulary in the given image.
 
 //} (* namespace cv *)
 
-{$i 'external/opencv.SIFT.import.inc'}
-{$i 'external/opencv.DescriptorMatcher.import.inc'}
-{$i 'external/opencv.ORB.import.inc'}
-
 {$endif}

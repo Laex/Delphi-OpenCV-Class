@@ -37,56 +37,75 @@ Uses
 {$I core/version.inc}
 
 const
-  INT_MIN = Pred(-MaxInt);
-  INT_MAX = MaxInt;
-  DBL_MAX = MaxDouble;
-  CHAR_BIT   =   8;
-  SCHAR_MIN  = (-128);
-  SCHAR_MAX  =   127;
-  UCHAR_MAX  =   $ff;
+  INT_MIN   = Pred(-MaxInt);
+  INT_MAX   = MaxInt;
+  DBL_MAX   = MaxDouble;
+  CHAR_BIT  = 8;
+  SCHAR_MIN = (-128);
+  SCHAR_MAX = 127;
+  UCHAR_MAX = $FF;
 
 Type
-  BOOL = ByteBool;
+  BOOL             = bytebool;
+  __INT64          = int64;
+  pVOID            = pointer;
+  UNSIGNED_CHAR    = byte;
+  FLOAT            = single;
+  SIGNED           = Integer;
+  SHORT            = int16;
+  INT              = Integer;
+  UNSIGNED___INT64 = uint64;
+  CVCHAR           = AnsiChar;
+  unsigned         = UInt32;
+  UNSIGNED_CVCHAR  = UNSIGNED_CHAR;
+  UNSIGNED_INT     = unsigned;
+  UNSIGNED_SHORT   = UInt16;
+  pSHORT           = ^SHORT;
+  pFLOAT           = ^FLOAT;
+  pINT             = ^INT;
+  pBOOL            = ^BOOL;
+  p__INT64         = ^__INT64;
+  pCVCHAR          = pAnsiChar;
 
   TVectorType = //
     (           //
 {$I vectortype.inc}
   );
 
-  pVector = type Pointer;
+  pVector = type pointer;
 
   Vector<T> = record
   private
 {$HINTS OFF}
     // release 24
     // Data: array [0 .. 24 - 1] of Byte;
-    A: UInt64;
-    B: UInt64;
-    C: UInt64;
+    A: uint64;
+    B: uint64;
+    C: uint64;
 {$IFDEF DEBUG}
     // debug 32
     // Data: array [0 .. 32 - 1] of Byte;
-    D: UInt64;
+    D: uint64;
 {$ENDIF}
 {$HINTS ON}
     class function vt: TVectorType; static;
-    function GetItems(const index: UInt64): T;
-    procedure setItems(const index: UInt64; const Value: T);
+    function GetItems(const index: uint64): T;
+    procedure setItems(const index: uint64; const Value: T);
   public
     class operator Initialize(out Dest: Vector<T>);
     class operator Finalize(var Dest: Vector<T>);
     class operator assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
     class function Vector: Vector<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function size: { UInt64 } Int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function size: { UInt64 } int64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function empty: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure push_back(const Value: T); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure resize(const NewSize: UInt64); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure resize(const NewSize: uint64); {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure clear(); {$IFDEF USE_INLINE}inline; {$ENDIF}
     //
-    function pT(const index: UInt64): Pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    property v[const index: UInt64]: T read GetItems write setItems; default;
+    function pT(const index: uint64): pVector; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    property v[const index: uint64]: T read GetItems write setItems; default;
     class operator Implicit(const A: TArray<T>): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const size: integer): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const size: Integer): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function noVector: Vector<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
@@ -95,15 +114,15 @@ Type
   CppString = record
   private
 {$HINTS OFF}
-    Dummy: array [0 .. 39] of Byte;
+    Dummy: array [0 .. 39] of byte;
 {$HINTS ON}
   public
     class operator Initialize(out Dest: CppString);
     class operator Finalize(var Dest: CppString);
 
-    function length: UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function size: UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure erase(const _Off: UInt64 = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function length: uint64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function size: uint64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure erase(const _Off: uint64 = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure assign(const p: pAnsiChar); {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator assign(var Dest: CppString; const [ref] Src: CppString);
     class operator Implicit(const p: pAnsiChar): CppString; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -111,13 +130,13 @@ Type
     class operator Implicit(const s: CppString): string; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
-  TPtr<T{: record }> = record
+  TPtr<T { : record } > = record
   public type
     pT = ^T;
   public
     _Ptr: pT;
-    _Rep: Pointer;
-    _Ref: integer;
+    _Rep: pointer;
+    _Ref: Integer;
     function v: pT; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator assign(var Dest: TPtr<T>; const [ref] Src: TPtr<T>);
     class operator Finalize(var Dest: TPtr<T>);
@@ -133,7 +152,7 @@ Type
 
   TSet<T> = record
   private
-    FDict: TDictionary<T, integer>;
+    FDict: TDictionary<T, Integer>;
   public
     class operator Initialize(out Dest: TSet<T>);
     class operator Finalize(var Dest: TSet<T>);
@@ -146,10 +165,10 @@ Type
     procedure Exclude(const Value: T); inline;
   end;
 
-  vftable_func = type Pointer;
+  vftable_func = type pointer;
   pvftable     = ^vftable_func;
 
-function vftable(const vft: vftable_func; const index: integer): Pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function vftable(const vft: vftable_func; const index: Integer): pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 const
   endl: String = #13#10;
@@ -157,21 +176,19 @@ const
 type
   Tcout = record
     class operator Add(const C: Tcout; const B: String): Tcout; inline;
-    class operator Add(const C: Tcout; const B: double): Tcout; inline;
+    class operator Add(const C: Tcout; const B: DOUBLE): Tcout; inline;
   end;
 
 function CppReplace(const text: String): String;
-
-{$I 'external/cpp.std.import.inc'}
 
 Var
   cout: Tcout;
   cerr: Tcout;
   argv: TArray<string>;
-  argc: integer;
+  argc: Integer;
 
 function isIntNumber(const v: String): boolean;
-function isIntNumberWithDefault(const v: String; const D: integer = 0): integer;
+function isIntNumberWithDefault(const v: String; const D: Integer = 0): Integer;
 
 type
   TSwap = record
@@ -185,6 +202,34 @@ Type
     class function iif<T>(const Cond: boolean; const ifTrue, ifFalse: T): T; static; inline;
   end;
 
+  TEmptyRec = record
+  end;
+
+  CLEARSTDVECTOR                                 = type TEmptyRec;
+  RESIZESTDVECTOR                                = type TEmptyRec;
+  COPYSTDVECTOR                                  = type TEmptyRec;
+  STD__STRING_CONSTRUCTOR_CONCAT_TAG             = type TEmptyRec;
+  STDITEM                                        = type TEmptyRec;
+  STDPUSHBACK                                    = type TEmptyRec;
+  STDSIZE                                        = type TEmptyRec;
+  EXPORTSTRING                                   = type TEmptyRec;
+  DESTROYSTDVECTOR                               = type TEmptyRec;
+  STD_INITIALIZER_LIST_OF_CVCHAR                 = type TEmptyRec;
+  STDEMPTY                                       = type TEmptyRec;
+  STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
+  STD_ALLOCATOR_OF_CVCHAR                        = type TEmptyRec;
+  STD_BASIC_STRING_OF_CVCHAR                     = CppString; // type TEmptyRec;
+  STDSETITEM                                     = type TEmptyRec;
+  CREATESTDVECTOR                                = type TEmptyRec;
+  STDPITEM                                       = type TEmptyRec;
+  VOID                                           = type TEmptyRec;
+  STD_REVERSE_ITERATOR_OF_STD__STRING_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
+  STD_REVERSE_ITERATOR_OF_STD__STRING_CONST_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
+  STD__STRING_CONST_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
+  STD__STRING_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
+
+{$I 'std.external.inc'}
+
 implementation
 
 Uses
@@ -194,36 +239,36 @@ Uses
 
 class operator Vector<T>.assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
 begin
-  CopyStdVector(@Dest, @Src, vt);
+  proc_CopyStdVector(@Dest, @Src, vt);
 end;
 
 procedure Vector<T>.clear;
 begin
-  clearStdVector(@Self, vt);
+  proc_clearStdVector(@Self, vt);
 end;
 
 function Vector<T>.empty: BOOL;
 begin
-  Result := StdEmpty(@Self, vt);
+  Result := func_StdEmpty(@Self, vt);
 end;
 
 class operator Vector<T>.Finalize(var Dest: Vector<T>);
 begin
-  DestroyStdVector(@Dest, vt);
+  proc_DestroyStdVector(@Dest, vt);
 end;
 
-function Vector<T>.GetItems(const index: UInt64): T;
+function Vector<T>.GetItems(const index: uint64): T;
 begin
-  StdGetItem(@Self, vt, index, @Result);
+  proc_StdItem(@Self, vt, index, @Result);
 end;
 
 class operator Vector<T>.Implicit(const A: TArray<T>): Vector<T>;
 begin
   for Var i := 0 to High(A) do
-    StdPushBack(@Result, @A[i], vt);
+    proc_StdPushBack(@Result, @A[i], vt);
 end;
 
-class operator Vector<T>.Implicit(const size: integer): Vector<T>;
+class operator Vector<T>.Implicit(const size: Integer): Vector<T>;
 begin
   Result.resize(size);
 end;
@@ -231,7 +276,7 @@ end;
 class operator Vector<T>.Initialize(out Dest: Vector<T>);
 begin
   FillChar(Dest, SizeOf(Dest), 0);
-  CreateStdVector(@Dest, vt);
+  proc_CreateStdVector(@Dest, vt);
 end;
 
 class function Vector<T>.noVector: Vector<T>;
@@ -239,29 +284,29 @@ begin
   Initialize(Result);
 end;
 
-function Vector<T>.pT(const index: UInt64): Pointer;
+function Vector<T>.pT(const index: uint64): pVector;
 begin
-  StdGetPItem(@Self, vt, index, pVector(Result));
+  proc_StdPItem(@Self, vt, index, Result);
 end;
 
 procedure Vector<T>.push_back(const Value: T);
 begin
-  StdPushBack(@Self, @Value, vt);
+  proc_StdPushBack(@Self, @Value, vt);
 end;
 
-procedure Vector<T>.resize(const NewSize: UInt64);
+procedure Vector<T>.resize(const NewSize: uint64);
 begin
-  resizeStdVector(@Self, NewSize, vt);
+  proc_resizeStdVector(@Self, NewSize, vt);
 end;
 
-procedure Vector<T>.setItems(const index: UInt64; const Value: T);
+procedure Vector<T>.setItems(const index: uint64; const Value: T);
 begin
-  StdSetItem(@Self, vt, index, @Value);
+  proc_StdSetItem(@Self, vt, index, @Value);
 end;
 
-function Vector<T>.size: { UInt64 } Int64;
+function Vector<T>.size: { UInt64 } int64;
 begin
-  Result := StdSize(@Self, vt);
+  Result := func_StdSize(@Self, vt);
 end;
 
 class function Vector<T>.Vector: Vector<T>;
@@ -285,9 +330,9 @@ begin
     vt := vtScalar
   else if TypeInfo(T) = TypeInfo(uchar) then // vector<uchar>
     vt := vtUchar
-  else if TypeInfo(T) = TypeInfo(float) then // vector<float>
+  else if TypeInfo(T) = TypeInfo(FLOAT) then // vector<float>
     vt := vtFloat
-  else if TypeInfo(T) = TypeInfo(Int) then // vector<float>
+  else if TypeInfo(T) = TypeInfo(INT) then // vector<float>
     vt := vtInt
   else if TypeInfo(T) = TypeInfo(TVec4i) then // vector<float>
     vt := vtVec4i
@@ -295,7 +340,7 @@ begin
     vt := vtVec6f
   else if TypeInfo(T) = TypeInfo(Vector<TPoint2f>) then // vector<float>
     vt := vtVectorPoint2f
-   else if TypeInfo(T) = TypeInfo(Vector<TMat>) then // vector<float>
+  else if TypeInfo(T) = TypeInfo(Vector<TMat>) then // vector<float>
     vt := vtVectorMat
     // else if TypeInfo(T) = TypeInfo(TGMat) then // vector<GMat>
     // vt := vtGMat
@@ -319,22 +364,22 @@ end;
 
 procedure CppString.assign(const p: pAnsiChar);
 begin
-  assign_CppString(@Self, p);
+  class_virt_func_STD_BASIC_STRING_OF_CVCHAR_assign_3(Self, p);
 end;
 
 class operator CppString.assign(var Dest: CppString; const [ref] Src: CppString);
 begin
-  assign_CppString(pCppString(@Dest), pCppString(@Src));
+  class_virt_func_STD_BASIC_STRING_OF_CVCHAR_assign_1(Dest, Src);
 end;
 
-procedure CppString.erase(const _Off: UInt64);
+procedure CppString.erase(const _Off: uint64);
 begin
-  erase_CppString(@Self, _Off);
+  class_virt_func_STD_BASIC_STRING_OF_CVCHAR_erase_3(Self, _Off);
 end;
 
 class operator CppString.Finalize(var Dest: CppString);
 begin
-  Destructor_CppString(@Dest);
+  destructor_STD_BASIC_STRING_OF_CVCHAR(Dest);
 end;
 
 class operator CppString.Implicit(const s: string): CppString;
@@ -349,22 +394,23 @@ end;
 
 class operator CppString.Implicit(const s: CppString): string;
 begin
-  Result := string(c_str_CppString(@s));
+  Result :=
+  string(class_virt_func_STD_BASIC_STRING_OF_CVCHAR_c_str(s));
 end;
 
 class operator CppString.Initialize(out Dest: CppString);
 begin
-  Constructor_CppString(@Dest);
+  constructor_STD_BASIC_STRING_OF_CVCHAR_14(Dest);
 end;
 
-function CppString.length: UInt64;
+function CppString.length: uint64;
 begin
-  Result := length_CppString(@Self);
+  Result := class_virt_func_STD_BASIC_STRING_OF_CVCHAR_length(Self);
 end;
 
-function CppString.size: UInt64;
+function CppString.size: uint64;
 begin
-  Result := size_CppString(@Self);
+  Result := class_virt_func_STD_BASIC_STRING_OF_CVCHAR_size(Self);
 end;
 
 { TPtr<T> }
@@ -409,7 +455,7 @@ begin
   Result := C;
 end;
 
-class operator Tcout.Add(const C: Tcout; const B: double): Tcout;
+class operator Tcout.Add(const C: Tcout; const B: DOUBLE): Tcout;
 begin
   write(B.ToString);
   Result := C;
@@ -462,10 +508,10 @@ end;
 
 class operator TSet<T>.Initialize(out Dest: TSet<T>);
 begin
-  Dest.FDict := TDictionary<T, integer>.Create;
+  Dest.FDict := TDictionary<T, Integer>.Create;
 end;
 
-function vftable(const vft: vftable_func; const index: integer): Pointer;
+function vftable(const vft: vftable_func; const index: Integer): pointer;
 begin
   Result := pvftable(vft)[index];
 end;
@@ -479,12 +525,12 @@ end;
 
 function isIntNumber(const v: String): boolean;
 Var
-  R: integer;
+  R: Integer;
 begin
   Result := TryStrToInt(v, R);
 end;
 
-function isIntNumberWithDefault(const v: String; const D: integer = 0): integer;
+function isIntNumberWithDefault(const v: String; const D: Integer = 0): Integer;
 begin
   if not TryStrToInt(v, Result) then
     Result := D;
@@ -494,7 +540,7 @@ end;
 
 class procedure TSwap.swap<T>(var A, B: Vector<T>);
 Var
-  C: Pointer;
+  C: pointer;
   cs: size_t;
 begin
   cs := SizeOf(A);

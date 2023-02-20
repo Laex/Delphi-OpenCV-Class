@@ -1069,6 +1069,5 @@ Type
 
   // } // cv
 
-{$I external/opencv.VideoCapture.import.inc}
-{$I external/opencv.VideoWriter.import.inc}
+
 {$ENDIF OPENCV_VIDEOIO_HPP}

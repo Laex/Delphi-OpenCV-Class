@@ -22,14 +22,15 @@
 
 {$IFDEF OPENCV_TRACKING_HPP}
 
-procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
-  const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int { = 3 } );
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
+  const status: TOutputArray; const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int { = 3 } );
 begin
-  calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, winSize, maxLevel, TTermCriteria.TermCriteria(TTermCriteria.COUNT + TTermCriteria.EPS, 30, 0.01));
+  calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, winSize, maxLevel,
+    TTermCriteria.TermCriteria(TTermCriteria.COUNT + TTermCriteria.EPS, 30, 0.01));
 end;
 
-procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray;
-  const err: TOutputArray); overload;
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
+  const status: TOutputArray; const err: TOutputArray); overload;
 begin
   calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, size(21, 21));
 end;
@@ -45,26 +46,32 @@ end;
 
 class operator TDenseOpticalFlow.Finalize(var Dest: TDenseOpticalFlow);
 begin
-  Destructor_DenseOpticalFlow(Dest);
+  destructor_CV_DENSEOPTICALFLOW(Dest);
 end;
 
 { TDISOpticalFlow }
 
-class function TDISOpticalFlowHelper.Create<T>(preset: Int): TPtr<T>;
+ class function TDISOpticalFlowHelper.Create<T>(preset: Int): TPtr<T>;
+ begin
+   class_proc_CV_DISOPTICALFLOW_create(@Result, preset);
+ end;
+
+class function TDISOpticalFlowHelper.Create(preset: Int = PRESET_FAST): TPtr<TDISOpticalFlow>;
 begin
-  create_DISOpticalFlow(Pointer(@Result), preset);
+  class_proc_CV_DISOPTICALFLOW_create(Result, preset);
 end;
 
 { TKalmanFilter }
 
-class function TKalmanFilter.KalmanFilter(const dynamParams, measureParams: Int; const controlParams: Int = 0; const &type: Int = CV_32F): TKalmanFilter;
+class function TKalmanFilter.KalmanFilter(const dynamParams, measureParams: Int; const controlParams: Int = 0; const &type: Int = CV_32F)
+  : TKalmanFilter;
 begin
-  Constructor_KalmanFilter(Result, dynamParams, measureParams, controlParams, &type);
+  constructor_CV_KALMANFILTER_2(Result, dynamParams, measureParams, controlParams, &type);
 end;
 
 function TKalmanFilter.predict(const control: TMat { = Mat() } ): TMat;
 begin
-  Result := KalmanFilter_predict(Self, control);
+  Result := class_func_CV_KALMANFILTER_predict(Self, control)^;
 end;
 
 function TKalmanFilter.predict(): TMat;
@@ -76,7 +83,7 @@ end;
 
 function TKalmanFilter.correct(const measurement: TMat): TMat;
 begin
-  Result := KalmanFilter_correct(Self, measurement);
+  Result := class_func_CV_KALMANFILTER_correct(Self, measurement)^;
 end;
 
 {$ENDIF}

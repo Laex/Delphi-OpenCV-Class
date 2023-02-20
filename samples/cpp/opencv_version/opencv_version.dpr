@@ -34,6 +34,8 @@ begin
   try
    cout + getBuildInformation + endl;
    cout + 'Welcome to OpenCV ' + CV_VERSION + endl;
+   WriteLn('Press <Enter>');
+   Readln;
   except
     on E: Exception do
     begin

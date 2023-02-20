@@ -20,72 +20,65 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_DNN_DNN_HPP}
-
+{$IFDEF OPENCV_DNN_DNN_HPP}
 { TNet }
 
 class operator TNet.Initialize(out Dest: TNet); // CV_WRAP Net();  //!< Default constructor.
 begin
-  Constructor_Net(Dest);
+  constructor_CV_DNN_DNN4_V20221220_NET_1(Dest);
 end;
 
 class operator TNet.Finalize(var Dest: TNet); // CV_WRAP ~Net(); //!< Destructor frees the net only if there aren't references to the net anymore.
 begin
-  Destructor_Net(Dest);
+  destructor_CV_DNN_DNN4_V20221220_NET(Dest);
 end;
 
-function TNet.forward(const outputName :String = ''):TMat;
+function TNet.forward(const outputName: String = ''): TMat;
 begin
- Result := forward_Net(Self,CppString(outputName));
+  class_func_CV_DNN_DNN4_V20221220_NET_forward(Self, Result, outputName);
 end;
 
-procedure TNet.setPreferableBackend(backendId:int);
+procedure TNet.setPreferableBackend(backendId: int);
 begin
-  setPreferableBackend_Net(Self,backendId);
+  class_proc_CV_DNN_DNN4_V20221220_NET_setPreferableBackend(Self, backendId);
 end;
 
-procedure TNet.setPreferableTarget(targetId:int);
+procedure TNet.setPreferableTarget(targetId: int);
 begin
-  setPreferableTarget_Net(Self,targetId);
+  class_proc_CV_DNN_DNN4_V20221220_NET_setPreferableTarget(Self, targetId);
 end;
 
-procedure TNet.setInput( const blob:TInputArray; const name : String {= ''};
-                            scalefactor :double {= 1.0}; const mean :TScalar {= Scalar()});
+procedure TNet.setInput(const blob: TInputArray; const name: String { = '' }; scalefactor: double { = 1.0 }; const mean: TScalar { = Scalar() } );
 begin
-  setInput_Net(Self,blob,name,scalefactor,mean);
-end;
-                            
-procedure TNet.setInput( const blob:TInputArray; const name : String {= ''};
-                            scalefactor :double = 1.0);
-begin
-  setInput(blob,name,scalefactor,Scalar());
-end;
-                            
-procedure TNet.setInput( const blob:TInputArray);
-begin
-  setInput(blob,'');
+  class_proc_CV_DNN_DNN4_V20221220_NET_setInput(Self, blob, name, scalefactor, mean);
 end;
 
-//--------------------------
-
-function blobFromImages( const images:TInputArrayOfArrays;  
-                         scalefactor:double{=1.0};
-                         const size :TSize {= Size()}
-                        ):TMat;
+procedure TNet.setInput(const blob: TInputArray; const name: String { = '' }; scalefactor: double = 1.0);
 begin
-  Result := blobFromImages(images,scalefactor,size,Scalar());
+  setInput(blob, name, scalefactor, Scalar());
 end;
 
-function blobFromImages( const images:TInputArrayOfArrays;  
-                         scalefactor:double=1.0
-                        ):TMat;
+procedure TNet.setInput(const blob: TInputArray);
 begin
-  Result := blobFromImages(images,scalefactor,Size());
+  setInput(blob, '');
 end;
 
-function readNet(const model:String; const config :String= ''; const framework :String= ''):TNet;
+// --------------------------
+
+function blobFromImages(const images: TInputArrayOfArrays; scalefactor: double { =1.0 }; const size: TSize { = Size() }
+  ): TMat;
 begin
-  Result := readNet(CppString(model),CppString(config),CppString(framework));
+  Result := blobFromImages(images, scalefactor, size, Scalar());
 end;
 
-{$endif}
+function blobFromImages(const images: TInputArrayOfArrays; scalefactor: double = 1.0): TMat;
+begin
+  Result := blobFromImages(images, scalefactor, size());
+end;
+
+function readNet(const model: String; const config: String = ''; const framework: String = ''): TNet;
+begin
+  Result := readNet(CppString(model), CppString(config), CppString(framework));
+end;
+
+{$ENDIF}

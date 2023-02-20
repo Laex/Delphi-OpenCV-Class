@@ -85,9 +85,12 @@ Uses
 {$I videoio.inc}
 {$ENDIF}
 
+{$i 'opencv.external.inc'}
+
 implementation
 
 {.$I opencv_modules.impl.inc}
+
 // Then the list of defines is checked to include the correct headers
 // Core library is always included --> without no OpenCV functionality available
 {$I core.impl.inc}

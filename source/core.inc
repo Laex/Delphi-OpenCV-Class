@@ -4774,12 +4774,10 @@ end;
 //  static const Param type = Param::INT;
 //  };
 
-{ .$I 'core/operations.inc' }
-{ .$I 'core/cvstd.inl.inc' }
+{$I 'core/operations.inc' }
+{$I 'core/cvstd.inl.inc' }
 {$I 'core/utility.inc'}
-{ .$I 'core/optim.inc' }
-{ .$I 'core/ovx.inc' }
-
-{$I 'external/opencv.rng.import.inc'}
+{$I 'core/optim.inc' }
+{$I 'core/ovx.inc' }
 
 {$ENDIF OPENCV_CORE_HPP}

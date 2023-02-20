@@ -25,7 +25,7 @@
 
 function TVideoCapture.&set(propId: VideoCaptureProperties; Value: double): BOOL;
 begin
-  Result := set_VideoCapture(Self, Int(propId), Value);
+  Result := class_func_CV_VIDEOCAPTURE_set(Self, Int(propId), Value);
 end;
 
 class operator TVideoCapture.assign(var Dest: TVideoCapture; const [ref] Src: TVideoCapture);
@@ -37,12 +37,12 @@ end;
 
 class operator TVideoCapture.Finalize(var Dest: TVideoCapture);
 begin
-  destructor_VideoCapture(Dest);
+  destructor_CV_VIDEOCAPTURE(Dest);
 end;
 
 function TVideoCapture.get(propId: VideoCaptureProperties): double;
 begin
-  Result := get_VideoCapture(Self, Int(propId));
+  Result := class_func_CV_VIDEOCAPTURE_get(Self, Int(propId));
 end;
 
 class operator TVideoCapture.Implicit(const filename: string): TVideoCapture;
@@ -67,18 +67,18 @@ end;
 
 class operator TVideoCapture.Initialize(out Dest: TVideoCapture);
 begin
-  constructor_VideoCapture(Dest);
+  constructor_CV_VIDEOCAPTURE_5(Dest);
 end;
 
 function TVideoCapture.isOpened: BOOL;
 begin
-  Result := isOpened_VideoCapture(Self);
+  Result := class_func_CV_VIDEOCAPTURE_isOpened(Self);
 end;
 
 function TVideoCapture.open(const filename: String; const apiPreference: VideoCaptureAPIs; const params: Vector<Int>): BOOL;
 begin
   try
-    Result := open_VideoCapture(Self, filename, Int(apiPreference), params);
+    Result := class_func_CV_VIDEOCAPTURE_open_1(Self, filename, Int(apiPreference), params);
   except
     Result := False;
   end;
@@ -87,16 +87,16 @@ end;
 function TVideoCapture.open(const filename: String; const apiPreference: VideoCaptureAPIs): BOOL;
 begin
   try
-    Result := open_VideoCapture(Self, filename, Int(apiPreference));
+    Result := class_func_CV_VIDEOCAPTURE_open(Self, filename, Int(apiPreference));
   except
     Result := False;
   end;
 end;
 
-function TVideoCapture.open(const index: Int; const apiPreference: VideoCaptureAPIs; const params:vector<int>): BOOL;
+function TVideoCapture.open(const index: Int; const apiPreference: VideoCaptureAPIs; const params: Vector<Int>): BOOL;
 begin
   try
-    Result := open_VideoCapture(Self, index, apiPreference, params);
+    Result := class_func_CV_VIDEOCAPTURE_open_3(Self, index, Int(apiPreference), params);
   except
     Result := False;
   end;
@@ -105,7 +105,7 @@ end;
 function TVideoCapture.open(const index: Int; const apiPreference: VideoCaptureAPIs): BOOL;
 begin
   try
-    Result := open_VideoCapture(Self, index, Int(apiPreference));
+    Result := class_func_CV_VIDEOCAPTURE_open_2(Self, index, Int(apiPreference));
   except
     Result := False;
   end;
@@ -113,22 +113,22 @@ end;
 
 function TVideoCapture.read(const image: TOutputArray): BOOL;
 begin
-  Result := read_VideoCapture(Self, image);
+  Result := class_func_CV_VIDEOCAPTURE_read(Self, image);
 end;
 
 function TVideoCapture.grab(): BOOL;
 begin
-  Result := grab_VideoCapture(Self);
+  Result := class_func_CV_VIDEOCAPTURE_grab(Self);
 end;
 
 function TVideoCapture.retrieve(const image: TOutputArray; flag: Int = 0): BOOL;
 begin
-  Result := retrieve_VideoCapture(Self, image, flag);
+  Result := class_func_CV_VIDEOCAPTURE_retrieve(Self, image, flag);
 end;
 
 procedure TVideoCapture.release;
 begin
-  release_VideoCapture(Self);
+  class_proc_CV_VIDEOCAPTURE_release(Self);
 end;
 
 { TVideoWriter }
@@ -142,7 +142,7 @@ end;
 
 class operator TVideoWriter.Finalize(var Dest: TVideoWriter);
 begin
-  destructor_VideoWriter(Dest);
+  destructor_CV_VIDEOWRITER(Dest);
 end;
 
 class operator TVideoWriter.LessThan(const VideoWriter: TVideoWriter; const frame: TMat): BOOL;
@@ -153,27 +153,27 @@ end;
 
 class operator TVideoWriter.Initialize(out Dest: TVideoWriter);
 begin
-  constructor_VideoWriter(Dest);
+  constructor_CV_VIDEOWRITER_5(Dest);
 end;
 
 function TVideoWriter.isOpened: BOOL;
 begin
-  Result := isOpened_VideoWriter(Self);
+  Result := class_func_CV_VIDEOWRITER_isOpened(Self);
 end;
 
 function TVideoWriter.open(const filename: String; fourcc: Int; fps: double; const frameSize: TSize; isColor: BOOL): BOOL;
 begin
-  Result := open_VideoWriter(Self, filename, fourcc, fps, frameSize, isColor);
+  Result := class_func_CV_VIDEOWRITER_open_3(Self, filename, fourcc, fps, frameSize, isColor);
 end;
 
 procedure TVideoWriter.release;
 begin
-  release_VideoWriter(Self);
+  class_proc_CV_VIDEOWRITER_release(Self);
 end;
 
 procedure TVideoWriter.write(const image: TInputArray);
 begin
-  write_VideoWriter(Self, image);
+  class_proc_CV_VIDEOWRITER_write(Self, image);
 end;
 
 {$ENDIF}

@@ -5714,7 +5714,5 @@ Point LineIterator::pos() const
 *)
 
 {$i 'imgproc/segmentation.inc'}
-{$i 'external/opencv.IntelligentScissorsMB.import.inc'}
-{$i 'external/opencv.Subdiv2D.import.inc'}
 
 {$endif}

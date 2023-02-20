@@ -25,23 +25,24 @@
 
 class operator TMat.Initialize(out Dest: TMat);
 begin
-  Constructor_Mat(Dest);
+  constructor_CV_MAT_19(Dest);
 end;
 
 class operator TMat.Finalize(var Dest: TMat);
 begin
-  Destructor_Mat(Dest);
+  Destructor_cv_Mat(Dest);
 end;
 
 class operator TMat.assign(var Dest: TMat; const [ref] Src: TMat);
 begin
   if @Dest <> @Src then
-    Operator_Mat_Assign_Const_Mat(Dest, Src);
+    operator_CV_MAT_assign_1(Dest, Src);
 end;
 
 function TMatHelper.setTo(const value: TInputArray; const mask: TInputArray { =noArray() } ): TMat;
 begin
-  Result := setTo_Mat(Self, value, mask)^;
+  // Result := class_func_CV_MAT_setTo(Self, value, mask)^;
+  Result := class_func_CV_MAT_setTo(Self, value, mask)^;
 end;
 
 function TMatHelper.setTo(const value: TInputArray): TMat;
@@ -51,32 +52,33 @@ end;
 
 function TMatHelper.reshape(cn: int; newndims: int; const newsz: pInt): TMat;
 begin
-  Result := reshape_Mat(Self, cn, newndims, newsz);
+  Result := class_func_CV_MAT_reshape_2(Self, cn, newndims, newsz);
 end;
 
 class operator TMatHelper.Implicit(const m: TMatExpr): TMat;
 begin
-  Operator_Mat_Assign_MatExpr(Result, m);
+  operator_CV_MAT_assign_3(Result, m);
 end;
 
 function TMatHelper.clone: TMat;
 begin
-  clone_Mat(Self, Result);
+  Result := class_func_CV_MAT_clone(Self)^;
 end;
 
 procedure TMatHelper.convertTo(const m: TOutputArray; rtype: int; alpha: double = 1; beta: double = 0);
 begin
-  convertTo_Mat(Self, m, rtype, alpha, beta);
+  class_proc_CV_MAT_convertTo(Self, m, rtype, alpha, beta);
 end;
 
 procedure TMatHelper.Create(const size: TSize; &type: int);
 begin
-  create_Mat(Self, size, &type);
+  class_proc_CV_MAT_create_3(Self, size, &type);
 end;
 
 function TMatHelper.diag(d: int): TMat;
 begin
-  diag_Mat(Self, Result, d);
+  // diag_Mat(Self, Result, d);
+  Result := class_func_CV_MAT_diag(Self, d);
 end;
 
 function TMatHelper.mat(const roi: TRect): TMat;
@@ -86,12 +88,12 @@ end;
 
 function TMatHelper.isContinuous: BOOL;
 begin
-  Result := isContinuous_Mat(Self);
+  Result := class_func_CV_MAT_isContinuous(Self);
 end;
 
 function TMatHelper.isSubmatrix: BOOL;
 begin
-  Result := isSubmatrix_Mat(Self);
+  Result := class_func_CV_MAT_isSubmatrix(Self);
 end;
 
 class operator TMatHelper.BitwiseAnd(const a, b: TMat): TMat;
@@ -101,50 +103,57 @@ end;
 
 class operator TMatHelper.BitwiseAnd(const a: TMat; const b: TScalar): TMatExpr;
 begin
-  operator_MatExpr_BitwiseAnd_Mat_Scalar(Result, a, b);
+  // operator_MatExpr_BitwiseAnd_Mat_Scalar(Result, a, b);
+  Result := operator_CV_and_5(a, b);
 end;
 
 class operator TMatHelper.LogicalNot(const m: TMat): TMatExpr;
 begin
-  operator_MatExpr_LogicalNot_Mat(Result, m);
+  // operator_MatExpr_LogicalNot_Mat(Result, m);
+  Result := operator_CV_not_1(m);
 end;
 
 class operator TMatHelper.GreaterThanOrEqual(const a: TMat; const b: int): TMatExpr;
 begin
-  operator_MatExpr_GreaterThanOrEqual_double(Result, a, b);
+  // operator_MatExpr_GreaterThanOrEqual_double(Result, a, b);
+  Result := operator_CV_great_eq_4(a, b);
 end;
 
 class operator TMatHelper.Multiply(const a: TMat; const b: double): TMatExpr;
 begin
-  operator_MatExpr_Mul_Mat_double(Result, a, b);
+  // operator_MatExpr_Mul_Mat_double(Result, a, b);
+  Result := operator_CV_mul_9(a, b);
 end;
 
 class operator TMatHelper.Multiply(const a: TMat; const b: TMat): TMatExpr;
 begin
-  operator_MatExpr_Mul_Mat_Mat(Result, a, b);
+  // operator_MatExpr_Mul_Mat_Mat(Result, a, b);
+  Result := operator_CV_mul_7(a, b);
 end;
 
 class operator TMatHelper.Add(const a: TMat; const s: TScalar): TMatExpr;
 begin
-  operator_MatExpr_Add_Mat_Scalar(Result, a, s);
+  // operator_MatExpr_Add_Mat_Scalar(Result, a, s);
+  Result := operator_CV_plus_10(a, s);
 end;
 
 class operator TMatHelper.Add(const a: TMat; const s: TMatExpr): TMat;
-Var
-  r: TMatExpr;
+// Var
+// r: TMatExpr;
 begin
-  operator_MatExpr_Add_Mat_MatExpr(r, a, s);
-  Result := r;
+  // operator_MatExpr_Add_Mat_MatExpr(r, a, s);
+  // Result := r;
+  Result := operator_CV_plus_9(a, s);
 end;
 
 class function TMatHelper.mat(const size: TSize; &type: int): TMat;
 begin
-  Result := Constructor_Mat(Result, size, &type)^;
+  constructor_CV_MAT_16(Result, size, &type);
 end;
 
 class function TMatHelper.mat(const size: TSize; &type: int; const s: TScalar): TMat;
 begin
-  Constructor_Mat(Result, size, &type, s);
+  constructor_CV_MAT_17(Result, size, &type, s);
 end;
 
 class function TMatHelper.mat(rows, cols, &type: int): TMat;
@@ -179,18 +188,18 @@ end;
 
 class function TMatHelper.mat(rows, cols, &type: int; Data: Pointer; step: size_t): TMat;
 begin
-  Result := Constructor_Mat(Result, rows, cols, &type, Data, step)^;
+  constructor_CV_MAT_12(Result, rows, cols, &type, Data, step);
 end;
 
 class function TMatHelper.mat: TMat;
 begin
   // Result := Constructor_Mat(Result)^;
-  Constructor_Mat(Result);
+  constructor_CV_MAT_19(Result);
 end;
 
 class function TMatHelper.mat(const m: TMat; const roi: TRect): TMat;
 begin
-  Result := Constructor_Mat(Result, m, roi)^;
+  constructor_CV_MAT_2(Result, m, roi);
 end;
 
 function TMatHelper.pT<T>(const i0: int): Pointer;
@@ -221,7 +230,7 @@ end;
 
 procedure TMatHelper.release;
 begin
-  release_Mat(Self);
+  class_proc_CV_MAT_release(Self);
 end;
 
 procedure TMatHelper.st<T>(const i0, i1: int; const v: T);
@@ -264,17 +273,17 @@ end;
 
 function TMatHelper.step1(i: int): size_t;
 begin
-  Result := step1_Mat(Self, i);
+  Result := class_func_CV_MAT_step1(Self, i);
 end;
 
 procedure TMatHelper.addref;
 begin
-  addref_Mat(Self);
+  class_proc_CV_MAT_addref(Self);
 end;
 
 procedure TMatHelper.assign(const s: TScalar);
 begin
-  Operator_Mat_Assign_Scalar(Self, s);
+  operator_CV_MAT_assign_2(Self, s);
 end;
 
 function TMatHelper.at<T>(const i0, i1: int): T;
@@ -314,62 +323,64 @@ end;
 
 function TMatHelper.channels: int;
 begin
-  Result := channels_Mat(Self);
+  Result := class_func_CV_MAT_channels(Self);
 end;
 
 function TMatHelper.checkVector(elemChannels, depth: int; requireContinuous: BOOL): int;
 begin
-  Result := checkVector_Mat(Self, elemChannels, depth, requireContinuous);
+  Result := class_func_CV_MAT_checkVector(Self, elemChannels, depth, requireContinuous);
 end;
 
 procedure TMatHelper.Create(rows, cols, &type: int);
 begin
-  Constructor_Mat(Self, rows, cols, &type);
+  constructor_CV_MAT_10(Self, rows, cols, &type);
 end;
 
 function TMatHelper.depth: int;
 begin
-  Result := depth_Mat(Self);
+  Result := class_func_CV_MAT_depth(Self);
 end;
 
 function TMatHelper.elemSize: size_t;
 begin
-  Result := elemSize_Mat(Self);
+  Result := class_func_CV_MAT_elemSize(Self);
 end;
 
 function TMatHelper.elemSize1: size_t;
 begin
-  Result := elemSize1_Mat(Self);
+  Result := class_func_CV_MAT_elemSize1(Self);
 end;
 
 function TMatHelper.empty: BOOL;
 begin
-  Result := empty_Mat(Self);
+  Result := class_func_CV_MAT_empty(Self);
 end;
 
 function TMatHelper.total(startDim, endDim: int): size_t;
 begin
-  Result := total_Mat(Self, startDim, endDim);
+  Result := class_func_CV_MAT_total(Self, startDim, endDim);
 end;
 
 function TMatHelper.total: size_t;
 begin
-  Result := total_Mat(Self);
+  Result := class_func_CV_MAT_total_1(Self);
 end;
 
 function TMatHelper.&type: int;
 begin
-  Result := type_Mat(Self);
+  Result := class_func_CV_MAT_type(Self);
 end;
 
 class function TMatHelper.zeros(const rows, cols: int; &type: int): TMatExpr;
 begin
-  zeros_Mat(Result, rows, cols, &type);
+  // zeros_Mat(Result, rows, cols, &type);
+  class_proc_CV_MAT_zeros(Result, rows, cols, &type);
 end;
 
 class function TMatHelper.zeros(const size: TSize; &type: int): TMatExpr;
 begin
-  zeros_Mat(Result, size, &type);
+  // zeros_Mat(Result, size, &type);
+  class_proc_CV_MAT_zeros_2(Result, size, &type);
 end;
 
 class function TMatHelper.mat<T>(const vec: Vector<T>; copyData: BOOL): TMat;
@@ -392,22 +403,22 @@ end;
 
 procedure TMatHelper.copyTo(m: TOutputArray);
 begin
-  copyTo_Mat(Self, m);
+  class_proc_CV_MAT_copyTo(Self, m);
 end;
 
 procedure TMatHelper.copyTo(m: TOutputArray; mask: TInputArray);
 begin
-  copyTo_Mat(Self, m, mask);
+  class_proc_CV_MAT_copyTo_1(Self, m, mask);
 end;
 
 class function TMatHelper.eye(rows, cols, &type: int): TMatExpr;
 begin
-  eye_Mat(Result, rows, cols, &type);
+  class_proc_CV_MAT_eye(Result, rows, cols, &type);
 end;
 
 class function TMatHelper.eye(size: TSize; &type: int): TMatExpr;
 begin
-  eye_Mat(Result, size, &type);
+  class_proc_CV_MAT_eye_1(Result, size, &type);
 end;
 
 class operator TMatHelper.Implicit(const v: Vector<TPoint>): TMat;
@@ -417,27 +428,27 @@ end;
 
 class function TMatHelper.ones(rows, cols, &type: int): TMatExpr;
 begin
-  Result := ones_Mat(Result, rows, cols, &type)^;
+  class_proc_CV_MAT_ones(Result, rows, cols, &type);
 end;
 
 class function TMatHelper.mat(rows, cols, &type: int; const s: TScalar): TMat;
 begin
-  Result := Constructor_Mat(Result, rows, cols, &type, s)^;
+  constructor_CV_MAT_11(Result, rows, cols, &type, s);
 end;
 
 class function TMatHelper.ones(ndims: int; const sz: pInt; &type: int): TMatExpr;
 begin
-  Result := ones_Mat(Result, ndims, sz, &type)^;
+  class_proc_CV_MAT_ones_1(Result, ndims, sz, &type);
 end;
 
 class function TMatHelper.ones(size: TSize; &type: int): TMatExpr;
 begin
-  Result := ones_Mat(Result, size, &type)^;
+  class_proc_CV_MAT_ones_2(Result, size, &type);
 end;
 
 class operator TMatHelper.Subtract(const m: TMat; const s: TScalar): TMatExpr;
 begin
-  operator_MatExpr_Subtract_Mat_MatExpr(Result, m, s);
+  operator_CV_minus_12(Result, m, s);
 end;
 
 function TMatHelper.ptr(const i0: int): puchar;
@@ -472,7 +483,7 @@ end;
 
 class function TMatHelper.mat(const m: TMat; const rowRange: TRange; const colRange: TRange { =Range::all() } ): TMat;
 begin
-  Constructor_Mat(Result, m, rowRange, colRange);
+  constructor_CV_MAT_4(Result, m, rowRange, colRange);
 end;
 
 class function TMatHelper.mat(const m: TMat; const rowRange: TRange): TMat;
@@ -487,36 +498,39 @@ end;
 
 class operator TMatHelper.Add(const a: TMatExpr; const s: TMat): TMatExpr;
 begin
-  operator_MatExpr_Add_MatExpr_Mat(Result, a, s);
+  operator_CV_plus_5(Result, a, s);
 end;
 
 { TMatExpr }
 
 class operator TMatExpr.assign(var Dest: TMatExpr; const [ref] Src: TMatExpr);
 begin
-  Operator_MatExpr_Assign_Const_MatExpr(Dest, Src);
+  operator_CV_MATEXPR_assign_1(Dest, Src);
 end;
 
 class operator TMatExpr.Finalize(var Dest: TMatExpr);
 begin
-  Destructor_MatExpr(Dest);
+  destructor_CV_MATEXPR(Dest);
 end;
 
 class operator TMatExpr.Initialize(out Dest: TMatExpr);
 begin
-  constructor_MatExpr(Dest);
+  constructor_CV_MATEXPR_4(Dest);
 end;
 
 function TMatExprHelper.size: TSize;
 begin
-  MatExpr_size(Self, Result);
+  Var
+    T: UInt64;
+  class_func_CV_MATEXPR_size(Self, T);
+  Result := T;
 end;
 
 { TInputArray }
 
 class function TInputArray.InputArray(const m: TMat): TInputArray;
 begin
-  Constructor_InputArray(Result, m);
+  constructor_CV__INPUTARRAY_8(Result, m);
 end;
 
 class operator TInputArray.Implicit(const m: TMat): TInputArray;
@@ -526,7 +540,7 @@ end;
 
 class function TInputArray.InputArray(const m: TMatExpr): TInputArray;
 begin
-  Constructor_InputArray(Result, m);
+  constructor_CV__INPUTARRAY_9(Result, m);
 end;
 
 class operator TInputArray.Implicit(const m: TMatExpr): TInputArray;
@@ -536,32 +550,33 @@ end;
 
 function TInputArray.getMat(idx: int): TMat;
 begin
-  getMat_InputArray(Self, Result, idx);
+  class_func_CV__INPUTARRAY_getMat(Self, Result, idx);
 end;
 
 function TInputArray.getObj: Pointer;
 begin
-  Result := getObj_InputArray(Self);
+  class_proc_CV__INPUTARRAY_getObj(Self, Result);
 end;
 
 class operator TInputArray.Initialize(out Dest: TInputArray);
 begin
-  Constructor_InputArray(Dest);
+  constructor_CV__INPUTARRAY_12(Dest);
 end;
 
 class operator TInputArray.Finalize(var Dest: TInputArray);
 begin
-  Destructor_InputArray(Dest);
+  destructor_CV__INPUTARRAY(Dest);
 end;
 
 function TInputArray.isMat: BOOL;
 begin
-  Result := isMat_InputArray(Self);
+  Result := class_func_CV__INPUTARRAY_isMat(Self);
 end;
 
 class function TInputArray.noArray: TInputArray;
 begin
-  noArray_InputOutputArray(TInputOutputArray(Result));
+  // noArray_InputOutputArray(TInputOutputArray(Result));
+  Result := TInputOutputArray(func_noArray()^);
 end;
 
 class operator TInputArray.Implicit(const v: Vector < Vector < TPoint >> ): TInputArray;
@@ -644,17 +659,18 @@ end;
 
 class function TOutputArrayHelper.noArray: TOutputArray;
 begin
-  noArray_InputOutputArray(TInputOutputArray(Result));
+  // noArray_InputOutputArray(TInputOutputArray(Result));
+  Result := TOutputArray(func_noArray()^);
 end;
 
 class function TOutputArrayHelper.OutputArray(const vec: Vector<TMat>): TOutputArray;
 begin
-  Constructor_OutputArray(Result, vec);
+  constructor_CV__OUTPUTARRAY_1(Result, vec);
 end;
 
 class function TOutputArrayHelper.OutputArray(const m: TMat): TOutputArray;
 begin
-  Constructor_OutputArray(Result, m);
+  constructor_CV__OUTPUTARRAY_6(Result, m);
 end;
 
 class operator TOutputArrayHelper.Implicit(const m: TMat): TOutputArray;
@@ -739,12 +755,13 @@ end;
 
 procedure TInputOutputArrayHelper.InputOutputArray(const m: TMat);
 begin
-  Constructor_InputOutputArray(Self, m);
+  constructor_CV__INPUTOUTPUTARRAY_5(Self, m);
 end;
 
 class function TInputOutputArrayHelper.noArray: TInputOutputArray;
 begin
-  noArray_InputOutputArray(Result);
+  // noArray_InputOutputArray(Result);
+  Result := TInputOutputArray(func_noArray()^);
 end;
 
 class operator TInputOutputArrayHelper.Implicit(const IOA: TInputOutputArray): TInputArray;
@@ -787,7 +804,10 @@ end;
 
 class operator TMatSizeHelper.Implicit(const m: TMatSize): TSize;
 begin
-  operator_MatSize_MatSizeToSize(m, Result);
+  Var
+    T: UInt64;
+  operator_CV_MATSIZE_explicit(m, T);
+  Result := T;
 end;
 
 { TMatStep }

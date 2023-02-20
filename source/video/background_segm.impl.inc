@@ -33,7 +33,7 @@ end;
 
 class operator TBackgroundSubtractorMOG2.Finalize(var Dest: TBackgroundSubtractorMOG2);
 begin
-  destructor_BackgroundSubtractorMOG2(Dest);
+  destructor_CV_BACKGROUNDSUBTRACTORMOG2(Dest);
 end;
 
 procedure TBackgroundSubtractorMOG2.setVarThreshold(varThreshold: double);

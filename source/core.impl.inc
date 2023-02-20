@@ -33,7 +33,7 @@
 
 procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
 begin
-  bitwise_and(src1, src2, dst, TInputArray.noArray);
+  bitwise_and(src1, src2, dst, TInputArray.noArray());
 end;
 
 procedure bitwise_not(const Src: TInputArray; const dst: TOutputArray);
@@ -45,12 +45,12 @@ end;
 
 class operator TRNGHelper.Implicit(const rng: TRNG): unsigned;
 begin
-  Result := operator_RNG_ToUnsignedInt(rng);
+  Result := operator_CV_RNG_implicit_5(rng);
 end;
 
 class operator TRNGHelper.Implicit(const rng: TRNG): int;
 begin
-  Result := operator_RNG_ToInt(rng);
+  Result := operator_CV_RNG_implicit_4(rng);
 end;
 
 class operator TRNGHelper.Implicit(const u: UInt64): TRNG;
@@ -60,17 +60,17 @@ end;
 
 class operator TRNG.Initialize(out Dest: TRNG);
 begin
-  constructor_RNG(Dest);
+  constructor_CV_RNG(Dest);
 end;
 
 class function TRNGHelper.RNG(state: UInt64): TRNG;
 begin
-  constructor_RNG(Result, state);
+  constructor_CV_RNG_1(Result, state);
 end;
 
 function TRNGHelper.UNIFORM(a, b: int): int;
 begin
-  Result := uniform_RNG(Self, a, b);
+  Result := class_func_CV_RNG_uniform(Self, a, b);
 end;
 
 procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil };

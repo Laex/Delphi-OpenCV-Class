@@ -337,6 +337,4 @@ end;
 
 //} // namespace cv
 
-{$i 'external/opencv.Stitcher.import.inc'}
-
 {$endif OPENCV_STITCHING_STITCHER_HPP}

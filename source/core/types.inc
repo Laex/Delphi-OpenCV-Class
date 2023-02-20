@@ -2436,6 +2436,6 @@ TermCriteria::TermCriteria(int _type, int _maxCount, double _epsilon)
 } // cv
 *)
 
-{$I 'external/opencv.Scalar.import.inc'}
+{.$I 'external/opencv.Scalar.import.inc'}
 
 {$endif OPENCV_CORE_TYPES_HPP}

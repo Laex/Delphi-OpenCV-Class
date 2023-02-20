@@ -501,7 +501,7 @@ type
 
   TOutputArrayOfArrays      = TOutputArray;
   TInputOutputArrayOfArrays = TInputOutputArray;
-  TInputArrayOfArrays       = type TInputArray;
+  TInputArrayOfArrays       = {type} TInputArray;
 
   TInputArrayOfArraysHelper = record helper for TInputArrayOfArrays
   public
@@ -4054,10 +4054,10 @@ type
 
   { .$I 'core/mat.inl.inc' }
 
-{$I external/opencv.mat.import.inc}
-{$I external/opencv.matexpr.import.inc}
-{$I external/opencv.InputArray.import.inc}
-{$I external/opencv.InputOutputArray.import.inc}
-{$I external/opencv.OutputArray.import.inc}
-{$I external/opencv.MatSize.import.inc}
+{.$I external/opencv.mat.import.inc}
+{.$I external/opencv.matexpr.import.inc}
+{.$I external/opencv.InputArray.import.inc}
+{.$I external/opencv.InputOutputArray.import.inc}
+{.$I external/opencv.OutputArray.import.inc}
+{.$I external/opencv.MatSize.import.inc}
 {$ENDIF} // OPENCV_CORE_MAT_HPP

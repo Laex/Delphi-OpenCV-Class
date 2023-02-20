@@ -3,7 +3,8 @@
 //
 //Define version of OpenCV
 {.$DEFINE OPENCV_455}
-{$DEFINE OPENCV_460}
+{.$DEFINE OPENCV_460}
+{$DEFINE OPENCV_470}
 //
 {$I jedi\jedi.inc}
 //

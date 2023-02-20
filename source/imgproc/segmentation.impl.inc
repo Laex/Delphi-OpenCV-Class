@@ -20,46 +20,43 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_IMGPROC_SEGMENTATION_HPP}
-
+{$IFDEF OPENCV_IMGPROC_SEGMENTATION_HPP}
 { TIntelligentScissorsMB }
 
 function TIntelligentScissorsMB.applyImage(const image: TInputArray): pIntelligentScissorsMB;
 begin
-  applyImage_IntelligentScissorsMB(@Self, image);
-  Result := @Self;
+  Result := class_func_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_applyImage(Self, image);
 end;
 
 procedure TIntelligentScissorsMB.buildMap(const sourcePt: TPoint);
 begin
-  buildMap_IntelligentScissorsMB(@Self, sourcePt);
+  class_proc_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_buildMap(Self, sourcePt);
 end;
 
 class operator TIntelligentScissorsMB.Finalize(var Dest: TIntelligentScissorsMB);
 begin
-  destructor_IntelligentScissorsMB(@Dest);
+  destructor_CV_SEGMENTATION_INTELLIGENTSCISSORSMB(Dest);
 end;
 
 procedure TIntelligentScissorsMB.getContour(const targetPt: TPoint; const contour: TOutputArray; backward: BOOL);
 begin
-  getContour_IntelligentScissorsMB(@Self, targetPt, contour, backward);
+  class_proc_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_getContour(Self, targetPt, contour, backward);
 end;
 
 class operator TIntelligentScissorsMB.Initialize(out Dest: TIntelligentScissorsMB);
 begin
-  Constructor_IntelligentScissorsMB(@Dest);
+  constructor_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_2(Dest);
 end;
 
-function TIntelligentScissorsMB.setEdgeFeatureCannyParameters(threshold1, threshold2: double; apertureSize: Int; L2gradient: BOOL): pIntelligentScissorsMB;
+function TIntelligentScissorsMB.setEdgeFeatureCannyParameters(threshold1, threshold2: double; apertureSize: Int; L2gradient: BOOL)
+  : pIntelligentScissorsMB;
 begin
-  setEdgeFeatureCannyParameters_IntelligentScissorsMB(@Self, threshold1, threshold2, apertureSize, L2gradient);
-  Result := @Self;
+  Result := class_func_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_setEdgeFeatureCannyParameters(Self, threshold1, threshold2, apertureSize, L2gradient);
 end;
 
 function TIntelligentScissorsMB.setGradientMagnitudeMaxLimit(gradient_magnitude_threshold_max: float): pIntelligentScissorsMB;
 begin
-  setGradientMagnitudeMaxLimit_IntelligentScissorsMB(@Self, gradient_magnitude_threshold_max);
-  Result := @Self;
+  Result := class_func_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_setGradientMagnitudeMaxLimit(Self, gradient_magnitude_threshold_max);
 end;
 
-{$endif}
+{$ENDIF}
