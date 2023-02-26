@@ -46,7 +46,7 @@ Uses
 {$I core.inc} {done, no classes}
 // Then the optional modules are checked
 {$IFDEF HAVE_OPENCV_CALIB3D}
-{.$I calib3d.inc}
+{$I calib3d.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_FEATURES2D}
 {$I features2d.inc}
@@ -58,7 +58,7 @@ Uses
 {$I flann.inc}
 {$endif}
 {$IFDEF HAVE_OPENCV_HIGHGUI}
-{$I highgui.inc} {done}
+{$I highgui.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_IMGCODECS}
 {$I imgcodecs.inc}
@@ -85,18 +85,20 @@ Uses
 {$I videoio.inc}
 {$ENDIF}
 
+{$IFDEF INCLUDE_OPENCV_C}
+{$include 'intf_c.inc'}
+{$ENDIF}
+
 {$i 'opencv.external.inc'}
 
 implementation
-
-{.$I opencv_modules.impl.inc}
 
 // Then the list of defines is checked to include the correct headers
 // Core library is always included --> without no OpenCV functionality available
 {$I core.impl.inc}
 // Then the optional modules are checked
 {$IFDEF HAVE_OPENCV_CALIB3D}
-{.$I calib3d.impl.inc}
+{$I calib3d.impl.inc}
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_FEATURES2D}
 {$I features2d.impl.inc}
@@ -133,6 +135,10 @@ implementation
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_VIDEOIO}
 {$I videoio.impl.inc}
+{$ENDIF}
+
+{$IFDEF INCLUDE_OPENCV_C}
+{$include 'intf_c.impl.inc'}
 {$ENDIF}
 
 initialization

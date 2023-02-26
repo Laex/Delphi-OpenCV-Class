@@ -20,7 +20,10 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_CORE_MAT_HPP}
+{$IF defined(OPENCV_CORE_MAT_HPP) and (not defined(OPENCV_CORE_MAT_HPP_IMPL))}
+{$DEFINE OPENCV_CORE_MAT_HPP_IMPL}
+
+
 { TMat }
 
 class operator TMat.Initialize(out Dest: TMat);
@@ -501,6 +504,11 @@ begin
   operator_CV_plus_5(Result, a, s);
 end;
 
+class operator TMatHelper.Add(const a, b: TMat): TMatExpr;
+begin
+  operator_CV_plus_8(Result, a, b);
+end;
+
 { TMatExpr }
 
 class operator TMatExpr.assign(var Dest: TMatExpr; const [ref] Src: TMatExpr);
@@ -516,6 +524,11 @@ end;
 class operator TMatExpr.Initialize(out Dest: TMatExpr);
 begin
   constructor_CV_MATEXPR_4(Dest);
+end;
+
+class operator TMatExpr.Multiply(const a: TMatExpr; const b: double) : TMatExpr;
+begin
+  operator_CV_mul_6(Result,a,b);
 end;
 
 function TMatExprHelper.size: TSize;
@@ -642,6 +655,14 @@ begin
   Result.sz := size(1, 4);
 end;
 
+class operator TInputArray.Implicit(const v: TVec3b): TInputArray;
+begin
+  //{ init(FIXED_TYPE + FIXED_SIZE + MATX + traits::Type<_Tp>::value + ACCESS_READ, &mtx, Size(n, m)); }
+  Result.flags := int(FIXED_TYPE) + int(MATX) + TTraits.&type<uchar>.value + int(ACCESS_READ);
+  Result.Obj := @v;
+  Result.sz := size(1, 3);
+end;
+
 class operator TInputArrayHelper.Implicit(const v: TMat1i): TInputArray;
 begin
   Result.flags := int(FIXED_TYPE) + int(mat) + TTraits.&type<int>.value + int(ACCESS_READ);
@@ -655,6 +676,7 @@ begin
   Result.Obj := @v;
   Result.sz := size(0, 0);
 end;
+
 { TOutputArray }
 
 class function TOutputArrayHelper.noArray: TOutputArray;
@@ -917,4 +939,4 @@ begin
   Result := a.FMat;
 end;
 
-{$ENDIF}
+{$IFEND}

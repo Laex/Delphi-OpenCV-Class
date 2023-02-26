@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_CORE_HPP}
+{$IF defined(OPENCV_CORE_HPP) and (not defined(OPENCV_CORE_HPP_IMPL))}
+{$DEFINE OPENCV_CORE_HPP_IMPL}
 {$I 'core/cvdef.impl.inc'}
 {$I 'core/base.impl.inc'}
 {$I 'core/cvstd.impl.inc'}
@@ -201,4 +202,9 @@ begin
   normalize(Src, dst, alpha, beta, norm_type, dtype, TInputArray.noArray);
 end;
 
-{$ENDIF OPENCV_CORE_HPP}
+procedure compare(const src1, src2:TInputArray;const dst:TOutputArray; cmpop:CmpTypes);
+begin
+  proc_compare(src1, src2,dst,int(cmpop));
+end;
+
+{$IFEND OPENCV_CORE_HPP}

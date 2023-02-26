@@ -36,6 +36,7 @@ end;
 function TNet.forward(const outputName: String = ''): TMat;
 begin
   class_func_CV_DNN_DNN4_V20221220_NET_forward(Self, Result, outputName);
+  // Result := class_func_CV_DNN_DNN4_V20221220_NET_forward(Self, CppString(outputName));
 end;
 
 procedure TNet.setPreferableBackend(backendId: int);
@@ -65,6 +66,12 @@ end;
 
 // --------------------------
 
+function blobFromImages(const images: TInputArrayOfArrays; scalefactor: double { =1.0 }; const size: TSize { = Size() };
+  const mean: TScalar { = Scalar() }; swapRB: bool = false; crop: bool = false; ddepth: int = CV_32F): TMat;
+begin
+  Result := func_blobFromImages(images, scalefactor, size, mean, swapRB, crop, ddepth);
+end;
+
 function blobFromImages(const images: TInputArrayOfArrays; scalefactor: double { =1.0 }; const size: TSize { = Size() }
   ): TMat;
 begin
@@ -76,9 +83,26 @@ begin
   Result := blobFromImages(images, scalefactor, size());
 end;
 
+procedure blobFromImages(const images: TInputArrayOfArrays; const blob: TOutputArray; scalefactor: double { =1.0 }; const size: TSize { = Size() };
+  const mean: TScalar { = Scalar() }; swapRB: bool = false; crop: bool = false; ddepth: int = CV_32F);
+begin
+  proc_blobFromImages(images, blob, scalefactor, size, mean, swapRB, crop, ddepth);
+end;
+
+procedure blobFromImages(const images: TInputArrayOfArrays; const blob: TOutputArray; scalefactor: double { =1.0 }; const size: TSize { = Size() }
+  );
+begin
+  blobFromImages(images, blob, scalefactor, size, Scalar());
+end;
+
+procedure blobFromImages(const images: TInputArrayOfArrays; const blob: TOutputArray; scalefactor: double = 1.0);
+begin
+  blobFromImages(images, blob, scalefactor, size());
+end;
+
 function readNet(const model: String; const config: String = ''; const framework: String = ''): TNet;
 begin
-  Result := readNet(CppString(model), CppString(config), CppString(framework));
+  Result := func_readNet(CppString(model), CppString(config), CppString(framework));
 end;
 
 {$ENDIF}

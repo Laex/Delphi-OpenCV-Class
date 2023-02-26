@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_CORE_CVDEF_H}
+{$IF defined(OPENCV_CORE_CVDEF_H) and (not defined(OPENCV_CORE_CVDEF_H_IMPL))}
+{$DEFINE  OPENCV_CORE_CVDEF_H_IMPL}
 
 function MIN(a, b: Int): Int;
 begin
@@ -35,4 +36,4 @@ end;
 {$i core/hal/interface.impl.inc}
 {$i core/fast_math.impl.inc}
 
-{$ENDIF OPENCV_CORE_CVDEF_H_IMPL}
+{$IFEND OPENCV_CORE_CVDEF_H_IMPL}

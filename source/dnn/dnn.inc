@@ -923,8 +923,11 @@ Type
       * arguments does not matter.
       *)
 //     CV_EXPORTS_W Net readNet(const String& model, const String& config = "", const String& framework = "");
+function readNet(const model:String; const config :String= ''; const framework :String= ''):TNet; {$IFDEF USE_INLINE}inline; {$ENDIF}
+(*
+// moved to "opencv.external.inc"
 {
-6021	
+6021
 ?readNet@dnn4_v20211004@dnn@cv@@YA?AVNet@123@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@00@Z
 ?readNet@dnn4_v20211004@dnn@cv@@YA?AVNet@123@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@00@Z
 class cv::dnn::dnn4_v20211004::Net cv::dnn::dnn4_v20211004::readNet(
@@ -932,12 +935,14 @@ class cv::dnn::dnn4_v20211004::Net cv::dnn::dnn4_v20211004::readNet(
        class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
        class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
 }
-    function readNet(const model:CppString; const config :CppString; const framework :CppString):TNet;
+function readNet(const model:CppString; const config :CppString; const framework :CppString):TNet;
     overload; external opencv_world_dll
     name '?readNet@dnn4_v20211004@dnn@cv@@YA?AVNet@123@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@00@Z'
     {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-    function readNet(const model:String; const config :String= ''; const framework :String= ''):TNet;
+function readNet(const model:String; const config :String= ''; const framework :String= ''):TNet;
     overload;// {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+*)
+
 
      (**
       * @brief Read deep learning network represented in one of the supported formats.
@@ -1047,73 +1052,66 @@ class cv::dnn::dnn4_v20211004::Net cv::dnn::dnn4_v20211004::readNet(
 //                                  bool swapRB=false, bool crop=false, int ddepth=CV_32F);
 
 
-    (** @brief Creates 4-dimensional blob from series of images. Optionally resizes and
-     *  crops @p images from center, subtract @p mean values, scales values by @p scalefactor,
-     *  swap Blue and Red channels.
-     *  @param images input images (all with 1-, 3- or 4-channels).
-     *  @param size spatial size for output image
-     *  @param mean scalar with mean values which are subtracted from channels. Values are intended
-     *  to be in (mean-R, mean-G, mean-B) order if @p image has BGR ordering and @p swapRB is true.
-     *  @param scalefactor multiplier for @p images values.
-     *  @param swapRB flag which indicates that swap first and last channels
-     *  in 3-channel image is necessary.
-     *  @param crop flag which indicates whether image will be cropped after resize or not
-     *  @param ddepth Depth of output blob. Choose CV_32F or CV_8U.
-     *  @details if @p crop is true, input image is resized so one side after resize is equal to corresponding
-     *  dimension in @p size and another one is equal or larger. Then, crop from the center is performed.
-     *  If @p crop is false, direct resize without cropping and preserving aspect ratio is performed.
-     *  @returns 4-dimensional Mat with NCHW dimensions order.
-     *)
+(** @brief Creates 4-dimensional blob from series of images. Optionally resizes and
+ *  crops @p images from center, subtract @p mean values, scales values by @p scalefactor,
+ *  swap Blue and Red channels.
+ *  @param images input images (all with 1-, 3- or 4-channels).
+ *  @param size spatial size for output image
+ *  @param mean scalar with mean values which are subtracted from channels. Values are intended
+ *  to be in (mean-R, mean-G, mean-B) order if @p image has BGR ordering and @p swapRB is true.
+ *  @param scalefactor multiplier for @p images values.
+ *  @param swapRB flag which indicates that swap first and last channels
+ *  in 3-channel image is necessary.
+ *  @param crop flag which indicates whether image will be cropped after resize or not
+ *  @param ddepth Depth of output blob. Choose CV_32F or CV_8U.
+ *  @details if @p crop is true, input image is resized so one side after resize is equal to corresponding
+ *  dimension in @p size and another one is equal or larger. Then, crop from the center is performed.
+ *  If @p crop is false, direct resize without cropping and preserving aspect ratio is performed.
+ *  @returns 4-dimensional Mat with NCHW dimensions order.
+ *)
 //    CV_EXPORTS_W Mat blobFromImages(InputArrayOfArrays images, double scalefactor=1.0,
 //                                    Size size = Size(), const Scalar& mean = Scalar(), bool swapRB=false, bool crop=false,
 //                                    int ddepth=CV_32F);
-{
-3645	
-?blobFromImages@dnn4_v20211004@dnn@cv@@YA?AVMat@3@AEBV_InputArray@debug_build_guard@3@NV?$Size_@H@3@AEBV?$Scalar_@N@3@_N3H@Z	
-?blobFromImages@dnn4_v20211004@dnn@cv@@YA?AVMat@3@AEBV_InputArray@3@NV?$Size_@H@3@AEBV?$Scalar_@N@3@_N3H@Z	
-class cv::Mat cv::dnn::dnn4_v20211004::blobFromImages(class cv::_InputArray const &,double,class cv::Size_<int>,class cv::Scalar_<double> const &,bool,bool,int)
-}
-function blobFromImages( const images:TInputArrayOfArrays;  
+function blobFromImages( const images:TInputArrayOfArrays;
                          scalefactor:double{=1.0};
                          const size :TSize {= Size()};
                          const mean :TScalar {= Scalar()};
                          swapRB : bool=false;
                          crop:bool=false;
-                         ddepth : int = CV_32F):TMat;
-overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?blobFromImages@dnn4_v20211004@dnn@cv@@YA?AVMat@3@AEBV_InputArray@debug_build_guard@3@NV?$Size_@H@3@AEBV?$Scalar_@N@3@_N3H@Z'
-{$ELSE}
-name '?blobFromImages@dnn4_v20211004@dnn@cv@@YA?AVMat@3@AEBV_InputArray@3@NV?$Size_@H@3@AEBV?$Scalar_@N@3@_N3H@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function blobFromImages( const images:TInputArrayOfArrays;  
+                         ddepth : int = CV_32F):TMat; overload;
+function blobFromImages( const images:TInputArrayOfArrays;
                          scalefactor:double{=1.0};
                          const size :TSize {= Size()}
-                        ):TMat; overload
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF}
-;
+                        ):TMat; overload;
 function blobFromImages( const images:TInputArrayOfArrays;
                          scalefactor:double=1.0
-                        ):TMat; overload
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF}
-;
-                                   
+                        ):TMat; overload;
 
-    (** @brief Creates 4-dimensional blob from series of images.
-     *  @details This is an overloaded member function, provided for convenience.
-     *           It differs from the above function only in what argument(s) it accepts.
-     *)
+(** @brief Creates 4-dimensional blob from series of images.
+ *  @details This is an overloaded member function, provided for convenience.
+ *           It differs from the above function only in what argument(s) it accepts.
+ *)
 //    CV_EXPORTS void blobFromImages(InputArrayOfArrays images, OutputArray blob,
 //                                   double scalefactor=1.0, Size size = Size(),
 //                                   const Scalar& mean = Scalar(), bool swapRB=false, bool crop=false,
 //                                   int ddepth=CV_32F);
-{
-3646	
-?blobFromImages@dnn4_v20211004@dnn@cv@@YAXAEBV_InputArray@debug_build_guard@3@AEBV_OutputArray@53@NV?$Size_@H@3@AEBV?$Scalar_@N@3@_N4H@Z	
-?blobFromImages@dnn4_v20211004@dnn@cv@@YAXAEBV_InputArray@3@AEBV_OutputArray@3@NV?$Size_@H@3@AEBV?$Scalar_@N@3@_N4H@Z	
-void cv::dnn::dnn4_v20211004::blobFromImages(class cv::_InputArray const &,class cv::_OutputArray const &,double,class cv::Size_<int>,class cv::Scalar_<double> const &,bool,bool,int)
-}
+procedure blobFromImages(const images:TInputArrayOfArrays;
+                         const blob:TOutputArray;
+                         scalefactor:double{=1.0};
+                         const size :TSize {= Size()};
+                         const mean :TScalar {= Scalar()};
+                         swapRB : bool=false;
+                         crop:bool=false;
+                         ddepth : int = CV_32F); overload;
+procedure blobFromImages(const images:TInputArrayOfArrays;
+                         const blob:TOutputArray;
+                         scalefactor:double{=1.0};
+                         const size :TSize {= Size()}
+                        ); overload;
+procedure blobFromImages(const images:TInputArrayOfArrays;
+                         const blob:TOutputArray;
+                         scalefactor:double=1.0
+                        ); overload;
 
     (** @brief Parse a 4D blob and output the images it contains as 2D arrays through a simpler data structure
      *  (std::vector<cv::Mat>).

@@ -38,15 +38,15 @@ Type
   ADE_TYPEDGRAPH_OF_CV_GIMPL_NODETYPE              = type TEmptyRec;
   CV                                               = type TEmptyRec;
   CVCAPTURE                                        = type TEmptyRec;
-  CVCREATESPARSEMAT                                = type TEmptyRec;
+//  CVCREATESPARSEMAT                                = type TEmptyRec;
   CVFLANN                                          = type TEmptyRec;
   CVFLANN_FLANN_ALGORITHM_T                        = type TEmptyRec;
   CVFLANN_FLANN_CENTERS_INIT_T                     = type TEmptyRec;
   CVFLANN_FLANN_DISTANCE_T                         = type TEmptyRec;
-  CVIPLIMAGE                                       = type TEmptyRec;
+//  CVIPLIMAGE                                       = type TEmptyRec;
   CVLEVMARQ                                        = type TEmptyRec;
-  CVMAT                                            = type TEmptyRec;
-  CVMATND                                          = type TEmptyRec;
+//  CVMAT                                            = type TEmptyRec;
+  CV_MATND                                          = type TEmptyRec;
   CVMEMSTORAGE                                     = type TEmptyRec;
   CVROUND64                                        = type TEmptyRec;
   CVSEQ                                            = type TEmptyRec;
@@ -976,7 +976,7 @@ Type
   CV_SUBDIV2D                                              = TSubdiv2D; // type TEmptyRec;
   CV_SUBDIV2D_QUADEDGE                                     = type TEmptyRec;
   CV_SUBDIV2D_VERTEX                                       = type TEmptyRec;
-  CV_SVD                                                   = type TEmptyRec;
+  _CV_SVD                                                   = type TEmptyRec;
   CV_TERMCRITERIA                                          = type TEmptyRec;
   CV_TICKMETER                                             = type TEmptyRec;
   CV_TLSDATACONTAINER                                      = type TEmptyRec;
@@ -1185,11 +1185,11 @@ Type
   STD__VB_REFERENCE_OF_STD__WRAP_ALLOC_OF_STD_ALLOCATOR_OF_UNSIGNED_INT = type TEmptyRec;
   STEREOSETUP = type TEmptyRec;
   VOID__CV_CUDA_STREAM__VOID                   = type TEmptyRec;
-  _IPLIMAGE                                    = type TEmptyRec;
+//  _IPLIMAGE                                    = type TEmptyRec;
   pCV_GENERALIZEDHOUGH                         = ^CV_GENERALIZEDHOUGH;
   pCV_DNN_DNN4_V20221220_LAYERFACTORY          = ^CV_DNN_DNN4_V20221220_LAYERFACTORY;
   pCV_GAPI_WIP_DRAW_RECT                       = ^CV_GAPI_WIP_DRAW_RECT;
-  pCVSEQ                                       = ^CVSEQ;
+//  pCVSEQ                                       = ^CVSEQ;
   pCV_DNN_DNN4_V20221220_INNERPRODUCTLAYERINT8 = ^CV_DNN_DNN4_V20221220_INNERPRODUCTLAYERINT8;
   pCV_DNN_DNN4_V20221220_ATANLAYER             = ^CV_DNN_DNN4_V20221220_ATANLAYER;
   pCV_CALIBRATEDEBEVEC                         = ^CV_CALIBRATEDEBEVEC;
@@ -1229,7 +1229,7 @@ Type
   pCV_DNN_DNN4_V20221220_BATCHNORMLAYER        = ^CV_DNN_DNN4_V20221220_BATCHNORMLAYER;
   pCV_ARUCO_DICTIONARY                         = ^CV_ARUCO_DICTIONARY;
   pCV_DETAIL_VECTORREF                         = ^CV_DETAIL_VECTORREF;
-  pCV_SVD                                      = ^CV_SVD;
+  pCV_SVD                                      = ^_CV_SVD;
   pCV_DETAIL_ROTATIONWARPERBASE_OF_CV_DETAIL_PANINIPORTRAITPROJECTOR = ^CV_DETAIL_ROTATIONWARPERBASE_OF_CV_DETAIL_PANINIPORTRAITPROJECTOR;
   pCV_DNN_DNN4_V20221220_SQRTLAYER     = ^CV_DNN_DNN4_V20221220_SQRTLAYER;
   pCV_DNN_DNN4_V20221220_FLOWWARPLAYER = ^CV_DNN_DNN4_V20221220_FLOWWARPLAYER;
@@ -1276,7 +1276,7 @@ Type
   pCV_DNN_DNN4_V20221220_TEXTDETECTIONMODEL_DB = ^CV_DNN_DNN4_V20221220_TEXTDETECTIONMODEL_DB;
   pCV_GAPI_FLUID_BUFFER_CACHE                  = ^CV_GAPI_FLUID_BUFFER_CACHE;
   pCV_GENERALIZEDHOUGHGUIL                     = ^CV_GENERALIZEDHOUGHGUIL;
-  pCVMAT                                       = ^CVMAT;
+//  pCVMAT                                       = ^CVMAT;
   pCV_DETAIL_IMAGEFEATURES                     = ^CV_DETAIL_IMAGEFEATURES;
   pCV_ML_SVMSGD                                = ^CV_ML_SVMSGD;
   pCV__OUTPUTARRAY                             = ^CV__OUTPUTARRAY;
@@ -1296,7 +1296,7 @@ Type
   pCV_DETAIL_CAMERAPARAMS                      = ^CV_DETAIL_CAMERAPARAMS;
   pCV_TONEMAPDRAGO                             = ^CV_TONEMAPDRAGO;
   pCV_WARPERCREATOR                            = ^CV_WARPERCREATOR;
-  pCVMATND                                     = ^CVMATND;
+//  pCVMATND                                     = ^CVMATND;
   pCV_HAL_DFT2D                                = ^CV_HAL_DFT2D;
   pCV_DNN_DNN4_V20221220_KEYPOINTSMODEL        = ^CV_DNN_DNN4_V20221220_KEYPOINTSMODEL;
   pCVLEVMARQ                                   = ^CVLEVMARQ;
@@ -1566,13 +1566,13 @@ Type
   pCV_SEGMENTATION_INTELLIGENTSCISSORSMB_IMPL          = ^CV_SEGMENTATION_INTELLIGENTSCISSORSMB_IMPL;
   pCV_DNN_DNN4_V20221220_DETECTIONOUTPUTLAYER          = ^CV_DNN_DNN4_V20221220_DETECTIONOUTPUTLAYER;
   pCV_MATX_DIVOP                                       = ^CV_MATX_DIVOP;
-  pCVMEMSTORAGE                                        = ^CVMEMSTORAGE;
+//  pCVMEMSTORAGE                                        = ^CVMEMSTORAGE;
   pCV_POINT__OF_INT                                    = ^CV_POINT__OF_INT;
   pCV_DETAIL_TRACKING_TRACKERSAMPLERCSC_PARAMS         = ^CV_DETAIL_TRACKING_TRACKERSAMPLERCSC_PARAMS;
   pCV_DNN_DNN4_V20221220_NET                           = ^CV_DNN_DNN4_V20221220_NET;
   pCV_NARYMATITERATOR                                  = ^CV_NARYMATITERATOR;
   pCV_DNN_DNN4_V20221220_TANLAYER                      = ^CV_DNN_DNN4_V20221220_TANLAYER;
-  pCVSPARSEMAT                                         = ^CVSPARSEMAT;
+//  pCVSPARSEMAT                                         = ^CVSPARSEMAT;
   pCV_SUBDIV2D                                         = ^CV_SUBDIV2D;
   pSTD_VECTOR_OF_STD_PAIR_OF_CV_PTR_OF_CV_DETAIL_TRACKING_TRACKERTARGETSTATE = ^
     STD_VECTOR_OF_STD_PAIR_OF_CV_PTR_OF_CV_DETAIL_TRACKING_TRACKERTARGETSTATE;

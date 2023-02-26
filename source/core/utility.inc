@@ -60,6 +60,12 @@
   }
   \endcode
 *)
+
+Type
+   {TODO:AutoBuffer}
+   AutoBuffer<T> = record
+
+   end;
 // #ifdef OPENCV_ENABLE_MEMORY_SANITIZER
 // template<typename _Tp, size_t fixed_size = 0> class AutoBuffer
 // #else

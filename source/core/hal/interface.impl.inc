@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_CORE_HAL_INTERFACE_H}
+{$IF defined(OPENCV_CORE_HAL_INTERFACE_H)and (not defined(OPENCV_CORE_HAL_INTERFACE_H_IMPL))}
+{$DEFINE OPENCV_CORE_HAL_INTERFACE_H_IMPL}
 
 function CV_MAT_DEPTH(flags: Int): Int;
 begin
@@ -76,4 +77,4 @@ function CV_16FC(n: Int): Int;
 begin
   Result := CV_MAKETYPE(CV_16F, n);
 end;
-{$ENDIF OPENCV_CORE_HAL_INTERFACE_H}
+{$IFEND OPENCV_CORE_HAL_INTERFACE_H}

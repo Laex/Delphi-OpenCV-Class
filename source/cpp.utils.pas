@@ -66,6 +66,9 @@ Type
   pBOOL            = ^BOOL;
   p__INT64         = ^__INT64;
   pCVCHAR          = pAnsiChar;
+  schar = int8;
+  pschar = ^schar;
+  punsigned = ^unsigned;
 
   TVectorType = //
     (           //

@@ -20,7 +20,9 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_CORE_TRAITS_HPP}
+{$IF DEFined(OPENCV_CORE_TRAITS_HPP) and (not defined(OPENCV_CORE_TRAITS_HPP_IMPL))}
+{$DEFINE OPENCV_CORE_TRAITS_HPP_IMPL}
+
 { TDataType<T> }
 
 class function TDataType<T>.generic_type: Int;
@@ -257,4 +259,4 @@ end;
 //  *)
 //end;
 
-{$ENDIF OPENCV_CORE_TRAITS_HPP}
+{$IFEND OPENCV_CORE_TRAITS_HPP}

@@ -406,6 +406,10 @@ public:
     property Items[const Index: integer]: uchar read getItem write setItem; default;
     class operator Implicit(const a: TArray<uchar>): TVec3b; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
+
+function Vec3b(const a,b,c:uchar):TVec3b; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+Type
    TVec4b   = array[0..4-1] of uchar;
 
    TVec2s   = array[0..2-1] of short;

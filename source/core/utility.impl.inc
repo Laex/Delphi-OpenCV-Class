@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_CORE_UTILITY_H}
+{$IF defined(OPENCV_CORE_UTILITY_H) and (not defined(OPENCV_CORE_UTILITY_H_IMPL))}
+{$DEFINE OPENCV_CORE_UTILITY_H_IMPL}
 
 function getBuildInformation: String;
 begin
@@ -296,4 +297,4 @@ begin
   help;
 end;
 
-{$ENDIF OPENCV_CORE_UTILITY_H}
+{$IFEND OPENCV_CORE_UTILITY_H}

@@ -75,3 +75,4 @@ modules/
 # opencv_delphi
 x64/
 .vs/
+*.pb

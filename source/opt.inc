@@ -5,6 +5,8 @@
 {.$DEFINE OPENCV_455}
 {.$DEFINE OPENCV_460}
 {$DEFINE OPENCV_470}
+
+{$DEFINE INCLUDE_OPENCV_C}
 //
 {$I jedi\jedi.inc}
 //
@@ -15,7 +17,7 @@
 {$IFDEF RELEASE}
 { }{$DEFINE DELAYED_LOAD_DLL}
 { }{$DEFINE USE_INLINE}
-{ }{$UNDEF  USE_DEBUG_DLLS} // Do not use debug OpenCV and VisualStudio's DLLs.
+{ }{$UNDEF  USE_DEBUG_DLLS} // Do not use debug OpenCV and VisualStudio's DLLs. Else - release OpenCV and VisualStudio's DLLs.
 {$ENDIF}
 //
 {$DEFINE USE_TYPEINFO}

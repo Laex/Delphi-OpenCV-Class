@@ -2082,7 +2082,11 @@ name '?inRange@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
   @param cmpop a flag, that specifies correspondence between the arrays (cv::CmpTypes)
   @sa checkRange, min, max, threshold
 *)
+
 //CV_EXPORTS_W void compare(InputArray src1, InputArray src2, OutputArray dst, int cmpop);
+procedure compare(const src1, src2:TInputArray;const dst:TOutputArray; cmpop:CmpTypes); {$IFDEF USE_INLINE}inline; {$ENDIF}
+(*
+ // moved to "opencv.external.inc"
 {
 3965
 ?compare@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H@Z
@@ -2097,6 +2101,7 @@ name '?compare@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H
 name '?compare@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H@Z'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+*)
 
 (** @brief Calculates per-element minimum of two arrays or an array and a scalar.
 

@@ -20,7 +20,10 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_CORE_TYPES_HPP}
+{$IF defined(OPENCV_CORE_TYPES_HPP) and (not defined(OPENCV_CORE_TYPES_HPP_IMPL))}
+{$DEFINE OPENCV_CORE_TYPES_HPP_IMPL}
+
+
 { TPoint_<T> }
 
 class operator TPoint_<T>.Implicit(const m: TPoint_<T>): UInt64;
@@ -418,4 +421,4 @@ begin
   Result := Range(INT_MIN, INT_MAX);
 end;
 
-{$ENDIF}
+{$IFEND}

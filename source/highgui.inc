@@ -1176,4 +1176,8 @@ function createButton( const bar_name:String; on_change:TButtonCallback;
                              userdata :Pointer = nil; &type :QtButtonTypes= QT_PUSH_BUTTON;
                              initial_button_state :bool= false):int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
+{$IFDEF INCLUDE_OPENCV_C}
+{$I 'highgui/highgui_c.inc'}
+{$ENDIF}
+
 {$ENDIF OPENCV_HIGHGUI_HPP}
