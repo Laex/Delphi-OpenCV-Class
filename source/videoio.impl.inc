@@ -20,7 +20,9 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_VIDEOIO_HPP}
+{$IF defined(OPENCV_VIDEOIO_HPP) and (not defined(OPENCV_VIDEOIO_HPP_IMPL))}
+{$DEFINE OPENCV_VIDEOIO_HPP_IMPL}
+
 { TVideoCapture }
 
 function TVideoCapture.&set(propId: VideoCaptureProperties; Value: double): BOOL;
@@ -176,4 +178,4 @@ begin
   class_proc_CV_VIDEOWRITER_write(Self, image);
 end;
 
-{$ENDIF}
+{$IFEND}

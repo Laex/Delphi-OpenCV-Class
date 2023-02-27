@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_STITCHING_STITCHER_HPP}
+{$IF defined(OPENCV_STITCHING_STITCHER_HPP) and (not defined(OPENCV_STITCHING_STITCHER_HPP_IMPL))}
+{$DEFINE OPENCV_STITCHING_STITCHER_HPP_IMPL}
 { TStitcher }
 
 class function TStitcher.Create(const mode: TStitcher.mode = mode.PANORAMA): TPtr<TStitcher>;
@@ -33,4 +34,4 @@ begin
   Result := class_func_CV_STITCHER_stitch_1(Self, images, pano);
 end;
 
-{$ENDIF}
+{$IFEND}

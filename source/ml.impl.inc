@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_ML_HPP}
+{$IF defined(OPENCV_ML_HPP) and (not defined(OPENCV_ML_HPP_IMPL))}
+{$DEFINE OPENCV_ML_HPP_IMPL}
 { TSVM }
 
 class function TSVM.Create: TPtr<TSVM>;
@@ -193,4 +194,4 @@ begin
   Result := TTrainData.Create(samples, layout, responses, TInputArray.noArray);
 end;
 
-{$ENDIF}
+{$IFEND}

@@ -50,7 +50,7 @@ Type
   CVMEMSTORAGE                                     = type TEmptyRec;
   CVROUND64                                        = type TEmptyRec;
   CVSEQ                                            = type TEmptyRec;
-  CVSLICE                                          = type TEmptyRec;
+  CV_SLICE                                          = type TEmptyRec;
   CVSPARSEMAT                                      = type TEmptyRec;
   CVTERMCRITERIA                                   = type TEmptyRec;
   CVTRUNC                                          = type TEmptyRec;
@@ -79,7 +79,7 @@ Type
   CV_ARUCO_REFINEPARAMETERS                        = type TEmptyRec;
   CV_ASYNCARRAY                                    = type TEmptyRec;
   CV_ASYNCPROMISE                                  = type TEmptyRec;
-  CV_AUTOBUFFER_OF_DOUBLE                          = type TEmptyRec;
+  CV_AUTOBUFFER_OF_DOUBLE                          = AutoBuffer<Double>;//type TEmptyRec;
   CV_AVIREADCONTAINER                              = type TEmptyRec;
   CV_AVIWRITECONTAINER                             = type TEmptyRec;
   CV_BACKGROUNDSUBTRACTOR                          = type TEmptyRec;

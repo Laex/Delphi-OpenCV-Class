@@ -20,11 +20,7 @@
   limitations under the License.
 *)
 
-{$IF defined(OPENCV_HIGHGUI_H) and (not defined(OPENCV_HIGHGUI_H_IMPL))}
-{$DEFINE  OPENCV_HIGHGUI_H_IMPL}
+{$if defined(OPENCV_IMGPROC_IMGPROC_C_H) and (not defined(OPENCV_IMGPROC_IMGPROC_C_H_IMPL))}
+{$define OPENCV_IMGPROC_IMGPROC_C_H_IMPL}
 
-{$include 'core/core_c.impl.inc'}
-{$include 'imgproc/imgproc_c.impl.inc'}
-
-
-{$IFEND}
+{$ifend}

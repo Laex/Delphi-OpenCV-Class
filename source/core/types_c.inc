@@ -163,7 +163,7 @@ const
 \****************************************************************************************)
 const
  CV_AUTO_STEP  = $7fffffff;
- // CV_WHOLE_ARR  = cvSlice( 0, $3fffffff ); //moved
+// CV_WHOLE_ARR:_cvSlice  = (start_index: 0;end_index: $3fffffff );
 
  CV_MAGIC_MASK     =  $FFFF0000;
  CV_MAT_MAGIC_VAL  =  $42420000;
@@ -213,7 +213,7 @@ const
 
 (************************************* CvSlice ******************************************)
 const
- CV_WHOLE_SEQ_END_INDEX =$3fffffff;
+ CV_WHOLE_SEQ_END_INDEX = $3fffffff;
  //CV_WHOLE_SEQ  =cvSlice(0, CV_WHOLE_SEQ_END_INDEX);//moved
 
 (****************************************************************************************\
@@ -346,11 +346,11 @@ destination images (or ROIs), allowing them to vary independently.
  pIplImage = ^_IplImage;
 
  _IplImage = record
-      nSize         :int;             (**< sizeof(IplImage) *)
-      ID            :int;                (**< version (=0)*)
-      nChannels     :int;         (**< Most of OpenCV functions support 1,2,3 or 4 channels *)
-      alphaChannel  :int;      (**< Ignored by OpenCV *)
-      depth         :int;             (**< Pixel depth in bits: IPL_DEPTH_8U, IPL_DEPTH_8S, IPL_DEPTH_16S,
+    nSize         :int;             (**< sizeof(IplImage) *)
+    ID            :int;                (**< version (=0)*)
+    nChannels     :int;         (**< Most of OpenCV functions support 1,2,3 or 4 channels *)
+    alphaChannel  :int;      (**< Ignored by OpenCV *)
+    depth         :int;             (**< Pixel depth in bits: IPL_DEPTH_8U, IPL_DEPTH_8S, IPL_DEPTH_16S,
                                IPL_DEPTH_32S, IPL_DEPTH_32F and IPL_DEPTH_64F are supported.  *)
     colorModel:array[0..3] of cvchar;     (**< Ignored by OpenCV *)
     channelSeq:array[0..3] of cvchar;     (**< ditto *)
@@ -485,11 +485,10 @@ CV_MAT_ELEM(matrix, type, i, j\*nchannels + channel_idx).
      r2:_CvMat_union_2;
 
 //    CvMat() {}
-    class operator Initialize (out Dest: _CvMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
 //    CvMat(const cv::Mat& m) { *this = cvMat(m); }
     class operator Explicit(const m: TMat): _CvMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
 end;
-    TCvMat = _CvMat;
+TCvMat = _CvMat;
 
 
 (****************************************************************************************\
@@ -513,7 +512,6 @@ _CvMatND = record
     dim:array[0..CV_MAX_DIM-1] of record size,step:Int; end;
 
 //    CvMatND() {}
-    class operator Initialize (out Dest: _CvMatND);
 //    CvMatND(const cv::Mat& m) { *this = cvMatND(m); }
     class operator Explicit(const m: TMat): _CvMatND;
 end;
@@ -535,7 +533,7 @@ TCvMatND = _CvMatND;
 
     heap:pCvSet;
     hashtable:pointer;//void** hashtable;
-     hashsize:int;
+    hashsize:int;
     valoffset:int;
     idxoffset:int;
     size:array[0..CV_MAX_DIM-1] of int;
@@ -738,10 +736,12 @@ TCvLineIterator = _CvLineIterator;
 
 (************************************* CvSlice ******************************************)
 
+pCvSlice = ^_CvSlice;
 _CvSlice = record
     start_index, end_index:int;
     {TODO:CvSlice}
 //    CvSlice(int start = 0, int end = 0) : start_index(start), end_index(end) {}
+    class function CvSlice(start:int = 0; &end:int = 0):_CvSlice; static;
 //    CvSlice(const cv::Range& r) { *this = (r.start != INT_MIN && r.end != INT_MAX) ? CvSlice(r.start, r.end) : CvSlice(0, CV_WHOLE_SEQ_END_INDEX); }
 //    operator cv::Range() const { return (start_index == 0 && end_index == CV_WHOLE_SEQ_END_INDEX ) ? cv::Range::all() : cv::Range(start_index, end_index); }
 end;
@@ -756,6 +756,7 @@ _CvScalar = record
     {TODO:CvScalar}
 //    CvScalar() {}
 //    CvScalar(double d0, double d1 = 0, double d2 = 0, double d3 = 0) { val[0] = d0; val[1] = d1; val[2] = d2; val[3] = d3; }
+      constructor CvScalar(d0:double; d1:double = 0; d2:double = 0; d3:double = 0);
 //    template<typename _Tp>
 //    CvScalar(const cv::Scalar_<_Tp>& s) { val[0] = s.val[0]; val[1] = s.val[1]; val[2] = s.val[2]; val[3] = s.val[3]; }
 //    template<typename _Tp, int cn>
@@ -1112,11 +1113,10 @@ const
 (****************************************************************************************\
 *                                  Matrix type (CvMat)                                   *
 \****************************************************************************************)
- {TODO : CV_WHOLE_ARR  = cvSlice( 0, $3fffffff )}
- // CV_WHOLE_ARR  = cvSlice( 0, $3fffffff );
+  CV_WHOLE_ARR :TcvSlice = (start_index: 0;end_index: $3fffffff );//  cvSlice( 0, $3fffffff );
 
 (************************************* CvSlice ******************************************)
- //CV_WHOLE_SEQ  =cvSlice(0, CV_WHOLE_SEQ_END_INDEX);//moved
+  CV_WHOLE_SEQ:TcvSlice = (start_index:0;end_index:CV_WHOLE_SEQ_END_INDEX);
 
 (****************************************************************************************\
 *                                    Sequence types                                      *
@@ -1248,26 +1248,23 @@ function cvIplImage():TIplImage; inline; overload;
 
 //#define CV_IS_IMAGE_HDR(img) \
 //    ((img) != NULL && ((const IplImage*)(img))->nSize == sizeof(IplImage))
-function CV_IS_IMAGE_HDR(var img):boolean; inline;
+function CV_IS_IMAGE_HDR(const img:pcvArr):boolean; inline;
 
 //#define CV_IS_IMAGE(img) \
 //    (CV_IS_IMAGE_HDR(img) && ((IplImage*)img)->imageData != NULL)
-function CV_IS_IMAGE(var img):boolean; inline;
+function CV_IS_IMAGE(const img:pcvArr):boolean; inline;
 
 (** get reference to pixel at (col,row),
    for multi-channel images (col) should be multiplied by number of channels *)
 
+{TODO : CV_IMAGE_ELEM}
 //#define CV_IMAGE_ELEM( image, elemtype, row, col )       \
 //    (((elemtype*)((image)->imageData + (image)->widthStep*(row)))[(col)])
 //function CV_IMAGE_ELEM<T>(image, elemtype, row, col)
-{TODO : CV_IMAGE_ELEM}
 
 (****************************************************************************************\
 *                                  Matrix type (CvMat)                                   *
 \****************************************************************************************)
-
-//CV_INLINE CvMat cvMat(const cv::Mat& m);
-//function cvMat(const m:TMat):TCvMat; overload;
 
 {TODO : CV_IS_MAT_HDR}
 
@@ -1275,6 +1272,7 @@ function CV_IS_IMAGE(var img):boolean; inline;
 //    ((mat) != NULL && \
 //    (((const CvMat*)(mat))->type & CV_MAGIC_MASK) == CV_MAT_MAGIC_VAL && \
 //    ((const CvMat*)(mat))->cols > 0 && ((const CvMat*)(mat))->rows > 0)
+function CV_IS_MAT_HDR(const mat:pCvArr):Boolean; inline;
 //
 //#define CV_IS_MAT_HDR_Z(mat) \
 //    ((mat) != NULL && \
@@ -1283,6 +1281,7 @@ function CV_IS_IMAGE(var img):boolean; inline;
 //
 //#define CV_IS_MAT(mat) \
 //    (CV_IS_MAT_HDR(mat) && ((const CvMat*)(mat))->data.ptr != NULL)
+function CV_IS_MAT(const mat:pCvArr):Boolean; inline;
 //
 //#define CV_IS_MASK_ARR(mat) \
 //    (((mat)->type & (CV_MAT_TYPE_MASK & ~CV_8SC1)) == 0)
@@ -1329,6 +1328,8 @@ function CV_IS_IMAGE(var img):boolean; inline;
 //}
 function cvMat( rows, cols, &type:int; const data:pointer=nil):TCvMat; inline; overload;
 
+//CV_INLINE CvMat cvMat(const cv::Mat& m);
+//function cvMat(const m:TMat):TCvMat; overload;
 //CV_INLINE CvMat cvMat(const cv::Mat& m)
 //{
 //    CvMat self;
@@ -1348,7 +1349,7 @@ function cvMat(const m:TMat):TcvMat; overload; {$IFDEF USE_INLINE}inline; {$ENDI
 //    return CvMat();
 //{$endif}
 //}
-function cvMat():TCvMat;inline; overload;
+function cvMat():TCvMat; overload; inline;
 
 //CV_INLINE CvMat cvMat(const CvMat& m)
 //{
@@ -1398,7 +1399,7 @@ type, and it checks for the row and column ranges only in debug mode.
 //        return ((double*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col];
 //    }
 //}
-function cvmGet(const mat:TCvMat; row,col:int):double; inline; overload;
+function cvmGet(const mat:pCvMat; row,col:int):double; inline; overload;
 
 (** @brief Sets a specific element of a single-channel floating-point matrix.
 
@@ -1455,12 +1456,13 @@ function cvMatND(const m:TMat):TCvMatND; overload;
 function cvMatND():TCvMatND; inline; overload;
 
 
-{TODO: CV_IS_MATND_HDR}
 //#define CV_IS_MATND_HDR(mat) \
 //    ((mat) != NULL && (((const CvMatND*)(mat))->type & CV_MAGIC_MASK) == CV_MATND_MAGIC_VAL)
+function CV_IS_MATND_HDR(const mat:pCvArr):Boolean; inline;
 //
 //#define CV_IS_MATND(mat) \
 //    (CV_IS_MATND_HDR(mat) && ((const CvMatND*)(mat))->data.ptr != NULL)
+function CV_IS_MATND(const mat:pCvArr):Boolean; inline;
 
 
 (****************************************************************************************\
@@ -1703,7 +1705,8 @@ function cvMatND():TCvMatND; inline; overload;
 //{$endif}
 //    return slice;
 //}
-//
+function cvSlice(start:int=0; &end:int=0):TCvSlice; inline;
+
 //#if defined(__cplusplus)
 //CV_INLINE  CvSlice  cvSlice(const cv::Range& r)
 //{
@@ -1726,7 +1729,8 @@ function cvMatND():TCvMatND; inline; overload;
 //    scalar.val[2] = val2; scalar.val[3] = val3;
 //    return scalar;
 //}
-//
+function cvScalar(val0:double; val1:double=0; val2:double=0; val3:double=0):TCvScalar;inline;
+
 //{$ifdef __cplusplus
 //CV_INLINE CvScalar cvScalar()
 //{
@@ -1764,7 +1768,8 @@ function cvMatND():TCvMatND; inline; overload;
 //    scalar.val[1] = scalar.val[2] = scalar.val[3] = 0;
 //    return scalar;
 //}
-//
+function cvRealScalar(val0:double):TCvScalar;inline;
+
 //CV_INLINE  CvScalar  cvScalarAll( double val0123 )
 //{
 //#if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
@@ -1793,6 +1798,7 @@ function cvMatND():TCvMatND; inline; overload;
 (*************************************** Set ********************************************)
 (** Checks whether the element pointed by ptr belongs to a set or not *)
 //#define CV_IS_SET_ELEM( ptr )  (((CvSetElem*)(ptr))->flags >= 0)
+function CV_IS_SET_ELEM(const ptr:pCvArr):Boolean; inline;
 
 (****************************************************************************************\
 *                                    Sequence types                                      *

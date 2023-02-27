@@ -64,8 +64,9 @@
 Type
    {TODO:AutoBuffer}
    AutoBuffer<T> = record
-
+     //fixed_size = 1024/sizeof(T)+8
    end;
+
 // #ifdef OPENCV_ENABLE_MEMORY_SANITIZER
 // template<typename _Tp, size_t fixed_size = 0> class AutoBuffer
 // #else

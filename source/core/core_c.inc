@@ -3258,7 +3258,6 @@ index 7717
 name 'cvCvtSeqToArray'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
 function cvCvtSeqToArray(const seq:pCvSeq; elements:pvoid):pointer; overload; inline;
 
 (** Creates sequence header for array.
@@ -4299,7 +4298,7 @@ procedure extractImageCOI(const arr:pCvArr; coiimg:TOutputArray; coi:int=-1); {$
 
 //! inserts single-channel cv::Mat into a multi-channel CvMat or IplImage
 //CV_EXPORTS void insertImageCOI(InputArray coiimg, CvArr* arr, int coi=-1);
-procedure insertImageCOI(coiimg:TInputArray; arr:pCvArr; coi:int=-1); {$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure insertImageCOI(const coiimg:TInputArray; arr:pCvArr; coi:int=-1); {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 ////// specialized implementations of DefaultDeleter::operator() for classic OpenCV types //////
 

@@ -27,84 +27,97 @@
 
 procedure cvDecRefData( arr:pCvArr );
 begin
-
-CV_INLINE  void  cvDecRefData( CvArr* arr )
-{
-    if( CV_IS_MAT( arr ))
-    {
-        CvMat* mat = (CvMat*)arr;
-        mat->data.ptr = NULL;
-        if( mat->refcount != NULL && --*mat->refcount == 0 )
-            cvFree( &mat->refcount );
-        mat->refcount = NULL;
-    }
-    else if( CV_IS_MATND( arr ))
-    {
-        CvMatND* mat = (CvMatND*)arr;
-        mat->data.ptr = NULL;
-        if( mat->refcount != NULL && --*mat->refcount == 0 )
-            cvFree( &mat->refcount );
-        mat->refcount = NULL;
-    }
-}
+    if( CV_IS_MAT( arr )) then
+    begin
+        Var mat:pCvMat := pCvMat(arr);
+        mat^.data.ptr := nil;
+        if( mat^.refcount <> nil) then
+        begin
+          Dec(mat^.refcount^);
+        if (mat^.refcount^ = 0 ) then
+            cvFree( mat^.refcount );
+        end;
+        mat^.refcount := nil;
+    end
+    else if ( CV_IS_MATND( arr )) then
+    begin
+        Var mat:pCvMatND := pCvMatND(arr);
+        mat^.data.ptr := nil;
+        if( mat^.refcount <> nil) then
+        begin
+         dec(mat^.refcount^);
+         if (mat^.refcount^ = 0 ) then
+            cvFree( mat^.refcount );
+        end;
+        mat^.refcount := nil;
+    end;
 end;
 
 function cvIncRefData( arr:pCvArr ):int;inline;
 begin
-CV_INLINE  int  cvIncRefData( CvArr* arr )
-{
-    int refcount = 0;
-    if( CV_IS_MAT( arr ))
-    {
-        CvMat* mat = (CvMat*)arr;
-        if( mat->refcount != NULL )
-            refcount = ++*mat->refcount;
-    }
-    else if( CV_IS_MATND( arr ))
-    {
-        CvMatND* mat = (CvMatND*)arr;
-        if( mat->refcount != NULL )
-            refcount = ++*mat->refcount;
-    }
-    return refcount;
-}
+    Var refcount:int := 0;
+    if( CV_IS_MAT( arr )) then
+    begin
+        Var mat:pCvMat := pCvMat(arr);
+        if( mat^.refcount <> nil ) then
+        begin
+          inc(mat^.refcount^);
+            refcount := mat^.refcount^;
+            end;
+    end
+    else if( CV_IS_MATND( arr )) then
+    begin
+        Var mat:pCvMatND := pCvMatND(arr);
+        if( mat^.refcount <> nil ) then
+        begin
+          inc(mat^.refcount^);
+            refcount := mat^.refcount^;
+            end;
+    end;
+    Result :=refcount;
 end;
 
 function cvGetRow( const arr:pCvArr;  submat:pCvMat; row:int ):pCvMat;
 begin
-    return cvGetRows( arr, submat, row, row + 1, 1 );
+    Result := cvGetRows( arr, submat, row, row + 1, 1 );
 end;
 
 function cvGetCol( const arr:pCvArr;  submat:pCvMat; col:int ):pCvMat;
 begin
-  return cvGetCols( arr, submat, col, col + 1 );
+  Result := cvGetCols( arr, submat, col, col + 1 );
 end;
 
 procedure cvReleaseMatND( var mat:pCvMatND );
 begin
-  cvReleaseMat( (CvMat**)mat );
+  cvReleaseMat(pCvMat(mat));
 end;
 
 function cvGetNextSparseNode( mat_iterator:pCvSparseMatIterator ):pCvSparseNode;
+Type
+  pArrayOfPoiner = ^TArrayOfPoiner;
+  TArrayOfPoiner = array[0..0] of pCvSparseNode;
 begin
-{
-    if( mat_iterator->node->next )
-        return mat_iterator->node = mat_iterator->node->next;
+    if ( mat_iterator^.node^.next<>nil ) then
+    begin
+      mat_iterator^.node := mat_iterator^.node^.next;
+        Exit(mat_iterator^.node);
+    end
     else
-    {
-        int idx;
-        for( idx = ++mat_iterator->curidx; idx < mat_iterator->mat->hashsize; idx++ )
-        {
-            CvSparseNode* node = (CvSparseNode*)mat_iterator->mat->hashtable[idx];
-            if( node )
-            {
-                mat_iterator->curidx = idx;
-                return mat_iterator->node = node;
-            }
-        }
-        return NULL;
-    }
-}
+    begin
+        Var idx:int;
+        inc(mat_iterator^.curidx);
+        for idx := mat_iterator^.curidx to mat_iterator^.mat^.hashsize-1 do
+        begin
+            Var node:pCvSparseNode := pArrayOfPoiner(mat_iterator^.mat^.hashtable)[idx];
+            if( node<>nil ) then
+            begin
+                mat_iterator^.curidx := idx;
+                mat_iterator^.node := node;
+                Exit(mat_iterator^.node);
+            end;
+        end;
+        Result:=Nil;
+    end;
 end;
 
 //#define cvReshapeND( arr, header, new_cn, new_dims, new_sizes )   \
@@ -141,37 +154,38 @@ end;
 
 function cvCvtSeqToArray(const seq:pCvSeq; elements:pvoid):pointer;
 begin
- Result := cvCvtSeqToArray(seq, elements, CvSlice(CV_WHOLE_SEQ));
+ Result := cvCvtSeqToArray(seq, elements, CV_WHOLE_SEQ);
 end;
 
 function cvSetNew(set_header:pCvSet):pCvSetElem;
 begin
-    CvSetElem* elem = set_header->free_elems;
-    if( elem )
-    {
-        set_header->free_elems = elem->next_free;
-        elem->flags = elem->flags & CV_SET_ELEM_IDX_MASK;
-        set_header->active_count++;
-    }
+    var elem:pCvSetElem := set_header^.free_elems;
+    if( elem<>nil ) then
+    begin
+        set_header^.free_elems := elem^.next_free;
+        elem^.flags := elem^.flags and CV_SET_ELEM_IDX_MASK;
+        Inc(set_header^.active_count);
+    end
     else
-        cvSetAdd( set_header, NULL, &elem );
-    return elem;
+        cvSetAdd( set_header, nil, elem );
+    Result:= elem;
 end;
 
 procedure cvSetRemoveByPtr(set_header:pCvSet; elem:pvoid);
 begin
-    CvSetElem* _elem = (CvSetElem*)elem;
-    assert( _elem->flags >= 0 (*&& (elem->flags & CV_SET_ELEM_IDX_MASK) < set_header->total*) );
-    _elem->next_free = set_header->free_elems;
-    _elem->flags = (_elem->flags & CV_SET_ELEM_IDX_MASK) | CV_SET_ELEM_FREE_FLAG;
-    set_header->free_elems = _elem;
-    set_header->active_count--;
+    var _elem:pCvSetElem := pCvSetElem(elem);
+    assert( _elem^.flags >= 0 (*&& (elem^.flags & CV_SET_ELEM_IDX_MASK) < set_header^.total*) );
+    _elem^.next_free := set_header^.free_elems;
+    _elem^.flags := (_elem^.flags and CV_SET_ELEM_IDX_MASK) or CV_SET_ELEM_FREE_FLAG;
+    set_header^.free_elems := _elem;
+    dec(set_header^.active_count);
 end;
 
 function cvGetSetElem(const set_header:pCvSet; idx:int):pCvSetElem;
 begin
-   CvSetElem* elem = (CvSetElem*)(void *)cvGetSeqElem( (CvSeq*)set_header, idx );
-   return elem && CV_IS_SET_ELEM( elem ) ? elem : 0;
+   var elem:pCvSetElem := pCvSetElem(cvGetSeqElem( pCvSeq(set_header), idx ));
+   if Assigned(elem) and CV_IS_SET_ELEM(pcvArr(elem)) then
+   Result := elem else result:=nil;
 end;
 
 function cvArrToMat(const arr:pCvArr; copyData:bool=false;
@@ -184,17 +198,12 @@ end;
 
 function cvArrToMatND(const arr:pCvArr; copyData:bool=false; coiMode:int=0):TMat;
 begin
-     return cvarrToMat(arr, copyData, true, coiMode);
+     Result:= cvarrToMat(arr, copyData, true, coiMode);
 end;
 
-function cvArrToMatND(const arr:pCvArr; copyData:bool=false; coiMode:int=0):TMat;
+procedure insertImageCOI(const coiimg:TInputArray; arr:pCvArr; coi:int=-1);
 begin
- !!!!
-end;
-
-procedure insertImageCOI(coiimg:TInputArray; arr:pCvArr; coi:int=-1);
-begin
-!!!
+ proc_insertImageCOI(coiimg,arr,coi);
 end;
 
 {$IFEND}

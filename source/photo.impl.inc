@@ -20,6 +20,7 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_PHOTO_HPP}
+{$if defined(OPENCV_PHOTO_HPP) and (not defined(OPENCV_PHOTO_HPP_IMPL))}
+{$DEFINE OPENCV_PHOTO_HPP_IMPL}
 
-{$endif}
+{$ifend}

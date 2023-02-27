@@ -20,9 +20,10 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_VIDEO_HPP}
+{$if defined(OPENCV_VIDEO_HPP) and (not defined(OPENCV_VIDEO_HPP_IMPL))}
+{$DEFINE OPENCV_VIDEO_HPP_IMPL}
 
 {$I 'video/tracking.impl.inc'}
 {$I 'video/background_segm.impl.inc'}
 
-{$endif}
+{$ifend}

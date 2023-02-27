@@ -455,9 +455,12 @@ const
 
 const
   CV_MAT_CN_MASK = ((CV_CN_MAX - 1) shl CV_CN_SHIFT);
-  // CV_MAT_CN(flags)       = ((((flags) & CV_MAT_CN_MASK) >> CV_CN_SHIFT) + 1);
   CV_MAT_TYPE_MASK = (CV_DEPTH_MAX * CV_CN_MAX - 1);
+  // CV_MAT_CN(flags)       = ((((flags) & CV_MAT_CN_MASK) >> CV_CN_SHIFT) + 1);
+function CV_MAT_CN(flags:int):int;inline;
   // CV_MAT_TYPE(flags)     = ((flags) & CV_MAT_TYPE_MASK);
+function CV_MAT_TYPE(flags:int):int;inline;
+const
   CV_MAT_CONT_FLAG_SHIFT = 14;
   CV_MAT_CONT_FLAG       = (1 shl CV_MAT_CONT_FLAG_SHIFT);
   // CV_IS_MAT_CONT(flags)  = ((flags) & CV_MAT_CONT_FLAG);
@@ -469,9 +472,10 @@ const
   (* * Size of each channel item,
     0x28442211 = 0010 1000 0100 0100 0010 0010 0001 0001 ~ array of sizeof(arr_type_elem) *)
   // CV_ELEM_SIZE1(type) = ((0x28442211 >> CV_MAT_DEPTH(type)*4) & 15);
+function CV_ELEM_SIZE1(&type:int):int;inline;
 
   // CV_ELEM_SIZE(type) =(CV_MAT_CN(type)*CV_ELEM_SIZE1(type));
-
+function CV_ELEM_SIZE(&type:int):int;inline;
   // #ifndef MIN
   // #  define MIN(a,b)  ((a) > (b) ? (b) : (a))
   // {$endif}

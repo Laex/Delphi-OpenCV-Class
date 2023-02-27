@@ -33,6 +33,28 @@ begin
   Result := System.Math.MAX(a, b);
 end;
 
+function CV_MAT_TYPE(flags:int):int;
+begin
+  Result:= ((flags) and CV_MAT_TYPE_MASK);
+end;
+
+function CV_ELEM_SIZE1(&type:int):int;
+begin
+  // CV_ELEM_SIZE1(type) = ((0x28442211 >> CV_MAT_DEPTH(type)*4) & 15);
+  Result := (($28442211 shr CV_MAT_DEPTH(&type)*4) and 15);
+end;
+
+function CV_MAT_CN(flags:int):int;
+begin
+  // CV_MAT_CN(flags)       = ((((flags) & CV_MAT_CN_MASK) >> CV_CN_SHIFT) + 1);
+  Result := ((((flags) and CV_MAT_CN_MASK) shr CV_CN_SHIFT) + 1);
+end;
+function CV_ELEM_SIZE(&type:int):int;
+begin
+    // CV_ELEM_SIZE(type) =(CV_MAT_CN(type)*CV_ELEM_SIZE1(type));
+  Result := CV_MAT_CN(&type)*CV_ELEM_SIZE1(&type);
+end;
+
 {$i core/hal/interface.impl.inc}
 {$i core/fast_math.impl.inc}
 

@@ -20,7 +20,9 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_OBJDETECT_HPP}
+{$IF defined(OPENCV_OBJDETECT_HPP) and (not defined(OPENCV_OBJDETECT_HPP_IMPL))}
+{$DEFINE OPENCV_OBJDETECT_HPP_IMPL}
+
 { TCascadeClassifier }
 
 procedure TCascadeClassifier.detectMultiScale(const image: TInputArray; const objects: vector<TRect>; scaleFactor: double; minNeighbors, flags: Int);
@@ -213,4 +215,4 @@ begin
   Result := class_func_CV_QRCODEDETECTOR_detectMulti(Self, img, points);
 end;
 
-{$ENDIF}
+{$IFEND}
