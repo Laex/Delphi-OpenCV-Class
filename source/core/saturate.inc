@@ -20,10 +20,10 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_SATURATE_HPP}
+{$if not defined(OPENCV_CORE_SATURATE_HPP)}
 {$define OPENCV_CORE_SATURATE_HPP}
 
-{$i 'core/cvdef.inc'}
+{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
 {$i 'core/fast_math.inc'}
 
 //namespace cv
@@ -162,4 +162,4 @@ Type
 
 //} // cv
 
-{$endif OPENCV_CORE_SATURATE_HPP}
+{$ifend OPENCV_CORE_SATURATE_HPP}

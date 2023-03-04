@@ -20,8 +20,9 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_DNN_DNN_HPP}
+{$if defined(OPENCV_DNN_HPP) and (not defined(OPENCV_DNN_HPP_IMPL))}
+{$define OPENCV_DNN_HPP_IMPL}
 
 {$include 'dnn/dnn.impl.inc'}
 
-{$endif}
+{$ifend}

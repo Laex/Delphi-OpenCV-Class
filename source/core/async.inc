@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_ASYNC_HPP}
+{$if not defined(OPENCV_CORE_ASYNC_HPP)}
 {$define OPENCV_CORE_ASYNC_HPP}
 
 {$include core/mat.inc}
@@ -117,4 +117,4 @@ end;
 
 //! @}
 
-{$endif OPENCV_CORE_ASYNC_HPP}
+{$ifend OPENCV_CORE_ASYNC_HPP}

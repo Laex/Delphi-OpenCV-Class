@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_IMGCODECS_HPP}
+{$if defined(OPENCV_IMGCODECS_HPP) and (not defined(OPENCV_IMGCODECS_HPP_IMPL))}
+{$define OPENCV_IMGCODECS_HPP_IMPL}
 
 function imread(const filename: String; flag: ImreadModes = IMREAD_COLOR): TMat;
 begin
@@ -42,4 +43,4 @@ begin
   Result := imdecode(InputArray, flags);
 end;
 
-{$ENDIF}
+{$IFEND}

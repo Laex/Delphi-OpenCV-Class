@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_CVCONFIG_H_INCLUDED}
+{$IF not defined(OPENCV_CVCONFIG_H_INCLUDED)}
 {$define OPENCV_CVCONFIG_H_INCLUDED}
 
 (* OpenCV compiled as static or dynamic libs *)
@@ -168,4 +168,4 @@
 (* Library QR-code decoding *)
 {$define HAVE_QUIRC}
 
-{$ENDIF OPENCV_CVCONFIG_H_INCLUDED}
+{$IFEND OPENCV_CVCONFIG_H_INCLUDED}

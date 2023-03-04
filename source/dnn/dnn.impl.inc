@@ -20,38 +20,40 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_DNN_DNN_HPP}
+{$if defined(OPENCV_DNN_DNN_HPP) and (not defined(OPENCV_DNN_DNN_HPP_IMPL))}
+{$define OPENCV_DNN_DNN_HPP_IMPL}
+
 { TNet }
 
 class operator TNet.Initialize(out Dest: TNet); // CV_WRAP Net();  //!< Default constructor.
 begin
-  constructor_CV_DNN_DNN4_V20221220_NET_1(Dest);
+  constructor_CV_DNN_DNN_NET_1(Dest);
 end;
 
 class operator TNet.Finalize(var Dest: TNet); // CV_WRAP ~Net(); //!< Destructor frees the net only if there aren't references to the net anymore.
 begin
-  destructor_CV_DNN_DNN4_V20221220_NET(Dest);
+  destructor_CV_DNN_DNN_NET(Dest);
 end;
 
 function TNet.forward(const outputName: String = ''): TMat;
 begin
-  class_func_CV_DNN_DNN4_V20221220_NET_forward(Self, Result, outputName);
-  // Result := class_func_CV_DNN_DNN4_V20221220_NET_forward(Self, CppString(outputName));
+  class_func_CV_DNN_DNN_NET_forward(Self, Result, outputName);
+  // Result := class_func_CV_DNN_DNN_NET_forward(Self, CppString(outputName));
 end;
 
 procedure TNet.setPreferableBackend(backendId: int);
 begin
-  class_proc_CV_DNN_DNN4_V20221220_NET_setPreferableBackend(Self, backendId);
+  class_proc_CV_DNN_DNN_NET_setPreferableBackend(Self, backendId);
 end;
 
 procedure TNet.setPreferableTarget(targetId: int);
 begin
-  class_proc_CV_DNN_DNN4_V20221220_NET_setPreferableTarget(Self, targetId);
+  class_proc_CV_DNN_DNN_NET_setPreferableTarget(Self, targetId);
 end;
 
 procedure TNet.setInput(const blob: TInputArray; const name: String { = '' }; scalefactor: double { = 1.0 }; const mean: TScalar { = Scalar() } );
 begin
-  class_proc_CV_DNN_DNN4_V20221220_NET_setInput(Self, blob, name, scalefactor, mean);
+  class_proc_CV_DNN_DNN_NET_setInput(Self, blob, name, scalefactor, mean);
 end;
 
 procedure TNet.setInput(const blob: TInputArray; const name: String { = '' }; scalefactor: double = 1.0);
@@ -105,4 +107,4 @@ begin
   Result := func_readNet(CppString(model), CppString(config), CppString(framework));
 end;
 
-{$ENDIF}
+{$IFEND}

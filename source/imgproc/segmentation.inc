@@ -23,9 +23,7 @@
 {$ifndef OPENCV_IMGPROC_SEGMENTATION_HPP}
 {$define OPENCV_IMGPROC_SEGMENTATION_HPP}
 
-{$ifndef OPENCV_IMGPROC_HPP}
-{$i 'imgproc.inc'}
-{$ENDIF}
+{$if not defined(OPENCV_IMGPROC_HPP)}{$I 'imgproc.inc'}{$ifend}
 
 //namespace cv {
 

@@ -20,8 +20,8 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_CUDAINL_HPP}
-{$define OPENCV_CORE_CUDAINL_HPP}
+{$if defined(OPENCV_CORE_CUDA_HPP) and (not defined(OPENCV_CORE_CUDA_HPP_INL))}
+{$define OPENCV_CORE_CUDA_HPP_INL}
 
 {$i 'core/cuda.inc'}
 
@@ -698,4 +698,4 @@
 
 //! @endcond
 
-{$endif OPENCV_CORE_CUDAINL_HPP}
+{$ifend OPENCV_CORE_CUDAINL_HPP}

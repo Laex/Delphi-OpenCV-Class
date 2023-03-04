@@ -20,7 +20,9 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_FEATURES_2D_HPP}
+{$IF defined(OPENCV_FEATURES_2D_HPP) and (not defined(OPENCV_FEATURES_2D_HPP_IMPL))}
+{$define OPENCV_FEATURES_2D_HPP_IMPL}
+
 { TSIFT }
 
 class function TSIFT.create(nfeatures: int = 0; nOctaveLayers: int = 3; contrastThreshold: double = 0.04; //
@@ -44,4 +46,4 @@ begin
   class_proc_CV_ORB_create(Result,nfeatures, scaleFactor, nlevels, edgeThreshold, firstLevel, WTA_K, int(scoreType), patchSize, fastThreshold);
 end;
 
-{$ENDIF}
+{$IFEND}

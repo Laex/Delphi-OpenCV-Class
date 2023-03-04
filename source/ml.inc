@@ -20,17 +20,10 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_ML_HPP}
+{$IF not defined(OPENCV_ML_HPP)}
 {$DEFINE OPENCV_ML_HPP}
-// #ifdef __cplusplus
-{$I 'core.inc'}
-// #endif
 
-// #ifdef __cplusplus
-
-// #include <float.h>
-// #include <map>
-// #include <iostream>
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 (* *
   @defgroup ml Machine Learning
@@ -1984,5 +1977,5 @@ Type
   {$i 'ml/ml.inl.inc' }
 
   // #endif // __cplusplus
-{$ENDIF  OPENCV_ML_HPP}
+{$IFEND  OPENCV_ML_HPP}
   (* End of file. *)

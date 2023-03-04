@@ -23,8 +23,7 @@
 {$ifndef OPENCV_IMGPROC_TYPES_C_H}
 {$define OPENCV_IMGPROC_TYPES_C_H}
 
-{$include 'core/core_c.inc'}
-
+{$if not defined(OPENCV_CORE_C_H)}{$include 'core/core_c.inc'}{$ifend}
 
 
 (** @addtogroup imgproc_c

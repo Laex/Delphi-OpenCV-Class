@@ -85,17 +85,13 @@ Uses
 {$I videoio.inc}
 {$ENDIF}
 
-{$IFDEF INCLUDE_OPENCV_C}
-{$include 'intf_c.inc'}
-{$ENDIF}
-
-{$i 'opencv.external.inc'}
+{$i 'external/opencv.external.inc'}
 
 implementation
 
 // Then the list of defines is checked to include the correct headers
 // Core library is always included --> without no OpenCV functionality available
-{$I core.impl.inc}
+{$IF not defined(OPENCV_CORE_HPP_IMPL)} {$I core.impl.inc} {$ifend}
 // Then the optional modules are checked
 {$IFDEF HAVE_OPENCV_CALIB3D}
 {$I calib3d.impl.inc}
@@ -135,10 +131,6 @@ implementation
 {$ENDIF}
 {$IFDEF HAVE_OPENCV_VIDEOIO}
 {$I videoio.impl.inc}
-{$ENDIF}
-
-{$IFDEF INCLUDE_OPENCV_C}
-{$include 'intf_c.impl.inc'}
 {$ENDIF}
 
 initialization

@@ -23,7 +23,7 @@
 {$ifndef OPENCV_HIGHGUI_H}
 {$define OPENCV_HIGHGUI_H}
 
-{$include 'core/core_c.inc'}
+{$if not defined(OPENCV_CORE_C_H)}{$include 'core/core_c.inc'}{$ifend}
 {$include 'imgproc/imgproc_c.inc'}
 
 (** @addtogroup highgui_c
@@ -253,7 +253,7 @@ TCvTrackbarCallback2 = procedure(pos:int;userdata:pointer);
 //                              int* value, int count, CvTrackbarCallback2 on_change,
 //                              void* userdata CV_DEFAULT(0));
 function cvCreateTrackbar2(const trackbar_name:pcvchar; const window_name:pcvchar; value:pint;
-         count:int; on_change:TCvTrackbarCallback2; userdata:pvoid=0):int;
+         count:int; on_change:TCvTrackbarCallback2; userdata:pvoid=nil):int;
 external opencv_world_dll
 {$IFDEF CALL_BY_FNC_NUM}
 index 7713

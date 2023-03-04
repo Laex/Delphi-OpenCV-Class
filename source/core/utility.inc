@@ -20,14 +20,14 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_CORE_UTILITY_H}
+{$IF not defined(OPENCV_CORE_UTILITY_H)}
 {$DEFINE OPENCV_CORE_UTILITY_H}
+
 {$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
 # error utility.inc header must be compiled as Delphi 10.4 Sydney WIN64
 {$IFEND}
-{$IFNDEF OPENCV_CORE_HPP}
-{$I 'core.inc'}
-{$ENDIF}
+
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 // namespace cv
 // {
 
@@ -1248,4 +1248,4 @@ Type
   // #define CV_IMPL_ADD(impl)
   // #endif
 
-{$ENDIF OPENCV_CORE_UTILITY_H}
+{$IFEND OPENCV_CORE_UTILITY_H}

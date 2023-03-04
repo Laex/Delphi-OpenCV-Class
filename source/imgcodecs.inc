@@ -20,12 +20,10 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_IMGCODECS_HPP}
+{$if not defined(OPENCV_IMGCODECS_HPP)}
 {$define OPENCV_IMGCODECS_HPP}
 
-{$IFNDEF OPENCV_CORE_HPP}
-{$i 'core.inc'}
-{$ENDIF}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 (**
   @defgroup imgcodecs Image file reading and writing
@@ -345,4 +343,4 @@ result. See cv::imwrite for the list of supported formats and flags description.
 
 //} // cv
 
-{$endif OPENCV_IMGCODECS_HPP}
+{$ifend OPENCV_IMGCODECS_HPP}

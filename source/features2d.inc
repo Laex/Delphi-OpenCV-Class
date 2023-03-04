@@ -20,13 +20,11 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_FEATURES_2D_HPP}
+{$if not defined(OPENCV_FEATURES_2D_HPP)}
 {$define OPENCV_FEATURES_2D_HPP}
 
-{$I 'opencv_modules.inc'}
-{$IFNDEF OPENCV_CORE_HPP}
-{$I 'core.inc'}
-{$ENDIF}
+{$if not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 {$ifdef HAVE_OPENCV_FLANN}
 {$I 'flann/miniflann.inc'}
@@ -1538,4 +1536,4 @@ vocabulary in the given image.
 
 //} (* namespace cv *)
 
-{$endif}
+{$ifend}

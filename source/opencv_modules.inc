@@ -20,8 +20,8 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_opencv_modules_HPP}
-{$DEFINE OPENCV_opencv_modules_HPP}
+{$IF not defined(OPENCV_OPENCV_MODULES_HPP)}
+{$DEFINE OPENCV_OPENCV_MODULES_HPP}
 
 
 // This definition means that OpenCV is built with enabled non-free code.
@@ -45,4 +45,4 @@
 {$DEFINE HAVE_OPENCV_VIDEOIO}
 {$DEFINE HAVE_OPENCV_WORLD}
 
-{$ENDIF OPENCV_opencv_modules_HPP}
+{$IFEND OPENCV_OPENCV_MODULES_HPP}

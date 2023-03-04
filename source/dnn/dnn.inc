@@ -20,14 +20,12 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_DNN_DNN_HPP}
+{$if not defined(OPENCV_DNN_DNN_HPP)}
 {$define OPENCV_DNN_DNN_HPP}
 
-{$include core.inc}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 {$include core/async.inc}
-
 {$include dnn/version.inc}
-
 {$include dnn/dict.inc}
 
 //! @addtogroup dnn
@@ -1732,4 +1730,4 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
 /// @deprecated Include this header directly from application. Automatic inclusion will be removed
 {$include dnn/utils/inference_engine.inc}
 
-{$endif OPENCV_DNN_DNN_HPP}
+{$ifend OPENCV_DNN_DNN_HPP}

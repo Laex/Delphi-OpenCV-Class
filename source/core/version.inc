@@ -20,8 +20,9 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_VERSION_HPP}
+{$IF not defined(OPENCV_VERSION_HPP)}
 {$DEFINE OPENCV_VERSION_HPP}
+
 {$I opt.inc}
 
 const
@@ -61,4 +62,4 @@ const
   opencv_delphi_dll = 'opencv_delphi' + cvdllversion + {$IFDEF USE_DEBUG_DLLS} 'd' + {$ENDIF} '.dll';
   opencv_world_dll  = 'opencv_world' + cvdllversion + {$IFDEF USE_DEBUG_DLLS} 'd' + {$ENDIF} '.dll';
 
-{$ENDIF OPENCV_VERSION_HPP}
+{$IFEND OPENCV_VERSION_HPP}

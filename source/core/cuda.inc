@@ -20,14 +20,10 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_CUDA_HPP}
+{$if not defined(OPENCV_CORE_CUDA_HPP)}
 {$define OPENCV_CORE_CUDA_HPP}
 
-//#ifndef __cplusplus
-//#  error cuda.hpp header must be compiled as C++
-//#endif
-
-{$i 'core.inc'}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 {$i 'core/cuda_types.inc'}
 
 (**
@@ -1250,4 +1246,4 @@ capability can always be compiled to binary code of greater or equal compute cap
 
 {$i 'core/cuda.inl.inc'}
 
-{$endif OPENCV_CORE_CUDA_HPP}
+{$ifend OPENCV_CORE_CUDA_HPP}

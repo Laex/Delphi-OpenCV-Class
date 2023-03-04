@@ -20,7 +20,8 @@
     limitations under the License.
   *)
 
-{$IFDEF OPENCV_HIGHGUI_HPP}
+{$IF defined(OPENCV_HIGHGUI_HPP) and (not defined(OPENCV_HIGHGUI_HPP_IMPL))}
+{$DEFINE OPENCV_HIGHGUI_HPP_IMPL}
 
 procedure namedWindow(const winname: CppString; flags: WindowFlags);
 begin
@@ -90,4 +91,6 @@ begin
   Result := createButton(CppString(bar_name),on_change,userdata,Int(&type),initial_button_state);
 end;
 
-{$ENDIF}
+{$I 'highgui/highgui_c.impl.inc'}
+
+{$IFEND}

@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_CORE_CVSTD_HPP}
+{$IF not defined(OPENCV_CORE_CVSTD_HPP)}
 {$define OPENCV_CORE_CVSTD_HPP}
 
-{$ENDIF OPENCV_CORE_CVSTD_HPP}
+{$IFEND OPENCV_CORE_CVSTD_HPP}

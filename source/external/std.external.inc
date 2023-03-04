@@ -20,10 +20,12 @@
   limitations under the License.
 *)
 
-{$IFNDEF EXTERNAL_TYPES}
+{$IF not defined(EXTERNAL_TYPES)}
 {$DEFINE EXTERNAL_TYPES}
-{$I 'version.inc'}
-{$I 'opt.inc'}
+
+{$IF not defined(OPENCV_VERSION_HPP)}{$I 'core/version.inc'}{$ifend}
+{$IF not defined(CVOPT)}{$I 'opt.inc'}{$ifend}
+
 {
   opencv_delphi470 4
   Type: Constructor
@@ -2767,4 +2769,4 @@ procedure class_virt_proc_STD_BASIC_STRING_OF_CVCHAR_swap(Var Obj: STD_BASIC_STR
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-{$ENDIF EXTERNAL_TYPES}
+{$IFEND EXTERNAL_TYPES}

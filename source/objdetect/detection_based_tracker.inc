@@ -23,7 +23,7 @@
 {$ifndef OPENCV_OBJDETECT_DBT_HPP}
 {$define OPENCV_OBJDETECT_DBT_HPP}
 
-{$i 'core.inc'}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 //#include <vector>
 

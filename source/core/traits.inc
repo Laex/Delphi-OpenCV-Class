@@ -20,9 +20,11 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_CORE_TRAITS_HPP}
+{$IF not defined(OPENCV_CORE_TRAITS_HPP)}
 {$DEFINE OPENCV_CORE_TRAITS_HPP}
-{$I 'core/cvdef.inc'}
+
+{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
+
 // namespace cv
 // {
 
@@ -262,4 +264,4 @@ Type
 
     } // cv
   *)
-{$ENDIF OPENCV_CORE_TRAITS_HPP}
+{$IFEND OPENCV_CORE_TRAITS_HPP}

@@ -23,7 +23,7 @@
 {$ifndef OPENCV_BACKGROUND_SEGM_HPP}
 {$define OPENCV_BACKGROUND_SEGM_HPP}
 
-{$I 'core.inc'}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 //namespace cv
 //{

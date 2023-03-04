@@ -20,10 +20,12 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_DNN_UTILS_INF_ENGINE_HPP}
+{$IF not defined(OPENCV_DNN_UTILS_INF_ENGINE_HPP)}
 {$DEFINE OPENCV_DNN_UTILS_INF_ENGINE_HPP}
 
-{$INCLUDE dnn/dnn.inc}
+{$if not defined(OPENCV_DNN_DNN_HPP)}{$i 'dnn/dnn.inc'}{$ifend}
+
+
 // namespace cv { namespace dnn {
 // CV__DNN_INLINE_NS_BEGIN
 
@@ -85,4 +87,4 @@ const
   // CV__DNN_INLINE_NS_END
   // }} // namespace
 
-{$ENDIF OPENCV_DNN_UTILS_INF_ENGINE_HPP}
+{$IFEND OPENCV_DNN_UTILS_INF_ENGINE_HPP}

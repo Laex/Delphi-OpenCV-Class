@@ -21,11 +21,11 @@
 *)
 
 
-{$ifndef OPENCV_CORE_TYPES_H}
+{$if not defined(OPENCV_CORE_TYPES_H)}
 {$define OPENCV_CORE_TYPES_H}
 
-{$include 'core/cvdef.inc'}
-{$include 'core.inc'}
+{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 (** @addtogroup core_c
     @{
@@ -443,31 +443,30 @@ CV_MAT_ELEM(matrix, type, i, j\*nchannels + channel_idx).
   union_data = record
    case byte of
    0: (ptr:puchar);
-   1:      (s:pshort);
-   2: (    i:pInt);
-   3: (    fl:pfloat);
-   4: (     db:pdouble);
+   1: (s:pshort);
+   2: (i:pInt);
+   3: (fl:pfloat);
+   4: (db:pdouble);
    end;
 
-//     union
-//    {
-//        int rows;
-//        int height;
-//    };
-   _CvMat_union_1 = record
-   case Boolean of
-   True:(rows:int);
-   False:(height:int);
-   end;
-//    union
-//    {
-//        int cols;
-//        int width;
-//    };
-   _CvMat_union_2 = record
-   case Boolean of
-   True:(cols:int);
-   False:(width:int);
+   TPointerHelper = record helper for pointer
+   private
+    function get_puchar:puchar; inline;
+    procedure set_puchar(const Value:puchar); inline;
+    function get_pshort:pshort; inline;
+    procedure set_pshort(const Value:pshort); inline;
+    function get_pInt:pInt; inline;
+    procedure set_pInt(const Value:pInt); inline;
+    function get_pfloat:pfloat; inline;
+    procedure set_pfloat(const Value:pfloat); inline;
+    function get_pdouble:pdouble; inline;
+    procedure set_pdouble(const Value:pdouble); inline;
+   public
+    property ptr:puchar read get_puchar write set_puchar;
+    property s:pshort read get_pshort write set_pshort;
+    property i:pInt read get_pInt write set_pInt;
+    property fl:pfloat read get_pfloat write set_pfloat;
+    property db:pdouble read get_pdouble write set_pdouble;
    end;
 
    pCvMat = ^_CvMat;
@@ -479,11 +478,12 @@ CV_MAT_ELEM(matrix, type, i, j\*nchannels + channel_idx).
     refcount:pint;
     hdr_refcount:int;
 
-    data:union_data;
-
-     r1:_CvMat_union_1;
-     r2:_CvMat_union_2;
-
+//    data:union_data;
+     data:pointer;
+     rows:int;
+     cols:int;
+     property height:int read rows write rows;
+     property width:int read cols write cols;
 //    CvMat() {}
 //    CvMat(const cv::Mat& m) { *this = cvMat(m); }
     class operator Explicit(const m: TMat): _CvMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -507,7 +507,8 @@ _CvMatND = record
     refcount:pint;
     hdr_refcount:int;
 
-    data:union_data;
+//    data:union_data;
+    data:Pointer;
 
     dim:array[0..CV_MAX_DIM-1] of record size,step:Int; end;
 
@@ -607,14 +608,16 @@ TCvRect = _CvRect;
 
 (** @sa TermCriteria
  *)
+ pCvTermCriteria = ^_CvTermCriteria;
 _CvTermCriteria = record
-        &type:int;  (**< may be combination of
+    &type:int;  (**< may be combination of
                      CV_TERMCRIT_ITER
                      CV_TERMCRIT_EPS *)
     max_iter:int;
     epsilon:double;
     {TODO: CvTermCriteria}
 //    CvTermCriteria(int _type = 0, int _iter = 0, double _eps = 0) : type(_type), max_iter(_iter), epsilon(_eps)  {}
+   class function CvTermCriteria(_type:int = 0; _iter:int = 0; _eps:double = 0):_CvTermCriteria; static;
 //    CvTermCriteria(const cv::TermCriteria& t) : type(t.type), max_iter(t.maxCount), epsilon(t.epsilon)  {}
 //    operator cv::TermCriteria() const { return cv::TermCriteria(type, max_iter, epsilon); }
 end;
@@ -624,10 +627,11 @@ TCvTermCriteria = _CvTermCriteria;
 
 pCvPoint = ^_CvPoint;
 _CvPoint = record
-     x:int;
+    x:int;
     y:int;
     {TODO:CvPoint}
 //    CvPoint(int _x = 0, int _y = 0): x(_x), y(_y) {}
+    class function CvPoint(const _x:Int=0; const _y:int=0):_CvPoint;static;
 //    template<typename _Tp>
 //    CvPoint(const cv::Point_<_Tp>& pt): x((int)pt.x), y((int)pt.y) {}
 //    template<typename _Tp>
@@ -679,11 +683,11 @@ TCvPoint3D64f = _CvPoint3D64f;
 
 pCvSize = ^_CvSize;
 _CvSize = record
-
      width :int;
      height:int;
      {TODO:CvSize}
 //    CvSize(int w = 0, int h = 0): width(w), height(h) {}
+     class function CvSize(const w:Int=0;const h:int=0):_CvSize;static;
 //    template<typename _Tp>
 //    CvSize(const cv::Size_<_Tp>& sz): width(cv::saturate_cast<int>(sz.width)), height(cv::saturate_cast<int>(sz.height)) {}
 //    template<typename _Tp>
@@ -1426,7 +1430,7 @@ type, and it checks for the row and column ranges only in debug mode.
 //        ((double*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col] = value;
 //    }
 //}
-procedure cvmSet(Var mat:TCvMat;  row, col:int;  value:double );inline;
+procedure cvmSet(Var mat:TCvMat;  row, col:int;  value:double ); inline;
 
 
 //CV_INLINE int cvIplDepth( int type )
@@ -1443,7 +1447,7 @@ function cvIplDepth( &type:int ):int;inline;
 \****************************************************************************************)
 
 //CV_EXPORTS CvMatND cvMatND(const cv::Mat& m);
-function cvMatND(const m:TMat):TCvMatND; overload;
+function cvMatND(const m:TMat):TCvMatND; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 //CV_INLINE CvMatND cvMatND()
 //{
@@ -1547,8 +1551,10 @@ function CV_IS_MATND(const mat:pCvArr):Boolean; inline;
 //{$endif}
 //    return t;
 //}
+function cvTermCriteria(&type:int; max_iter:int; epsilon:double):TcvTermCriteria; inline; overload;
 //{$ifdef __cplusplus
 //CV_INLINE CvTermCriteria cvTermCriteria(const cv::TermCriteria& t) { return cvTermCriteria(t.type, t.maxCount, t.epsilon); }
+function cvTermCriteria(const t:TTermCriteria):TCvTermCriteria; inline; overload;
 //{$endif}
 
 (******************************* CvPoint and variants ***********************************)
@@ -1563,8 +1569,10 @@ function CV_IS_MATND(const mat:pCvArr):Boolean; inline;
 //{$endif}
 //    return p;
 //}
+function cvPoint( x, y:int  ):TCvPoint; inline; overload;
 //{$ifdef __cplusplus
 //CV_INLINE CvPoint cvPoint(const cv::Point& pt) { return cvPoint(pt.x, pt.y); }
+function cvPoint( const pt:TPoint  ):TCvPoint; inline; overload;
 //{$endif}
 //
 //
@@ -1608,8 +1616,8 @@ function CV_IS_MATND(const mat:pCvArr):Boolean; inline;
 //{$endif}
 //    return ipt;
 //}
-//
-//
+function cvPointFrom32f(const point:TCvPoint2D32f ):TCvPoint;inline;
+
 //
 //(** constructs CvPoint3D32f structure. *)
 //CV_INLINE  CvPoint3D32f  cvPoint3D32f( double x, double y, double z )
@@ -1652,6 +1660,9 @@ function CV_IS_MATND(const mat:pCvArr):Boolean; inline;
 
 
 (******************************** CvSize's & CvBox **************************************)
+
+function cvSize(const w:Int=0;const h:int=0):_CvSize; inline;
+
 (** constructs CvSize2D32f structure. *)
 //CV_INLINE  CvSize2D32f  cvSize2D32f( double width, double height )
 //{
@@ -1783,7 +1794,7 @@ function cvRealScalar(val0:double):TCvScalar;inline;
 //    scalar.val[3] = val0123;
 //    return scalar;
 //}
-
+function cvScalarAll( val0123:double ):TCvScalar; inline;
 
 (****************************************************************************************\
 *                                   Dynamic Data structures                              *
@@ -1985,6 +1996,6 @@ function CV_IS_SET_ELEM(const ptr:pCvArr):Boolean; inline;
 
 (** @} *)
 
-{$endif} (*OPENCV_CORE_TYPES_H*)
+{$ifend} (*OPENCV_CORE_TYPES_H*)
 
 (* End of file. *)

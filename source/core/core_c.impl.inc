@@ -149,7 +149,7 @@ end;
 
 function cvCloneSeq(const seq:pCvSeq; storage:pCvMemStorage= nil):pCvSeq;
 begin
-  cvSeqSlice( seq, CV_WHOLE_SEQ, storage, 1 );
+  Result:=cvSeqSlice( seq, CV_WHOLE_SEQ, storage, 1 );
 end;
 
 function cvCvtSeqToArray(const seq:pCvSeq; elements:pvoid):pointer;
@@ -201,9 +201,60 @@ begin
      Result:= cvarrToMat(arr, copyData, true, coiMode);
 end;
 
+procedure extractImageCOI(const arr:pCvArr; coiimg:TOutputArray; coi:int=-1);
+begin
+  proc_extractImageCOI(arr, coiimg, coi);
+end;
+
 procedure insertImageCOI(const coiimg:TInputArray; arr:pCvArr; coi:int=-1);
 begin
  proc_insertImageCOI(coiimg,arr,coi);
+end;
+
+function seqPush(seq:pCvSeq; const element:pvoid=nil):pschar;
+begin
+  result := func_seqPush(seq,element);
+end;
+
+function seqPushFront(seq:pCvSeq; const element:pvoid=nil):pschar;
+begin
+  Result := func_seqPushFront(seq,element);
+end;
+
+procedure seqPop(seq:pCvSeq; element:pvoid=nil);
+begin
+  proc_seqPop(seq,element);
+end;
+
+procedure seqPopFront(seq:pCvSeq; element:pvoid=nil);
+begin
+  proc_seqPopFront(seq,element);
+end;
+
+procedure seqPopMulti(seq:pCvSeq; elements:pvoid; count:int; in_front:int=0);
+begin
+  {TODO:seqPopMulti}
+end;
+
+procedure seqRemove(seq:pCvSeq; index:int);
+begin
+  proc_seqRemove(seq,index);
+end;
+procedure clearSeq(seq:pCvSeq);
+begin
+  proc_clearSeq(seq);
+end;
+function getSeqElem(const seq:pCvSeq; index:int):pschar;
+begin
+  Result := func_getSeqElem(seq,index);
+end;
+procedure seqRemoveSlice(seq:pCvSeq; slice:TCvSlice);
+begin
+  proc_seqRemoveSlice(seq,slice);
+end;
+procedure seqInsertSlice(seq:pCvSeq; before_index:int; const from_arr:pCvArr);
+begin
+  proc_seqInsertSlice(seq,before_index,from_arr);
 end;
 
 {$IFEND}

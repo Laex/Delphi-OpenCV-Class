@@ -20,15 +20,12 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_DNN_DNN_DICT_HPP}
+{$if not defined(OPENCV_DNN_DNN_DICT_HPP)}
 {$define OPENCV_DNN_DNN_DICT_HPP}
 
 
-{$include core.inc}
-//{$include <map>
-//{$include <ostream>
-
-{$include dnn/dnn.inc}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
+{$if not defined(OPENCV_DNN_DNN_HPP)}{$i 'dnn/dnn.inc'}{$ifend}
 
 
 //! @addtogroup dnn
@@ -134,4 +131,4 @@ end;
 
 //! @}
 
-{$endif}
+{$ifend}

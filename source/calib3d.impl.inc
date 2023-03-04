@@ -20,7 +20,7 @@
     limitations under the License.
 *)
 
-{$ifdef OPENCV_CALIB3D_HPP}
+{$if defined(OPENCV_CALIB3D_HPP) an (not defined(OPENCV_CALIB3D_HPP_IMPL))}
+{$define OPENCV_CALIB3D_HPP_IMPL}
 
-
-{$ENDIF OPENCV_CALIB3D_HPP}
+{$IFEND OPENCV_CALIB3D_HPP}

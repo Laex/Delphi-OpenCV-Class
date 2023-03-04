@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_TYPES_HPP}
+{$if not defined(OPENCV_CORE_TYPES_HPP)}
 {$define OPENCV_CORE_TYPES_HPP}
 
 {$if (not defined(WIN64)) and (CompilerVersion < 34.0)}
@@ -32,8 +32,8 @@
 //#include <vector>
 //#include <limits>
 
-{$I 'core/cvdef.inc'}
-{$I 'core/cvstd.inc'}
+{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_CVSTD_HPP)}{$I 'core/cvstd.inc'}{$ifend}
 {$I 'core/matx.inc'}
 
 //namespace cv
@@ -2438,4 +2438,4 @@ TermCriteria::TermCriteria(int _type, int _maxCount, double _epsilon)
 
 {.$I 'external/opencv.Scalar.import.inc'}
 
-{$endif OPENCV_CORE_TYPES_HPP}
+{$ifend OPENCV_CORE_TYPES_HPP}

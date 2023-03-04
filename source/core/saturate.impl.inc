@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_CORE_SATURATE_HPP}
+{$IF defined(OPENCV_CORE_SATURATE_HPP) and (not defined(OPENCV_CORE_SATURATE_HPP_IMPL))}
+{$define OPENCV_CORE_SATURATE_HPP_IMPL}
 
 {$MESSAGE WARN 'TODO: saturate_cast<T>'}
 
@@ -43,4 +44,4 @@ begin
   Result := TValue(v).AsType<T>;
 end;
 
-{$ENDIF}
+{$IFEND}

@@ -231,7 +231,7 @@ Type
   STD__STRING_CONST_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
   STD__STRING_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
 
-{$I 'std.external.inc'}
+{$I 'external/std.external.inc'}
 
 implementation
 

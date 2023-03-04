@@ -20,6 +20,7 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_FLANN_HPP}
+{$if defined(OPENCV_FLANN_HPP) and (not defined(OPENCV_FLANN_HPP_IMPL))}
+{$define OPENCV_FLANN_HPP_IMPL}
 
-{$endif}
+{$ifend}

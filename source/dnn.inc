@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_DNN_HPP}
+{$if not defined(OPENCV_DNN_HPP)}
 {$define OPENCV_DNN_HPP}
 
 // This is an umbrella header to include into you project.
@@ -54,6 +54,6 @@ Check @ref tutorial_dnn_yolo "the corresponding tutorial" for more details
 *)
 (** @example samples/dnn/text_detection.cpp
 *)
-{$i 'dnn/dnn.inc'}
+{$if not defined(OPENCV_DNN_DNN_HPP)}{$i 'dnn/dnn.inc'}{$ifend}
 
-{$endif OPENCV_DNN_HPP}
+{$ifend OPENCV_DNN_HPP}

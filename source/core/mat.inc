@@ -20,8 +20,10 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_CORE_MAT_HPP}
+{$IF not defined(OPENCV_CORE_MAT_HPP)}
 {$DEFINE OPENCV_CORE_MAT_HPP}
+
+
 {$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
 # error mat.inc header must be compiled as Delphi 10.4 Sydney WIN64
 {$IFEND}
@@ -4068,4 +4070,4 @@ type
   { .$I external/opencv.InputOutputArray.import.inc }
   { .$I external/opencv.OutputArray.import.inc }
   { .$I external/opencv.MatSize.import.inc }
-{$ENDIF} // OPENCV_CORE_MAT_HPP
+{$IFEND} // OPENCV_CORE_MAT_HPP

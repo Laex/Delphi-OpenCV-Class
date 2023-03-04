@@ -20,10 +20,10 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_CHECK_HPP}
+{$if not defined(OPENCV_CORE_CHECK_HPP)}
 {$define OPENCV_CORE_CHECK_HPP}
 
-{$i 'core/base.inc'}
+{$IF not defined(OPENCV_CORE_BASE_HPP)}{$I 'core/base.inc'}{$ifend}
 
 //namespace cv {
 
@@ -196,4 +196,4 @@ CV_EXPORTS void CV_NORETURN check_failed_MatChannels(const int v, const CheckCon
 } // namespace
 *)
 
-{$endif OPENCV_CORE_CHECK_HPP}
+{$ifend OPENCV_CORE_CHECK_HPP}

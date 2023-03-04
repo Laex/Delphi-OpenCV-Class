@@ -23,9 +23,9 @@
 {$ifndef OPENCV_STITCHING_MATCHERS_HPP}
 {$define OPENCV_STITCHING_MATCHERS_HPP}
 
-{$i 'core.inc'}
+{$if not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 {$i 'features2d.inc'}
-{$i 'opencv_modules.inc'}
 
 //namespace cv {
 //namespace detail {

@@ -23,10 +23,10 @@
 {$ifndef OPENCV_STITCHING_WARPERS_HPP}
 {$define OPENCV_STITCHING_WARPERS_HPP}
 
-{$i 'core.inc'}
+{$if not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 {$i 'core/cuda.inc'}
-{$i 'imgproc.inc'}
-{$i 'opencv_modules.inc'}
+{$if not defined(OPENCV_IMGPROC_HPP)}{$I 'imgproc.inc'}{$ifend}
 
 //namespace cv {
 //namespace detail {

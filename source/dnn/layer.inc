@@ -20,10 +20,10 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_DNN_LAYER_HPP}
+{$if not defined(OPENCV_DNN_LAYER_HPP)}
 {$define OPENCV_DNN_LAYER_HPP}
 
-{$include dnn/dnn.inc}
+{$if not defined(OPENCV_DNN_DNN_HPP)}{$i 'dnn/dnn.inc'}{$ifend}
 
 //namespace cv {
 //namespace dnn {
@@ -65,4 +65,4 @@
 //}
 //}
 
-{$endif OPENCV_DNN_LAYER_HPP}
+{$ifend OPENCV_DNN_LAYER_HPP}

@@ -23,7 +23,7 @@
 {$ifndef OPENCV_STITCHING_UTIL_HPP}
 {$define OPENCV_STITCHING_UTIL_HPP}
 
-{$i 'core.inc'}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 //namespace cv {
 //namespace detail {

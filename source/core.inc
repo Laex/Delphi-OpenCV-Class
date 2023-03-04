@@ -20,16 +20,16 @@
     limitations under the License.
 *)
 
-{$IFNDEF OPENCV_CORE_HPP}
+{$IF not defined(OPENCV_CORE_HPP)}
 {$DEFINE OPENCV_CORE_HPP}
   //
 {$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
 # error core.inc header must be compiled as Delphi 10.4 Sydney WIN64
 {$IFEND}
   //
-{$I 'core/cvdef.inc'}
-{$I 'core/base.inc'}
-{$I 'core/cvstd.inc'}
+{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_BASE_HPP)}{$I 'core/base.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_CVSTD_HPP)}{$I 'core/cvstd.inc'}{$ifend}
 {$I 'core/traits.inc'}
 {$I 'core/matx.inc'}
 {$I 'core/types.inc'}
@@ -4785,4 +4785,4 @@ end;
 {$I 'core/optim.inc' }
 {$I 'core/ovx.inc' }
 
-{$ENDIF OPENCV_CORE_HPP}
+{$IFEND OPENCV_CORE_HPP}

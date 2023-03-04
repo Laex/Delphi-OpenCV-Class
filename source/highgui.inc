@@ -20,10 +20,10 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_HIGHGUI_HPP}
+{$if not defined(OPENCV_HIGHGUI_HPP)}
 {$define OPENCV_HIGHGUI_HPP}
 
-{$I 'core.inc'}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 {$ifdef HAVE_OPENCV_IMGCODECS}
 {$I 'imgcodecs.inc'}
@@ -1176,8 +1176,6 @@ function createButton( const bar_name:String; on_change:TButtonCallback;
                              userdata :Pointer = nil; &type :QtButtonTypes= QT_PUSH_BUTTON;
                              initial_button_state :bool= false):int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-{$IFDEF INCLUDE_OPENCV_C}
 {$I 'highgui/highgui_c.inc'}
-{$ENDIF}
 
-{$ENDIF OPENCV_HIGHGUI_HPP}
+{$IFEND OPENCV_HIGHGUI_HPP}

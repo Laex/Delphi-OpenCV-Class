@@ -20,10 +20,11 @@
     limitations under the License.
   *)
 
-{$IFNDEF OPENCV_PHOTO_HPP}
+{$IF not defined(OPENCV_PHOTO_HPP)}
 {$DEFINE OPENCV_PHOTO_HPP}
-{$I 'core.inc'}
-{$I 'imgproc.inc'}
+
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
+{$if not defined(OPENCV_IMGPROC_HPP)}{$I 'imgproc.inc'}{$ifend}
   (* *
     @defgroup photo Computational Photography
 
@@ -1068,4 +1069,4 @@ external opencv_world_dll
 
   // } // cv
 
-{$ENDIF}
+{$IFEND}

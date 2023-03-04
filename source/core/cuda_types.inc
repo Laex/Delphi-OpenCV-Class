@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_CUDA_TYPES_HPP}
+{$if not defined(OPENCV_CORE_CUDA_TYPES_HPP)}
 {$define OPENCV_CORE_CUDA_TYPES_HPP}
 
 //#ifndef __cplusplus
@@ -122,4 +122,4 @@
 
 //! @endcond
 
-{$endif OPENCV_CORE_CUDA_TYPES_HPP}
+{$ifend OPENCV_CORE_CUDA_TYPES_HPP}

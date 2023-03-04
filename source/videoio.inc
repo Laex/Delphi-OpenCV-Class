@@ -20,9 +20,11 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_VIDEOIO_HPP}
+{$IF not defined(OPENCV_VIDEOIO_HPP)}
 {$DEFINE OPENCV_VIDEOIO_HPP}
-{$I 'core.inc'}
+
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
+
 (* *
   @defgroup videoio Video I/O
 
@@ -1070,4 +1072,4 @@ Type
   // } // cv
 
 
-{$ENDIF OPENCV_VIDEOIO_HPP}
+{$IFEND OPENCV_VIDEOIO_HPP}

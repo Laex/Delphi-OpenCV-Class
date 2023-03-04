@@ -20,17 +20,17 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_CORE_BASE_HPP}
+{$IF not defined(OPENCV_CORE_BASE_HPP)}
 {$DEFINE OPENCV_CORE_BASE_HPP}
+
 {$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
 # error base.inc header must be compiled as Delphi 10.4 Sydney WIN64
 {$IFEND}
-{$I 'opencv_modules.inc'}
-// {$I <climits>
-// {$I <algorithm>
 
-{$I 'core/cvdef.inc'}
-{$I 'core/cvstd.inc'}
+{$if not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_CVSTD_HPP)}{$I 'core/cvstd.inc'}{$ifend}
+
 // namespace cv
 // {
 
@@ -633,4 +633,4 @@ BorderTypes = (           //
 { .$I 'core/vsx_utils.inc' }
 {$I 'core/check.inc' }
 
-{$ENDIF} // OPENCV_CORE_BASE_HPP
+{$IFEND} // OPENCV_CORE_BASE_HPP

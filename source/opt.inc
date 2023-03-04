@@ -1,4 +1,4 @@
-{$IFNDEF CVOPT}
+{$IF not defined(CVOPT)}
 {$DEFINE CVOPT}
 //
 //Define version of OpenCV
@@ -6,7 +6,6 @@
 {.$DEFINE OPENCV_460}
 {$DEFINE OPENCV_470}
 
-{$DEFINE INCLUDE_OPENCV_C}
 //
 {$I jedi\jedi.inc}
 //
@@ -30,4 +29,5 @@
 {$POINTERMATH ON}
 {$MINENUMSIZE 4}
 {$TYPEDADDRESS ON}
-{$ENDIF CVOPT}
+
+{$IFEND CVOPT}

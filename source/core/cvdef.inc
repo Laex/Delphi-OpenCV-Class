@@ -20,15 +20,17 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_CORE_CVDEF_H}
+{$IF not defined(OPENCV_CORE_CVDEF_H)}
 {$DEFINE OPENCV_CORE_CVDEF_H}
-{$I 'core/version.inc'}
+
+{$IF not defined(OPENCV_VERSION_HPP)}{$I 'core/version.inc'}{$ifend}
+
 // ! @addtogroup core_utils
 // ! @{
 
 {$IF DEFINED(OPENCV_INCLUDE_PORT_FILE)}  // User-provided header file with custom platform configuration
 {$I OPENCV_INCLUDE_PORT_FILE}
-{$ENDIF}
+{$IFEND}
 (*
   #if !defined CV_DOXYGEN && !defined CV_IGNORE_DEBUG_BUILD_GUARD
   #if (defined(_MSC_VER) && (defined(DEBUG) || defined(_DEBUG))) || \
@@ -956,4 +958,4 @@ function MIN(a, b: Int): Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((
 {$I 'core/fast_math.inc'}  // define cvRound(double)
   // {$endif}
 
-{$ENDIF} // OPENCV_CORE_CVDEF_H
+{$IFEND} // OPENCV_CORE_CVDEF_H

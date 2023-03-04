@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$ifdef OPENCV_CORE_FAST_MATH_HPP}
+{$if defined(OPENCV_CORE_FAST_MATH_HPP) and (not defined(OPENCV_CORE_FAST_MATH_HPP_IMPL))}
+{$define OPENCV_CORE_FAST_MATH_HPP_IMPL}
 
 function cvRound(value:double ):int;
 begin
@@ -47,4 +48,4 @@ begin
  Result := System.Math.IsInfinite(value);
 end;
 
-{$endif}
+{$ifend}

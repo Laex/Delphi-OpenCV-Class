@@ -22,8 +22,10 @@
 
 {$IFNDEF OPENCV_TRACKING_HPP}
 {$DEFINE OPENCV_TRACKING_HPP}
-{$I 'core.inc'}
-{$I 'imgproc.inc'}
+
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
+{$if not defined(OPENCV_IMGPROC_HPP)}{$I 'imgproc.inc'}{$ifend}
+
 // namespace cv
 // {
 

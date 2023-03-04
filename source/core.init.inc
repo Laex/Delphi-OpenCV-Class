@@ -20,8 +20,9 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_CORE_HPP}
+{$IF defined(OPENCV_CORE_HPP) and defined(OPENCV_CORE_HPP_IMPL) and (not defined(OPENCV_CORE_HPP_INIT))}
+{$DEFINE OPENCV_CORE_HPP_INIT}
 
 {$I core/hal/interface.init.inc}
 
-{$ENDIF OPENCV_CORE_HPP}
+{$IFEND}

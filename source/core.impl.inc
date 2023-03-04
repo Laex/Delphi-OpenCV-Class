@@ -22,6 +22,7 @@
 
 {$IF defined(OPENCV_CORE_HPP) and (not defined(OPENCV_CORE_HPP_IMPL))}
 {$DEFINE OPENCV_CORE_HPP_IMPL}
+
 {$I 'core/cvdef.impl.inc'}
 {$I 'core/base.impl.inc'}
 {$I 'core/cvstd.impl.inc'}

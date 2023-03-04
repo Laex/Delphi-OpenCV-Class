@@ -225,7 +225,7 @@ name 'cvPyrUp'
 //                                CvArr* bufarr CV_DEFAULT(0),
 //                                int calc CV_DEFAULT(1),
 //                                int filter CV_DEFAULT(CV_GAUSSIAN_5x5) );
-function cvCreatePyramid(const img:pCvArr; extra_layers:int; rate:double; const layer_sizes:pCvSize=0; bufarr:pCvArr=0; calc:int=1; filter:int=CV_GAUSSIAN_5x5):pCvMat;
+function cvCreatePyramid(const img:pCvArr; extra_layers:int; rate:double; const layer_sizes:pCvSize=nil; bufarr:pCvArr=nil; calc:int=1; filter:int=CV_GAUSSIAN_5x5):pCvMat;
 external opencv_world_dll
 {$IFDEF CALL_BY_FNC_NUM}
 index 7706
@@ -248,9 +248,10 @@ name 'cvReleasePyramid'
 (** @brief Filters image using meanshift algorithm
 @see cv::pyrMeanShiftFiltering
 *)
-//CVAPI(void) cvPyrMeanShiftFiltering( const CvArr* src, CvArr* dst,
-//    double sp, double sr, int max_level CV_DEFAULT(1),
-//    CvTermCriteria termcrit CV_DEFAULT(cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS,5,1)));
+//CVAPI(void) cvPyrMeanShiftFiltering( const CvArr* src, CvArr* dst, double sp, double sr,
+// int max_level CV_DEFAULT(1),
+// CvTermCriteria termcrit CV_DEFAULT(cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS,5,1))
+//);
 procedure cvPyrMeanShiftFiltering(const src:pCvArr; dst:pCvArr; sp:double; sr:double; max_level:int;
           termcrit:TCvTermCriteria); overload;
 external opencv_world_dll
@@ -260,7 +261,7 @@ index 7886
 name 'cvPyrMeanShiftFiltering'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure cvPyrMeanShiftFiltering(const src:pCvArr; dst:pCvArr; sp:double; sr:double; max_level:int=1);
+procedure cvPyrMeanShiftFiltering(const src:pCvArr; dst:pCvArr; sp:double; sr:double; max_level:int);
 overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure cvPyrMeanShiftFiltering(const src:pCvArr; dst:pCvArr; sp:double; sr:double);
 overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1364,7 +1365,10 @@ name 'cvCalcArrHist'
 //                             const CvArr* mask CV_DEFAULT(NULL) )
 //{
 //    cvCalcArrHist( (CvArr**)image, hist, accumulate, mask );
-//}procedure cvCalcHist(image:pIplImage; hist:pCvHistogram; accumulate:int=0; const mask:pCvArr= nil);inline;(** @brief Calculates back project
+//}
+procedure cvCalcHist(image:pIplImage; hist:pCvHistogram; accumulate:int=0; const mask:pCvArr= nil);inline;
+
+(** @brief Calculates back project
 @see cvCalcBackProject, cv::calcBackProject
 *)
 //CVAPI(void)  cvCalcArrBackProject( CvArr** image, CvArr* dst,
@@ -1516,7 +1520,8 @@ name 'cvAdaptiveThreshold'
 @see cv::floodFill
 *)
 //CVAPI(void)  cvFloodFill( CvArr* image, CvPoint seed_point,
-//                          CvScalar new_val, CvScalar lo_diff CV_DEFAULT(cvScalarAll(0)),
+//                          CvScalar new_val,
+//                          CvScalar lo_diff CV_DEFAULT(cvScalarAll(0)),
 //                          CvScalar up_diff CV_DEFAULT(cvScalarAll(0)),
 //                          CvConnectedComp* comp CV_DEFAULT(NULL),
 //                          int flags CV_DEFAULT(4),
@@ -1530,8 +1535,8 @@ index 7751
 name 'cvFloodFill'
 {$ENDIF}
 {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure cvFloodFill(image:pCvArr; seed_point:TCvPoint; new_val:TCvScalar; lo_diff:TCvScalar;
-          up_diff:TCvScalar); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+//procedure cvFloodFill(image:pCvArr; seed_point:TCvPoint; new_val:TCvScalar; lo_diff:TCvScalar;
+//          up_diff:TCvScalar); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure cvFloodFill(image:pCvArr; seed_point:TCvPoint; new_val:TCvScalar; lo_diff:TCvScalar
           ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure cvFloodFill(image:pCvArr; seed_point:TCvPoint; new_val:TCvScalar); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1980,7 +1985,7 @@ value means a non-italic font, 1.0f means about a 45 degree slope, etc.
 //                         double shear CV_DEFAULT(0),
 //                         int thickness CV_DEFAULT(1),
 //                         int line_type CV_DEFAULT(8));
-procedure cvInitFont(font:pCvFont; font_face:int; hscale:double; vscale:double; shear:double=0; thickness:int=1; line_type:int=8);
+procedure cvInitFont(Var font:TCvFont; font_face:int; hscale:double; vscale:double; shear:double=0; thickness:int=1; line_type:int=8);
 external opencv_world_dll
 {$IFDEF CALL_BY_FNC_NUM}
 index 7818

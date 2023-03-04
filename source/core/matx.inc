@@ -20,15 +20,15 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_MATX_HPP}
+{$if not defined(OPENCV_CORE_MATX_HPP)}
 {$define OPENCV_CORE_MATX_HPP}
 
 {$if (not defined(WIN64)) and (CompilerVersion < 34.0)}
 #  error matx.inc header must be compiled as Delphi 10.4 Sydney WIN64
 {$ifend}
 
-{$I 'core/cvdef.inc'}
-{$I 'core/base.inc'}
+{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_BASE_HPP)}{$I 'core/base.inc'}{$ifend}
 {$I 'core/traits.inc'}
 {$I 'core/saturate.inc'}
 
@@ -1513,4 +1513,4 @@ template<typename _Tp> inline Vec<_Tp, 4>& operator *= (Vec<_Tp, 4>& v1, const V
 
 } // cv
 *)
-{$endif OPENCV_CORE_MATX_HPP}
+{$ifend OPENCV_CORE_MATX_HPP}

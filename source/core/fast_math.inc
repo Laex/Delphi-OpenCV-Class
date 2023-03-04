@@ -20,10 +20,10 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_FAST_MATH_HPP}
+{$if not defined(OPENCV_CORE_FAST_MATH_HPP)}
 {$define OPENCV_CORE_FAST_MATH_HPP}
 
-{$i 'core/cvdef.inc'}
+{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
 
 //! @addtogroup core_utils
 //! @{
@@ -400,4 +400,4 @@ CV_INLINE int cvIsInf( float value )
 *)
 //! @} core_utils
 
-{$endif}
+{$ifend}

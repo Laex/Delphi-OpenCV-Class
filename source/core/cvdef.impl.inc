@@ -49,6 +49,7 @@ begin
   // CV_MAT_CN(flags)       = ((((flags) & CV_MAT_CN_MASK) >> CV_CN_SHIFT) + 1);
   Result := ((((flags) and CV_MAT_CN_MASK) shr CV_CN_SHIFT) + 1);
 end;
+
 function CV_ELEM_SIZE(&type:int):int;
 begin
     // CV_ELEM_SIZE(type) =(CV_MAT_CN(type)*CV_ELEM_SIZE1(type));

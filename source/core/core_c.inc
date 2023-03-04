@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_CORE_C_H}
+{$if not defined(OPENCV_CORE_C_H)}
 {$define OPENCV_CORE_C_H}
 
 {$include 'core/types_c.inc'}
@@ -3850,7 +3850,7 @@ const
 //                      CvTermCriteria termcrit, int attempts CV_DEFAULT(1),
 //                      CvRNG* rng CV_DEFAULT(0), int flags CV_DEFAULT(0),
 //                      CvArr* _centers CV_DEFAULT(0), double* compactness CV_DEFAULT(0) );
-function cvKMeans2(const samples:pCvArr; cluster_count:int; labels:pCvArr; termcrit:TCvTermCriteria; attempts:int=1; rng:pCvRNG=0; flags:int=0; _centers:pCvArr=0; compactness:pdouble=0):int;
+function cvKMeans2(const samples:pCvArr; cluster_count:int; labels:pCvArr; termcrit:TCvTermCriteria; attempts:int=1; rng:pCvRNG=nil; flags:int=0; _centers:pCvArr=nil; compactness:pdouble=nil):int;
 external opencv_world_dll
 {$IFDEF CALL_BY_FNC_NUM}
 index 7830
@@ -4462,6 +4462,7 @@ procedure seqPop(seq:pCvSeq; element:pvoid=nil);{$IFDEF USE_INLINE}inline; {$END
 //CV_EXPORTS void  seqPopFront( CvSeq* seq, void* element=0);
 procedure seqPopFront(seq:pCvSeq; element:pvoid=nil);{$IFDEF USE_INLINE}inline; {$ENDIF}
 
+{TODO:seqPopMulti}
 //CV_EXPORTS void  seqPopMulti( CvSeq* seq, void* elements,
 //                              int count, int in_front=0 );
 procedure seqPopMulti(seq:pCvSeq; elements:pvoid; count:int; in_front:int=0);{$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -4695,4 +4696,4 @@ procedure seqInsertSlice(seq:pCvSeq; before_index:int; const from_arr:pCvArr);{$
 
 //#endif
 
-{$endif OPENCV_CORE_C_H}
+{$ifend OPENCV_CORE_C_H}

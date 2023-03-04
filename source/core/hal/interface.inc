@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_CORE_HAL_INTERFACE_H}
+{$IF not defined(OPENCV_CORE_HAL_INTERFACE_H)}
 {$define OPENCV_CORE_HAL_INTERFACE_H}
 
 //! @addtogroup core_hal_interface
@@ -243,4 +243,4 @@ const
 //! @}
 
 //! @}
-{$ENDIF}// OPENCV_CORE_HAL_INTERFACE_H
+{$IFEND}// OPENCV_CORE_HAL_INTERFACE_H

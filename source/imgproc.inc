@@ -20,10 +20,10 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_IMGPROC_HPP}
+{$if not defined(OPENCV_IMGPROC_HPP)}
 {$define OPENCV_IMGPROC_HPP}
 
-{$i 'core.inc'}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 (**
   @defgroup imgproc Image Processing
@@ -5715,4 +5715,4 @@ Point LineIterator::pos() const
 
 {$i 'imgproc/segmentation.inc'}
 
-{$endif}
+{$ifend}

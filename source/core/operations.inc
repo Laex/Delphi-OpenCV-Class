@@ -19,3 +19,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 *)
+
+{$IF not defined(OPENCV_CORE_OPERATIONS_HPP)}
+{$define OPENCV_CORE_OPERATIONS_HPP}
+
+{$ifend}

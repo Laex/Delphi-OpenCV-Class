@@ -23,8 +23,8 @@
 {$ifndef OPENCV_STITCHING_SEAM_FINDERS_HPP}
 {$define OPENCV_STITCHING_SEAM_FINDERS_HPP}
 
-{$i 'core.inc'}
-{$i 'opencv_modules.inc'}
+{$if not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
 //namespace cv {
 //namespace detail {

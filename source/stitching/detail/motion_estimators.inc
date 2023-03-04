@@ -23,7 +23,7 @@
 {$ifndef OPENCV_STITCHING_MOTION_ESTIMATORS_HPP}
 {$define OPENCV_STITCHING_MOTION_ESTIMATORS_HPP}
 
-{$i 'core.inc'}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 {$i 'stitching/detail/matchers.inc'}
 {$i 'stitching/detail/util.inc'}
 {$i 'stitching/detail/camera.inc'}

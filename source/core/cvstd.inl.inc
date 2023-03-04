@@ -19,3 +19,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 *)
+
+{$IF defined(OPENCV_CORE_CVSTD_HPP) and defined(OPENCV_CORE_CVSTD_HPP_IMPL) and (not defined(OPENCV_CORE_CVSTD_HPP_INL))}
+{$define OPENCV_CORE_CVSTD_HPP_INL}
+
+{$ifend}

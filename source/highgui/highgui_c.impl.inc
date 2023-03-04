@@ -21,10 +21,9 @@
 *)
 
 {$IF defined(OPENCV_HIGHGUI_H) and (not defined(OPENCV_HIGHGUI_H_IMPL))}
-{$DEFINE  OPENCV_HIGHGUI_H_IMPL}
+{$DEFINE OPENCV_HIGHGUI_H_IMPL}
 
 {$include 'core/core_c.impl.inc'}
 {$include 'imgproc/imgproc_c.impl.inc'}
-
 
 {$IFEND}

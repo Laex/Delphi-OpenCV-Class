@@ -23,7 +23,7 @@
 {$ifndef OPENCV_STITCHING_UTIL_INL_HPP}
 {$define OPENCV_STITCHING_UTIL_INL_HPP}
 
-{$i 'core.inc'}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 {$i 'stitching/detail/util.inc'} // Make your IDE see declarations
 
 //! @cond IGNORED

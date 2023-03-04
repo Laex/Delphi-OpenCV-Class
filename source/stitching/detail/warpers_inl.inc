@@ -23,7 +23,7 @@
 {$ifndef OPENCV_STITCHING_WARPERS_INL_HPP}
 {$define OPENCV_STITCHING_WARPERS_INL_HPP}
 
-{$i 'core.inc'}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 {$i 'stitching/detail/warpers.inc'} // Make your IDE see declarations
 //{$i 'warpers.inc'}
 

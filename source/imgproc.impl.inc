@@ -20,7 +20,8 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_IMGPROC_HPP}
+{$IF defined(OPENCV_IMGPROC_HPP) and (not defined(OPENCV_IMGPROC_HPP_IMPL))}
+{$define OPENCV_IMGPROC_HPP_IMPL}
 
 procedure putText(const img: TInputOutputArray; const text: String; org: TPoint; fontFace: HersheyFonts; fontScale: double; color: TScalar;
   thickness: Int = 1; lineType: LineTypes = LINE_8; bottomLeftOrigin: BOOL = false);
@@ -349,4 +350,4 @@ begin
 end;
 
 {$I 'imgproc/segmentation.impl.inc'}
-{$ENDIF}
+{$IFEND}
