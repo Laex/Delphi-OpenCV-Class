@@ -22,8 +22,6 @@
 
 {$IF not defined(OPENCV_CORE_MAT_HPP)}
 {$DEFINE OPENCV_CORE_MAT_HPP}
-
-
 {$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
 # error mat.inc header must be compiled as Delphi 10.4 Sydney WIN64
 {$IFEND}
@@ -114,13 +112,13 @@ type
 
   TMat = record // forward declaration
   public const
-    MAGIC_VAL       = $42FF0000;
-    AUTO_STEP       = 0;
+    MAGIC_VAL = $42FF0000;
+    AUTO_STEP = 0;
     CONTINUOUS_FLAG = CV_MAT_CONT_FLAG;
-    SUBMATRIX_FLAG  = CV_SUBMAT_FLAG;
+    SUBMATRIX_FLAG = CV_SUBMAT_FLAG;
 
     MAGIC_MASK = $FFFF0000;
-    TYPE_MASK  = $00000FFF;
+    TYPE_MASK = $00000FFF;
     DEPTH_MASK = 7;
   public
     class operator Initialize(out Dest: TMat); // Mat();
@@ -170,9 +168,9 @@ type
   TMatExpr = record // forward declaration
   public
     class operator Initialize(out Dest: TMatExpr); {$IFDEF USE_INLINE}inline; {$ENDIF}// MatExpr();
-    class operator Finalize(var Dest: TMatExpr);   {$IFDEF USE_INLINE}inline; {$ENDIF}// ~MatExpr();
+    class operator Finalize(var Dest: TMatExpr); {$IFDEF USE_INLINE}inline; {$ENDIF}// ~MatExpr();
     class operator assign(var Dest: TMatExpr; const [ref] Src: TMatExpr); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Multiply(const a: TMatExpr; const b: double) : TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Multiply(const a: TMatExpr; const b: double): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
   private
 {$HINTS OFF}
     op: pMatOp; // pMatOp; // const MatOp* op;
@@ -864,11 +862,11 @@ type
     // Mat(const Mat& m);
     class function mat(const m: TMat): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function mat(rows, cols: Int; &type: Int; Data: Pointer; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline;
-    {$ENDIF}
+{$ENDIF}
     class function mat<T>(rows, cols: Int; Data: TArray<T>; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline;
-    {$ENDIF}
+{$ENDIF}
     class function mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline;
-    {$ENDIF}
+{$ENDIF}
     // Mat(int rows, int cols, int type, void* data, size_t step=AUTO_STEP);
     class function mat<T>(const vec: Vector<T>; copyData: BOOL = false): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(int rows, int cols, int type, const Scalar& s);
@@ -878,7 +876,7 @@ type
     // Mat(const std::vector<int>& sizes, int type, void* data, const size_t* steps=0);
     // Mat(const Mat& m, const Range& rowRange, const Range& colRange=Range::all());
     class function mat(const m: TMat; const rowRange: TRange; const colRange: TRange { =Range::all() } ): TMat; overload; static;
-    {$IFDEF USE_INLINE}inline; {$ENDIF}
+{$IFDEF USE_INLINE}inline; {$ENDIF}
     class function mat(const m: TMat; const rowRange: TRange): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // Mat(const Mat& m, const Rect& roi);
     class function mat(const m: TMat; const roi: TRect): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2459,7 +2457,7 @@ type
     // ! selects a submatrix
     // Mat_(const Mat_& m, const Range& rowRange, const Range& colRange=Range::all());
     class function mat(const m: TMat_<T>; const rowRange: TRange; const colRange: TRange { = Range::all() } ): TMat_<T>; overload; static;
-    {$IFDEF USE_INLINE}inline; {$ENDIF}
+{$IFDEF USE_INLINE}inline; {$ENDIF}
     class function mat(const m: TMat_<T>; const rowRange: TRange): TMat_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! selects a submatrix
     // Mat_(const Mat_& m, const Rect& roi);
@@ -4062,12 +4060,4 @@ type
 
   // } // cv
 
-  { .$I 'core/mat.inl.inc' }
-
-  { .$I external/opencv.mat.import.inc }
-  { .$I external/opencv.matexpr.import.inc }
-  { .$I external/opencv.InputArray.import.inc }
-  { .$I external/opencv.InputOutputArray.import.inc }
-  { .$I external/opencv.OutputArray.import.inc }
-  { .$I external/opencv.MatSize.import.inc }
 {$IFEND} // OPENCV_CORE_MAT_HPP

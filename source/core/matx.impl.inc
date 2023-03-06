@@ -55,6 +55,6 @@ begin
  Result := p[Index];
 end;
 
-{$I 'core/saturate.impl.inc'}
+{$IF not defined(OPENCV_CORE_SATURATE_HPP_IMPL)}{$I 'core/saturate.impl.inc'}{$ifend}
 
 {$ifend}

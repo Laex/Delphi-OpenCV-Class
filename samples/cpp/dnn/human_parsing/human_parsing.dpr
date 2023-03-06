@@ -45,7 +45,7 @@ begin
     blob: TMat := blobFromImages(batch, 1.0, Size(), Scalar(104.00698793, 116.66876762, 122.67891434));
 
   Var
-    net: TNet := readNet({model}'keras_deconv_same_v2_net.pb');
+    net: TNet := readNet(model);
   net.setPreferableBackend(backend);
   net.setPreferableTarget(target);
   net.setInput(blob);
@@ -108,10 +108,6 @@ end;
 begin
   try
     Var
-    net: TNet := readNet('LapSRN_x4.pb');
-
-
-    Var
       parser: TCommandLineParser := TCommandLineParser.Create( //
         '{help    h |                 | show help screen / args}' + //
         '{image   i |                 | person image to process }' + //
@@ -135,6 +131,12 @@ begin
     if (argc = 1) or parser.has('help') then
     begin
       parser.printMessage();
+      Halt(0);
+    end;
+
+    if not parser.check then
+    begin
+      parser.printError();
       Halt(0);
     end;
 

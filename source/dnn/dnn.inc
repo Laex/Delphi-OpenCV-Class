@@ -401,10 +401,11 @@ Type
      *
      * This class supports reference counting of its instances, i. e. copies point to the same instance.
      *)
-   TNet = record
+     pNet = ^_Net;
+   _Net = record
     public
-     class operator Initialize(out Dest: TNet); // CV_WRAP Net();  //!< Default constructor.
-     class operator Finalize(var Dest: TNet); // CV_WRAP ~Net(); //!< Destructor frees the net only if there aren't references to the net anymore.
+     class operator Initialize(out Dest: _Net); // CV_WRAP Net();  //!< Default constructor.
+     class operator Finalize(var Dest: _Net); // CV_WRAP ~Net(); //!< Destructor frees the net only if there aren't references to the net anymore.
 //     class operator assign(var Dest: TNet; const [ref] Src: TNet); {$IFDEF USE_INLINE}inline; {$ENDIF}
 
         (** @brief Create a network from Intel's Model Optimizer intermediate representation (IR).
@@ -784,8 +785,9 @@ Type
 //        struct Impl;
 //        Ptr<Impl> impl;
       Dummy:array[0..1] of UInt64;
-{$HINTS ON}      
+{$HINTS ON}
     end;
+    TNet = _Net;
 
     (** @brief Reads a network model stored in <a href="https://pjreddie.com/darknet/">Darknet</a> model files.
     *  @param cfgFile      path to the .cfg file with text description of the network architecture.
@@ -1203,18 +1205,20 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
 //                                   const float sigma = 0.5,
 //                                   SoftNMSMethod method = SoftNMSMethod::SOFTNMS_GAUSSIAN);
 
-
+Type
      (** @brief This class is presented high-level API for neural networks.
       *
       * Model allows to set params for preprocessing input image.
       * Model creates net from file with trained weights and config,
       * sets preprocessing input and runs forward pass.
       *)
-//     class CV_EXPORTS_W_SIMPLE Model
-//     {
-//     public:
+      pModel = ^_Model;
+      _Model = record
+     public
 //         CV_DEPRECATED_EXTERNAL  // avoid using in C++ code, will be moved to "protected" (need to fix bindings first)
 //         Model();
+//           class operator Initialize(Initialize(out Dest: _Model);
+//           class operator Finalize(var Dest: _Model);
 
 //         Model(const Model&) = default;
 //         Model(Model&&) = default;
@@ -1276,8 +1280,10 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
          *  @param[in] crop Flag which indicates whether image will be cropped after resize or not.
          *  blob(n, c, y, x) = scale * resize( frame(y, x, c) ) - mean(c) )
          *)
-//         CV_WRAP void setInputParams(double scale = 1.0, const Size& size = Size(),
-//                                     const Scalar& mean = Scalar(), bool swapRB = false, bool crop = false);
+//       CV_WRAP void setInputParams( double scale = 1.0, const Size& size = Size(),
+//                                    const Scalar& mean = Scalar(), bool swapRB = false, bool crop = false);
+         procedure setInputParams( scale:double {= 1.0}; const size:TSize {= Size()};
+                                   const mean:TScalar {= Scalar()}; swapRB :bool = false; crop :bool = false);
 
          (** @brief Given the @p input frame, create input blob, run net and return the output @p blobs.
           *  @param[in]  frame  The input image.
@@ -1300,16 +1306,20 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
 //         CV_DEPRECATED_EXTERNAL
 //         operator Net&() const { return getNetwork_(); }
 
-     //protected: - internal/tests usage only
+     private// - internal/tests usage only
 //         Net& getNetwork_() const;
 //         inline Net& getNetwork_() { return const_cast<const Model*>(this)->getNetwork_(); }
 
 //         struct Impl;
 //         inline Impl* getImpl() const { return impl.get(); }
 //         inline Impl& getImplRef() const { CV_DbgAssert(impl); return *impl.get(); }
-//     protected:
+     private
+{$HINTS OFF}
 //         Ptr<Impl> impl;
-//     };
+       impl:array[0..1] of UInt64;
+{$HINTS ON}
+ end;
+TModel = _Model;
 
      (** @brief This class represents high-level API for classification models.
       *
@@ -1467,11 +1477,18 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
  * sets preprocessing input, runs forward pass and return recognition result.
  * For TextRecognitionModel, CRNN-CTC is supported.
  *)
-//class CV_EXPORTS_W_SIMPLE TextRecognitionModel : public Model
-//{
-//public:
+ pTextRecognitionModel = ^_TextRecognitionModel;
+_TextRecognitionModel = record
+  public
+    Model:_Model;
+    procedure setInputParams(scale: double { = 1.0 }; const size: TSize { = Size() }; const mean: TScalar { = Scalar() }; swapRB: bool = false; crop: bool = false); overload;
+    procedure setInputParams(scale: double { = 1.0 }; const size: TSize { = Size() } ); overload;
+    procedure setInputParams(scale: double = 1.0); overload;
+  public
 //    CV_DEPRECATED_EXTERNAL  // avoid using in C++ code, will be moved to "protected" (need to fix bindings first)
 //    TextRecognitionModel();
+    class operator Initialize(out Dest: _TextRecognitionModel);
+    class operator Finalize(var Dest: _TextRecognitionModel);
 
     (**
      * @brief Create Text Recognition model from deep learning network
@@ -1479,6 +1496,7 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
      * @param[in] network Net object
      *)
 //    CV_WRAP TextRecognitionModel(const Net& network);
+    constructor TextRecognitionModel(const network:_Net); overload;
 
     (**
      * @brief Create text recognition model from network represented in one of the supported formats
@@ -1489,6 +1507,10 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
 //    CV_WRAP inline
 //    TextRecognitionModel(const std::string& model, const std::string& config = "")
 //        : TextRecognitionModel(readNet(model, config)) { (* nothing *) }
+     constructor TextRecognitionModel(const model:CppString; const config:CppString); overload;
+     constructor TextRecognitionModel(const model:CppString); overload;
+     constructor TextRecognitionModel(const model:String; const config:String=''); overload;
+     class operator Implicit(const Model:String):_TextRecognitionModel;
 
     (**
      * @brief Set the decoding method of translating the network output into string
@@ -1498,6 +1520,7 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
      *)
 //    CV_WRAP
 //    TextRecognitionModel& setDecodeType(const std::string& decodeType);
+     function setDecodeType(const decodeType:CppString):pTextRecognitionModel;
 
     (**
      * @brief Get the decoding method
@@ -1521,6 +1544,7 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
      *)
 //    CV_WRAP
 //    TextRecognitionModel& setVocabulary(const std::vector<std::string>& vocabulary);
+     function setVocabulary(const vocabulary:vector<CppString>):pTextRecognitionModel;
 
     (**
      * @brief Get the vocabulary for recognition.
@@ -1536,6 +1560,7 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
      *)
 //    CV_WRAP
 //    std::string recognize(InputArray frame) const;
+    function recognize(const frame:TInputArray):String; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     (**
      * @brief Given the @p input frame, create input blob, run net and return recognition result
@@ -1545,7 +1570,8 @@ procedure blobFromImages(const images:TInputArrayOfArrays;
      *)
 //    CV_WRAP
 //    void recognize(InputArray frame, InputArrayOfArrays roiRects, CV_OUT std::vector<std::string>& results) const;
-//};
+end;
+TTextRecognitionModel = _TextRecognitionModel;
 
 
 (** @brief Base class for text detection networks

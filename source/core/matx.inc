@@ -30,7 +30,7 @@
 {$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
 {$IF not defined(OPENCV_CORE_BASE_HPP)}{$I 'core/base.inc'}{$ifend}
 {$I 'core/traits.inc'}
-{$I 'core/saturate.inc'}
+{$if not defined(OPENCV_CORE_SATURATE_HPP)}{$I 'core/saturate.inc'}{$ifend}
 
 //{$I <initializer_list>
 

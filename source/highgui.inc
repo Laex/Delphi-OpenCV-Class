@@ -24,14 +24,8 @@
 {$define OPENCV_HIGHGUI_HPP}
 
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-
-{$ifdef HAVE_OPENCV_IMGCODECS}
-{$I 'imgcodecs.inc'}
-{$ENDIF}
-
-{$ifdef HAVE_OPENCV_VIDEOIO}
-{$I 'videoio.inc'}
-{$ENDIF}
+{$if defined(HAVE_OPENCV_IMGCODECS)}{$I 'imgcodecs.inc'}{$IFEND}
+{$if defined(HAVE_OPENCV_VIDEOIO)}{$I 'videoio.inc'}{$IFEND}
 
 (**
 @defgroup highgui High-level GUI

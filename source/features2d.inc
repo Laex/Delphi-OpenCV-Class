@@ -26,9 +26,7 @@
 {$if not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$ifend}
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 
-{$ifdef HAVE_OPENCV_FLANN}
-{$I 'flann/miniflann.inc'}
-{$endif}
+{$if defined(HAVE_OPENCV_FLANN)}{$I 'flann/miniflann.inc'}{$endif}
 
 (**
   @defgroup features2d 2D Features Framework
@@ -1292,6 +1290,7 @@ Type
   DRAW_RICH_KEYPOINTS = 4 //!< For each keypoint the circle around keypoint with keypoint size and
                           //!< orientation will be drawn.
 );
+
 //CV_ENUM_FLAGS(DrawMatchesFlags)
 
 (** @brief Draws keypoints.

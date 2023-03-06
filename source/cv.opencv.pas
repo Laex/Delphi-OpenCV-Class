@@ -36,7 +36,7 @@ Uses
 
 {$I cvconfig.inc}
 
-{$define OPENCV_ALL_HPP}
+//{$define OPENCV_ALL_HPP}
 
 // File that defines what modules where included during the build of OpenCV
 // These are purely the defines of the correct HAVE_OPENCV_modulename values

@@ -1,4 +1,4 @@
-(*
+﻿(*
   This file is part of Delphi-OpenCV-Class project.
   https://github.com/Laex/Delphi-OpenCV-Class
 
@@ -131,10 +131,15 @@ Type
   \return the previous state
 *)
 // CV_EXPORTS bool setBreakOnError(bool flag);
+function setBreakOnError(flag:bool):bool;inline;
 
 // extern "C" typedef int (*ErrorCallback)( int status, const char* func_name,
 // const char* err_msg, const char* file_name,
 // int line, void* userdata );
+Type
+  TErrorCallback=function( status:int; const func_name:pCvChar;
+                           const err_msg:pCvChar; const file_name:pCvChar;
+                           line:int; userdata:Pointer ):int;
 
 (* * @brief Sets the new error handler and the optional user data.
 
@@ -147,9 +152,13 @@ Type
   \return the previous error handler
 *)
 // CV_EXPORTS ErrorCallback redirectError( ErrorCallback errCallback, void* userdata=0, void** prevUserdata=0);
+function redirectError(errCallback:TErrorCallback; userdata:Pointer=nil; prevUserdata:Pointer=nil):TErrorCallback; inline;
 
 // CV_EXPORTS String tempfile( const char* suffix = 0);
+//function tempfile(const suffix:pCvChar = nil):String; inline;
+// tempfile -> IOUtils
 // CV_EXPORTS void glob(String pattern, std::vector<String>& result, bool recursive = false);
+// glob -> IOUtils
 
 (* * @brief OpenCV will try to set the number of threads for the next parallel region.
 
@@ -170,6 +179,7 @@ Type
   @sa getNumThreads, getThreadNum
 *)
 // CV_EXPORTS_W void setNumThreads(int nthreads);
+procedure setNumThreads(nthreads:int); inline;
 
 (* * @brief Returns the number of threads used by OpenCV for parallel regions.
 
@@ -188,6 +198,7 @@ Type
   @sa setNumThreads, getThreadNum
 *)
 // CV_EXPORTS_W int getNumThreads();
+function getNumThreads:Int;inline;
 
 (* * @brief Returns the index of the currently executed thread within the current parallel region. Always
   returns 0 if called outside of parallel region.
@@ -204,6 +215,7 @@ Type
   @sa setNumThreads, getNumThreads
 *)
 // CV_EXPORTS_W int getThreadNum();
+function getThreadNum:Int; inline;
 
 (* * @brief Returns full configuration time cmake output.
 
@@ -212,16 +224,7 @@ Type
   architecture.
 *)
 // CV_EXPORTS_W const String& getBuildInformation();
-{
-  863
-  ?getBuildInformation@cv@@YAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ
-  ?getBuildInformation@cv@@YAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ
-  class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const & cv::getBuildInformation(void)
-}
-function _getBuildInformation: pCppString;
-external opencv_world_dll name '?getBuildInformation@cv@@YAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ'{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-function getBuildInformation: String;
+function getBuildInformation: String; inline;
 
 (* * @brief Returns library version string
 
@@ -230,15 +233,19 @@ function getBuildInformation: String;
   @sa getMajorVersion, getMinorVersion, getRevisionVersion
 *)
 // CV_EXPORTS_W String getVersionString();
+function getVersionString:string; inline;
 
 (* * @brief Returns major library version *)
 // CV_EXPORTS_W int getVersionMajor();
+function getVersionMajor:Int;inline;
 
 (* * @brief Returns minor library version *)
 // CV_EXPORTS_W int getVersionMinor();
+function getVersionMinor:Int;inline;
 
 (* * @brief Returns revision field of the library version *)
 // CV_EXPORTS_W int getVersionRevision();
+function getVersionRevision:Int;inline;
 
 (* * @brief Returns the number of ticks.
 
@@ -248,12 +255,7 @@ function getBuildInformation: String;
   @sa getTickFrequency, TickMeter
 *)
 // CV_EXPORTS_W int64 getTickCount();
-{ 5138
-  ?getTickCount@cv@@YA_JXZ
-  ?getTickCount@cv@@YA_JXZ
-  __int64 cv::getTickCount(void)
-}
-function getTickCount(): Int64; external opencv_world_dll name '?getTickCount@cv@@YA_JXZ'{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function getTickCount:Int64; inline;
 
 (* * @brief Returns the number of ticks per second.
 
@@ -267,14 +269,9 @@ function getTickCount(): Int64; external opencv_world_dll name '?getTickCount@cv
   @sa getTickCount, TickMeter
 *)
 // CV_EXPORTS_W double getTickFrequency();
-{
-  5140
-  ?getTickFrequency@cv@@YANXZ
-  ?getTickFrequency@cv@@YANXZ
-  double cv::getTickFrequency(void)
-}
-function getTickFrequency(): double; external opencv_world_dll name '?getTickFrequency@cv@@YANXZ'{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function getTickFrequency:Double; inline;
 
+type
 (* * @brief a Class to measure passing time.
 
   The class computes passing time by counting the number of ticks per second. That is, the following code computes the
@@ -286,98 +283,50 @@ function getTickFrequency(): double; external opencv_world_dll name '?getTickFre
 
   @sa getTickCount, getTickFrequency
 *)
-// class CV_EXPORTS_W TickMeter
-// {
-// public:
-// //! the default constructor
-// CV_WRAP TickMeter()
-// {
-// reset();
-// }
-//
-// //! starts counting ticks.
+_TickMeter = record
+ //! the default constructor
+ // CV_WRAP TickMeter()
+ class operator Initialize(out Dest: _TickMeter);
+ //! starts counting ticks.
 // CV_WRAP void start()
-// {
-// startTime = cv::getTickCount();
-// }
-//
-// //! stops counting ticks.
+ procedure Start;
+ //! stops counting ticks.
 // CV_WRAP void stop()
-// {
-// int64 time = cv::getTickCount();
-// if (startTime == 0)
-// return;
-// ++counter;
-// sumTime += (time - startTime);
-// startTime = 0;
-// }
-//
-// //! returns counted ticks.
+procedure Stop;
+ //! returns counted ticks.
 // CV_WRAP int64 getTimeTicks() const
-// {
-// return sumTime;
-// }
-//
-// //! returns passed time in microseconds.
+function getTimeTicks:Int64;
+ //! returns passed time in microseconds.
 // CV_WRAP double getTimeMicro() const
-// {
-// return getTimeMilli()*1e3;
-// }
-//
-// //! returns passed time in milliseconds.
+function getTimeMicro:Double;
+ //! returns passed time in milliseconds.
 // CV_WRAP double getTimeMilli() const
-// {
-// return getTimeSec()*1e3;
-// }
-//
-// //! returns passed time in seconds.
+function getTimeMilli:Double;
+ //! returns passed time in seconds.
 // CV_WRAP double getTimeSec()   const
-// {
-// return (double)getTimeTicks() / getTickFrequency();
-// }
-//
-// //! returns internal counter value.
+function getTimeSec:Double;
+ //! returns internal counter value.
 // CV_WRAP int64 getCounter() const
-// {
-// return counter;
-// }
-//
-// //! returns average FPS (frames per second) value.
+function getCounter:Int64;
+ //! returns average FPS (frames per second) value.
 // CV_WRAP double getFPS() const
-// {
-// const double sec = getTimeSec();
-// if (sec < DBL_EPSILON)
-// return 0.;
-// return counter / sec;
-// }
-//
-// //! returns average time in seconds
+function getFPS:double;
+ //! returns average time in seconds
 // CV_WRAP double getAvgTimeSec() const
-// {
-// if (counter <= 0)
-// return 0.;
-// return getTimeSec() / counter;
-// }
-//
-// //! returns average time in milliseconds
+function getAvgTimeSec:Double;
+ //! returns average time in milliseconds
 // CV_WRAP double getAvgTimeMilli() const
-// {
-// return getAvgTimeSec() * 1e3;
-// }
-//
-// //! resets internal values.
+function getAvgTimeMilli:Double;
+ //! resets internal values.
 // CV_WRAP void reset()
-// {
-// startTime = 0;
-// sumTime = 0;
-// counter = 0;
-// }
-//
-// private:
-// int64 counter;
-// int64 sumTime;
-// int64 startTime;
-// };
+procedure reset;
+private
+  counter     :int64  ;
+  sumTime     :int64  ;
+  startTime   :int64  ;
+end;
+TTickMeter = _TickMeter;
+
 
 (* * @brief output operator
   @code
@@ -408,6 +357,7 @@ function getTickFrequency(): double; external opencv_world_dll name '?getTickFre
   execution time.
 *)
 // CV_EXPORTS_W int64 getCPUTickCount();
+function getCPUTickCount:int64; inline;
 
 (* * @brief Returns true if the specified feature is supported by the host hardware.
 
@@ -418,12 +368,14 @@ function getTickFrequency(): double; external opencv_world_dll name '?getTickFre
   @param feature The feature of interest, one of cv::CpuFeatures
 *)
 // CV_EXPORTS_W bool checkHardwareSupport(int feature);
+function checkHardwareSupport(feature:Int):bool;inline;
 
 (* * @brief Returns feature name by ID
 
   Returns empty string if feature is not defined
 *)
 // CV_EXPORTS_W String getHardwareFeatureName(int feature);
+function getHardwareFeatureName(feature:Int):string; inline;
 
 (* * @brief Returns list of CPU features enabled during compilation.
 
@@ -436,10 +388,12 @@ function getTickFrequency(): double; external opencv_world_dll name '?getTickFre
   Example: `SSE SSE2 SSE3 *SSE4.1 *SSE4.2 *FP16 *AVX *AVX2 *AVX512-SKX?`
 *)
 // CV_EXPORTS_W std::string getCPUFeaturesLine();
+function getCPUFeaturesLine:string; inline;
 
 (* * @brief Returns the number of logical CPUs available for the process.
 *)
 // CV_EXPORTS_W int getNumberOfCPUs();
+function getNumberOfCPUs:Int;inline;
 
 (* * @brief Aligns a pointer to the specified number of bytes.
 
@@ -558,12 +512,14 @@ function getTickFrequency(): double; external opencv_world_dll name '?getTickFre
   or not (onoff=false).
 *)
 // CV_EXPORTS_W void setUseOptimized(bool onoff);
+procedure setUseOptimized(onoff:Bool); inline;
 
 (* * @brief Returns the status of optimized code usage.
 
   The function returns true if the optimized code is enabled. Otherwise, it returns false.
 *)
 // CV_EXPORTS_W bool useOptimized();
+function useOptimized:bool; inline;
 
 // static inline size_t getElemSize(int type) { return (size_t)CV_ELEM_SIZE(type); }
 
@@ -812,29 +768,6 @@ function getTickFrequency(): double; external opencv_world_dll name '?getTickFre
   Parameter 'fps': can not convert: [aaa] to [double]
   @endcode
 *)
-Type
-  TCommandLineParser = record
-  private
-    CmdParam: TArray<TArray<String>>;
-    Value: TArray<String>;
-    Info: TArray<String>;
-    CmdValue: TArray<String>;
-    FAbout:string;
-    procedure InternalInit(const keys: String); inline;
-    function getIndexInput(out Index: Integer): boolean;
-    function getIndexByName(const name: string; out Index: Integer): boolean;
-    function getDefaultByName(const name: string; out R: string): boolean;
-    procedure ParseCommand;
-    function Trim(const Text:String):String;
-  public
-    class function Init(const keys: String): TCommandLineParser; static; inline;
-    class operator Implicit(const keys: String): TCommandLineParser; inline;
-    function get<T>(const name: string): T; inline;
-    procedure help;
-    procedure About(const Text:String);
-    function has(const name:String):Boolean;
-    procedure printMessage();
-  end;
 
   // class CV_EXPORTS CommandLineParser
   // {
@@ -1201,6 +1134,7 @@ Type
     @return Returns path (absolute or relative to the current directory) or empty string if file is not found
   *)
   // CV_EXPORTS_W cv::String findFile(const cv::String& relative_path, bool required = true, bool silentMode = false);
+  function findFile(const relative_path:string; required:bool = true; silentMode :bool = false):String; inline;
 
   // CV_EXPORTS_W cv::String findFileOrKeep(const cv::String& relative_path, bool silentMode = false);
 

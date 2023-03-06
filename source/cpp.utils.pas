@@ -37,13 +37,14 @@ Uses
 {$I core/version.inc}
 
 const
-  INT_MIN   = Pred(-MaxInt);
-  INT_MAX   = MaxInt;
-  DBL_MAX   = MaxDouble;
-  CHAR_BIT  = 8;
+  INT_MIN = Pred(-MaxInt);
+  INT_MAX = MaxInt;
+  DBL_MAX = MaxDouble;
+  CHAR_BIT = 8;
   SCHAR_MIN = (-128);
   SCHAR_MAX = 127;
   UCHAR_MAX = $FF;
+  DBL_EPSILON = 2.2204460492503131e-16;
 
 Type
   BOOL             = bytebool;
@@ -66,9 +67,9 @@ Type
   pBOOL            = ^BOOL;
   p__INT64         = ^__INT64;
   pCVCHAR          = pAnsiChar;
-  schar = int8;
-  pschar = ^schar;
-  punsigned = ^unsigned;
+  schar            = int8;
+  pschar           = ^schar;
+  punsigned        = ^unsigned;
 
   TVectorType = //
     (           //
@@ -131,6 +132,7 @@ Type
     class operator Implicit(const p: pAnsiChar): CppString; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: string): CppString; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: CppString): string; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Explicit(const s: CppString): string; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   TPtr<T { : record } > = record
@@ -345,12 +347,8 @@ begin
     vt := vtVectorPoint2f
   else if TypeInfo(T) = TypeInfo(Vector<TMat>) then // vector<float>
     vt := vtVectorMat
-    // else if TypeInfo(T) = TypeInfo(TGMat) then // vector<GMat>
-    // vt := vtGMat
-    // else if TypeInfo(T) = TypeInfo(TGCompileArg) then // vector<GCompileArg>
-    // vt := vtGCompileArg
-    // else if TypeInfo(T) = TypeInfo(pMat) then // vector<GCompileArg>
-    // vt := vtpVoid
+  else if TypeInfo(T) = TypeInfo(CppString) then // vector<CppString>
+    vt := vtString
   else
   begin
     Var
@@ -380,6 +378,11 @@ begin
   class_virt_func_STD_BASIC_STRING_OF_CVCHAR_erase_3(Self, _Off);
 end;
 
+class operator CppString.Explicit(const s: CppString): string;
+begin
+ Result := string(class_virt_func_STD_BASIC_STRING_OF_CVCHAR_c_str(s));
+end;
+
 class operator CppString.Finalize(var Dest: CppString);
 begin
   destructor_STD_BASIC_STRING_OF_CVCHAR(Dest);
@@ -397,8 +400,7 @@ end;
 
 class operator CppString.Implicit(const s: CppString): string;
 begin
-  Result :=
-  string(class_virt_func_STD_BASIC_STRING_OF_CVCHAR_c_str(s));
+  Result := string(class_virt_func_STD_BASIC_STRING_OF_CVCHAR_c_str(s));
 end;
 
 class operator CppString.Initialize(out Dest: CppString);

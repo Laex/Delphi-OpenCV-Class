@@ -5,10 +5,11 @@ interface
 Type
   TCommandLineParam = record
     switches: TArray<String>;
-    Values: TArray<String>;
+    Values: String;
     Note: String;
     index: Integer;
     isExists: Boolean;
+    isOptional: Boolean;
   end;
 
   TCommandLineParser = record
@@ -16,12 +17,14 @@ Type
     Params: TArray<TCommandLineParam>;
     PosArg: TArray<TCommandLineParam>;
     fabout: string;
-    procedure ParseCmdLine;
-    function _TryHas(const Args: TArray<TCommandLineParam>; const key: String; Var index: Integer): Boolean;
     function Cast<T>(const Value: String): T;
+    procedure ParseCmdLine; overload;
+    procedure ParseCmdLine(const Cmd: TArray<String>); overload;
+    function _TryHas(const Args: TArray<TCommandLineParam>; const key: String; Var index: Integer): Boolean;
+  public
+    class operator Implicit(const a: String): TCommandLineParser;
   public
     constructor Create(const AKeys: String);
-    class operator Implicit(const a: String): TCommandLineParser;
     procedure about(const a: String);
     procedure printMessage;
     function has(const key: String): Boolean;
@@ -32,7 +35,7 @@ Type
     function get<T>(const key: String; const DefaultValue: T): T; overload;
     function TryGet<T>(const key: String; out Value: T): Boolean;
     function check: Boolean;
-    procedure printError;
+    procedure printErrors;
   end;
 
   CommandLineParser = TCommandLineParser;
@@ -42,8 +45,7 @@ implementation
 uses
   System.SysUtils,
   System.Rtti,
-  System.TypInfo,
-  System.Variants;
+  System.TypInfo;
 
 { TCommandLineParser }
 
@@ -52,13 +54,48 @@ begin
   fabout := a;
 end;
 
+function TCommandLineParser.Cast<T>(const Value: String): T;
+Var
+  R: TValue;
+begin
+  Var
+    P: PTypeInfo := TypeInfo(T);
+  if TValue(Value).TryCast(TypeInfo(T), R) then
+    Result := R.AsType<T>
+  else
+  begin
+    Var
+      V: Variant := Value;
+    Var
+      tV: TValue;
+    tV.From<Variant>(V);
+    if tV.TryCast(TypeInfo(T), R) then
+      Result := R.AsType<T>
+    else
+    begin
+      Assert(False);
+      {
+        tkInteger
+        tkChar
+        tkFloat
+        tkString
+        tkWChar
+        tkLString
+        tkWString
+        tkInt64
+        tkUString
+      }
+    end;
+  end;
+end;
+
 function TCommandLineParser.check: Boolean;
 begin
   for Var i := 0 to High(Params) do
-    if not Params[i].isExists then
+    if (not Params[i].isExists) and (not Params[i].isOptional) then
       Exit(False);
   for Var i := 0 to High(PosArg) do
-    if not PosArg[i].isExists then
+    if (not PosArg[i].isExists) and (not PosArg[i].isOptional) then
       Exit(False);
   Result := True;
 end;
@@ -74,17 +111,18 @@ begin
       b: TArray<string> := a[i].Split(['|'], MaxInt);
     Assert(Length(b) = 3);
     Var
-      p: TCommandLineParam := default (TCommandLineParam);
-    p.switches := b[0].Split([' '], MaxInt, TStringSplitOptions.ExcludeEmpty);
-    Assert(Length(p.switches) > 0);
-    p.Values := b[1].Split([' '], MaxInt, TStringSplitOptions.ExcludeEmpty);
-    p.isExists := Length(p.Values) > 0;
-    p.index := -1;
-    p.Note := b[2].Trim;
-    if p.switches[0][1] = '@' then
-      PosArg := PosArg + [p]
+      P: TCommandLineParam := default (TCommandLineParam);
+    P.switches := b[0].Split([' '], MaxInt, TStringSplitOptions.ExcludeEmpty);
+    Assert(Length(P.switches) > 0);
+    P.Values := b[1].Trim;
+    P.isExists := Length(P.Values) > 0;
+    P.isOptional := (Length(P.Values) = 0) and (P.switches[0][1] <> '@');
+    P.index := -1;
+    P.Note := b[2].Trim;
+    if P.switches[0][1] = '@' then
+      PosArg := PosArg + [P]
     else
-      Params := Params + [p];
+      Params := Params + [P];
   end;
   ParseCmdLine;
 end;
@@ -111,23 +149,13 @@ begin
   begin
     Result := TryHasPosArg(Copy(key, 2, key.Length - 1), Index);
     if Result then
-    begin
-      if PosArg[Index].index <> -1 then
-        Value := Cast<T>(ParamStr(PosArg[Index].index + 1))
-      else
-        Value := Cast<T>(PosArg[Index].Values[0]);
-    end;
+      Value := Cast<T>(PosArg[Index].Values); // TValue(PosArg[Index].Values).AsType<T>;
   end
   else
   begin
     Result := TryHas(key, Index);
     if Result then
-    begin
-      if Params[Index].index <> -1 then
-        Value := Cast<T>(ParamStr(Params[Index].index + 1))
-      else
-        Value := Cast<T>(Params[Index].Values[0]);
-    end;
+      Value := Cast<T>(Params[Index].Values); // TValue(Params[Index].Values).AsType<T>;
   end;
 end;
 
@@ -139,7 +167,7 @@ begin
   if TryHas(key, Index) then
   begin
     for var i := 0 to High(Params[Index].Values) do
-      Result := Result + [Cast<T>(Params[Index].Values[i])];
+      Result := Result + [TValue(Params[Index].Values[i]).AsType<T>];
   end;
 end;
 
@@ -179,56 +207,68 @@ end;
 
 procedure TCommandLineParser.ParseCmdLine;
 begin
-  Var
-    i: Integer := 1;
-  var
-    j: Integer := 0;
-  While i <= ParamCount do
+  if ParamCount > 0 then
   begin
     Var
-      s: String := ParamStr(i);
+      Cmd: TArray<String>;
+    SetLength(Cmd, ParamCount);
+    for Var i := 0 to High(Cmd) do
+      Cmd[i] := ParamStr(i + 1);
+    ParseCmdLine(Cmd);
+  end;
+end;
+
+procedure TCommandLineParser.ParseCmdLine(const Cmd: TArray<String>);
+label m1;
+begin
+  SetLength(PosArg, 0);
+  for Var i: Integer := 0 to High(Cmd) do
+  begin
+    Var
+      s: String := Cmd[i];
     if s[1] = '-' then
     begin
       while (Length(s) > 0) and (s[1] = '-') do
         Delete(s, 1, 1);
       Assert(s.Length > 0);
       Var
-        NeedBreak: Boolean := False;
+        e: Integer := Pos('=', s);
+      Var
+        ParamParam: String := default (String);
+      if e <> 0 then
+      begin
+        ParamParam := Copy(s, e + 1, Length(s));
+        Delete(s, e, Length(s));
+      end;
+
       for Var k := 0 to High(Params) do
       begin
         for Var m := 0 to High(Params[k].switches) do
           if Params[k].switches[m] = s then
           begin
-            Assert((ParamCount - i) >= Length(Params[k].Values));
             Params[k].index := i;
+            Params[k].Values := ParamParam.DeQuotedString;
             Params[k].isExists := True;
-            i := i+Length(Params[k].Values) + 1;
-            NeedBreak := True;
-            Break;
+            goto m1;
           end;
-        if NeedBreak then
-          Break;
       end;
+    m1:
     end
     else
     begin
-      if j < Length(PosArg) then
-      begin
-        PosArg[j].Values := [s];
-        PosArg[j].isExists := True;
-        Inc(j);
-      end;
-      Inc(i);
+      SetLength(PosArg, Length(PosArg) + 1);
+      PosArg[High(PosArg)].Values := s;
+      PosArg[High(PosArg)].isExists := True;
     end;
   end;
 end;
 
-procedure TCommandLineParser.printError;
+procedure TCommandLineParser.printErrors;
 begin
   Var
     ErrPrinted: Boolean := False;
   for Var i := 0 to High(Params) do
-    if not Params[i].isExists then
+    if (not Params[i].isExists) and (not Params[i].isOptional) then
     begin
       if not ErrPrinted then
       begin
@@ -238,7 +278,7 @@ begin
       Writeln('Missing parameter: "', Params[i].switches[0], '"');
     end;
   for Var i := 0 to High(PosArg) do
-    if not PosArg[i].isExists then
+    if (not PosArg[i].isExists) and (not PosArg[i].isOptional) then
     begin
       if not ErrPrinted then
       begin
@@ -281,33 +321,6 @@ begin
   begin
     Writeln(#9, PosArg[i].switches[0].Replace('@', ''));
     Writeln(#9#9, PosArg[i].Note);
-  end;
-end;
-
-function TCommandLineParser.Cast<T>(const Value: String): T;
-begin
-  case PTypeInfo(System.TypeInfo(T))^.Kind of
-    tkInteger:
-      TryStrToInt(Value, pInteger(@Result)^);
-    tkFloat:
-      begin
-        case SizeOf(T) of
-          SizeOf(Single):
-            TryStrToFloat(Value, pSingle(@Result)^);
-          SizeOf(Double):
-            TryStrToFloat(Value, Double(pDouble(@Result)^));
-{$IFDEF WIN32}
-          SizeOf(Extended):
-            TryStrToFloat(Value, Extended(pExtended(@Result)^));
-{$ENDIF}
-        end;
-      end;
-    tkString, tkUString:
-      Result := TValue(Value).AsType<T>;
-    tkInt64:
-      TryStrToInt64(Value, pInt64(@Result)^);
-  else
-    Assert(False);
   end;
 end;
 

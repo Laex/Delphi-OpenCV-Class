@@ -23,12 +23,12 @@
 {$if not defined(OPENCV_CORE_ASYNC_HPP)}
 {$define OPENCV_CORE_ASYNC_HPP}
 
-{$include core/mat.inc}
+{$IF not defined(OPENCV_CORE_MAT_HPP)}{$include core/mat.inc}{$IFEND}
 
-{$ifdef CV_CXX11}
+{$if defined(CV_CXX11)}
 //{$include <future>
 {$include chrono}
-{$endif}
+{$ifend}
 
 (** @addtogroup core_async
 
