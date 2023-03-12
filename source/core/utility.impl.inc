@@ -118,6 +118,22 @@ begin
   Result := func_useOptimized;
 end;
 
+function findFileOrKeep(const relative_path:string; silentMode:Boolean = False):string;
+begin
+ Result := func_findFileOrKeep(relative_path,silentMode);
+end;
+
+procedure addSamplesDataSearchPath(const path: String);
+begin
+  proc_addSamplesDataSearchPath(path);
+end;
+
+procedure addSamplesDataSearchSubDirectory(const subdir:string);
+begin
+  proc_addSamplesDataSearchSubDirectory(subdir);
+end;
+
+
 { TTickMeter }
 
 class operator _TickMeter.Initialize(out Dest: _TickMeter);

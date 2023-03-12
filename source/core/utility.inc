@@ -1137,6 +1137,7 @@ function useOptimized:bool; inline;
   function findFile(const relative_path:string; required:bool = true; silentMode :bool = false):String; inline;
 
   // CV_EXPORTS_W cv::String findFileOrKeep(const cv::String& relative_path, bool silentMode = false);
+  function findFileOrKeep(const relative_path:string; silentMode:Boolean = False):string; inline;
 
   // inline cv::String findFileOrKeep(const cv::String& relative_path, bool silentMode)
   // {
@@ -1154,6 +1155,7 @@ function useOptimized:bool; inline;
     @param path Path to used samples data
   *)
   // CV_EXPORTS_W void addSamplesDataSearchPath(const cv::String& path);
+  procedure addSamplesDataSearchPath(const path:String); inline;
 
   (* * @brief Append samples search data sub directory
 
@@ -1163,6 +1165,7 @@ function useOptimized:bool; inline;
     @param subdir samples data sub directory
   *)
   // CV_EXPORTS_W void addSamplesDataSearchSubDirectory(const cv::String& subdir);
+  procedure addSamplesDataSearchSubDirectory(const subdir:string); inline;
 
   // ! @}
   // } // namespace samples

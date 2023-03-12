@@ -1,3 +1,7 @@
+{$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
+{$MESSAGE FATAL 'cv.opencv must be compiled as Delphi 10.4 Sydney WIN64'}
+{$IFEND}
+
 {$IF not defined(CVOPT)}
 {$DEFINE CVOPT}
 //

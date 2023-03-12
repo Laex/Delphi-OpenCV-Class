@@ -110,9 +110,6 @@ begin
       vocFile.Free;
     end;
 
-    // for Var i := 0 to vocabulary.size - 1 do
-    // WriteLn(string(vocabulary[i]));
-
     recognizer.setVocabulary(vocabulary);
     recognizer.setDecodeType('CTC-greedy');
 

@@ -22,6 +22,7 @@
 
 {$IF not defined(OPENCV_IMGCODECS_HPP)}
 {$DEFINE OPENCV_IMGCODECS_HPP}
+
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$IFEND}
 (* *
   @defgroup imgcodecs Image file reading and writing
@@ -88,25 +89,27 @@ const
 //    );
 
 Type
-  ImwriteEXRTypeFlags = ( //
+  ImwriteEXRTypeFlags = type int;
+const
     (* IMWRITE_EXR_TYPE_UNIT = 0, //!< not supported *)
-    IMWRITE_EXR_TYPE_HALF = 1, // !< store as HALF (FP16)
-    IMWRITE_EXR_TYPE_FLOAT = 2 // !< store as FP32 (default)
-    );
+    IMWRITE_EXR_TYPE_HALF = 1; // !< store as HALF (FP16)
+    IMWRITE_EXR_TYPE_FLOAT = 2; // !< store as FP32 (default)
 
-  ImwriteEXRCompressionFlags = (       //
-    IMWRITE_EXR_COMPRESSION_NO = 0,    // !< no compression
-    IMWRITE_EXR_COMPRESSION_RLE = 1,   // !< run length encoding
-    IMWRITE_EXR_COMPRESSION_ZIPS = 2,  // !< zlib compression, one scan line at a time
-    IMWRITE_EXR_COMPRESSION_ZIP = 3,   // !< zlib compression, in blocks of 16 scan lines
-    IMWRITE_EXR_COMPRESSION_PIZ = 4,   // !< piz-based wavelet compression
-    IMWRITE_EXR_COMPRESSION_PXR24 = 5, // !< lossy 24-bit float compression
-    IMWRITE_EXR_COMPRESSION_B44 = 6,   // !< lossy 4-by-4 pixel block compression, fixed compression rate
-    IMWRITE_EXR_COMPRESSION_B44A = 7,  // !< lossy 4-by-4 pixel block compression, flat fields are compressed more
-    IMWRITE_EXR_COMPRESSION_DWAA = 8,  // !< lossy DCT based compression, in blocks of 32 scanlines. More efficient for partial buffer access. Supported since OpenEXR 2.2.0.
-    IMWRITE_EXR_COMPRESSION_DWAB = 9   // !< lossy DCT based compression, in blocks of 256 scanlines. More efficient space wise and faster to decode full frames than DWAA_COMPRESSION. Supported since OpenEXR 2.2.0.
-    );
+type
+  ImwriteEXRCompressionFlags = type int;
+const
+    IMWRITE_EXR_COMPRESSION_NO = 0;    // !< no compression
+    IMWRITE_EXR_COMPRESSION_RLE = 1;   // !< run length encoding
+    IMWRITE_EXR_COMPRESSION_ZIPS = 2;  // !< zlib compression, one scan line at a time
+    IMWRITE_EXR_COMPRESSION_ZIP = 3;   // !< zlib compression, in blocks of 16 scan lines
+    IMWRITE_EXR_COMPRESSION_PIZ = 4;   // !< piz-based wavelet compression
+    IMWRITE_EXR_COMPRESSION_PXR24 = 5; // !< lossy 24-bit float compression
+    IMWRITE_EXR_COMPRESSION_B44 = 6;   // !< lossy 4-by-4 pixel block compression, fixed compression rate
+    IMWRITE_EXR_COMPRESSION_B44A = 7;  // !< lossy 4-by-4 pixel block compression, flat fields are compressed more
+    IMWRITE_EXR_COMPRESSION_DWAA = 8;  // !< lossy DCT based compression, in blocks of 32 scanlines. More efficient for partial buffer access. Supported since OpenEXR 2.2.0.
+    IMWRITE_EXR_COMPRESSION_DWAB = 9;   // !< lossy DCT based compression, in blocks of 256 scanlines. More efficient space wise and faster to decode full frames than DWAA_COMPRESSION. Supported since OpenEXR 2.2.0.
 
+Type
   // ! Imwrite PNG specific flags used to tune the compression algorithm.
   (* * These flags will be modify the way of PNG image compression and will be passed to the underlying zlib processing stage.
 
@@ -115,23 +118,24 @@ Type
     -   The strategy parameter only affects the compression ratio but not the correctness of the compressed output even if it is not set appropriately.
     -   IMWRITE_PNG_STRATEGY_FIXED prevents the use of dynamic Huffman codes, allowing for a simpler decoder for special applications.
   *)
-  ImwritePNGFlags = (                      //
-    IMWRITE_PNG_STRATEGY_DEFAULT = 0,      // !< Use this value for normal data.
-    IMWRITE_PNG_STRATEGY_FILTERED = 1,     // !< Use this value for data produced by a filter (or predictor).Filtered data consists mostly of small values with a somewhat random distribution. In this case, the compression algorithm is tuned to compress them better.
-    IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY = 2, // !< Use this value to force Huffman encoding only (no string match).
-    IMWRITE_PNG_STRATEGY_RLE = 3,          // !< Use this value to limit match distances to one (run-length encoding).
-    IMWRITE_PNG_STRATEGY_FIXED = 4         // !< Using this value prevents the use of dynamic Huffman codes, allowing for a simpler decoder for special applications.
-    );
+  ImwritePNGFlags = type int;
+const
+    IMWRITE_PNG_STRATEGY_DEFAULT = 0;      // !< Use this value for normal data.
+    IMWRITE_PNG_STRATEGY_FILTERED = 1;     // !< Use this value for data produced by a filter (or predictor).Filtered data consists mostly of small values with a somewhat random distribution. In this case, the compression algorithm is tuned to compress them better.
+    IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY = 2; // !< Use this value to force Huffman encoding only (no string match).
+    IMWRITE_PNG_STRATEGY_RLE = 3;          // !< Use this value to limit match distances to one (run-length encoding).
+    IMWRITE_PNG_STRATEGY_FIXED = 4;         // !< Using this value prevents the use of dynamic Huffman codes, allowing for a simpler decoder for special applications.
 
+type
   // ! Imwrite PAM specific tupletype flags used to define the 'TUPETYPE' field of a PAM file.
-  ImwritePAMFlags = (                       //
-    IMWRITE_PAM_FORMAT_NULL = 0,            //
-    IMWRITE_PAM_FORMAT_BLACKANDWHITE = 1,   //
-    IMWRITE_PAM_FORMAT_GRAYSCALE = 2,       //
-    IMWRITE_PAM_FORMAT_GRAYSCALE_ALPHA = 3, //
-    IMWRITE_PAM_FORMAT_RGB = 4,             //
-    IMWRITE_PAM_FORMAT_RGB_ALPHA = 5        //
-    );
+  ImwritePAMFlags = type int;
+const
+    IMWRITE_PAM_FORMAT_NULL = 0;            //
+    IMWRITE_PAM_FORMAT_BLACKANDWHITE = 1;   //
+    IMWRITE_PAM_FORMAT_GRAYSCALE = 2;       //
+    IMWRITE_PAM_FORMAT_GRAYSCALE_ALPHA = 3; //
+    IMWRITE_PAM_FORMAT_RGB = 4;             //
+    IMWRITE_PAM_FORMAT_RGB_ALPHA = 5;        //
 
   // ! @} imgcodecs_flags
 
@@ -187,15 +191,8 @@ Type
     @param flags Flag that can take values of cv::ImreadModes
   *)
   // CV_EXPORTS_W Mat imread( const String& filename, int flags = IMREAD_COLOR );
-  {
-    5264
-    ?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
-    ?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
-    class cv::Mat cv::imread(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
-  }
-function imread(const filename: CppString; flag: ImreadModes = IMREAD_COLOR): TMat; overload; external opencv_world_dll name '?imread@cv@@YA?AVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function imread(const filename: String; flag: ImreadModes = IMREAD_COLOR): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-function imread(const filename: String; flag: ImreadModes = IMREAD_COLOR): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (* * @brief Loads a multi-page image from a file.
 
   The function imreadmulti loads a multi-page image from the specified file into a vector of Mat objects.
@@ -205,6 +202,9 @@ function imread(const filename: String; flag: ImreadModes = IMREAD_COLOR): TMat;
   @sa cv::imread
 *)
 // CV_EXPORTS_W bool imreadmulti(const String& filename, CV_OUT std::vector<Mat>& mats, int flags = IMREAD_ANYCOLOR);
+function imreadmulti
+(const filename:String; Var mats:vector<TMat>; flags:int = IMREAD_ANYCOLOR):bool;
+{$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
 (* * @brief Loads a of images of a multi-page image from a file.
 
@@ -217,6 +217,9 @@ function imread(const filename: String; flag: ImreadModes = IMREAD_COLOR): TMat;
   @sa cv::imread
 *)
 // CV_EXPORTS_W bool imreadmulti(const String& filename, CV_OUT std::vector<Mat>& mats, int start, int count, int flags = IMREAD_ANYCOLOR);
+function imreadmulti
+(const filename:String; Var mats:vector<TMat>; start, count:int; flags :int = IMREAD_ANYCOLOR):bool;
+{$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
 (* * @brief Returns the number of images inside the give file
 
@@ -225,6 +228,7 @@ function imread(const filename: String; flag: ImreadModes = IMREAD_COLOR): TMat;
   @param flags Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
 *)
 // CV_EXPORTS_W size_t imcount(const String& filename, int flags = IMREAD_ANYCOLOR);
+function imcount(const filename:String; flags:int = IMREAD_ANYCOLOR):size_t; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (* * @brief Saves an image to a specified file.
 
@@ -257,21 +261,9 @@ function imread(const filename: String; flag: ImreadModes = IMREAD_COLOR): TMat;
 *)
 // CV_EXPORTS_W bool imwrite( const String& filename, InputArray img,
 // const std::vector<int>& params = std::vector<int>());
-{
-  5269
-  ?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z
-  ?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z
-  bool cv::imwrite(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &,class std::vector<int,class std::allocator<int> > const &)
-}
-function imwrite(const filename: CppString; const img: TInputArray; const params: Vector<int> { = std::vector<int>() }
-  ): BOOL; overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
-{$ELSE}
-  name '?imwrite@cv@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEBV?$vector@HV?$allocator@H@std@@@3@@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-  function imwrite(const filename: CppString; const img: TInputArray): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function imwrite(const filename: String; const img: TInputArray; const params: Vector<int>): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function imwrite(const filename: String; const img: TInputArray): BOOL; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
   /// @overload multi-image overload for bindings
   // CV_WRAP static inline
   // bool imwritemulti(const String& filename, InputArrayOfArrays img,
@@ -279,6 +271,9 @@ function imwrite(const filename: CppString; const img: TInputArray; const params
   // {
   // return imwrite(filename, img, params);
   // }
+function imwritemulti(const filename:String; const img:TInputArrayOfArrays;
+   const params:vector<int>):bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function imwritemulti(const filename:String; const img:TInputArrayOfArrays):bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
   (* * @brief Reads an image from a buffer in memory.
 
@@ -292,14 +287,8 @@ function imwrite(const filename: CppString; const img: TInputArray; const params
     @param flags The same flags as in cv::imread, see cv::ImreadModes.
   *)
   // CV_EXPORTS_W Mat imdecode( InputArray buf, int flags );
-  function imdecode(const buf: TInputArray; const flags: Integer): TMat; overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-    name '?imdecode@cv@@YA?AVMat@1@AEBV_InputArray@debug_build_guard@1@H@Z'
-{$ELSE}
-    name '?imdecode@cv@@YA?AVMat@1@AEBV_InputArray@1@H@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-    function imdecode(const mat: TMat; flags: Integer): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function imdecode(const buf: TInputArray; const flags: Integer): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
+
     (* * @overload
       @param buf
       @param flags
@@ -307,6 +296,7 @@ function imwrite(const filename: CppString; const img: TInputArray; const params
       reallocations when the function is called repeatedly for images of the same size.
     *)
     // CV_EXPORTS Mat imdecode( InputArray buf, int flags, Mat* dst);
+function imdecode(const buf:TInputArray; const flags:int; const dst:pMat):TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
     (* * @brief Encodes an image into a memory buffer.
 
@@ -321,22 +311,22 @@ function imwrite(const filename: CppString; const img: TInputArray; const params
     // CV_EXPORTS_W bool imencode( const String& ext, InputArray img,
     // CV_OUT std::vector<uchar>& buf,
     // const std::vector<int>& params = std::vector<int>());
+function imencode( const ext:string; const img:TInputArray;
+         Var buf:vector<uchar>;
+         const params:vector<int> ):bool; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
+function imencode( const ext:string; const img:TInputArray;
+         Var buf:vector<uchar>):bool; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
     (* * @brief Returns true if the specified image can be decoded by OpenCV
-
       @param filename File name of the image
     *)
     // CV_EXPORTS_W bool haveImageReader( const String& filename );
+function haveImageReader(const filename:string):bool; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     (* * @brief Returns true if an image with the specified filename can be encoded by OpenCV
-
       @param filename File name of the image
     *)
     // CV_EXPORTS_W bool haveImageWriter( const String& filename );
-
-
-    // ! @} imgcodecs
-
-    // } // cv
+function haveImageWriter(const filename:string):bool; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 {$IFEND OPENCV_IMGCODECS_HPP}

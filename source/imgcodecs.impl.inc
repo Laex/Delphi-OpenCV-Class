@@ -20,27 +20,83 @@
   limitations under the License.
 *)
 
-{$if defined(OPENCV_IMGCODECS_HPP) and (not defined(OPENCV_IMGCODECS_HPP_IMPL))}
-{$define OPENCV_IMGCODECS_HPP_IMPL}
+{$IF defined(OPENCV_IMGCODECS_HPP) and (not defined(OPENCV_IMGCODECS_HPP_IMPL))}
+{$DEFINE OPENCV_IMGCODECS_HPP_IMPL}
 
 function imread(const filename: String; flag: ImreadModes = IMREAD_COLOR): TMat;
 begin
-  Result := imread(CppString(filename), flag);
+  Result := func_imread(CppString(filename), flag);
 end;
 
-function imwrite(const filename: CppString; const img: TInputArray): BOOL;
+function imreadmulti(const filename: String; Var mats: vector<TMat>; flags: int = IMREAD_ANYCOLOR): bool;
+begin
+  Result := func_imreadmulti(CppString(filename), mats, flags);
+end;
+
+function imreadmulti(const filename: String; Var mats: vector<TMat>; start, count: int; flags: int = IMREAD_ANYCOLOR): bool;
+begin
+  Result := func_imreadmulti_1(CppString(filename), mats, start, count, flags);
+end;
+
+function imcount(const filename: String; flags: int = IMREAD_ANYCOLOR): size_t;
+begin
+  Result := func_imcount(CppString(filename), flags);
+end;
+
+function imwrite(const filename: String; const img: TInputArray; const params: vector<int>): bool;
+begin
+  Result := func_imwrite(CppString(filename), img, params);
+end;
+
+function imwrite(const filename: String; const img: TInputArray): bool;
 begin
   Var
-    a: Vector<Int>;
+    a: vector<int>;
   Result := imwrite(filename, img, a);
 end;
 
-function imdecode(const mat: TMat; flags: Integer): TMat;
-var
-  InputArray: TInputArray;
+function imwritemulti(const filename: String; const img: TInputArrayOfArrays; const params: vector<int>): bool;
 begin
-  InputArray := TInputArray(mat);
-  Result := imdecode(InputArray, flags);
+  Result := imwrite(filename, img, params);
+end;
+
+function imwritemulti(const filename: String; const img: TInputArrayOfArrays): bool;
+begin
+  Var
+    params: vector<int>;
+  Result := imwrite(filename, img, params);
+end;
+
+function imdecode(const buf: TInputArray; const flags: Integer): TMat;
+begin
+  Result := func_imdecode(buf, flags);
+end;
+
+function imdecode(const buf: TInputArray; const flags: int; const dst: pMat): TMat;
+begin
+  Result := func_imdecode_1(buf, flags, dst);
+end;
+
+function imencode(const ext: string; const img: TInputArray; Var buf: vector<uchar>; const params: vector<int>): bool;
+begin
+  Result := func_imencode(CppString(ext), img, buf, params);
+end;
+
+function imencode(const ext: string; const img: TInputArray; Var buf: vector<uchar>): bool;
+begin
+  Var
+    V: vector<int>;
+  Result := func_imencode(CppString(ext), img, buf, V);
+end;
+
+function haveImageReader(const filename: string): bool;
+begin
+  Result := func_haveImageReader(CppString(filename));
+end;
+
+function haveImageWriter(const filename: string): bool;
+begin
+  Result := func_haveImageWriter(CppString(filename));
 end;
 
 {$IFEND}
