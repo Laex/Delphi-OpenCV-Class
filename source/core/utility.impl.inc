@@ -25,114 +25,157 @@
 
 function setBreakOnError(flag: bool): bool;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_setBreakOnError(flag);
+{$IFEND}
 end;
 
 function redirectError(errCallback: TErrorCallback; userdata: Pointer = nil; prevUserdata: Pointer = nil): TErrorCallback;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_redirectError(errCallback, userdata, prevUserdata);
+{$IFEND}
 end;
 
 procedure setNumThreads(nthreads: int);
 begin
+{$IF not defined(PACKAGE)}
   proc_setNumThreads(nthreads);
+{$IFEND}
 end;
 
 function getNumThreads: int;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getNumThreads;
+{$IFEND}
 end;
 
 function getThreadNum: int;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getThreadNum;
+{$IFEND}
 end;
 
 function getBuildInformation: String;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getBuildInformation^;
+{$IFEND}
 end;
 
 function getVersionString: string;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getVersionString;
+{$IFEND}
 end;
 
 function getVersionMajor: int;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getVersionMajor;
+{$IFEND}
 end;
 
 function getVersionMinor: int;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getVersionMinor;
+{$IFEND}
 end;
 
 function getVersionRevision: int;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getVersionRevision;
+{$IFEND}
 end;
 
 function getTickCount: Int64;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getTickCount;
+{$IFEND}
 end;
 
 function getTickFrequency: Double;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getTickFrequency;
+{$IFEND}
 end;
 
 function getCPUTickCount: Int64;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getCPUTickCount;
+{$IFEND}
 end;
 
 function checkHardwareSupport(feature: int): bool;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_checkHardwareSupport(feature);
+{$IFEND}
 end;
 
 function getHardwareFeatureName(feature: int): string;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getHardwareFeatureName(feature);
+{$IFEND}
 end;
 
 function getCPUFeaturesLine: string;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getCPUFeaturesLine();
+{$IFEND}
 end;
 
 function getNumberOfCPUs: int;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_getNumberOfCPUs;
+{$IFEND}
 end;
 
 procedure setUseOptimized(onoff: bool);
 begin
+{$IF not defined(PACKAGE)}
   proc_setUseOptimized(onoff);
+{$IFEND}
 end;
 
 function useOptimized: bool;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_useOptimized;
+{$IFEND}
 end;
 
-function findFileOrKeep(const relative_path:string; silentMode:Boolean = False):string;
+function findFileOrKeep(const relative_path: string; silentMode: Boolean = False): string;
 begin
- Result := func_findFileOrKeep(relative_path,silentMode);
+{$IF not defined(PACKAGE)}
+  Result := func_findFileOrKeep(relative_path, silentMode);
+{$IFEND}
 end;
 
 procedure addSamplesDataSearchPath(const path: String);
 begin
+{$IF not defined(PACKAGE)}
   proc_addSamplesDataSearchPath(path);
+{$IFEND}
 end;
 
-procedure addSamplesDataSearchSubDirectory(const subdir:string);
+procedure addSamplesDataSearchSubDirectory(const subdir: string);
 begin
+{$IF not defined(PACKAGE)}
   proc_addSamplesDataSearchSubDirectory(subdir);
+{$IFEND}
 end;
-
 
 { TTickMeter }
 
@@ -212,9 +255,23 @@ end;
 
 { TCommandLineParser }
 
-function findFile(const relative_path: string; required: bool = true; silentMode: bool = false): String;
+function findFile(const relative_path: string; required: bool = true; silentMode: bool = False): String;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_findFile(relative_path, required, silentMode);
+{$IFEND}
+end;
+
+{ AutoBuffer<T> }
+
+class operator AutoBuffer<T>.Initialize(out Dest: AutoBuffer<T>);
+begin
+  Dest.ptr := AllocMem(1024 div sizeof(T) + 8);
+end;
+
+class operator AutoBuffer<T>.Finalize(var Dest: AutoBuffer<T>);
+begin
+  FreeMem(Dest.ptr);
 end;
 
 {$IFEND OPENCV_CORE_UTILITY_H}

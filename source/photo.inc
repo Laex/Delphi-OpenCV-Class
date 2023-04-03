@@ -96,13 +96,14 @@ void cv::inpaint(class cv::_InputArray const &,class cv::_InputArray const &,cla
 }
 procedure inpaint( const src:TInputArray;const inpaintMask:TInputArray;
                    const dst:TOutputArray; inpaintRadius:double; flags:int);
-external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?inpaint@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
-{$ELSE}
-  name '?inpaint@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?inpaint@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
+//{$ELSE}
+//  name '?inpaint@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     // ! @} photo_inpaint
 
@@ -169,14 +170,15 @@ void cv::fastNlMeansDenoising(class cv::_InputArray const &,class cv::_OutputArr
 procedure fastNlMeansDenoising( const src:TInputArray;const dst:TOutputArray;
      const h:vector<float>;
      templateWindowSize :int= 7; searchWindowSize :int= 21;
-     normType :int= int(NORM_L2));
-overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
-{$ELSE}
-  name '?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+     normType :int= NORM_L2);
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
+//{$ELSE}
+//  name '?fastNlMeansDenoising@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @brief Modification of fastNlMeansDenoising function for colored images
 
@@ -208,13 +210,14 @@ void cv::fastNlMeansDenoisingColored(class cv::_InputArray const &,class cv::_Ou
 procedure fastNlMeansDenoisingColored(const src:TInputArray;const dst:TOutputArray;
 h :float= 3; hColor :float= 3;
 templateWindowSize :int= 7; searchWindowSize :int= 21);
-overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MMHH@Z'
-{$ELSE}
-  name '?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MMHH@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MMHH@Z'
+//{$ELSE}
+//  name '?fastNlMeansDenoisingColored@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MMHH@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
       captured in small period of time. For example video. This version of the function is for grayscale
@@ -251,13 +254,14 @@ void cv::fastNlMeansDenoisingMulti(class cv::_InputArray const &,class cv::_Outp
 procedure fastNlMeansDenoisingMulti(const srcImgs:TInputArrayOfArrays;const dst:TOutputArray;
  imgToDenoiseIndex:int; temporalWindowSize:int;
  h :float= 3; templateWindowSize :int= 7; searchWindowSize :int= 21);
-overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMHH@Z'
-{$ELSE}
-  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMHH@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMHH@Z'
+//{$ELSE}
+//  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMHH@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Modification of fastNlMeansDenoising function for images sequence where consecutive images have been
       captured in small period of time. For example video. This version of the function is for grayscale
@@ -295,18 +299,22 @@ overload; external opencv_world_dll
 ?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z
 void cv::fastNlMeansDenoisingMulti(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,class std::vector<float,class std::allocator<float> > const &,int,int,int)
 }
-procedure fastNlMeansDenoisingMulti(const srcImgs:TInputArrayOfArrays;const dst:TOutputArray;
- imgToDenoiseIndex:int; temporalWindowSize:int;
+procedure fastNlMeansDenoisingMulti(
+ const srcImgs:TInputArrayOfArrays;
+ const dst:TOutputArray;
+ imgToDenoiseIndex:int;
+ temporalWindowSize:int;
  const h:vector<float>;
  templateWindowSize :int= 7; searchWindowSize: int= 21;
- normType :int= int(NORM_L2));
-overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
-{$ELSE}
-  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+ normType :int= NORM_L2);
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
+//{$ELSE}
+//  name '?fastNlMeansDenoisingMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHAEBV?$vector@MV?$allocator@M@std@@@std@@HHH@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Modification of fastNlMeansDenoisingMulti function for colored images sequences
 
@@ -345,13 +353,14 @@ procedure fastNlMeansDenoisingColoredMulti(const srcImgs:TInputArrayOfArrays;con
  imgToDenoiseIndex:int; temporalWindowSize:int;
  h :float= 3; hColor :float= 3;
  templateWindowSize :int= 7; searchWindowSize :int= 21);
-overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMMHH@Z'
-{$ELSE}
-  name '?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMMHH@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHMMHH@Z'
+//{$ELSE}
+//  name '?fastNlMeansDenoisingColoredMulti@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHMMHH@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Primal-dual algorithm is an algorithm for solving special types of variational problems (that is,
       finding a function to minimize some functional). As the image denoising, in particular, may be seen
@@ -398,14 +407,14 @@ overload; external opencv_world_dll
 void cv::denoise_TVL1(class std::vector<class cv::Mat,class std::allocator<class cv::Mat> > const &,class cv::Mat &,double,int)
 }
 procedure denoise_TVL1(const observations:vector<TMat>; Var res:TMat; lambda:double=1.0; niters:int=30);
-overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z'
-{$ELSE}
-  name '?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z'
+//{$ELSE}
+//  name '?denoise_TVL1@cv@@YAXAEBV?$vector@VMat@cv@@V?$allocator@VMat@cv@@@std@@@std@@AEAVMat@1@NH@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
   LDR_SIZE = 256;
@@ -801,13 +810,14 @@ struct cv::Ptr<class cv::Tonemap> cv::createTonemap(float)
       void cv::decolor(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
     }
 procedure decolor(const Src: TInputArray; const grayscale: TOutputArray; const color_boost: TOutputArray);
-external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?decolor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
-{$ELSE}
-name '?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//name '?decolor@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
+//{$ELSE}
+//name '?decolor@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
   // ! @} photo_decolor
 
@@ -850,13 +860,14 @@ void cv::seamlessClone(class cv::_InputArray const &,class cv::_InputArray const
 }
 procedure seamlessClone(const src:TInputArray;const dst:TInputArray;const mask:TInputArray;const p:TPoint;
      const blend:TOutputArray; flags:int);
-external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?seamlessClone@cv@@YAXAEBV_InputArray@debug_build_guard@1@00V?$Point_@H@1@AEBV_OutputArray@31@H@Z'
-{$ELSE}
-name '?seamlessClone@cv@@YAXAEBV_InputArray@1@00V?$Point_@H@1@AEBV_OutputArray@1@H@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//name '?seamlessClone@cv@@YAXAEBV_InputArray@debug_build_guard@1@00V?$Point_@H@1@AEBV_OutputArray@31@H@Z'
+//{$ELSE}
+//name '?seamlessClone@cv@@YAXAEBV_InputArray@1@00V?$Point_@H@1@AEBV_OutputArray@1@H@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Given an original color image, two differently colored versions of this image can be mixed
       seamlessly.
@@ -880,13 +891,14 @@ void cv::colorChange(class cv::_InputArray const &,class cv::_InputArray const &
 }
 procedure colorChange(const src:TInputArray;const mask:TInputArray;const dst:TOutputArray; red_mul :float= 1.0;
  green_mul :float= 1.0; blue_mul :float= 1.0);
-external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?colorChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMM@Z'
-{$ELSE}
-name '?colorChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMM@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//name '?colorChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMM@Z'
+//{$ELSE}
+//name '?colorChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMM@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief Applying an appropriate non-linear transformation to the gradient field inside the selection and
       then integrating back with a Poisson solver, modifies locally the apparent illumination of an image.
@@ -909,13 +921,14 @@ void cv::illuminationChange(class cv::_InputArray const &,class cv::_InputArray 
 }
 procedure illuminationChange(const src:TInputArray;const mask:TInputArray;const dst:TOutputArray;
  alpha :float= 0.2; beta :float= 0.4);
-external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?illuminationChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MM@Z'
-{$ELSE}
-name '?illuminationChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MM@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//name '?illuminationChange@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MM@Z'
+//{$ELSE}
+//name '?illuminationChange@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MM@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     (* * @brief By retaining only the gradients at edge locations, before integrating with the Poisson solver, one
       washes out the texture of the selected region, giving its contents a flat aspect. Here Canny Edge %Detector is used.
@@ -944,13 +957,14 @@ void cv::textureFlattening(class cv::_InputArray const &,class cv::_InputArray c
 procedure textureFlattening(const src:TInputArray;const mask:TInputArray;const dst:TOutputArray;
  low_threshold :float= 30; high_threshold :float= 45;
  kernel_size :int= 3);
-external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?textureFlattening@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMH@Z'
-{$ELSE}
-name '?textureFlattening@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMH@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//name '?textureFlattening@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@MMH@Z'
+//{$ELSE}
+//name '?textureFlattening@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@MMH@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
     // ! @} photo_clone
 
@@ -979,13 +993,14 @@ const
  void cv::edgePreservingFilter(class cv::_InputArray const &,class cv::_OutputArray const &,int,float,float)
 }
 procedure edgePreservingFilter(const Src: TInputArray; const dst: TOutputArray; flags: Int = 1; sigma_s: float = 60; sigma_r: float = 0.4);
-external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z'
-{$ELSE}
-name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HMM@Z'
+//{$ELSE}
+//name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
   (* * @brief This filter enhances the details of a particular image.
 
@@ -1002,13 +1017,15 @@ name '?edgePreservingFilter@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HMM@Z'
     ?detailEnhance@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z
     void cv::detailEnhance(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
   }
-procedure detailEnhance(const Src: TInputArray; const dst: TOutputArray; sigma_s: float = 10; sigma_r: float = 0.15); external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?detailEnhance@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z'
-{$ELSE}
-  name '?detailEnhance@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure detailEnhance(const Src: TInputArray; const dst: TOutputArray; sigma_s: float = 10; sigma_r: float = 0.15);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?detailEnhance@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z'
+//{$ELSE}
+//  name '?detailEnhance@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
   (* * @example samples/cpp/tutorial_code/photo/non_photorealistic_rendering/npr_demo.cpp
     An example using non-photorealistic line drawing functions
@@ -1030,13 +1047,15 @@ procedure detailEnhance(const Src: TInputArray; const dst: TOutputArray; sigma_s
     ?pencilSketch@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1MMM@Z
     void cv::pencilSketch(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,float,float,float)
   }
-procedure pencilSketch(const Src: TInputArray; const dst1: TOutputArray; const dst2: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.07; shade_factor: float = 0.02); external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?pencilSketch@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1MMM@Z'
-{$ELSE}
-  name '?pencilSketch@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1MMM@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure pencilSketch(const Src: TInputArray; const dst1: TOutputArray; const dst2: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.07; shade_factor: float = 0.02);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?pencilSketch@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1MMM@Z'
+//{$ELSE}
+//  name '?pencilSketch@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1MMM@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
   (* * @brief Stylization aims to produce digital imagery with a wide variety of effects not focused on
     photorealism. Edge-aware filters are ideal for stylization, as they can abstract regions of low
     contrast while preserving, or enhancing, high-contrast features.
@@ -1055,13 +1074,14 @@ procedure pencilSketch(const Src: TInputArray; const dst1: TOutputArray; const d
     void cv::stylization(class cv::_InputArray const &,class cv::_OutputArray const &,float,float)
   }
 procedure stylization(const Src: TInputArray; const dst: TOutputArray; sigma_s: float = 60; sigma_r: float = 0.45);
-external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?stylization@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z'
-{$ELSE}
-  name '?stylization@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?stylization@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@MM@Z'
+//{$ELSE}
+//  name '?stylization@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@MM@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
   // ! @} photo_render
 

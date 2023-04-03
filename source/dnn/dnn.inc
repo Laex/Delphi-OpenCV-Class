@@ -25,7 +25,7 @@
 
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
 {$include core/async.inc}
-{$include dnn/version.inc}
+{$IF not defined(OPENCV_VERSION_HPP)}{$I 'core/version.inc'}{$IFEND}
 {$include dnn/dict.inc}
 
 //! @addtogroup dnn

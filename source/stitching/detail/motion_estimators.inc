@@ -20,12 +20,12 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_STITCHING_MOTION_ESTIMATORS_HPP}
+{$if not defined(OPENCV_STITCHING_MOTION_ESTIMATORS_HPP)}
 {$define OPENCV_STITCHING_MOTION_ESTIMATORS_HPP}
 
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-{$i 'stitching/detail/matchers.inc'}
-{$i 'stitching/detail/util.inc'}
+{$if not defined(OPENCV_STITCHING_MATCHERS_HPP)}{$i 'stitching/detail/matchers.inc'}{$ifend}
+{$if not defined(OPENCV_STITCHING_UTIL_HPP)}{$i 'stitching/detail/util.inc'}{$ifend}
 {$i 'stitching/detail/camera.inc'}
 
 //namespace cv {
@@ -350,4 +350,4 @@ on whether a panorama spans horizontally or vertically
 //} // namespace detail
 //} // namespace cv
 
-{$endif OPENCV_STITCHING_MOTION_ESTIMATORS_HPP}
+{$ifend} //OPENCV_STITCHING_MOTION_ESTIMATORS_HPP

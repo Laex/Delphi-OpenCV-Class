@@ -37,7 +37,7 @@ uses
   ToolsAPI,
   CVClass;
 
-{$I '..\..\source\core\version.inc'}
+{$I 'core\version.inc'}
 
 const
   PackageText = 'Delphi binding for OpenCV';

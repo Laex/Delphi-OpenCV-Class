@@ -37,6 +37,7 @@ Uses
   VCL.Controls,
   VCL.Graphics,
   VCL.Themes,
+  cpp.utils,
   cv.opencv;
 
 Type

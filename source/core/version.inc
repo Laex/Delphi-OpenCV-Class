@@ -23,7 +23,7 @@
 {$IF not defined(OPENCV_VERSION_HPP)}
 {$DEFINE OPENCV_VERSION_HPP}
 
-{$I opt.inc}
+{$IF not defined(CVOPT)}{$I opt.inc}{$IFEND}
 
 const
 {$IFDEF OPENCV_455}
@@ -59,7 +59,12 @@ const
   CV_VERSION = CV_VERSION_MAJOR + '.' + CV_VERSION_MINOR + '.' + CV_VERSION_REVISION + CV_VERSION_STATUS;
 
   cvdllversion      = CV_VERSION_MAJOR + CV_VERSION_MINOR + CV_VERSION_REVISION;
+{$IF not defined(PACKAGE)}
   opencv_delphi_dll = 'opencv_delphi' + cvdllversion + {$IFDEF USE_DEBUG_DLLS} 'd' + {$ENDIF} '.dll';
   opencv_world_dll  = 'opencv_world' + cvdllversion + {$IFDEF USE_DEBUG_DLLS} 'd' + {$ENDIF} '.dll';
+{$ifend}
+
+{$ELSE}
+{$MESSAGE FATAL 'Duplicate included file - core/version.inc'}
 
 {$IFEND OPENCV_VERSION_HPP}

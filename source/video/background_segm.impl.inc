@@ -33,7 +33,9 @@ end;
 
 class operator TBackgroundSubtractorMOG2.Finalize(var Dest: TBackgroundSubtractorMOG2);
 begin
+{$IF not defined(PACKAGE)}
   destructor_CV_BACKGROUNDSUBTRACTORMOG2(Dest);
+{$ifend}
 end;
 
 procedure TBackgroundSubtractorMOG2.setVarThreshold(varThreshold: double);
@@ -58,5 +60,23 @@ Type
 begin
   TgetBackgroundImage(vftable(Self.vft, $40 div SizeOf(Pointer)))(Self, backgroundImage);
 end;
+
+function createBackgroundSubtractorMOG2(
+         history: Int = 500;
+         varThreshold: double = 16;
+         detectShadows: BOOL = true): TPtr<TBackgroundSubtractorMOG2>;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_createBackgroundSubtractorMOG2(history,varThreshold,detectShadows);
+{$IFEND}
+end;
+
+function createBackgroundSubtractorKNN(history:int=500; dist2Threshold:double=400.0; detectShadows:bool=true):TPtr<TBackgroundSubtractorKNN>;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_createBackgroundSubtractorKNN(history,dist2Threshold,detectShadows);
+{$IFEND}
+end;
+
 
 {$endif}

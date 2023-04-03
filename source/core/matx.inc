@@ -29,7 +29,7 @@
 
 {$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
 {$IF not defined(OPENCV_CORE_BASE_HPP)}{$I 'core/base.inc'}{$ifend}
-{$I 'core/traits.inc'}
+{$IF not defined(OPENCV_CORE_TRAITS_HPP)}{$I 'core/traits.inc'}{$ifend}
 {$if not defined(OPENCV_CORE_SATURATE_HPP)}{$I 'core/saturate.inc'}{$ifend}
 
 //{$I <initializer_list>
@@ -1513,4 +1513,8 @@ template<typename _Tp> inline Vec<_Tp, 4>& operator *= (Vec<_Tp, 4>& v1, const V
 
 } // cv
 *)
-{$ifend OPENCV_CORE_MATX_HPP}
+
+{$ELSE}
+{$MESSAGE FATAL 'Duplicate included file - core/matx.inc'}
+
+{$ifend} //OPENCV_CORE_MATX_HPP

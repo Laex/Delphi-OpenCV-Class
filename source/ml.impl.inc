@@ -26,7 +26,9 @@
 
 class function TSVM.Create: TPtr<TSVM>;
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_ML_SVM_create(Result._Ptr);
+{$IFEND}
 end;
 
 class operator TSVM.Finalize(var Dest: TSVM);
@@ -94,12 +96,16 @@ end;
 
 class operator TANN_MLP.Finalize(var Dest: TANN_MLP);
 begin
+{$IF not defined(PACKAGE)}
   destructor_CV_ML_ANN_MLP(Dest);
+{$ifend}
 end;
 
 class function TANN_MLP.Create(): TPtr<TANN_MLP>;
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_ML_ANN_MLP_create(Result);
+{$ifend}
 end;
 
 procedure TANN_MLP.setLayerSizes(const _layer_sizes: TInputArray);
@@ -158,33 +164,31 @@ end;
 
 class operator TTrainData.Finalize(var Dest: TTrainData);
 begin
+{$IF not defined(PACKAGE)}
   destructor_CV_ML_TRAINDATA(Dest);
+{$ifend}
 end;
 
-class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray;
-  const varIdx: TInputArray { =noArray() }; const sampleIdx: TInputArray { =noArray() }; const sampleWeights: TInputArray { =noArray() };
-  const varType: TInputArray { =noArray() }
+class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray; const varIdx: TInputArray { =noArray() }; const sampleIdx: TInputArray { =noArray() }; const sampleWeights: TInputArray { =noArray() }; const varType: TInputArray { =noArray() }
   ): TPtr<TTrainData>;
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_ML_TRAINDATA_create(Result, samples, Int(layout), responses, varIdx, sampleIdx, sampleWeights, varType);
+{$ifend}
 end;
 
-class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray;
-  const varIdx: TInputArray { =noArray() }; const sampleIdx: TInputArray { =noArray() }; const sampleWeights: TInputArray { =noArray() } )
-  : TPtr<TTrainData>;
+class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray; const varIdx: TInputArray { =noArray() }; const sampleIdx: TInputArray { =noArray() }; const sampleWeights: TInputArray { =noArray() } ): TPtr<TTrainData>;
 begin
   Result := TTrainData.Create(samples, layout, responses, varIdx, sampleIdx, sampleWeights, TInputArray.noArray);
 end;
 
-class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray;
-  const varIdx: TInputArray { =noArray() }; const sampleIdx: TInputArray { =noArray() }
+class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray; const varIdx: TInputArray { =noArray() }; const sampleIdx: TInputArray { =noArray() }
   ): TPtr<TTrainData>;
 begin
   Result := TTrainData.Create(samples, layout, responses, varIdx, sampleIdx, TInputArray.noArray);
 end;
 
-class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray;
-  const varIdx: TInputArray { =noArray() } ): TPtr<TTrainData>;
+class function TTrainData.Create(const samples: TInputArray; layout: SampleTypes; const responses: TInputArray; const varIdx: TInputArray { =noArray() } ): TPtr<TTrainData>;
 begin
   Result := TTrainData.Create(samples, layout, responses, varIdx, TInputArray.noArray);
 end;

@@ -264,4 +264,8 @@ Type
 
     } // cv
   *)
+
+{$ELSE}
+{$MESSAGE FATAL 'Duplicate included file - core/traits.inc'}
+
 {$IFEND OPENCV_CORE_TRAITS_HPP}

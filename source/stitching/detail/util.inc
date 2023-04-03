@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_STITCHING_UTIL_HPP}
+{$if not defined(OPENCV_STITCHING_UTIL_HPP)}
 {$define OPENCV_STITCHING_UTIL_HPP}
 
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
@@ -95,6 +95,6 @@
 //} // namespace detail
 //} // namespace cv
 
-{$i 'stitching/detail/util_inl.inc'}
+{$if not defined(OPENCV_STITCHING_UTIL_HPP)}{$i 'stitching/detail/util.inc'}{$ifend}
 
-{$endif OPENCV_STITCHING_UTIL_HPP}
+{$ifend} //OPENCV_STITCHING_UTIL_HPP

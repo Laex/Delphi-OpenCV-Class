@@ -20,12 +20,12 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_STITCHING_MATCHERS_HPP}
+{$if not defined(OPENCV_STITCHING_MATCHERS_HPP)}
 {$define OPENCV_STITCHING_MATCHERS_HPP}
 
 {$if not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$ifend}
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-{$i 'features2d.inc'}
+{$if not defined(OPENCV_FEATURES_2D_HPP)}{$i 'features2d.inc'}{$ifend}
 
 //namespace cv {
 //namespace detail {
@@ -229,4 +229,4 @@ transformation (affine transformation estimate will be placed in matches_info).
 //} // namespace detail
 //} // namespace cv
 
-{$endif OPENCV_STITCHING_MATCHERS_HPP}
+{$ifend}//OPENCV_STITCHING_MATCHERS_HPP

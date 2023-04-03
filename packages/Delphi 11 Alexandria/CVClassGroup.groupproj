@@ -7,7 +7,7 @@
             <Dependencies/>
         </Projects>
         <Projects Include="dclCVClass.dproj">
-            <Dependencies>rtlCVClass.dproj</Dependencies>
+            <Dependencies/>
         </Projects>
     </ItemGroup>
     <ProjectExtensions>
@@ -26,13 +26,13 @@
     <Target Name="rtlCVClass:Make">
         <MSBuild Projects="rtlCVClass.dproj" Targets="Make"/>
     </Target>
-    <Target Name="dclCVClass" DependsOnTargets="rtlCVClass">
+    <Target Name="dclCVClass">
         <MSBuild Projects="dclCVClass.dproj"/>
     </Target>
-    <Target Name="dclCVClass:Clean" DependsOnTargets="rtlCVClass:Clean">
+    <Target Name="dclCVClass:Clean">
         <MSBuild Projects="dclCVClass.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="dclCVClass:Make" DependsOnTargets="rtlCVClass:Make">
+    <Target Name="dclCVClass:Make">
         <MSBuild Projects="dclCVClass.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">

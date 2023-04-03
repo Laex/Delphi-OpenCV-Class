@@ -28,10 +28,10 @@ interface
 
 Uses
   System.Classes,
-  System.SyncObjs,
-  DesignEditors,
-  DesignIntf,
-  CVClass;
+  System.SyncObjs
+  ,DesignEditors
+  ,DesignIntf
+  ,CVClass;
 
 Type
   TSourceProperty = class(TComponentProperty)

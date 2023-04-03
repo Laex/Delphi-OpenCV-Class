@@ -24,6 +24,7 @@ package rtlCVClass;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
+{$DEFINE PACKAGE}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Run time Delphi-OpenCV for C++ classes'}
 {$LIBSUFFIX '280'}
@@ -35,8 +36,9 @@ requires
   vcl;
 
 contains
-  cv.opencv in '..\..\source\cv.opencv.pas' {/  ,cpp.utils in '..\..\source\cpp.utils.pas'},
-  cpp.utils in '..\..\source\cpp.utils.pas';
+  cpp.utils in '..\..\source\cpp.utils.pas',
+  cv.opencv in '..\..\source\cv.opencv.pas',
+  cv.external in '..\..\source\cv.external.pas';
 
 end.
 

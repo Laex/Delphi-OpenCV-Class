@@ -197,6 +197,9 @@ and @cite Zivkovic2006 .
     // CV_WRAP virtual void apply(InputArray image, OutputArray fgmask, double learningRate=-1) CV_OVERRIDE = 0;
     procedure apply(const image: TInputArray;const fgmask: TOutputArray; learningRate: double = -1); {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
+
+  TPtr_TBackgroundSubtractorMOG2 = TPtr<TBackgroundSubtractorMOG2>;
+
 (** @brief Creates MOG2 Background Subtractor
 
 @param history Length of the history.
@@ -215,9 +218,13 @@ speed a bit, so if you do not need this feature, set the parameter to false.
     ?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z
     struct cv::Ptr<class cv::BackgroundSubtractorMOG2> cv::createBackgroundSubtractorMOG2(int,double,bool)
 }
-function createBackgroundSubtractorMOG2(history: Int = 500; varThreshold: double = 16; detectShadows: BOOL = true): TPtr<TBackgroundSubtractorMOG2>; overload;
-external opencv_world_dll name '?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function createBackgroundSubtractorMOG2(
+         history: Int = 500;
+         varThreshold: double = 16;
+         detectShadows: BOOL = true): TPtr<TBackgroundSubtractorMOG2>; overload;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll name '?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z'
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 type
 (** @brief K-nearest neighbours - based Background/Foreground Segmentation Algorithm.
@@ -226,6 +233,7 @@ The class implements the K-nearest neighbours background subtraction described i
 Very efficient if number of foreground pixels is low.
  *)
     TBackgroundSubtractorKNN = type TBackgroundSubtractor;
+    TPtr_TBackgroundSubtractorKNN = TPtr<TBackgroundSubtractorKNN>;
 
     pBackgroundSubtractorKNN = ^TBackgroundSubtractorKNN;
 
@@ -318,8 +326,9 @@ speed a bit, so if you do not need this feature, set the parameter to false.
 struct cv::Ptr<class cv::BackgroundSubtractorKNN> cv::createBackgroundSubtractorKNN(int,double,bool)
 }
 function createBackgroundSubtractorKNN(history:int=500; dist2Threshold:double=400.0; detectShadows:bool=true):TPtr<TBackgroundSubtractorKNN>;
-external opencv_world_dll name '?createBackgroundSubtractorKNN@cv@@YA?AU?$Ptr@VBackgroundSubtractorKNN@cv@@@1@HN_N@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll name '?createBackgroundSubtractorKNN@cv@@YA?AU?$Ptr@VBackgroundSubtractorKNN@cv@@@1@HN_N@Z'
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //4264	?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z	?createBackgroundSubtractorMOG2@cv@@YA?AU?$Ptr@VBackgroundSubtractorMOG2@cv@@@1@HN_N@Z	struct cv::Ptr<class cv::BackgroundSubtractorMOG2> cv::createBackgroundSubtractorMOG2(int,double,bool)
 

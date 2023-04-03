@@ -20,11 +20,11 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_HIGHGUI_H}
+{$if not defined(OPENCV_HIGHGUI_H)}
 {$define OPENCV_HIGHGUI_H}
 
-{$if not defined(OPENCV_CORE_C_H)}{$include 'core/core_c.inc'}{$ifend}
-{$include 'imgproc/imgproc_c.inc'}
+{$if not defined(OPENCV_CORE_C_H)}{$i 'core/core_c.inc'}{$ifend}
+{$if not defined(OPENCV_IMGPROC_IMGPROC_C_H)}{$i 'imgproc/imgproc_c.inc'}{$ifend}
 
 (** @addtogroup highgui_c
   @{
@@ -76,23 +76,25 @@ const
 (* this function is used to set some external parameters in case of X Window *)
 //CVAPI(int) cvInitSystem( int argc, char** argv );
 function cvInitSystem(argc:int; argv:pcvchar):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7825
-{$ELSE}
-name 'cvInitSystem'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7825
+//{$ELSE}
+//name 'cvInitSystem'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(int) cvStartWindowThread( void );
 function cvStartWindowThread():int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7991
-{$ELSE}
-name 'cvStartWindowThread'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7991
+//{$ELSE}
+//name 'cvStartWindowThread'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
 // ---------  YV ---------
@@ -123,110 +125,120 @@ const
 (* create window *)
 //CVAPI(int) cvNamedWindow( const char* name, int flags CV_DEFAULT(CV_WINDOW_AUTOSIZE) );
 function cvNamedWindow(const name:pcvchar; flags:int=CV_WINDOW_AUTOSIZE):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7860
-{$ELSE}
-name 'cvNamedWindow'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7860
+//{$ELSE}
+//name 'cvNamedWindow'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* Set and Get Property of the window *)
 //CVAPI(void) cvSetWindowProperty(const char* name, int prop_id, double prop_value);
 procedure cvSetWindowProperty(const name:pcvchar; prop_id:int; prop_value:double);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7975
-{$ELSE}
-name 'cvSetWindowProperty'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7975
+//{$ELSE}
+//name 'cvSetWindowProperty'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(double) cvGetWindowProperty(const char* name, int prop_id);
 function cvGetWindowProperty(const name:pcvchar; prop_id:int):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7801
-{$ELSE}
-name 'cvGetWindowProperty'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7801
+//{$ELSE}
+//name 'cvGetWindowProperty'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* display image within window (highgui windows remember their content) *)
 //CVAPI(void) cvShowImage( const char* name, const CvArr* image );
 procedure cvShowImage(const name:pcvchar; const image:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7977
-{$ELSE}
-name 'cvShowImage'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7977
+//{$ELSE}
+//name 'cvShowImage'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* resize/move window *)
 //CVAPI(void) cvResizeWindow( const char* name, int width, int height );
 procedure cvResizeWindow(const name:pcvchar; width:int; height:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7918
-{$ELSE}
-name 'cvResizeWindow'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7918
+//{$ELSE}
+//name 'cvResizeWindow'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvMoveWindow( const char* name, int x, int y );
 procedure cvMoveWindow(const name:pcvchar; x:int; y:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7855
-{$ELSE}
-name 'cvMoveWindow'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7855
+//{$ELSE}
+//name 'cvMoveWindow'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (* destroy window and all the trackers associated with it *)
 //CVAPI(void) cvDestroyWindow( const char* name );
 procedure cvDestroyWindow(const name:pcvchar);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7721
-{$ELSE}
-name 'cvDestroyWindow'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7721
+//{$ELSE}
+//name 'cvDestroyWindow'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvDestroyAllWindows(void);
 procedure cvDestroyAllWindows();
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7720
-{$ELSE}
-name 'cvDestroyAllWindows'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7720
+//{$ELSE}
+//name 'cvDestroyAllWindows'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* get native window handle (HWND in case of Win32 and Widget in case of X Window) *)
 //CVAPI(void*) cvGetWindowHandle( const char* name );
 function cvGetWindowHandle(const name:pcvchar):pointer;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7799
-{$ELSE}
-name 'cvGetWindowHandle'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7799
+//{$ELSE}
+//name 'cvGetWindowHandle'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* get name of highgui window given its native handle *)
 //CVAPI(const char*) cvGetWindowName( void* window_handle );
 function cvGetWindowName(window_handle:pvoid):pcvchar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7800
-{$ELSE}
-name 'cvGetWindowName'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7800
+//{$ELSE}
+//name 'cvGetWindowName'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 type
@@ -237,13 +249,14 @@ TCvTrackbarCallback = procedure(pos:int);
 //CVAPI(int) cvCreateTrackbar( const char* trackbar_name, const char* window_name,
 //                             int* value, int count, CvTrackbarCallback on_change CV_DEFAULT(NULL));
 function cvCreateTrackbar(const trackbar_name:pcvchar; const window_name:pcvchar; value:pint; count:int; on_change:TCvTrackbarCallback= nil):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7712
-{$ELSE}
-name 'cvCreateTrackbar'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7712
+//{$ELSE}
+//name 'cvCreateTrackbar'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 type
 //void (CV_CDECL *CvTrackbarCallback2)(int pos, void* userdata);
@@ -254,54 +267,59 @@ TCvTrackbarCallback2 = procedure(pos:int;userdata:pointer);
 //                              void* userdata CV_DEFAULT(0));
 function cvCreateTrackbar2(const trackbar_name:pcvchar; const window_name:pcvchar; value:pint;
          count:int; on_change:TCvTrackbarCallback2; userdata:pvoid=nil):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7713
-{$ELSE}
-name 'cvCreateTrackbar2'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7713
+//{$ELSE}
+//name 'cvCreateTrackbar2'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* retrieve or set trackbar position *)
 //CVAPI(int) cvGetTrackbarPos( const char* trackbar_name, const char* window_name );
 function cvGetTrackbarPos(const trackbar_name:pcvchar; const window_name:pcvchar):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7798
-{$ELSE}
-name 'cvGetTrackbarPos'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7798
+//{$ELSE}
+//name 'cvGetTrackbarPos'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvSetTrackbarPos( const char* trackbar_name, const char* window_name, int pos );
 procedure cvSetTrackbarPos(const trackbar_name:pcvchar; const window_name:pcvchar; pos:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7974
-{$ELSE}
-name 'cvSetTrackbarPos'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7974
+//{$ELSE}
+//name 'cvSetTrackbarPos'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvSetTrackbarMax(const char* trackbar_name, const char* window_name, int maxval);
 procedure cvSetTrackbarMax(const trackbar_name:pcvchar; const window_name:pcvchar; maxval:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7972
-{$ELSE}
-name 'cvSetTrackbarMax'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7972
+//{$ELSE}
+//name 'cvSetTrackbarMax'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvSetTrackbarMin(const char* trackbar_name, const char* window_name, int minval);
 procedure cvSetTrackbarMin(const trackbar_name:pcvchar; const window_name:pcvchar; minval:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7973
-{$ELSE}
-name 'cvSetTrackbarMin'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7973
+//{$ELSE}
+//name 'cvSetTrackbarMin'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
 //enum
@@ -341,24 +359,26 @@ TCvMouseCallback = procedure(event, x, y, flags:int; param:pointer);
 //CVAPI(void) cvSetMouseCallback( const char* window_name, CvMouseCallback on_mouse,
 //                                void* param CV_DEFAULT(NULL));
 procedure cvSetMouseCallback(const window_name:pcvchar; on_mouse:TCvMouseCallback; param:pvoid= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7958
-{$ELSE}
-name 'cvSetMouseCallback'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7958
+//{$ELSE}
+//name 'cvSetMouseCallback'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* wait for key event infinitely (delay<=0) or for "delay" milliseconds *)
 //CVAPI(int) cvWaitKey(int delay CV_DEFAULT(0));
 function cvWaitKey(delay:int=0):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8006
-{$ELSE}
-name 'cvWaitKey'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8006
+//{$ELSE}
+//name 'cvWaitKey'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 // OpenGL support
 
@@ -368,34 +388,36 @@ TCvOpenGlDrawCallback = procedure(userdata:Pointer);
 
 //CVAPI(void) cvSetOpenGlDrawCallback(const char* window_name, CvOpenGlDrawCallback callback, void* userdata CV_DEFAULT(NULL));
 procedure cvSetOpenGlDrawCallback(const window_name:pcvchar; callback:TCvOpenGlDrawCallback; userdata:pvoid= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7962
-{$ELSE}
-name 'cvSetOpenGlDrawCallback'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7962
+//{$ELSE}
+//name 'cvSetOpenGlDrawCallback'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvSetOpenGlContext(const char* window_name);
 procedure cvSetOpenGlContext(const window_name:pcvchar);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7961
-{$ELSE}
-name 'cvSetOpenGlContext'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7961
+//{$ELSE}
+//name 'cvSetOpenGlContext'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvUpdateWindow(const char* window_name);
 procedure cvUpdateWindow(const window_name:pcvchar);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8004
-{$ELSE}
-name 'cvUpdateWindow'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8004
+//{$ELSE}
+//name 'cvUpdateWindow'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (****************************************************************************************\
 
@@ -420,26 +442,28 @@ name 'cvUpdateWindow'
 
 //CVAPI(void) cvSetPreprocessFuncWin32_(const void* callback);
 procedure cvSetPreprocessFuncWin32_(const callback:pvoid);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7964
-{$ELSE}
-name 'cvSetPreprocessFuncWin32_'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7964
+//{$ELSE}
+//name 'cvSetPreprocessFuncWin32_'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvSetPostprocessFuncWin32_(const void* callback);
 procedure cvSetPostprocessFuncWin32_(const callback:pvoid);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7963
-{$ELSE}
-name 'cvSetPostprocessFuncWin32_'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7963
+//{$ELSE}
+//name 'cvSetPostprocessFuncWin32_'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {TODO:cvSetPreprocessFuncWin32}
 //#define cvSetPreprocessFuncWin32(callback) cvSetPreprocessFuncWin32_((const void*)(callback))
 //#define cvSetPostprocessFuncWin32(callback) cvSetPostprocessFuncWin32_((const void*)(callback))
 
-{$endif}
+{$ifend}

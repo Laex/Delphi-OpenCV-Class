@@ -20,21 +20,8 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_TRACKING_HPP}
-
-procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
-  const status: TOutputArray; const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int { = 3 } );
-begin
-  calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, winSize, maxLevel,
-    TTermCriteria.TermCriteria(TTermCriteria.COUNT + TTermCriteria.EPS, 30, 0.01));
-end;
-
-procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
-  const status: TOutputArray; const err: TOutputArray); overload;
-begin
-  calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, size(21, 21));
-end;
-
+{$IF DEFined(OPENCV_TRACKING_HPP) and (not DEFINED(OPENCV_TRACKING_HPP_IMPL))}
+{$DEFINE OPENCV_TRACKING_HPP_IMPL}
 { TDenseOpticalFlow }
 
 procedure TDenseOpticalFlow.calc(const i0, i1: TInputArray; const flow: TInputOutputArray);
@@ -46,32 +33,41 @@ end;
 
 class operator TDenseOpticalFlow.Finalize(var Dest: TDenseOpticalFlow);
 begin
+{$IF not defined(PACKAGE)}
   destructor_CV_DENSEOPTICALFLOW(Dest);
+{$IFEND}
 end;
 
 { TDISOpticalFlow }
 
- class function TDISOpticalFlowHelper.Create<T>(preset: Int): TPtr<T>;
- begin
-   class_proc_CV_DISOPTICALFLOW_create(@Result, preset);
- end;
+class function TDISOpticalFlowHelper.Create<T>(preset: Int): TPtr<T>;
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_DISOPTICALFLOW_create(@Result, preset);
+{$IFEND}
+end;
 
 class function TDISOpticalFlowHelper.Create(preset: Int = PRESET_FAST): TPtr<TDISOpticalFlow>;
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_DISOPTICALFLOW_create(Result, preset);
+{$IFEND}
 end;
 
 { TKalmanFilter }
 
-class function TKalmanFilter.KalmanFilter(const dynamParams, measureParams: Int; const controlParams: Int = 0; const &type: Int = CV_32F)
-  : TKalmanFilter;
+class function TKalmanFilter.KalmanFilter(const dynamParams, measureParams: Int; const controlParams: Int = 0; const &type: Int = CV_32F): TKalmanFilter;
 begin
+{$IF not defined(PACKAGE)}
   constructor_CV_KALMANFILTER_2(Result, dynamParams, measureParams, controlParams, &type);
+{$IFEND}
 end;
 
 function TKalmanFilter.predict(const control: TMat { = Mat() } ): TMat;
 begin
+{$IF not defined(PACKAGE)}
   Result := class_func_CV_KALMANFILTER_predict(Self, control)^;
+{$IFEND}
 end;
 
 function TKalmanFilter.predict(): TMat;
@@ -83,7 +79,33 @@ end;
 
 function TKalmanFilter.correct(const measurement: TMat): TMat;
 begin
+{$IF not defined(PACKAGE)}
   Result := class_func_CV_KALMANFILTER_correct(Self, measurement)^;
+{$IFEND}
+end;
+
+function CamShift(const probImage: TInputArray; const window: TRect; const criteria: TTermCriteria): TRotatedRect;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_CamShift(probImage, window, criteria);
+{$IFEND}
+end;
+
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray; const err: TOutputArray; winSize: TSize { = Size(21,21) }; maxLevel: Int { = 3 }; const criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4);
+begin
+{$IF not defined(PACKAGE)}
+  proc_calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, winSize, maxLevel, criteria, flags, minEigThreshold);
+{$IFEND}
+end;
+
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray; const err: TOutputArray; winSize: TSize { = Size(21,21) }; maxLevel: Int = 3);
+begin
+  calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, winSize, maxLevel, TTermCriteria.TermCriteria(TTermCriteria.COUNT + TTermCriteria.EPS, 30, 0.01));
+end;
+
+procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray; const status: TOutputArray; const err: TOutputArray);
+begin
+  calcOpticalFlowPyrLK(prevImg, nextImg, prevPts, nextPts, status, err, Size(21, 21));
 end;
 
 {$ENDIF}

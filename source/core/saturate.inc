@@ -24,7 +24,7 @@
 {$define OPENCV_CORE_SATURATE_HPP}
 
 {$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
-{$i 'core/fast_math.inc'}
+{$if not defined(OPENCV_CORE_FAST_MATH_HPP)}{$i 'core/fast_math.inc'}{$ifend}
 
 //namespace cv
 //{
@@ -162,4 +162,7 @@ Type
 
 //} // cv
 
-{$ifend OPENCV_CORE_SATURATE_HPP}
+{$ELSE}
+{$MESSAGE FATAL 'Duplicate included file - core/saturate.inc'}
+
+{$ifend} //OPENCV_CORE_SATURATE_HPP

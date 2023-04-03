@@ -22,15 +22,18 @@
 
 {$IF not defined(OPENCV_CORE_MAT_HPP)}
 {$DEFINE OPENCV_CORE_MAT_HPP}
+
 {$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
 # error mat.inc header must be compiled as Delphi 10.4 Sydney WIN64
 {$IFEND}
-{ .$I 'core/matx.inc' }
+
+{$if not defined(OPENCV_CORE_MATX_HPP)}{$I 'core/matx.inc'}{$ifend}
+
+//
 { .$I 'core/types.inc' }
-
 { .$I 'core/bufferpool.inc' }
-
 { .$I <type_traits> }
+//
 
 // namespace cv
 // {
@@ -167,8 +170,8 @@ type
 
   TMatExpr = record // forward declaration
   public
-    class operator Initialize(out Dest: TMatExpr); {$IFDEF USE_INLINE}inline; {$ENDIF}// MatExpr();
-    class operator Finalize(var Dest: TMatExpr); {$IFDEF USE_INLINE}inline; {$ENDIF}// ~MatExpr();
+    class operator Initialize(out Dest: TMatExpr); // MatExpr();
+    class operator Finalize(var Dest: TMatExpr); // ~MatExpr();
     class operator assign(var Dest: TMatExpr; const [ref] Src: TMatExpr); {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Multiply(const a: TMatExpr; const b: double): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
   private
@@ -4059,5 +4062,8 @@ type
   // ! @} relates cv::MatExpr
 
   // } // cv
+
+{$ELSE}
+{$MESSAGE FATAL 'Duplicate included file - core/mat.inc'}
 
 {$IFEND} // OPENCV_CORE_MAT_HPP

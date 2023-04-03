@@ -34,7 +34,7 @@
 
 {$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
 {$IF not defined(OPENCV_CORE_CVSTD_HPP)}{$I 'core/cvstd.inc'}{$ifend}
-{$I 'core/matx.inc'}
+{$if not defined(OPENCV_CORE_MATX_HPP)}{$I 'core/matx.inc'}{$ifend}
 
 //namespace cv
 //{
@@ -139,7 +139,9 @@ Example:
   public
     // ! default constructor
     // Point_();
-    class function Point(_x, _y: T): TPoint_<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Point_(_Tp _x, _Tp _y);
+    class function Point(): TPoint_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // Point_(_Tp _x, _Tp _y);
+    class function Point(_x, _y: T): TPoint_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // #if (defined(__GNUC__) && __GNUC__ < 5)  // GCC 4.x bug. Details: https://github.com/opencv/opencv/pull/20837
     // Point_(const Point_& pt);
     // Point_(Point_&& pt) CV_NOEXCEPT = default;
@@ -2436,6 +2438,7 @@ TermCriteria::TermCriteria(int _type, int _maxCount, double _epsilon)
 } // cv
 *)
 
-{.$I 'external/opencv.Scalar.import.inc'}
+{$ELSE}
+{$MESSAGE FATAL 'Duplicate included file - core/types.inc'}
 
 {$ifend OPENCV_CORE_TYPES_HPP}

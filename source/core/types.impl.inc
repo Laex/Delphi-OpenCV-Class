@@ -22,8 +22,6 @@
 
 {$IF defined(OPENCV_CORE_TYPES_HPP) and (not defined(OPENCV_CORE_TYPES_HPP_IMPL))}
 {$DEFINE OPENCV_CORE_TYPES_HPP_IMPL}
-
-
 { TPoint_<T> }
 
 class operator TPoint_<T>.Implicit(const m: TPoint_<T>): UInt64;
@@ -127,6 +125,12 @@ begin
   Result.y := _y;
 end;
 
+class function TPoint_<T>.Point(): TPoint_<T>;
+begin
+  Result.x := default(T);
+  Result.y := default(T);
+end;
+
 function Point(const _x, _y: Int): TPoint;
 begin
   Result := TPoint.Point(_x, _y);
@@ -208,6 +212,8 @@ end;
 
 class operator TRect_<T>.BitwiseAnd(const a, b: TRect_<T>): TRect_<T>;
 begin
+Assert(False);
+(*
   Result := default (TRect_<T>);
   if TypeInfo(T) = TypeInfo(Int) then
   begin
@@ -238,6 +244,7 @@ begin
   end
   else
     Assert(false, 'Point type must be numeric');
+*)
 end;
 
 class function TRect_<T>.Rect(const _x: T; _y, _width, _height: T): TRect_<T>;
@@ -309,7 +316,9 @@ end;
 
 class function TScalar.Create(const v0, v1, v2, v3: double): TScalar;
 begin
+{$IF not defined(PACKAGE)}
   constructor_CV_GAPI_OWN_SCALAR_1(Result, v0, v1, v2, v3);
+{$IFEND}
 end;
 
 class function TScalar.all(const v0: double): TScalar;
@@ -319,7 +328,9 @@ end;
 
 class function TScalar.Create(const v0: double): TScalar;
 begin
+{$IF not defined(PACKAGE)}
   constructor_CV_GAPI_OWN_SCALAR(Result, v0);
+{$IFEND}
 end;
 
 function TScalar.getval(const index: integer): double;
@@ -335,7 +346,9 @@ end;
 
 class operator TScalar.Initialize(out Dest: TScalar);
 begin
+{$IF not defined(PACKAGE)}
   constructor_CV_GAPI_OWN_SCALAR_2(Dest);
+{$IFEND}
 end;
 
 procedure TScalar.setval(const index: integer; const Value: double);

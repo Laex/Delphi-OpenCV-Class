@@ -400,4 +400,7 @@ CV_INLINE int cvIsInf( float value )
 *)
 //! @} core_utils
 
+{$ELSE}
+{$MESSAGE FATAL 'Duplicate included file - core/fast_math.inc'}
+
 {$ifend}

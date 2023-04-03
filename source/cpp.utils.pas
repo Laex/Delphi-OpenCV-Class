@@ -37,14 +37,14 @@ Uses
 {$I core/version.inc}
 
 const
-  INT_MIN = Pred(-MaxInt);
-  INT_MAX = MaxInt;
-  DBL_MAX = MaxDouble;
-  CHAR_BIT = 8;
-  SCHAR_MIN = (-128);
-  SCHAR_MAX = 127;
-  UCHAR_MAX = $FF;
-  DBL_EPSILON = 2.2204460492503131e-16;
+  INT_MIN     = Pred(-MaxInt);
+  INT_MAX     = MaxInt;
+  DBL_MAX     = MaxDouble;
+  CHAR_BIT    = 8;
+  SCHAR_MIN   = (-128);
+  SCHAR_MAX   = 127;
+  UCHAR_MAX   = $FF;
+  DBL_EPSILON = 2.2204460492503131E-16;
 
 Type
   BOOL             = bytebool;
@@ -66,10 +66,20 @@ Type
   pINT             = ^INT;
   pBOOL            = ^BOOL;
   p__INT64         = ^__INT64;
-  pCVCHAR          = pAnsiChar;
+  pCVCHAR          = ^CVCHAR;
   schar            = int8;
   pschar           = ^schar;
   punsigned        = ^unsigned;
+  size_t           = NativeUInt;
+  psize_t          = ^size_t;
+  uint             = Cardinal;
+  ushort           = UInt16;
+  ppAnsiChar       = ^pAnsiChar;
+  uchar            = byte;
+  pUChar           = type pByte;
+  pMatOp           = type pointer;
+  pUCharConst      = pUChar;
+  PointerConst     = type pointer;
 
   TVectorType = //
     (           //
@@ -127,12 +137,12 @@ Type
     function length: uint64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function size: uint64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure erase(const _Off: uint64 = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure assign(const p: pAnsiChar); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure assign(const p: pCVCHAR); {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator assign(var Dest: CppString; const [ref] Src: CppString);
-    class operator Implicit(const p: pAnsiChar): CppString; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const p: pCVCHAR): CppString; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: string): CppString; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: CppString): string; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Explicit(const s: CppString): string; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // class operator Explicit(const s: CppString): string; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
   TPtr<T { : record } > = record
@@ -207,33 +217,35 @@ Type
     class function iif<T>(const Cond: boolean; const ifTrue, ifFalse: T): T; static; inline;
   end;
 
-  TEmptyRec = record
+  TCppEmptyRec = record
   end;
 
-  CLEARSTDVECTOR                                 = type TEmptyRec;
-  RESIZESTDVECTOR                                = type TEmptyRec;
-  COPYSTDVECTOR                                  = type TEmptyRec;
-  STD__STRING_CONSTRUCTOR_CONCAT_TAG             = type TEmptyRec;
-  STDITEM                                        = type TEmptyRec;
-  STDPUSHBACK                                    = type TEmptyRec;
-  STDSIZE                                        = type TEmptyRec;
-  EXPORTSTRING                                   = type TEmptyRec;
-  DESTROYSTDVECTOR                               = type TEmptyRec;
-  STD_INITIALIZER_LIST_OF_CVCHAR                 = type TEmptyRec;
-  STDEMPTY                                       = type TEmptyRec;
-  STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
-  STD_ALLOCATOR_OF_CVCHAR                        = type TEmptyRec;
+  CLEARSTDVECTOR                                 = type TCppEmptyRec;
+  RESIZESTDVECTOR                                = type TCppEmptyRec;
+  COPYSTDVECTOR                                  = type TCppEmptyRec;
+  STD__STRING_CONSTRUCTOR_CONCAT_TAG             = type TCppEmptyRec;
+  STDITEM                                        = type TCppEmptyRec;
+  STDPUSHBACK                                    = type TCppEmptyRec;
+  STDSIZE                                        = type TCppEmptyRec;
+  EXPORTSTRING                                   = type TCppEmptyRec;
+  DESTROYSTDVECTOR                               = type TCppEmptyRec;
+  STD_INITIALIZER_LIST_OF_CVCHAR                 = type TCppEmptyRec;
+  STDEMPTY                                       = type TCppEmptyRec;
+  STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TCppEmptyRec;
+  STD_ALLOCATOR_OF_CVCHAR                        = type TCppEmptyRec;
   STD_BASIC_STRING_OF_CVCHAR                     = CppString; // type TEmptyRec;
-  STDSETITEM                                     = type TEmptyRec;
-  CREATESTDVECTOR                                = type TEmptyRec;
-  STDPITEM                                       = type TEmptyRec;
-  VOID                                           = type TEmptyRec;
-  STD_REVERSE_ITERATOR_OF_STD__STRING_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
-  STD_REVERSE_ITERATOR_OF_STD__STRING_CONST_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
-  STD__STRING_CONST_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
-  STD__STRING_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TEmptyRec;
+  STDSETITEM                                     = type TCppEmptyRec;
+  CREATESTDVECTOR                                = type TCppEmptyRec;
+  STDPITEM                                       = type TCppEmptyRec;
+  VOID                                           = type TCppEmptyRec;
+  STD_REVERSE_ITERATOR_OF_STD__STRING_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TCppEmptyRec;
+  STD_REVERSE_ITERATOR_OF_STD__STRING_CONST_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TCppEmptyRec;
+  STD__STRING_CONST_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TCppEmptyRec;
+  STD__STRING_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TCppEmptyRec;
 
-{$I 'external/std.external.inc'}
+{$IF not defined(PACKAGE)}
+{$IF not defined(EXTERNAL_TYPES)}{$I 'external/std.external.inc'}{$IFEND}
+{$IFEND}
 
 implementation
 
@@ -244,33 +256,45 @@ Uses
 
 class operator Vector<T>.assign(var Dest: Vector<T>; const [ref] Src: Vector<T>);
 begin
+{$IF not defined(PACKAGE)}
   proc_CopyStdVector(@Dest, @Src, vt);
+{$IFEND}
 end;
 
 procedure Vector<T>.clear;
 begin
+{$IF not defined(PACKAGE)}
   proc_clearStdVector(@Self, vt);
+{$IFEND}
 end;
 
 function Vector<T>.empty: BOOL;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_StdEmpty(@Self, vt);
+{$IFEND}
 end;
 
 class operator Vector<T>.Finalize(var Dest: Vector<T>);
 begin
+{$IF not defined(PACKAGE)}
   proc_DestroyStdVector(@Dest, vt);
+{$IFEND}
 end;
 
 function Vector<T>.GetItems(const index: uint64): T;
 begin
+{$IF not defined(PACKAGE)}
   proc_StdItem(@Self, vt, index, @Result);
+{$IFEND}
 end;
 
 class operator Vector<T>.Implicit(const A: TArray<T>): Vector<T>;
 begin
+{$IF not defined(PACKAGE)}
   for Var i := 0 to High(A) do
     proc_StdPushBack(@Result, @A[i], vt);
+{$IFEND}
 end;
 
 class operator Vector<T>.Implicit(const size: Integer): Vector<T>;
@@ -280,8 +304,10 @@ end;
 
 class operator Vector<T>.Initialize(out Dest: Vector<T>);
 begin
+{$IF not defined(PACKAGE)}
   FillChar(Dest, SizeOf(Dest), 0);
   proc_CreateStdVector(@Dest, vt);
+{$IFEND}
 end;
 
 class function Vector<T>.noVector: Vector<T>;
@@ -291,27 +317,37 @@ end;
 
 function Vector<T>.pT(const index: uint64): pVector;
 begin
+{$IF not defined(PACKAGE)}
   proc_StdPItem(@Self, vt, index, Result);
+{$IFEND}
 end;
 
 procedure Vector<T>.push_back(const Value: T);
 begin
+{$IF not defined(PACKAGE)}
   proc_StdPushBack(@Self, @Value, vt);
+{$IFEND}
 end;
 
 procedure Vector<T>.resize(const NewSize: uint64);
 begin
+{$IF not defined(PACKAGE)}
   proc_resizeStdVector(@Self, NewSize, vt);
+{$IFEND}
 end;
 
 procedure Vector<T>.setItems(const index: uint64; const Value: T);
 begin
+{$IF not defined(PACKAGE)}
   proc_StdSetItem(@Self, vt, index, @Value);
+{$IFEND}
 end;
 
 function Vector<T>.size: { UInt64 } int64;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_StdSize(@Self, vt);
+{$IFEND}
 end;
 
 class function Vector<T>.Vector: Vector<T>;
@@ -363,59 +399,79 @@ end;
 
 { CppString }
 
-procedure CppString.assign(const p: pAnsiChar);
+procedure CppString.assign(const p: pCVCHAR);
 begin
+{$IF not defined(PACKAGE)}
   class_virt_func_STD_BASIC_STRING_OF_CVCHAR_assign_3(Self, p);
+{$IFEND}
 end;
 
 class operator CppString.assign(var Dest: CppString; const [ref] Src: CppString);
 begin
+{$IF not defined(PACKAGE)}
   class_virt_func_STD_BASIC_STRING_OF_CVCHAR_assign_1(Dest, Src);
+{$IFEND}
 end;
 
 procedure CppString.erase(const _Off: uint64);
 begin
+{$IF not defined(PACKAGE)}
   class_virt_func_STD_BASIC_STRING_OF_CVCHAR_erase_3(Self, _Off);
+{$IFEND}
 end;
 
-class operator CppString.Explicit(const s: CppString): string;
-begin
- Result := string(class_virt_func_STD_BASIC_STRING_OF_CVCHAR_c_str(s));
-end;
+(*
+  class operator CppString.Explicit(const s: CppString): string;
+  begin
+  {$IF not defined(PACKAGE)}
+  Result := string(class_virt_func_STD_BASIC_STRING_OF_CVCHAR_c_str(s));
+  {$ifend}
+  end;
+*)
 
 class operator CppString.Finalize(var Dest: CppString);
 begin
+{$IF not defined(PACKAGE)}
   destructor_STD_BASIC_STRING_OF_CVCHAR(Dest);
+{$IFEND}
 end;
 
 class operator CppString.Implicit(const s: string): CppString;
 begin
-  Result.assign(pAnsiChar(AnsiString(s)));
+  Result.assign(pCVCHAR(AnsiString(s)));
 end;
 
-class operator CppString.Implicit(const p: pAnsiChar): CppString;
+class operator CppString.Implicit(const p: pCVCHAR): CppString;
 begin
   Result.assign(p);
 end;
 
 class operator CppString.Implicit(const s: CppString): string;
 begin
+{$IF not defined(PACKAGE)}
   Result := string(class_virt_func_STD_BASIC_STRING_OF_CVCHAR_c_str(s));
+{$IFEND}
 end;
 
 class operator CppString.Initialize(out Dest: CppString);
 begin
+{$IF not defined(PACKAGE)}
   constructor_STD_BASIC_STRING_OF_CVCHAR_14(Dest);
+{$IFEND}
 end;
 
 function CppString.length: uint64;
 begin
+{$IF not defined(PACKAGE)}
   Result := class_virt_func_STD_BASIC_STRING_OF_CVCHAR_length(Self);
+{$IFEND}
 end;
 
 function CppString.size: uint64;
 begin
+{$IF not defined(PACKAGE)}
   Result := class_virt_func_STD_BASIC_STRING_OF_CVCHAR_size(Self);
+{$IFEND}
 end;
 
 { TPtr<T> }

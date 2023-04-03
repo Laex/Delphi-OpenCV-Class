@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$IFNDEF OPENCV_TRACKING_HPP}
+{$IF not DEFined(OPENCV_TRACKING_HPP)}
 {$DEFINE OPENCV_TRACKING_HPP}
 
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
@@ -62,13 +62,15 @@ const
     ?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z
     class cv::RotatedRect cv::CamShift(class cv::_InputArray const &,class cv::Rect_<int> &,class cv::TermCriteria)
   }
-function CamShift(const probImage: TInputArray; const window: TRect; const criteria: TTermCriteria): TRotatedRect; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@debug_build_guard@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z'
-{$ELSE}
-  name '?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function CamShift(const probImage: TInputArray; const window: TRect; const criteria: TTermCriteria): TRotatedRect;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@debug_build_guard@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z'
+//{$ELSE}
+//  name '?CamShift@cv@@YA?AVRotatedRect@1@AEBV_InputArray@1@AEAV?$Rect_@H@1@VTermCriteria@1@@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (* * @example samples/cpp/camshiftdemo.cpp
   An example using the mean-shift tracking algorithm
@@ -179,24 +181,49 @@ function CamShift(const probImage: TInputArray; const window: TRect; const crite
   ?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z
   void cv::calcOpticalFlowPyrLK(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::Size_<int>,int,class cv::TermCriteria,int,double)
 }
-procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
-  const status: TOutputArray; const err: TOutputArray; winSize: UInt64 { TSize = Size(21,21) }; maxLevel: Int { = 3 };
-  const criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4);
-  overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_InputOutputArray@31@AEBV_OutputArray@31@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
-{$ELSE}
-  name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure calcOpticalFlowPyrLK(
+          const prevImg: TInputArray;
+          const nextImg: TInputArray;
+          const prevPts: TInputArray;
+          const nextPts: TInputOutputArray;
+          const status: TOutputArray;
+          const err: TOutputArray;
+          winSize: TSize {= Size(21,21) };
+          maxLevel: Int { = 3 };
+          const criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) };
+          flags: Int = 0;
+          minEigThreshold: double = 1E-4
+          );
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+//  external opencv_world_dll
+//{$IFDEF USE_DEBUG_DLLS}
+//  name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_InputOutputArray@31@AEBV_OutputArray@31@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
+//{$ELSE}
+//  name '?calcOpticalFlowPyrLK@cv@@YAXAEBV_InputArray@1@00AEBV_InputOutputArray@1@AEBV_OutputArray@1@2V?$Size_@H@1@HVTermCriteria@1@HN@Z'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure calcOpticalFlowPyrLK(
+          const prevImg: TInputArray;
+          const nextImg: TInputArray;
+          const prevPts: TInputArray;
+          const nextPts: TInputOutputArray;
+          const status: TOutputArray;
+          const err: TOutputArray;
+          winSize: TSize {= Size(21,21) };
+          maxLevel: Int  = 3
+          );
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
 
-procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
-  const status: TOutputArray; const err: TOutputArray; const winSize: TSize { = Size(21,21) }; maxLevel: Int = 3); overload;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-// ; criteria: TTermCriteria { = TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 30, 0.01) }; flags: Int = 0; minEigThreshold: double = 1E-4
-  procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInputArray; const prevPts: TInputArray; const nextPts: TInputOutputArray;
-    const status: TOutputArray; const err: TOutputArray); overload;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+procedure calcOpticalFlowPyrLK(
+          const prevImg: TInputArray;
+          const nextImg: TInputArray;
+          const prevPts: TInputArray;
+          const nextPts: TInputOutputArray;
+          const status: TOutputArray;
+          const err: TOutputArray
+          );
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+
   (* * @brief Computes a dense optical flow using the Gunnar Farneback's algorithm.
 
     @param prev first 8-bit single-channel input image.
@@ -605,6 +632,8 @@ procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInput
 
     TDISOpticalFlow = type TDenseOpticalFlow;
 
+    TPtr_TDISOpticalFlow = TPtr<TDISOpticalFlow>;
+
     pDISOpticalFlow = ^TDISOpticalFlow;
 
     TDISOpticalFlowHelper = record helper for TDISOpticalFlow
@@ -880,6 +909,4 @@ procedure calcOpticalFlowPyrLK(const prevImg: TInputArray; const nextImg: TInput
 
     // } // cv
 
-    { .$I 'external/opencv.OpticalFlow.import.inc' }
-    { .$I 'external/opencv.KalmanFilter.import.inc' }
-{$ENDIF}
+{$IFEND}

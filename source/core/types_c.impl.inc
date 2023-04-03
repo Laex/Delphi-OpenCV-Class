@@ -22,9 +22,8 @@
 
 {$IF defined(OPENCV_CORE_TYPES_H) and (not defined(OPENCV_CORE_TYPES_H_IMPL))}
 {$DEFINE OPENCV_CORE_TYPES_H_IMPL}
-
-{$INCLUDE 'core/cvdef.impl.inc'}
-{$if not defined(OPENCV_CORE_HPP_IMPL)}{$INCLUDE 'core.impl.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_CVDEF_H_IMPL)}{$INCLUDE 'core/cvdef.impl.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_HPP_IMPL)}{$INCLUDE 'core.impl.inc'}{$IFEND}
 
 function cvRNG(const seed: Int64 = -1): TCvRNG;
 begin
@@ -69,7 +68,7 @@ function CV_IS_MAT(const mat: pCvArr): Boolean;
 begin
   // #define CV_IS_MAT(mat) \
   // (CV_IS_MAT_HDR(mat) && ((const CvMat*)(mat))->data.ptr != NULL)
-  Result := CV_IS_MAT_HDR(mat) and (pCvMat(mat)^.data <> nil);
+  Result := CV_IS_MAT_HDR(mat) and (pCvMat(mat)^.data.ptr <> nil);
 end;
 
 function CV_IS_MATND_HDR(const mat: pCvArr): Boolean;
@@ -85,7 +84,7 @@ function CV_IS_MATND(const mat: pCvArr): Boolean;
 begin
   // #define CV_IS_MATND(mat) \
   // (CV_IS_MATND_HDR(mat) && ((const CvMatND*)(mat))->data.ptr != NULL)
-  Result := CV_IS_MATND_HDR(mat) and (pCvMatND(mat)^.data <> nil);
+  Result := CV_IS_MATND_HDR(mat) and (pCvMatND(mat)^.data.ptr <> nil);
 end;
 
 function cvRealScalar(val0: double): TCvScalar;
@@ -135,13 +134,16 @@ begin
   Result := _CvScalar.cvScalar(val0, val1, val2, val3);
 end;
 
-constructor _CvScalar.cvScalar(d0: double; d1: double = 0; d2: double = 0; d3: double = 0);
+class function _CvScalar.cvScalar(d0: double; d1: double = 0; d2: double = 0; d3: double = 0): _CvScalar;
 begin
   { val[0] = d0; val[1] = d1; val[2] = d2; val[3] = d3; }
-  val[0] := d0;
-  val[1] := d1;
-  val[2] := d2;
-  val[3] := d3;
+  With Result do
+  begin
+    val[0] := d0;
+    val[1] := d1;
+    val[2] := d2;
+    val[3] := d3;
+  end;
 end;
 
 (* ***************************************************************************************\
@@ -268,14 +270,16 @@ end;
   *                       Multi-dimensional dense array (CvMatND)                          *
   \*************************************************************************************** *)
 
-function cvMatND(const m:TMat):TCvMatND;
+function cvMatND(const m: TMat): TCvMatND;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_cvMatND(m);
+{$IFEND}
 end;
 
-function cvMatND():TCvMatND;
+function cvMatND(): TCvMatND;
 begin
-  Result := default(TCvMatND);
+  Result := default (TCvMatND);
 end;
 
 class operator _CvMatND.Explicit(const m: TMat): _CvMatND;
@@ -289,7 +293,9 @@ end;
 
 function cvIplImage(const m: TMat): TIplImage;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_cvIplImage(m);
+{$IFEND}
 end;
 
 function CV_IS_IMAGE_HDR(const img: pCvArr): Boolean;
@@ -317,67 +323,67 @@ begin
   Result.hdr_refcount := 0;
 end;
 
-function cvScalarAll( val0123:double ):TCvScalar;
+function cvScalarAll(val0123: double): TCvScalar;
 begin
-    Result.val[0] := val0123;
-    Result.val[1] := val0123;
-    Result.val[2] := val0123;
-    Result.val[3] := val0123;
+  Result.val[0] := val0123;
+  Result.val[1] := val0123;
+  Result.val[2] := val0123;
+  Result.val[3] := val0123;
 end;
 
-(******************************* CvPoint and variants ***********************************)
+(* ****************************** CvPoint and variants ********************************** *)
 
-class function _CvPoint.CvPoint(const _x:Int=0; const _y:int=0):_CvPoint;
+class function _CvPoint.CvPoint(const _x: int = 0; const _y: int = 0): _CvPoint;
 begin
-  Result.x:=_x;
-  Result.y:=_y;
+  Result.x := _x;
+  Result.y := _y;
 end;
 
-function cvPoint( x, y:int  ):TCvPoint;
+function CvPoint(x, y: int): TCvPoint;
 begin
-  Result := _CvPoint.CvPoint(x,y);
+  Result := _CvPoint.CvPoint(x, y);
 end;
 
-function cvPoint( const pt:TPoint  ):TCvPoint;
+function CvPoint(const pt: TPoint): TCvPoint;
 begin
-  Result := cvPoint(pt.x,pt.y);
+  Result := CvPoint(pt.x, pt.y);
 end;
 
-(*********************************** CvTermCriteria *************************************)
-class function _CvTermCriteria.CvTermCriteria(_type:int = 0; _iter:int = 0; _eps:double = 0):_CvTermCriteria;
+(* ********************************** CvTermCriteria ************************************ *)
+class function _CvTermCriteria.CvTermCriteria(_type: int = 0; _iter: int = 0; _eps: double = 0): _CvTermCriteria;
 begin
- With Result do
- begin
-   &type:=_type;
-   max_iter:=_iter;
-   epsilon:=_eps;
- end;
+  With Result do
+  begin
+    &type := _type;
+    max_iter := _iter;
+    epsilon := _eps;
+  end;
 end;
 
-function cvTermCriteria(&type:int; max_iter:int; epsilon:double):TcvTermCriteria;
+function CvTermCriteria(&type: int; max_iter: int; epsilon: double): TcvTermCriteria;
 begin
-  Result := _CvTermCriteria.CvTermCriteria(&type,max_iter,epsilon);
+  Result := _CvTermCriteria.CvTermCriteria(&type, max_iter, epsilon);
 end;
 
-function cvTermCriteria(const t:TTermCriteria):TCvTermCriteria;
+function CvTermCriteria(const t: TTermCriteria): TcvTermCriteria;
 begin
-  Result := cvTermCriteria(t.&type, t.maxCount, t.epsilon);
+  Result := CvTermCriteria(t.&type, t.maxCount, t.epsilon);
 end;
 
-(******************************** CvSize's & CvBox **************************************)
+(* ******************************* CvSize's & CvBox ************************************* *)
 
-function cvSize(const w:Int=0;const h:int=0):_CvSize;
+function cvSize(const w: int = 0; const h: int = 0): _CvSize;
 begin
-  Result := _CvSize.CvSize(w,h);
+  Result := _CvSize.cvSize(w, h);
 end;
 
-class function _CvSize.CvSize(const w:Int=0;const h:int=0):_CvSize;
+class function _CvSize.cvSize(const w: int = 0; const h: int = 0): _CvSize;
 begin
-  Result.width:=w;
-  Result.height:=h;
+  Result.width := w;
+  Result.height := h;
 end;
 
-function cvPointFrom32f(const point:TCvPoint2D32f ):TCvPoint;
+function cvPointFrom32f(const point: TCvPoint2D32f): TCvPoint;
 begin
   Result := CvPoint(cvRound(point.x), cvRound(point.y));
 end;

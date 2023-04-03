@@ -23,7 +23,7 @@
 {$if defined(OPENCV_CORE_CUDA_HPP) and (not defined(OPENCV_CORE_CUDA_HPP_INL))}
 {$define OPENCV_CORE_CUDA_HPP_INL}
 
-{$i 'core/cuda.inc'}
+{$if not defined(OPENCV_CORE_CUDA_HPP)}{$i 'core/cuda.inc'}{$IFEND}
 
 //! @cond IGNORED
 
@@ -171,7 +171,8 @@
 //void GpuMat::convertTo(OutputArray dst, int rtype, double alpha, Stream& stream) const
 //{
 //    convertTo(dst, rtype, alpha, 0.0, stream);
-//}
+//}
+
 
 //inline
 //void GpuMat::assignTo(GpuMat& m, int _type) const
@@ -180,14 +181,16 @@
 //        m = *this;
 //    else
 //        convertTo(m, _type);
-//}
+//}
+
 
 //inline
 //uchar* GpuMat::ptr(int y)
 //{
 //    CV_DbgAssert( (unsigned)y < (unsigned)rows );
 //    return data + step * y;
-//}
+//}
+
 
 //inline
 //const uchar* GpuMat::ptr(int y) const
@@ -334,7 +337,8 @@
 //    GpuMat m;
 //    createContinuous(rows, cols, type, m);
 //    return m;
-//}
+//}
+
 
 //static inline
 //void createContinuous(Size size, int type, OutputArray arr)
@@ -456,7 +460,8 @@
 //HostMem::HostMem(AllocType alloc_type_)
 //    : flags(0), rows(0), cols(0), step(0), data(0), refcount(0), datastart(0), dataend(0), alloc_type(alloc_type_)
 //{
-//}
+//}
+
 
 //inline
 //HostMem::HostMem(const HostMem& m)
@@ -505,7 +510,8 @@
 //    }
 //
 //    return *this;
-//}
+//}
+
 //inline
 //void HostMem::swap(HostMem& b)
 //{
@@ -692,7 +698,8 @@
 //    : flags(0), dims(0), rows(0), cols(0), data(0), datastart(0), dataend(0), datalimit(0), allocator(0), u(0), size(&rows)
 //{
 //    m.download(*this);
-//}
+//}
+
 
 //}
 

@@ -26,115 +26,117 @@ unit cv.opencv;
 
 interface
 
-Uses
-   System.Math,
-{$IFDEF USE_TYPEINFO}
-   System.TypInfo,
-   System.Rtti,
-{$ENDIF}
-   cpp.utils;
+uses
+  System.Math,
+{$IF DEFINED(USE_TYPEINFO)}
+  System.TypInfo, System.Rtti,
+{$IFEND}
+  cpp.utils;
 
 {$I cvconfig.inc}
-
-//{$define OPENCV_ALL_HPP}
-
+//
+{ .$DEFINE OPENCV_ALL_HPP }
+//
 // File that defines what modules where included during the build of OpenCV
 // These are purely the defines of the correct HAVE_OPENCV_modulename values
 {$I opencv_modules.inc}
 // Then the list of defines is checked to include the correct headers
 // Core library is always included --> without no OpenCV functionality available
-{$I core.inc} {done, no classes}
+{$I core.inc}
 // Then the optional modules are checked
-{$IFDEF HAVE_OPENCV_CALIB3D}
-{$I calib3d.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_FEATURES2D}
-{$I features2d.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_DNN}
-{$I dnn.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_FLANN}
-{$I flann.inc}
-{$endif}
-{$IFDEF HAVE_OPENCV_HIGHGUI}
-{$I highgui.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_IMGCODECS}
-{$I imgcodecs.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_IMGPROC}
-{$I imgproc.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_ML}
-{$I ml.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_OBJDETECT}
-{$I objdetect.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_PHOTO}
-{$I photo.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_STITCHING}
-{$I stitching.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_VIDEO}
-{$I video.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_VIDEOIO}
-{$I videoio.inc}
-{$ENDIF}
-
-{$i 'external/opencv.external.inc'}
+//
+{$IF DEFINED(HAVE_OPENCV_CALIB3D) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'calib3d.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_FEATURES2D) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'features2d.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_DNN) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'dnn.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_FLANN) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'flann.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_HIGHGUI) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'highgui.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_IMGCODECS) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'imgcodecs.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_IMGPROC) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'imgproc.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_ML) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'ml.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_OBJDETECT) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'objdetect.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_PHOTO) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'photo.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_STITCHING) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'stitching.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_VIDEO) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'video.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_VIDEOIO) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'videoio.inc'}
+{$IFEND}
 
 implementation
 
+uses
+  cv.external;
+
 // Then the list of defines is checked to include the correct headers
 // Core library is always included --> without no OpenCV functionality available
-{$IF not defined(OPENCV_CORE_HPP_IMPL)} {$I core.impl.inc} {$ifend}
+{$IF not defined(OPENCV_CORE_HPP_IMPL)} {$I 'core.impl.inc'} {$IFEND}
+//
 // Then the optional modules are checked
-{$IFDEF HAVE_OPENCV_CALIB3D}
-{$I calib3d.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_FEATURES2D}
-{$I features2d.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_DNN}
-{$I dnn.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_FLANN}
-{$I flann.impl.inc}
-{$endif}
-{$IFDEF HAVE_OPENCV_HIGHGUI}
-{$I highgui.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_IMGCODECS}
-{$I imgcodecs.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_IMGPROC}
-{$I imgproc.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_ML}
-{$I ml.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_OBJDETECT}
-{$I objdetect.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_PHOTO}
-{$I photo.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_STITCHING}
-{$I stitching.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_VIDEO}
-{$I video.impl.inc}
-{$ENDIF}
-{$IFDEF HAVE_OPENCV_VIDEOIO}
-{$I videoio.impl.inc}
-{$ENDIF}
+{$IF DEFINED(HAVE_OPENCV_CALIB3D) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'calib3d.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_FEATURES2D) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'features2d.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_DNN) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'dnn.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_FLANN) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'flann.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_HIGHGUI) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'highgui.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_IMGCODECS) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'imgcodecs.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_IMGPROC) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'imgproc.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_ML) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'ml.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_OBJDETECT) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'objdetect.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_PHOTO) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'photo.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_STITCHING) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'stitching.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_VIDEO) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'video.impl.inc'}
+{$IFEND}
+{$IF DEFINED(HAVE_OPENCV_VIDEOIO) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'videoio.impl.inc'}
+{$IFEND}
 
 initialization
 
-{$I core.init.inc}
+{$I 'core.init.inc'}
 
 end.

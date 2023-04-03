@@ -23,4 +23,6 @@
 {$IF defined(OPENCV_CORE_BASE_HPP) and (not defined(OPENCV_CORE_BASE_HPP_IMPL))}
 {$DEFINE OPENCV_CORE_BASE_HPP_IMPL}
 
+{$I 'core/check.impl.inc' }
+
 {$IFEND}

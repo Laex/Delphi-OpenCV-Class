@@ -127,7 +127,8 @@ DecompTypes = ( //
   src1 and src2 denote input arrays.
 *)
 
-NormTypes = ( //
+NormTypes = type Int; //
+const
   (* *
     \f[
     norm =  \forkthree
@@ -136,7 +137,7 @@ NormTypes = ( //
     {\frac{\|\texttt{src1}-\texttt{src2}\|_{L_{\infty}}    }{\|\texttt{src2}\|_{L_{\infty}} }}{if  \(\texttt{normType} = \texttt{NORM_RELATIVE | NORM_INF}\) }
     \f]
   *)
-  NORM_INF = 1,
+  NORM_INF = 1;
   (* *
     \f[
     norm =  \forkthree
@@ -144,7 +145,7 @@ NormTypes = ( //
     { \| \texttt{src1} - \texttt{src2} \| _{L_1} =  \sum _I | \texttt{src1} (I) -  \texttt{src2} (I)|}{if  \(\texttt{normType} = \texttt{NORM_L1}\) }
     { \frac{\|\texttt{src1}-\texttt{src2}\|_{L_1} }{\|\texttt{src2}\|_{L_1}} }{if  \(\texttt{normType} = \texttt{NORM_RELATIVE | NORM_L1}\) }
     \f] *)
-  NORM_L1 = 2,
+  NORM_L1 = 2;
   (* *
     \f[
     norm =  \forkthree
@@ -153,7 +154,7 @@ NormTypes = ( //
     { \frac{\|\texttt{src1}-\texttt{src2}\|_{L_2} }{\|\texttt{src2}\|_{L_2}} }{if  \(\texttt{normType} = \texttt{NORM_RELATIVE | NORM_L2}\) }
     \f]
   *)
-  NORM_L2 = 4,
+  NORM_L2 = 4;
   (* *
     \f[
     norm =  \forkthree
@@ -162,21 +163,22 @@ NormTypes = ( //
     { \left(\frac{\|\texttt{src1}-\texttt{src2}\|_{L_2} }{\|\texttt{src2}\|_{L_2}}\right)^2 }{if  \(\texttt{normType} = \texttt{NORM_RELATIVE | NORM_L2SQR}\) }
     \f]
   *)
-  NORM_L2SQR = 5,
+  NORM_L2SQR = 5;
   (* *
-    In the case of one input array, calculates the Hamming distance of the array from zero,
-    In the case of two input arrays, calculates the Hamming distance between the arrays.
+    In the case of one input array; calculates the Hamming distance of the array from zero;
+    In the case of two input arrays; calculates the Hamming distance between the arrays.
   *)
-  NORM_HAMMING = 6,
+  NORM_HAMMING = 6;
   (* *
-    Similar to NORM_HAMMING, but in the calculation, each two bits of the input sequence will
+    Similar to NORM_HAMMING; but in the calculation; each two bits of the input sequence will
     be added and treated as a single bit to be used in the same calculation as NORM_HAMMING.
   *)
-  NORM_HAMMING2 = 7, NORM_TYPE_MASK = 7, // !< bit-mask which can be used to separate norm type from norm flags
-  NORM_RELATIVE = 8,                     // !< flag
-  NORM_MINMAX = 32                       // !< flag
-  );
+  NORM_HAMMING2 = 7; NORM_TYPE_MASK = 7; // !< bit-mask which can be used to separate norm type from norm flags
+  NORM_RELATIVE = 8;                     // !< flag
+  NORM_MINMAX = 32;                       // !< flag
 
+
+type
 // ! comparison types
 CmpTypes = (  //
   CMP_EQ = 0, // !< src1 is equal to src2.
@@ -236,18 +238,19 @@ DftFlags = ( //
 
 // ! Various border types, image boundaries are denoted with `|`
 // ! @see borderInterpolate, copyMakeBorder
-BorderTypes = (           //
-  BORDER_CONSTANT = 0,    // !< `iiiiii|abcdefgh|iiiiiii`  with some specified `i`
-  BORDER_REPLICATE = 1,   // !< `aaaaaa|abcdefgh|hhhhhhh`
-  BORDER_REFLECT = 2,     // !< `fedcba|abcdefgh|hgfedcb`
-  BORDER_WRAP = 3,        // !< `cdefgh|abcdefgh|abcdefg`
-  BORDER_REFLECT_101 = 4, // !< `gfedcb|abcdefgh|gfedcba`
-  BORDER_TRANSPARENT = 5, // !< `uvwxyz|abcdefgh|ijklmno`
+BorderTypes = type Int;           //
+const
+  BORDER_CONSTANT = 0;    // !< `iiiiii|abcdefgh|iiiiiii`  with some specified `i`
+  BORDER_REPLICATE = 1;   // !< `aaaaaa|abcdefgh|hhhhhhh`
+  BORDER_REFLECT = 2;     // !< `fedcba|abcdefgh|hgfedcb`
+  BORDER_WRAP = 3;        // !< `cdefgh|abcdefgh|abcdefg`
+  BORDER_REFLECT_101 = 4; // !< `gfedcb|abcdefgh|gfedcba`
+  BORDER_TRANSPARENT = 5; // !< `uvwxyz|abcdefgh|ijklmno`
 
-  BORDER_REFLECT101 = BORDER_REFLECT_101, // !< same as BORDER_REFLECT_101
-  BORDER_DEFAULT = BORDER_REFLECT_101,    // !< same as BORDER_REFLECT_101
-  BORDER_ISOLATED = 16                    // !< do not look outside of ROI
-  );
+  BORDER_REFLECT101 = BORDER_REFLECT_101; // !< same as BORDER_REFLECT_101
+  BORDER_DEFAULT = BORDER_REFLECT_101;    // !< same as BORDER_REFLECT_101
+  BORDER_ISOLATED = 16;                    // !< do not look outside of ROI
+
 
 // ! @} core_array
 
@@ -631,6 +634,9 @@ BorderTypes = (           //
 *)
 { .$I 'core/neon_utils.inc' }
 { .$I 'core/vsx_utils.inc' }
-{$I 'core/check.inc' }
+{$if not defined(OPENCV_CORE_CHECK_HPP)}{$I 'core/check.inc' }{$ifend}
+
+{$ELSE}
+{$MESSAGE FATAL 'Duplicate included file - core/base.inc'}
 
 {$IFEND} // OPENCV_CORE_BASE_HPP

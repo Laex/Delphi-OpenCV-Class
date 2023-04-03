@@ -20,652 +20,508 @@
   limitations under the License.
 *)
 
-{$if not defined(OPENCV_HIGHGUI_HPP)}
-{$define OPENCV_HIGHGUI_HPP}
+{$IF not defined(OPENCV_HIGHGUI_HPP)}
+{$DEFINE OPENCV_HIGHGUI_HPP}
 
-{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-{$if defined(HAVE_OPENCV_IMGCODECS)}{$I 'imgcodecs.inc'}{$IFEND}
-{$if defined(HAVE_OPENCV_VIDEOIO)}{$I 'videoio.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$IFEND}
+{$IF defined(HAVE_OPENCV_IMGCODECS)}{$I 'imgcodecs.inc'}{$IFEND}
+{$IF defined(HAVE_OPENCV_VIDEOIO)}{$I 'videoio.inc'}{$IFEND}
+(* *
+  @defgroup highgui High-level GUI
 
-(**
-@defgroup highgui High-level GUI
+  While OpenCV was designed for use in full-scale applications and can be used within functionally
+  rich UI frameworks (such as Qt\*, WinForms\*, or Cocoa\* ) or without any UI at all, sometimes there
+  it is required to try functionality quickly and visualize the results. This is what the HighGUI
+  module has been designed for.
 
-While OpenCV was designed for use in full-scale applications and can be used within functionally
-rich UI frameworks (such as Qt\*, WinForms\*, or Cocoa\* ) or without any UI at all, sometimes there
-it is required to try functionality quickly and visualize the results. This is what the HighGUI
-module has been designed for.
+  It provides easy interface to:
 
-It provides easy interface to:
+  -   Create and manipulate windows that can display images and 'remember' their content (no need to
+  handle repaint events from OS).
+  -   Add trackbars to the windows, handle simple mouse events as well as keyboard commands.
 
--   Create and manipulate windows that can display images and 'remember' their content (no need to
-    handle repaint events from OS).
--   Add trackbars to the windows, handle simple mouse events as well as keyboard commands.
+  @{
+  @defgroup highgui_window_flags Flags related creating and manipulating HighGUI windows and mouse events
+  @defgroup highgui_opengl OpenGL support
+  @defgroup highgui_qt Qt New Functions
 
-@{
-    @defgroup highgui_window_flags Flags related creating and manipulating HighGUI windows and mouse events
-    @defgroup highgui_opengl OpenGL support
-    @defgroup highgui_qt Qt New Functions
+  ![image](pics/qtgui.png)
 
-    ![image](pics/qtgui.png)
+  This figure explains new functionality implemented with Qt\* GUI. The new GUI provides a statusbar,
+  a toolbar, and a control panel. The control panel can have trackbars and buttonbars attached to it.
+  If you cannot see the control panel, press Ctrl+P or right-click any Qt window and select **Display
+  properties window**.
 
-    This figure explains new functionality implemented with Qt\* GUI. The new GUI provides a statusbar,
-    a toolbar, and a control panel. The control panel can have trackbars and buttonbars attached to it.
-    If you cannot see the control panel, press Ctrl+P or right-click any Qt window and select **Display
-    properties window**.
+  -   To attach a trackbar, the window name parameter must be NULL.
 
-    -   To attach a trackbar, the window name parameter must be NULL.
+  -   To attach a buttonbar, a button must be created. If the last bar attached to the control panel
+  is a buttonbar, the new button is added to the right of the last button. If the last bar
+  attached to the control panel is a trackbar, or the control panel is empty, a new buttonbar is
+  created. Then, a new button is attached to it.
 
-    -   To attach a buttonbar, a button must be created. If the last bar attached to the control panel
-        is a buttonbar, the new button is added to the right of the last button. If the last bar
-        attached to the control panel is a trackbar, or the control panel is empty, a new buttonbar is
-        created. Then, a new button is attached to it.
+  See below the example used to generate the figure:
+  @code
+  int main(int argc, char *argv[])
+  {
 
-    See below the example used to generate the figure:
-    @code
-        int main(int argc, char *argv[])
-        {
-
-            int value = 50;
-            int value2 = 0;
-
-
-            namedWindow('main1',WINDOW_NORMAL);
-            namedWindow('main2',WINDOW_AUTOSIZE | WINDOW_GUI_NORMAL);
-            createTrackbar( 'track1', 'main1', &value, 255,  NULL);
-
-            String nameb1 = 'button1';
-            String nameb2 = 'button2';
-
-            createButton(nameb1,callbackButton,&nameb1,QT_CHECKBOX,1);
-            createButton(nameb2,callbackButton,NULL,QT_CHECKBOX,0);
-            createTrackbar( 'track2', NULL, &value2, 255, NULL);
-            createButton('button5',callbackButton1,NULL,QT_RADIOBOX,0);
-            createButton('button6',callbackButton2,NULL,QT_RADIOBOX,1);
-
-            setMouseCallback( 'main2',on_mouse,NULL );
-
-            Mat img1 = imread('files/flower.jpg');
-            VideoCapture video;
-            video.open('files/hockey.avi');
-
-            Mat img2,img3;
-
-            while( waitKey(33) != 27 )
-            {
-                img1.convertTo(img2,-1,1,value);
-                video >> img3;
-
-                imshow('main1',img2);
-                imshow('main2',img3);
-            }
-
-            destroyAllWindows();
-
-            return 0;
-        }
-    @endcode
+  int value = 50;
+  int value2 = 0;
 
 
-    @defgroup highgui_winrt WinRT support
+  namedWindow('main1',WINDOW_NORMAL);
+  namedWindow('main2',WINDOW_AUTOSIZE | WINDOW_GUI_NORMAL);
+  createTrackbar( 'track1', 'main1', &value, 255,  NULL);
 
-    This figure explains new functionality implemented with WinRT GUI. The new GUI provides an Image control,
-    and a slider panel. Slider panel holds trackbars attached to it.
+  String nameb1 = 'button1';
+  String nameb2 = 'button2';
 
-    Sliders are attached below the image control. Every new slider is added below the previous one.
+  createButton(nameb1,callbackButton,&nameb1,QT_CHECKBOX,1);
+  createButton(nameb2,callbackButton,NULL,QT_CHECKBOX,0);
+  createTrackbar( 'track2', NULL, &value2, 255, NULL);
+  createButton('button5',callbackButton1,NULL,QT_RADIOBOX,0);
+  createButton('button6',callbackButton2,NULL,QT_RADIOBOX,1);
 
-    See below the example used to generate the figure:
-    @code
-        void sample_app::MainPage::ShowWindow()
-        {
-            static cv::String windowName('sample');
-            cv::winrt_initContainer(this->cvContainer);
-            cv::namedWindow(windowName); // not required
+  setMouseCallback( 'main2',on_mouse,NULL );
 
-            cv::Mat image = cv::imread('Assets/sample.jpg');
-            cv::Mat converted = cv::Mat(image.rows, image.cols, CV_8UC4);
-            cv::cvtColor(image, converted, COLOR_BGR2BGRA);
-            cv::imshow(windowName, converted); // this will create window if it hasn't been created before
+  Mat img1 = imread('files/flower.jpg');
+  VideoCapture video;
+  video.open('files/hockey.avi');
 
-            int state = 42;
-            cv::TrackbarCallback callback = [](int pos, void* userdata)
-            {
-                if (pos == 0) {
-                    cv::destroyWindow(windowName);
-                }
-            };
-            cv::TrackbarCallback callbackTwin = [](int pos, void* userdata)
-            {
-                if (pos >= 70) {
-                    cv::destroyAllWindows();
-                }
-            };
-            cv::createTrackbar('Sample trackbar', windowName, &state, 100, callback);
-            cv::createTrackbar('Twin brother', windowName, &state, 100, callbackTwin);
-        }
-    @endcode
+  Mat img2,img3;
 
-    @defgroup highgui_c C API
-@}
+  while( waitKey(33) != 27 )
+  {
+  img1.convertTo(img2,-1,1,value);
+  video >> img3;
+
+  imshow('main1',img2);
+  imshow('main2',img3);
+  }
+
+  destroyAllWindows();
+
+  return 0;
+  }
+  @endcode
+
+
+  @defgroup highgui_winrt WinRT support
+
+  This figure explains new functionality implemented with WinRT GUI. The new GUI provides an Image control,
+  and a slider panel. Slider panel holds trackbars attached to it.
+
+  Sliders are attached below the image control. Every new slider is added below the previous one.
+
+  See below the example used to generate the figure:
+  @code
+  void sample_app::MainPage::ShowWindow()
+  {
+  static cv::String windowName('sample');
+  cv::winrt_initContainer(this->cvContainer);
+  cv::namedWindow(windowName); // not required
+
+  cv::Mat image = cv::imread('Assets/sample.jpg');
+  cv::Mat converted = cv::Mat(image.rows, image.cols, CV_8UC4);
+  cv::cvtColor(image, converted, COLOR_BGR2BGRA);
+  cv::imshow(windowName, converted); // this will create window if it hasn't been created before
+
+  int state = 42;
+  cv::TrackbarCallback callback = [](int pos, void* userdata)
+  {
+  if (pos == 0) {
+  cv::destroyWindow(windowName);
+  }
+  };
+  cv::TrackbarCallback callbackTwin = [](int pos, void* userdata)
+  {
+  if (pos >= 70) {
+  cv::destroyAllWindows();
+  }
+  };
+  cv::createTrackbar('Sample trackbar', windowName, &state, 100, callback);
+  cv::createTrackbar('Twin brother', windowName, &state, 100, callbackTwin);
+  }
+  @endcode
+
+  @defgroup highgui_c C API
+  @}
 *)
 
-///////////////////////// graphical user interface //////////////////////////
+/// ////////////////////// graphical user interface //////////////////////////
 
 Type
+  // ! Flags for cv::namedWindow
+  WindowFlags = type int; //
 
-//! Flags for cv::namedWindow
-WindowFlags = (                //
-    WINDOW_NORMAL = $00000000,   // !< the user can resize the window (no constraint) / also use to switch a fullscreen window to a normal size.
-    WINDOW_AUTOSIZE = $00000001, // !< the user cannot resize the window, the size is constrainted by the image displayed.
-    WINDOW_OPENGL = $00001000,   // !< window with opengl support.
+const
+  WINDOW_NORMAL   = $00000000; // !< the user can resize the window (no constraint) / also use to switch a fullscreen window to a normal size.
+  WINDOW_AUTOSIZE = $00000001; // !< the user cannot resize the window, the size is constrainted by the image displayed.
+  WINDOW_OPENGL   = $00001000; // !< window with opengl support.
 
-    WINDOW_FULLSCREEN = 1,           // !< change the window to fullscreen.
-    WINDOW_FREERATIO = $00000100,    // !< the image expends as much as it can (no ratio constraint).
-    WINDOW_KEEPRATIO = $00000000,    // !< the ratio of the image is respected.
-    WINDOW_GUI_EXPANDED = $00000000, // !< status bar and tool bar
-    WINDOW_GUI_NORMAL = $00000010    // !< old fashious way
-    );
+  WINDOW_FULLSCREEN   = 1;         // !< change the window to fullscreen.
+  WINDOW_FREERATIO    = $00000100; // !< the image expends as much as it can (no ratio constraint).
+  WINDOW_KEEPRATIO    = $00000000; // !< the ratio of the image is respected.
+  WINDOW_GUI_EXPANDED = $00000000; // !< status bar and tool bar
+  WINDOW_GUI_NORMAL   = $00000010; // !< old fashious way
 
-//! Flags for cv::setWindowProperty / cv::getWindowProperty
- WindowPropertyFlags =(//
-       WND_PROP_FULLSCREEN   = 0, //!< fullscreen property    (can be WINDOW_NORMAL or WINDOW_FULLSCREEN).
-       WND_PROP_AUTOSIZE     = 1, //!< autosize property      (can be WINDOW_NORMAL or WINDOW_AUTOSIZE).
-       WND_PROP_ASPECT_RATIO = 2, //!< window's aspect ration (can be set to WINDOW_FREERATIO or WINDOW_KEEPRATIO).
-       WND_PROP_OPENGL       = 3, //!< opengl support.
-       WND_PROP_VISIBLE      = 4, //!< checks whether the window exists and is visible
-       WND_PROP_TOPMOST      = 5, //!< property to toggle normal window being topmost or not
-       WND_PROP_VSYNC        = 6  //!< enable or disable VSYNC (in OpenGL mode)
-     );
+type
+  // ! Flags for cv::setWindowProperty / cv::getWindowProperty
+  WindowPropertyFlags = type int;
 
-//! Mouse Events see cv::MouseCallback
-MouseEventTypes = (        //
-    EVENT_MOUSEMOVE = 0,     // !< indicates that the mouse pointer has moved over the window.
-    EVENT_LBUTTONDOWN = 1,   // !< indicates that the left mouse button is pressed.
-    EVENT_RBUTTONDOWN = 2,   // !< indicates that the right mouse button is pressed.
-    EVENT_MBUTTONDOWN = 3,   // !< indicates that the middle mouse button is pressed.
-    EVENT_LBUTTONUP = 4,     // !< indicates that left mouse button is released.
-    EVENT_RBUTTONUP = 5,     // !< indicates that right mouse button is released.
-    EVENT_MBUTTONUP = 6,     // !< indicates that middle mouse button is released.
-    EVENT_LBUTTONDBLCLK = 7, // !< indicates that left mouse button is double clicked.
-    EVENT_RBUTTONDBLCLK = 8, // !< indicates that right mouse button is double clicked.
-    EVENT_MBUTTONDBLCLK = 9, // !< indicates that middle mouse button is double clicked.
-    EVENT_MOUSEWHEEL = 10,   // !< positive and negative values mean forward and backward scrolling, respectively.
-    EVENT_MOUSEHWHEEL = 11   // !< positive and negative values mean right and left scrolling, respectively.
-    );
+const
+  WND_PROP_FULLSCREEN   = 0; // !< fullscreen property    (can be WINDOW_NORMAL or WINDOW_FULLSCREEN).
+  WND_PROP_AUTOSIZE     = 1; // !< autosize property      (can be WINDOW_NORMAL or WINDOW_AUTOSIZE).
+  WND_PROP_ASPECT_RATIO = 2; // !< window's aspect ration (can be set to WINDOW_FREERATIO or WINDOW_KEEPRATIO).
+  WND_PROP_OPENGL       = 3; // !< opengl support.
+  WND_PROP_VISIBLE      = 4; // !< checks whether the window exists and is visible
+  WND_PROP_TOPMOST      = 5; // !< property to toggle normal window being topmost or not
+  WND_PROP_VSYNC        = 6; // !< enable or disable VSYNC (in OpenGL mode)
 
-//! Mouse Event Flags see cv::MouseCallback
- MouseEventFlags =(//
-       EVENT_FLAG_LBUTTON   = 1, //!< indicates that the left mouse button is down.
-       EVENT_FLAG_RBUTTON   = 2, //!< indicates that the right mouse button is down.
-       EVENT_FLAG_MBUTTON   = 4, //!< indicates that the middle mouse button is down.
-       EVENT_FLAG_CTRLKEY   = 8, //!< indicates that CTRL Key is pressed.
-       EVENT_FLAG_SHIFTKEY  = 16,//!< indicates that SHIFT Key is pressed.
-       EVENT_FLAG_ALTKEY    = 32 //!< indicates that ALT Key is pressed.
-     );
+type
+  // ! Mouse Events see cv::MouseCallback
+  MouseEventTypes = type int; //
 
+const
+  EVENT_MOUSEMOVE     = 0;  // !< indicates that the mouse pointer has moved over the window.
+  EVENT_LBUTTONDOWN   = 1;  // !< indicates that the left mouse button is pressed.
+  EVENT_RBUTTONDOWN   = 2;  // !< indicates that the right mouse button is pressed.
+  EVENT_MBUTTONDOWN   = 3;  // !< indicates that the middle mouse button is pressed.
+  EVENT_LBUTTONUP     = 4;  // !< indicates that left mouse button is released.
+  EVENT_RBUTTONUP     = 5;  // !< indicates that right mouse button is released.
+  EVENT_MBUTTONUP     = 6;  // !< indicates that middle mouse button is released.
+  EVENT_LBUTTONDBLCLK = 7;  // !< indicates that left mouse button is double clicked.
+  EVENT_RBUTTONDBLCLK = 8;  // !< indicates that right mouse button is double clicked.
+  EVENT_MBUTTONDBLCLK = 9;  // !< indicates that middle mouse button is double clicked.
+  EVENT_MOUSEWHEEL    = 10; // !< positive and negative values mean forward and backward scrolling, respectively.
+  EVENT_MOUSEHWHEEL   = 11; // !< positive and negative values mean right and left scrolling, respectively.
 
-//! Qt font weight
- QtFontWeights =(//
-        QT_FONT_LIGHT           = 25, //!< Weight of 25
-        QT_FONT_NORMAL          = 50, //!< Weight of 50
-        QT_FONT_DEMIBOLD        = 63, //!< Weight of 63
-        QT_FONT_BOLD            = 75, //!< Weight of 75
-        QT_FONT_BLACK           = 87  //!< Weight of 87
-     );
+type
+  // ! Mouse Event Flags see cv::MouseCallback
+  MouseEventFlags = type int;
 
-//! Qt font style
- QtFontStyles =(//
-        QT_STYLE_NORMAL         = 0, //!< Normal font.
-        QT_STYLE_ITALIC         = 1, //!< Italic font.
-        QT_STYLE_OBLIQUE        = 2  //!< Oblique font.
-     );
+const
+  EVENT_FLAG_LBUTTON  = 1;  // !< indicates that the left mouse button is down.
+  EVENT_FLAG_RBUTTON  = 2;  // !< indicates that the right mouse button is down.
+  EVENT_FLAG_MBUTTON  = 4;  // !< indicates that the middle mouse button is down.
+  EVENT_FLAG_CTRLKEY  = 8;  // !< indicates that CTRL Key is pressed.
+  EVENT_FLAG_SHIFTKEY = 16; // !< indicates that SHIFT Key is pressed.
+  EVENT_FLAG_ALTKEY   = 32; // !< indicates that ALT Key is pressed.
 
-//! Qt 'button' type
-QtButtonTypes =(//
-       QT_PUSH_BUTTON   = 0,    //!< Push button.
-       QT_CHECKBOX      = 1,    //!< Checkbox button.
-       QT_RADIOBOX      = 2,    //!< Radiobox button.
-       QT_NEW_BUTTONBAR = 1024  //!< Button should create a new buttonbar
-     );
+type
+  // ! Qt font weight
+  QtFontWeights = type int;
 
+const
+  QT_FONT_LIGHT    = 25; // !< Weight of 25
+  QT_FONT_NORMAL   = 50; // !< Weight of 50
+  QT_FONT_DEMIBOLD = 63; // !< Weight of 63
+  QT_FONT_BOLD     = 75; // !< Weight of 75
+  QT_FONT_BLACK    = 87; // !< Weight of 87
 
-(** @brief Callback function for mouse events. see cv::setMouseCallback
-@param event one of the cv::MouseEventTypes constants.
-@param x The x-coordinate of the mouse event.
-@param y The y-coordinate of the mouse event.
-@param flags one of the cv::MouseEventFlags constants.
-@param userdata The optional parameter.
- *)
-TMouseCallback = procedure(event, x, y, flags: Int; userdata: Pointer);
-TMouseCallbackEvent = procedure(event:MouseEventTypes; x, y, flags: Int; userdata: Pointer);
+type
+  // ! Qt font style
+  QtFontStyles = type int;
 
-(** @brief Callback function for Trackbar see cv::createTrackbar
-@param pos current position of the specified trackbar.
-@param userdata The optional parameter.
- *)
-TTrackbarCallback = procedure(pos:int; userdata:pointer);
+const
+  QT_STYLE_NORMAL  = 0; // !< Normal font.
+  QT_STYLE_ITALIC  = 1; // !< Italic font.
+  QT_STYLE_OBLIQUE = 2; // !< Oblique font.
 
-(** @brief Callback function defined to be called every frame. See cv::setOpenGlDrawCallback
-@param userdata The optional parameter.
- *)
-TOpenGlDrawCallback = procedure(userdata:Pointer);
+type
+  // ! Qt 'button' type
+  QtButtonTypes = type int;
 
-(** @brief Callback function for a button created by cv::createButton
-@param state current state of the button. It could be -1 for a push button, 0 or 1 for a check/radio box button.
-@param userdata The optional parameter.
- *)
-TButtonCallback=procedure(state:int; userdata:pointer);
+const
+  QT_PUSH_BUTTON   = 0;    // !< Push button.
+  QT_CHECKBOX      = 1;    // !< Checkbox button.
+  QT_RADIOBOX      = 2;    // !< Radiobox button.
+  QT_NEW_BUTTONBAR = 1024; // !< Button should create a new buttonbar
 
-(** @brief Creates a window.
+type
+  (* * @brief Callback function for mouse events. see cv::setMouseCallback
+    @param event one of the cv::MouseEventTypes constants.
+    @param x The x-coordinate of the mouse event.
+    @param y The y-coordinate of the mouse event.
+    @param flags one of the cv::MouseEventFlags constants.
+    @param userdata The optional parameter.
+  *)
+  TMouseCallback      = procedure(event, x, y, flags: int; userdata: Pointer);
+  TMouseCallbackEvent = procedure(event: MouseEventTypes; x, y, flags: int; userdata: Pointer);
 
-The function namedWindow creates a window that can be used as a placeholder for images and
-trackbars. Created windows are referred to by their names.
+  (* * @brief Callback function for Trackbar see cv::createTrackbar
+    @param pos current position of the specified trackbar.
+    @param userdata The optional parameter.
+  *)
+  TTrackbarCallback = procedure(pos: int; userdata: Pointer);
 
-If a window with the same name already exists, the function does nothing.
+  (* * @brief Callback function defined to be called every frame. See cv::setOpenGlDrawCallback
+    @param userdata The optional parameter.
+  *)
+  TOpenGlDrawCallback = procedure(userdata: Pointer);
 
-You can call cv::destroyWindow or cv::destroyAllWindows to close the window and de-allocate any associated
-memory usage. For a simple program, you do not really have to call these functions because all the
-resources and windows of the application are closed automatically by the operating system upon exit.
+  (* * @brief Callback function for a button created by cv::createButton
+    @param state current state of the button. It could be -1 for a push button, 0 or 1 for a check/radio box button.
+    @param userdata The optional parameter.
+  *)
+  TButtonCallback = procedure(state: int; userdata: Pointer);
 
-@note
+  (* * @brief Creates a window.
 
-Qt backend supports additional flags:
- -   **WINDOW_NORMAL or WINDOW_AUTOSIZE:** WINDOW_NORMAL enables you to resize the
-     window, whereas WINDOW_AUTOSIZE adjusts automatically the window size to fit the
-     displayed image (see imshow ), and you cannot change the window size manually.
- -   **WINDOW_FREERATIO or WINDOW_KEEPRATIO:** WINDOW_FREERATIO adjusts the image
-     with no respect to its ratio, whereas WINDOW_KEEPRATIO keeps the image ratio.
- -   **WINDOW_GUI_NORMAL or WINDOW_GUI_EXPANDED:** WINDOW_GUI_NORMAL is the old way to draw the window
-     without statusbar and toolbar, whereas WINDOW_GUI_EXPANDED is a new enhanced GUI.
-By default, flags == WINDOW_AUTOSIZE | WINDOW_KEEPRATIO | WINDOW_GUI_EXPANDED
+    The function namedWindow creates a window that can be used as a placeholder for images and
+    trackbars. Created windows are referred to by their names.
 
-@param winname Name of the window in the window caption that may be used as a window identifier.
-@param flags Flags of the window. The supported flags are: (cv::WindowFlags)
- *)
-//CV_EXPORTS_W void namedWindow(const String& winname, int flags = WINDOW_AUTOSIZE);
+    If a window with the same name already exists, the function does nothing.
+
+    You can call cv::destroyWindow or cv::destroyAllWindows to close the window and de-allocate any associated
+    memory usage. For a simple program, you do not really have to call these functions because all the
+    resources and windows of the application are closed automatically by the operating system upon exit.
+
+    @note
+
+    Qt backend supports additional flags:
+    -   **WINDOW_NORMAL or WINDOW_AUTOSIZE:** WINDOW_NORMAL enables you to resize the
+    window, whereas WINDOW_AUTOSIZE adjusts automatically the window size to fit the
+    displayed image (see imshow ), and you cannot change the window size manually.
+    -   **WINDOW_FREERATIO or WINDOW_KEEPRATIO:** WINDOW_FREERATIO adjusts the image
+    with no respect to its ratio, whereas WINDOW_KEEPRATIO keeps the image ratio.
+    -   **WINDOW_GUI_NORMAL or WINDOW_GUI_EXPANDED:** WINDOW_GUI_NORMAL is the old way to draw the window
+    without statusbar and toolbar, whereas WINDOW_GUI_EXPANDED is a new enhanced GUI.
+    By default, flags == WINDOW_AUTOSIZE | WINDOW_KEEPRATIO | WINDOW_GUI_EXPANDED
+
+    @param winname Name of the window in the window caption that may be used as a window identifier.
+    @param flags Flags of the window. The supported flags are: (cv::WindowFlags)
+  *)
+  // CV_EXPORTS_W void namedWindow(const String& winname, int flags = WINDOW_AUTOSIZE);
   {
     5721
     ?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
     ?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
     void cv::namedWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
   }
-procedure namedWindow(const winname: CppString; flags: Int = Int(WINDOW_AUTOSIZE)); overload;
-  external opencv_world_dll name '?namedWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure namedWindow(const winname: CppString; flags: WindowFlags = WINDOW_AUTOSIZE); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure namedWindow(const winname: String; flags: WindowFlags = WINDOW_AUTOSIZE); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-
-(** @brief Destroys the specified window.
-
-The function destroyWindow destroys the window with the given name.
-
-@param winname Name of the window to be destroyed.
- *)
-//CV_EXPORTS_W void destroyWindow(const String& winname);
-{
- 4411
- ?destroyWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
- void cv::destroyWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
- }
-procedure destroyWindow(const winname: CppString); overload; external opencv_world_dll
-  name '?destroyWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure destroyWindow(const winname: String); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
-(** @brief Destroys all of the HighGUI windows.
-
-The function destroyAllWindows destroys all of the opened HighGUI windows.
- *)
-//CV_EXPORTS_W void destroyAllWindows();
-{
-4410
-?destroyAllWindows@cv@@YAXXZ
-?destroyAllWindows@cv@@YAXXZ
-void cv::destroyAllWindows(void)
-}
-procedure destroyAllWindows(); external opencv_world_dll
-  name '?destroyAllWindows@cv@@YAXXZ'{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-//CV_EXPORTS_W int startWindowThread();
-{
-6530
-?startWindowThread@cv@@YAHXZ
-?startWindowThread@cv@@YAHXZ
-int cv::startWindowThread(void)
-}
-function startWindowThread:Int; external opencv_world_dll
-  name '?startWindowThread@cv@@YAHXZ'{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Similar to #waitKey, but returns full key code.
-@note
-Key code is implementation specific and depends on used backend: QT/GTK/Win32/etc
+procedure namedWindow(const winname: String; flags: WindowFlags = WINDOW_AUTOSIZE); {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Destroys the specified window.
+  The function destroyWindow destroys the window with the given name.
+  @param winname Name of the window to be destroyed.
 *)
-//CV_EXPORTS_W int waitKeyEx(int delay = 0);
-{
-6735
-?waitKeyEx@cv@@YAHH@Z
-?waitKeyEx@cv@@YAHH@Z
-int cv::waitKeyEx(int)
-}
-function waitKeyEx(delay: Int = 0): Int; external opencv_world_dll name '?waitKeyEx@cv@@YAHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+// CV_EXPORTS_W void destroyWindow(const String& winname);
+procedure destroyWindow(const winname: String); {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-(** @brief Waits for a pressed key.
-
-The function waitKey waits for a key event infinitely (when \f$\texttt{delay}\leq 0\f$ ) or for delay
-milliseconds, when it is positive. Since the OS has a minimum time between switching threads, the
-function will not wait exactly delay ms, it will wait at least delay ms, depending on what else is
-running on your computer at that time. It returns the code of the pressed key or -1 if no key was
-pressed before the specified time had elapsed. To check for a key press but not wait for it, use
-#pollKey.
-
-@note The functions #waitKey and #pollKey are the only methods in HighGUI that can fetch and handle
-GUI events, so one of them needs to be called periodically for normal event processing unless
-HighGUI is used within an environment that takes care of event processing.
-
-@note The function only works if there is at least one HighGUI window created and the window is
-active. If there are several HighGUI windows, any of them can be active.
-
-@param delay Delay in milliseconds. 0 is the special value that means 'forever'.
- *)
-//CV_EXPORTS_W int waitKey(int delay = 0);
-{
- ?waitKey@cv@@YAHH@Z
- int cv::waitKey(int)
- }
-function waitKey(delay: Int = 0): Int; external opencv_world_dll name '?waitKey@cv@@YAHH@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Polls for a pressed key.
-
-The function pollKey polls for a key event without waiting. It returns the code of the pressed key
-or -1 if no key was pressed since the last invocation. To wait until a key was pressed, use #waitKey.
-
-@note The functions #waitKey and #pollKey are the only methods in HighGUI that can fetch and handle
-GUI events, so one of them needs to be called periodically for normal event processing unless
-HighGUI is used within an environment that takes care of event processing.
-
-@note The function only works if there is at least one HighGUI window created and the window is
-active. If there are several HighGUI windows, any of them can be active.
- *)
-//CV_EXPORTS_W int pollKey();
-{
-5853
-?pollKey@cv@@YAHXZ
-?pollKey@cv@@YAHXZ
-int cv::pollKey(void)
-}
-function pollKey(): Int; external opencv_world_dll name '?pollKey@cv@@YAHXZ' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Displays an image in the specified window.
-
-The function imshow displays an image in the specified window. If the window was created with the
-cv::WINDOW_AUTOSIZE flag, the image is shown with its original size, however it is still limited by the screen resolution.
-Otherwise, the image is scaled to fit the window. The function may scale the image, depending on its depth:
-
--   If the image is 8-bit unsigned, it is displayed as is.
--   If the image is 16-bit unsigned, the pixels are divided by 256. That is, the
-    value range [0,255\*256] is mapped to [0,255].
--   If the image is 32-bit or 64-bit floating-point, the pixel values are multiplied by 255. That is, the
-    value range [0,1] is mapped to [0,255].
--   32-bit integer images are not processed anymore due to ambiguouty of required transform.
-    Convert to 8-bit unsigned matrix using a custom preprocessing specific to image's context.
-
-If window was created with OpenGL support, cv::imshow also support ogl::Buffer , ogl::Texture2D and
-cuda::GpuMat as input.
-
-If the window was not created before this function, it is assumed creating a window with cv::WINDOW_AUTOSIZE.
-
-If you need to show an image that is bigger than the screen resolution, you will need to call namedWindow('', WINDOW_NORMAL) before the imshow.
-
-@note This function should be followed by a call to cv::waitKey or cv::pollKey to perform GUI
-housekeeping tasks that are necessary to actually show the given image and make the window respond
-to mouse and keyboard events. Otherwise, it won't display the image and the window might lock up.
-For example, **waitKey(0)** will display the window infinitely until any keypress (it is suitable
-for image display). **waitKey(25)** will display a frame and wait approximately 25 ms for a key
-press (suitable for displaying a video frame-by-frame). To remove the window, use cv::destroyWindow.
-
-@note
-
-[__Windows Backend Only__] Pressing Ctrl+C will copy the image to the clipboard.
-
-[__Windows Backend Only__] Pressing Ctrl+S will show a dialog to save the image.
-
-@param winname Name of the window.
-@param mat Image to be shown.
- *)
-//CV_EXPORTS_W void imshow(const String& winname, InputArray mat);
-{
-  5268
-  ?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@@Z
-  ?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@@Z
-  void cv::imshow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &)
-}
-procedure imshow(const winname: CppString; const Mat: TInputArray); overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-  name '?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@@Z'
-{$ELSE}
-  name '?imshow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure imshow(const winname: String; const Mat: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
-(** @brief Resizes the window to the specified size
-
-@note
-
--   The specified window size is for the image area. Toolbars are not counted.
--   Only windows created without cv::WINDOW_AUTOSIZE flag can be resized.
-
-@param winname Window name.
-@param width The new window width.
-@param height The new window height.
- *)
-//CV_EXPORTS_W void resizeWindow(const String& winname, int width, int height);
-{
- 6154
- ?resizeWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z
- dvoid cv::resizeWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,int)
-}
- procedure resizeWindow(const winname: CppString; width, height: Int); overload; external opencv_world_dll name '?resizeWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
- procedure resizeWindow(const winname: String; width, height: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
-(** @overload
-@param winname Window name.
-@param size The new window size.
+(* * @brief Destroys all of the HighGUI windows.
+  The function destroyAllWindows destroys all of the opened HighGUI windows.
 *)
-//CV_EXPORTS_W void resizeWindow(const String& winname, const cv::Size& size);
-
-(** @brief Moves the window to the specified position
-
-@param winname Name of the window.
-@param x The new x-coordinate of the window.
-@param y The new y-coordinate of the window.
- *)
-//CV_EXPORTS_W void moveWindow(const String& winname, int x, int y);
-{
-  5691
-  ?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z
-  void cv::moveWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,int)
-}
-procedure moveWindow(const winname: CppString; x, y: Int); overload; external opencv_world_dll name '?moveWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HH@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure moveWindow(const winname: String; x, y: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
-(** @brief Changes parameters of a window dynamically.
-
-The function setWindowProperty enables changing properties of a window.
-
-@param winname Name of the window.
-@param prop_id Window property to edit. The supported operation flags are: (cv::WindowPropertyFlags)
-@param prop_value New value of the window property. The supported flags are: (cv::WindowFlags)
- *)
-//CV_EXPORTS_W void setWindowProperty(const String& winname, int prop_id, double prop_value);
-
-(** @brief Updates window title
-@param winname Name of the window.
-@param title New title.
+// CV_EXPORTS_W void destroyAllWindows();
+procedure destroyAllWindows(); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    // CV_EXPORTS_W int startWindowThread();
+function startWindowThread: int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Similar to #waitKey, but returns full key code.
+  @note
+  Key code is implementation specific and depends on used backend: QT/GTK/Win32/etc
 *)
-//CV_EXPORTS_W void setWindowTitle(const String& winname, const String& title);
-{
-6453
-?setWindowTitle@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
-?setWindowTitle@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
-void cv::setWindowTitle(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-}
-procedure setWindowTitle(const winname: CppString; const title:CppString); overload;
-external opencv_world_dll name '?setWindowTitle@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure setWindowTitle(const winname: String; const title:String); overload;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+// CV_EXPORTS_W int waitKeyEx(int delay = 0);
+function waitKeyEx(delay: int = 0): int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Waits for a pressed key.
 
-Const
-  AliasSetWindowTitle : procedure(const winname: CppString; const title: CppString) = setWindowTitle;
+  The function waitKey waits for a key event infinitely (when \f$\texttt{delay}\leq 0\f$ ) or for delay
+  milliseconds, when it is positive. Since the OS has a minimum time between switching threads, the
+  function will not wait exactly delay ms, it will wait at least delay ms, depending on what else is
+  running on your computer at that time. It returns the code of the pressed key or -1 if no key was
+  pressed before the specified time had elapsed. To check for a key press but not wait for it, use
+  #pollKey.
 
-(** @brief Provides parameters of a window.
+  @note The functions #waitKey and #pollKey are the only methods in HighGUI that can fetch and handle
+  GUI events, so one of them needs to be called periodically for normal event processing unless
+  HighGUI is used within an environment that takes care of event processing.
 
-The function getWindowProperty returns properties of a window.
+  @note The function only works if there is at least one HighGUI window created and the window is
+  active. If there are several HighGUI windows, any of them can be active.
 
-@param winname Name of the window.
-@param prop_id Window property to retrieve. The following operation flags are available: (cv::WindowPropertyFlags)
+  @param delay Delay in milliseconds. 0 is the special value that means 'forever'.
+*)
+// CV_EXPORTS_W int waitKey(int delay = 0);
+function waitKey(delay: int = 0): int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Polls for a pressed key.
 
-@sa setWindowProperty
- *)
-//CV_EXPORTS_W double getWindowProperty(const String& winname, int prop_id);
-{
-5183
-?getWindowProperty@cv@@YANAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
-?getWindowProperty@cv@@YANAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
-double cv::getWindowProperty(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
-}
-function getWindowProperty(const winname:CppString; prop_id:int):double;
-external opencv_world_dll name '?getWindowProperty@cv@@YANAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  The function pollKey polls for a key event without waiting. It returns the code of the pressed key
+  or -1 if no key was pressed since the last invocation. To wait until a key was pressed, use #waitKey.
 
-(** @brief Provides rectangle of image in the window.
+  @note The functions #waitKey and #pollKey are the only methods in HighGUI that can fetch and handle
+  GUI events, so one of them needs to be called periodically for normal event processing unless
+  HighGUI is used within an environment that takes care of event processing.
 
-The function getWindowImageRect returns the client screen coordinates, width and height of the image rendering area.
+  @note The function only works if there is at least one HighGUI window created and the window is
+  active. If there are several HighGUI windows, any of them can be active.
+*)
+// CV_EXPORTS_W int pollKey();
+function pollKey(): int; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-@param winname Name of the window.
+(* * @brief Displays an image in the specified window.
 
-@sa resizeWindow moveWindow
- *)
-//CV_EXPORTS_W Rect getWindowImageRect(const String& winname);
-{
-5181
-?getWindowImageRect@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-?getWindowImageRect@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-class cv::Rect_<int> cv::getWindowImageRect(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-}
-function getWindowImageRect(const winname:CppString): TRect;
-external opencv_world_dll name '?getWindowImageRect@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  The function imshow displays an image in the specified window. If the window was created with the
+  cv::WINDOW_AUTOSIZE flag, the image is shown with its original size, however it is still limited by the screen resolution.
+  Otherwise, the image is scaled to fit the window. The function may scale the image, depending on its depth:
+
+  -   If the image is 8-bit unsigned, it is displayed as is.
+  -   If the image is 16-bit unsigned, the pixels are divided by 256. That is, the
+  value range [0,255\*256] is mapped to [0,255].
+  -   If the image is 32-bit or 64-bit floating-point, the pixel values are multiplied by 255. That is, the
+  value range [0,1] is mapped to [0,255].
+  -   32-bit integer images are not processed anymore due to ambiguouty of required transform.
+  Convert to 8-bit unsigned matrix using a custom preprocessing specific to image's context.
+
+  If window was created with OpenGL support, cv::imshow also support ogl::Buffer , ogl::Texture2D and
+  cuda::GpuMat as input.
+
+  If the window was not created before this function, it is assumed creating a window with cv::WINDOW_AUTOSIZE.
+
+  If you need to show an image that is bigger than the screen resolution, you will need to call namedWindow('', WINDOW_NORMAL) before the imshow.
+
+  @note This function should be followed by a call to cv::waitKey or cv::pollKey to perform GUI
+  housekeeping tasks that are necessary to actually show the given image and make the window respond
+  to mouse and keyboard events. Otherwise, it won't display the image and the window might lock up.
+  For example, **waitKey(0)** will display the window infinitely until any keypress (it is suitable
+  for image display). **waitKey(25)** will display a frame and wait approximately 25 ms for a key
+  press (suitable for displaying a video frame-by-frame). To remove the window, use cv::destroyWindow.
+
+  @note
+
+  [__Windows Backend Only__] Pressing Ctrl+C will copy the image to the clipboard.
+
+  [__Windows Backend Only__] Pressing Ctrl+S will show a dialog to save the image.
+
+  @param winname Name of the window.
+  @param mat Image to be shown.
+*)
+// CV_EXPORTS_W void imshow(const String& winname, InputArray mat);
+procedure imshow(const winname: String;const Mat: TInputArray); {$IFDEF USE_INLINE}inline; {$ENDIF}
+(* * @brief Resizes the window to the specified size
+
+  @note
+
+  -   The specified window size is for the image area. Toolbars are not counted.
+  -   Only windows created without cv::WINDOW_AUTOSIZE flag can be resized.
+
+  @param winname Window name.
+  @param width The new window width.
+  @param height The new window height.
+*)
+// CV_EXPORTS_W void resizeWindow(const String& winname, int width, int height);
+procedure resizeWindow(const winname: String; width, height: int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+(* * @overload
+  @param winname Window name.
+  @param size The new window size.
+*)
+// CV_EXPORTS_W void resizeWindow(const String& winname, const cv::Size& size);
+procedure resizeWindow(const winname: String; const size:TSize); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+(* * @brief Moves the window to the specified position
+
+  @param winname Name of the window.
+  @param x The new x-coordinate of the window.
+  @param y The new y-coordinate of the window.
+*)
+// CV_EXPORTS_W void moveWindow(const String& winname, int x, int y);
+procedure moveWindow(const winname: String; x, y: int); {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+(* * @brief Changes parameters of a window dynamically.
+
+  The function setWindowProperty enables changing properties of a window.
+
+  @param winname Name of the window.
+  @param prop_id Window property to edit. The supported operation flags are: (cv::WindowPropertyFlags)
+  @param prop_value New value of the window property. The supported flags are: (cv::WindowFlags)
+*)
+// CV_EXPORTS_W void setWindowProperty(const String& winname, int prop_id, double prop_value);
+procedure setWindowProperty(const winname:String; prop_id:int; prop_value:double); {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+(* * @brief Updates window title
+  @param winname Name of the window.
+  @param title New title.
+*)
+// CV_EXPORTS_W void setWindowTitle(const String& winname, const String& title);
+procedure setWindowTitle(const winname: String;const title: String); {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+(* * @brief Provides parameters of a window.
+
+  The function getWindowProperty returns properties of a window.
+
+  @param winname Name of the window.
+  @param prop_id Window property to retrieve. The following operation flags are available: (cv::WindowPropertyFlags)
+
+  @sa setWindowProperty
+*)
+// CV_EXPORTS_W double getWindowProperty(const String& winname, int prop_id);
+function getWindowProperty(const winname: String; prop_id: int): double;{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+(* * @brief Provides rectangle of image in the window.
+
+  The function getWindowImageRect returns the client screen coordinates, width and height of the image rendering area.
+
+  @param winname Name of the window.
+
+  @sa resizeWindow moveWindow
+*)
+// CV_EXPORTS_W Rect getWindowImageRect(const String& winname);
+function getWindowImageRect(const winname: String): TRect;{$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (* @example samples/cpp/create_mask.cpp
-This program demonstrates using mouse events and how to make and use a mask image (black and white) .
+  This program demonstrates using mouse events and how to make and use a mask image (black and white) .
 *)
-(** @brief Sets mouse handler for the specified window
+(* * @brief Sets mouse handler for the specified window
 
-@param winname Name of the window.
-@param onMouse Callback function for mouse events. See OpenCV samples on how to specify and use the callback.
-@param userdata The optional parameter passed to the callback.
- *)
-//CV_EXPORTS void setMouseCallback(const String& winname, MouseCallback onMouse, void* userdata = 0);
-  {
-    6348
-    ?setMouseCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHHHHPEAX@Z1@Z
-    ?setMouseCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHHHHPEAX@Z1@Z
-    void cv::setMouseCallback(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,void (*)(int,int,int,int,void *),void *)
-  }
-procedure setMouseCallback(const winname: CppString; onMouse: TMouseCallback; userdata: Pointer = nil); overload;
-  external opencv_world_dll name '?setMouseCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHHHHPEAX@Z1@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure setMouseCallback(const winname: String; onMouse: TMouseCallback; userdata: Pointer = nil); overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure setMouseCallback(const winname: CppString; onMouse: TMouseCallbackEvent; userdata: Pointer = nil); overload;
-external opencv_world_dll name '?setMouseCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHHHHPEAX@Z1@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure setMouseCallback(const winname: String; onMouse: TMouseCallbackEvent; userdata: Pointer = nil); overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+  @param winname Name of the window.
+  @param onMouse Callback function for mouse events. See OpenCV samples on how to specify and use the callback.
+  @param userdata The optional parameter passed to the callback.
+*)
+// CV_EXPORTS void setMouseCallback(const String& winname, MouseCallback onMouse, void* userdata = 0);
+procedure setMouseCallback(const winname: String; onMouse: TMouseCallback; userdata: Pointer = nil); {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-(** @brief Gets the mouse-wheel motion delta, when handling mouse-wheel events cv::EVENT_MOUSEWHEEL and
-cv::EVENT_MOUSEHWHEEL.
+(* * @brief Gets the mouse-wheel motion delta, when handling mouse-wheel events cv::EVENT_MOUSEWHEEL and
+  cv::EVENT_MOUSEHWHEEL.
 
-For regular mice with a scroll-wheel, delta will be a multiple of 120. The value 120 corresponds to
-a one notch rotation of the wheel or the threshold for action to be taken and one such action should
-occur for each delta. Some high-precision mice with higher-resolution freely-rotating wheels may
-generate smaller values.
+  For regular mice with a scroll-wheel, delta will be a multiple of 120. The value 120 corresponds to
+  a one notch rotation of the wheel or the threshold for action to be taken and one such action should
+  occur for each delta. Some high-precision mice with higher-resolution freely-rotating wheels may
+  generate smaller values.
 
-For cv::EVENT_MOUSEWHEEL positive and negative values mean forward and backward scrolling,
-respectively. For cv::EVENT_MOUSEHWHEEL, where available, positive and negative values mean right and
-left scrolling, respectively.
+  For cv::EVENT_MOUSEWHEEL positive and negative values mean forward and backward scrolling,
+  respectively. For cv::EVENT_MOUSEHWHEEL, where available, positive and negative values mean right and
+  left scrolling, respectively.
 
-@note
+  @note
 
-Mouse-wheel events are currently supported only on Windows.
+  Mouse-wheel events are currently supported only on Windows.
 
-@param flags The mouse callback flags parameter.
- *)
-//CV_EXPORTS int getMouseWheelDelta(int flags);
-{
-5033
-?getMouseWheelDelta@cv@@YAHH@Z
-?getMouseWheelDelta@cv@@YAHH@Z
-int cv::getMouseWheelDelta(int)
-}
-function getMouseWheelDelta(flags:Int):Int;
-external opencv_world_dll name '?getMouseWheelDelta@cv@@YAHH@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  @param flags The mouse callback flags parameter.
+*)
+// CV_EXPORTS int getMouseWheelDelta(int flags);
+function getMouseWheelDelta(flags: int): int; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-(** @brief Allows users to select a ROI on the given image.
+(* * @brief Allows users to select a ROI on the given image.
 
-The function creates a window and allows users to select a ROI using the mouse.
-Controls: use `space` or `enter` to finish selection, use key `c` to cancel selection (function will return the zero cv::Rect).
+  The function creates a window and allows users to select a ROI using the mouse.
+  Controls: use `space` or `enter` to finish selection, use key `c` to cancel selection (function will return the zero cv::Rect).
 
-@param windowName name of the window where selection process will be shown.
-@param img image to select a ROI.
-@param showCrosshair if true crosshair of selection rectangle will be shown.
-@param fromCenter if true center of selection will match initial mouse position. In opposite case a corner of
-selection rectangle will correspont to the initial mouse position.
-@return selected ROI or empty rect if selection canceled.
+  @param windowName name of the window where selection process will be shown.
+  @param img image to select a ROI.
+  @param showCrosshair if true crosshair of selection rectangle will be shown.
+  @param fromCenter if true center of selection will match initial mouse position. In opposite case a corner of
+  selection rectangle will correspont to the initial mouse position.
+  @return selected ROI or empty rect if selection canceled.
 
-@note The function sets it's own mouse callback for specified window using cv::setMouseCallback(windowName, ...).
-After finish of work an empty callback will be set for the used window.
- *)
-//CV_EXPORTS_W Rect selectROI(const String& windowName, InputArray img, bool showCrosshair = true, bool fromCenter = false);
-{
-6225
-?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@_N2@Z
-?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@_N2@Z
-class cv::Rect_<int> cv::selectROI(
-class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
-class cv::_InputArray const &,bool,bool)
-}
-function selectROI(const windowName:CppString; const img:TInputArray; showCrosshair :bool= true; fromCenter :bool= false):TRect;
-overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@_N2@Z'
-{$ELSE}
-name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@_N2@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  @note The function sets it's own mouse callback for specified window using cv::setMouseCallback(windowName, ...).
+  After finish of work an empty callback will be set for the used window.
+*)
+// CV_EXPORTS_W Rect selectROI(const String& windowName, InputArray img, bool showCrosshair = true, bool fromCenter = false);
+function selectROI(const windowName: String;const img: TInputArray; showCrosshair: bool = true; fromCenter: bool = false): TRect; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-(** @overload
- *)
-//CV_EXPORTS_W Rect selectROI(InputArray img, bool showCrosshair = true, bool fromCenter = false);
-{
-6226
-?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@debug_build_guard@1@_N1@Z
-?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@1@_N1@Z
-class cv::Rect_<int> cv::selectROI(class cv::_InputArray const &,bool,bool)
-}
-function selectROI(const img:TInputArray; showCrosshair :bool= true; fromCenter :bool= false):TRect;
-overload; external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@debug_build_guard@1@_N1@Z'
-{$ELSE}
-name '?selectROI@cv@@YA?AV?$Rect_@H@1@AEBV_InputArray@1@_N1@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+(* * @overload
+*)
+// CV_EXPORTS_W Rect selectROI(InputArray img, bool showCrosshair = true, bool fromCenter = false);
+function selectROI(const img: TInputArray; showCrosshair: bool = true; fromCenter: bool = false): TRect; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
-(** @brief Allows users to select multiple ROIs on the given image.
+(* * @brief Allows users to select multiple ROIs on the given image.
 
 The function creates a window and allows users to select multiple ROIs using the mouse.
 Controls: use `space` or `enter` to finish current selection and start a new one,
@@ -680,496 +536,336 @@ selection rectangle will correspont to the initial mouse position.
 
 @note The function sets it's own mouse callback for specified window using cv::setMouseCallback(windowName, ...).
 After finish of work an empty callback will be set for the used window.
- *)
-//CV_EXPORTS_W void selectROIs(const String& windowName, InputArray img,
-//                             CV_OUT std::vector<Rect>& boundingBoxes, bool showCrosshair = true, bool fromCenter = false);
-{
-6227
-?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z
-?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z
-void cv::selectROIs(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::_InputArray const &,class std::vector<class cv::Rect_<int>,class std::allocator<class cv::Rect_<int> > > &,bool,bool)
-}
-procedure selectROIs(const windowName:CppString;const img:TInputArray;
-const boundingBoxes: vector<TRect>;showCrosshair :bool= true; fromCenter :bool= false);
-external opencv_world_dll
-{$IFDEF USE_DEBUG_DLLS}
-name '?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@debug_build_guard@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z'
-{$ELSE}
-name '?selectROIs@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV_InputArray@1@AEAV?$vector@V?$Rect_@H@cv@@V?$allocator@V?$Rect_@H@cv@@@std@@@3@_N3@Z'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Creates a trackbar and attaches it to the specified window.
-
-The function createTrackbar creates a trackbar (a slider or range control) with the specified name
-and range, assigns a variable value to be a position synchronized with the trackbar and specifies
-the callback function onChange to be called on the trackbar position change. The created trackbar is
-displayed in the specified window winname.
-
-@note
-
-[__Qt Backend Only__] winname can be empty if the trackbar should be attached to the
-control panel.
-
-Clicking the label of each trackbar enables editing the trackbar values manually.
-
-@param trackbarname Name of the created trackbar.
-@param winname Name of the window that will be used as a parent of the created trackbar.
-@param value Optional pointer to an integer variable whose value reflects the position of the
-slider. Upon creation, the slider position is defined by this variable.
-@param count Maximal position of the slider. The minimal position is always 0.
-@param onChange Pointer to the function to be called every time the slider changes position. This
-function should be prototyped as void Foo(int,void\* ); , where the first parameter is the trackbar
-position and the second parameter is the user data (see the next parameter). If the callback is
-the NULL pointer, no callbacks are called, but only value is updated.
-@param userdata User data that is passed as is to the callback. It can be used to handle trackbar
-events without using global variables.
- *)
-//CV_EXPORTS int createTrackbar(const String& trackbarname, const String& winname,
-//                              int* value, int count,
-//                              TrackbarCallback onChange = 0,
-//                              void* userdata = 0);
-{
- 4302
- ?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z
- int cv::createTrackbar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int *,int,void (*)(int,void *),void *)
-}
-function createTrackbar(const trackbarname: CppString; const winname: CppString; Value: pInt; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int; overload;
-  external opencv_world_dll name '?createTrackbar@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0PEAHHP6AXHPEAX@Z2@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function createTrackbar(const trackbarname: String; const winname: String; var Value: Int; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
-(** @brief Returns the trackbar position.
-
-The function returns the current position of the specified trackbar.
-
-@note
-
-[__Qt Backend Only__] winname can be empty if the trackbar is attached to the control
-panel.
-
-@param trackbarname Name of the trackbar.
-@param winname Name of the window that is the parent of the trackbar.
- *)
-//CV_EXPORTS_W int getTrackbarPos(const String& trackbarname, const String& winname);
-{
-5148
-?getTrackbarPos@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
-?getTrackbarPos@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
-int cv::getTrackbarPos(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-}
-function getTrackbarPos(const trackbarname:CppString; const winname:CppString):Int;
-external opencv_world_dll name '?getTrackbarPos@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Sets the trackbar position.
-
-The function sets the position of the specified trackbar in the specified window.
-
-@note
-
-[__Qt Backend Only__] winname can be empty if the trackbar is attached to the control
-panel.
-
-@param trackbarname Name of the trackbar.
-@param winname Name of the window that is the parent of trackbar.
-@param pos New position.
- *)
-//CV_EXPORTS_W void setTrackbarPos(const String& trackbarname, const String& winname, int pos);
-{
-6422
-?setTrackbarPos@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-?setTrackbarPos@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-void cv::setTrackbarPos(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
-}
-procedure setTrackbarPos(const trackbarname:CppString; const winname:CppString; pos:int);
-external opencv_world_dll name '?setTrackbarPos@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Sets the trackbar maximum position.
-
-The function sets the maximum position of the specified trackbar in the specified window.
-
-@note
-
-[__Qt Backend Only__] winname can be empty if the trackbar is attached to the control
-panel.
-
-@param trackbarname Name of the trackbar.
-@param winname Name of the window that is the parent of trackbar.
-@param maxval New maximum position.
- *)
-//CV_EXPORTS_W void setTrackbarMax(const String& trackbarname, const String& winname, int maxval);
-{
-6420
-?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-void cv::setTrackbarMax( class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
-                         class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
-                         int)
-}
-procedure setTrackbarMax( const trackbarname:CppString;
-                          const winname:CppString;
-                          maxval:int);
-external opencv_world_dll
-name '?setTrackbarMax@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Sets the trackbar minimum position.
-
-The function sets the minimum position of the specified trackbar in the specified window.
-
-@note
-
-[__Qt Backend Only__] winname can be empty if the trackbar is attached to the control
-panel.
-
-@param trackbarname Name of the trackbar.
-@param winname Name of the window that is the parent of trackbar.
-@param minval New minimum position.
- *)
-//CV_EXPORTS_W void setTrackbarMin(const String& trackbarname, const String& winname, int minval);
-{
-6421
-?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-void cv::setTrackbarMin( class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
-                         class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,
-                         int)
-}
-procedure setTrackbarMin( const trackbarname:CppString;
-                          const winname:CppString;
-                          minval:int);
-external opencv_world_dll
-name '?setTrackbarMin@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Displays OpenGL 2D texture in the specified window.
-
-@param winname Name of the window.
-@param tex OpenGL 2D texture data.
- *)
-//CV_EXPORTS void imshow(const String& winname, const ogl::Texture2D& tex);
-
-(** @brief Sets a callback function to be called to draw on top of displayed image.
-
-The function setOpenGlDrawCallback can be used to draw 3D data on the window. See the example of
-callback function below:
-@code
-    void on_opengl(void* param)
-    {
-        glLoadIdentity();
-
-        glTranslated(0.0, 0.0, -1.0);
-
-        glRotatef( 55, 1, 0, 0 );
-        glRotatef( 45, 0, 1, 0 );
-        glRotatef( 0, 0, 0, 1 );
-
-        static const int coords[6][4][3] = {
-            { { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } },
-            { { +1, +1, -1 }, { -1, +1, -1 }, { -1, +1, +1 }, { +1, +1, +1 } },
-            { { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 }, { +1, +1, +1 } },
-            { { -1, -1, -1 }, { -1, -1, +1 }, { -1, +1, +1 }, { -1, +1, -1 } },
-            { { +1, -1, +1 }, { -1, -1, +1 }, { -1, -1, -1 }, { +1, -1, -1 } },
-            { { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
-        };
-
-        for (int i = 0; i < 6; ++i) {
-                    glColor3ub( i*20, 100+i*10, i*42 );
-                    glBegin(GL_QUADS);
-                    for (int j = 0; j < 4; ++j) {
-                            glVertex3d(0.2 * coords[i][j][0], 0.2 * coords[i][j][1], 0.2 * coords[i][j][2]);
-                    }
-                    glEnd();
-        }
-    }
-@endcode
-
-@param winname Name of the window.
-@param onOpenGlDraw Pointer to the function to be called every frame. This function should be
-prototyped as void Foo(void\* ) .
-@param userdata Pointer passed to the callback function.(__Optional__)
- *)
-//CV_EXPORTS void setOpenGlDrawCallback(const String& winname, OpenGlDrawCallback onOpenGlDraw, void* userdata = 0);
-{
-6360
-?setOpenGlDrawCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXPEAX@Z1@Z
-?setOpenGlDrawCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXPEAX@Z1@Z
-void cv::setOpenGlDrawCallback(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,void (*)(void *),void *)
-}
-procedure setOpenGlDrawCallback(const winname:CppString; const onOpenGlDraw:TOpenGlDrawCallback; userdata :Pointer= nil);
-external opencv_world_dll name '?setOpenGlDrawCallback@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXPEAX@Z1@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Sets the specified window as current OpenGL context.
-@param winname Name of the window.
- *)
-//CV_EXPORTS void setOpenGlContext(const String& winname);
-{
-6359
-?setOpenGlContext@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-?setOpenGlContext@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-void cv::setOpenGlContext(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-}
-procedure setOpenGlContext(const winname:CppString);
-external opencv_world_dll name '?setOpenGlContext@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Force window to redraw its context and call draw callback ( See cv::setOpenGlDrawCallback ).
-
-@param winname Name of the window.
- *)
-//CV_EXPORTS void updateWindow(const String& winname);
-{
-6698
-?updateWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-?updateWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-void cv::updateWindow(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-}
-procedure updateWindow(const winname:CppString);
-external opencv_world_dll name '?updateWindow@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-Type
-(** @brief QtFont available only for Qt. See cv::fontQt
- *)
-
- TQtFont = record
-    nameFont:  pAnsiChar;  //!< Name of the font
-    color:     TScalar;     //!< Color of the font. Scalar(blue_component, green_component, red_component[, alpha_component])
-    font_face: int; //!< See cv::QtFontStyles
-    ascii:     pInt;     //!< font data and metrics
-    greek:     pInt;
-    cyrillic:  pInt;
-    hscale, vscale:float;
-    shear:     float;     //!< slope coefficient: 0 - normal, >0 - italic
-    thickness:Int; //!< See cv::QtFontWeights
-    dx:float;        //!< horizontal interval between letters
-    line_type:int; //!< PointSize
- end;
-
-(** @brief Creates the font to draw a text on an image.
-
-The function fontQt creates a cv::QtFont object. This cv::QtFont is not compatible with putText .
-
-A basic usage of this function is the following: :
-@code
-    QtFont font = fontQt('Times');
-    addText( img1, 'Hello World !', Point(50,50), font);
-@endcode
-
-@param nameFont Name of the font. The name should match the name of a system font (such as
-*Times* ). If the font is not found, a default one is used.
-@param pointSize Size of the font. If not specified, equal zero or negative, the point size of the
-font is set to a system-dependent default value. Generally, this is 12 points.
-@param color Color of the font in BGRA where A = 255 is fully transparent. Use the macro CV_RGB
-for simplicity.
-@param weight Font weight. Available operation flags are : cv::QtFontWeights You can also specify a positive integer for better control.
-@param style Font style. Available operation flags are : cv::QtFontStyles
-@param spacing Spacing between characters. It can be negative or positive.
- *)
-//CV_EXPORTS QtFont fontQt(const String& nameFont, int pointSize = -1,
-//                         Scalar color = Scalar::all(0), int weight = QT_FONT_NORMAL,
-//                         int style = QT_STYLE_NORMAL, int spacing = 0);
-
-(** @brief Draws a text on the image.
-
-The function addText draws *text* on the image *img* using a specific font *font* (see example cv::fontQt
-)
-
-@param img 8-bit 3-channel image where the text should be drawn.
-@param text Text to write on an image.
-@param org Point(x,y) where the text should start on an image.
-@param font Font to use to draw a text.
- *)
-//CV_EXPORTS void addText( const Mat& img, const String& text, Point org, const QtFont& font);
-
-(** @brief Draws a text on the image.
-
-@param img 8-bit 3-channel image where the text should be drawn.
-@param text Text to write on an image.
-@param org Point(x,y) where the text should start on an image.
-@param nameFont Name of the font. The name should match the name of a system font (such as
-*Times* ). If the font is not found, a default one is used.
-@param pointSize Size of the font. If not specified, equal zero or negative, the point size of the
-font is set to a system-dependent default value. Generally, this is 12 points.
-@param color Color of the font in BGRA where A = 255 is fully transparent.
-@param weight Font weight. Available operation flags are : cv::QtFontWeights You can also specify a positive integer for better control.
-@param style Font style. Available operation flags are : cv::QtFontStyles
-@param spacing Spacing between characters. It can be negative or positive.
- *)
-//CV_EXPORTS_W void addText(const Mat& img, const String& text, Point org, const String& nameFont, int pointSize = -1, Scalar color = Scalar::all(0),
-//        int weight = QT_FONT_NORMAL, int style = QT_STYLE_NORMAL, int spacing = 0);
-{
-3506
-?addText@cv@@YAXAEBVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@1HV?$Scalar_@N@1@HHH@Z
-?addText@cv@@YAXAEBVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@1HV?$Scalar_@N@1@HHH@Z
-void cv::addText(class cv::Mat const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class cv::Point_<int>,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int,class cv::Scalar_<double>,int,int,int)
-}
-procedure addText(const img:TMat; const text:CppString;const org:TPoint; const nameFont:CppString;
-                        pointSize :int {= -1}; const color :TScalar {= Scalar::all(0)};
-                        weight :int = Int(QT_FONT_NORMAL); style :int= Int(QT_STYLE_NORMAL); spacing :int= 0); overload;
-external opencv_world_dll name '?addText@cv@@YAXAEBVMat@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@1HV?$Scalar_@N@1@HHH@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure addText(const img:TMat; const text:String;const org:TPoint; const nameFont:String;
-                        pointSize :int {= -1}; const color :TScalar {= Scalar::all(0)};
-                        weight :QtFontWeights = QT_FONT_NORMAL; style :QtFontStyles= QT_STYLE_NORMAL; spacing :int= 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure addText(const img:TMat; const text:String;const org:TPoint; const nameFont:String;
-                        pointSize :int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
-(** @brief Displays a text on a window image as an overlay for a specified duration.
-
-The function displayOverlay displays useful information/tips on top of the window for a certain
-amount of time *delayms*. The function does not modify the image, displayed in the window, that is,
-after the specified delay the original content of the window is restored.
-
-@param winname Name of the window.
-@param text Overlay text to write on a window image.
-@param delayms The period (in milliseconds), during which the overlay text is displayed. If this
-function is called before the previous overlay text timed out, the timer is restarted and the text
-is updated. If this value is zero, the text never disappears.
- *)
-//CV_EXPORTS_W void displayOverlay(const String& winname, const String& text, int delayms = 0);
-{
-4500
-?displayOverlay@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-?displayOverlay@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-void cv::displayOverlay(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
-}
-procedure displayOverlay(const winname:CppString; const text:CppString; delayms :int = 0);
-external opencv_world_dll name '?displayOverlay@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Displays a text on the window statusbar during the specified period of time.
-
-The function displayStatusBar displays useful information/tips on top of the window for a certain
-amount of time *delayms* . This information is displayed on the window statusbar (the window must be
-created with the CV_GUI_EXPANDED flags).
-
-@param winname Name of the window.
-@param text Text to write on the window statusbar.
-@param delayms Duration (in milliseconds) to display the text. If this function is called before
-the previous text timed out, the timer is restarted and the text is updated. If this value is
-zero, the text never disappears.
- *)
-//CV_EXPORTS_W void displayStatusBar(const String& winname, const String& text, int delayms = 0);
-{
-4501
-?displayStatusBar@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-?displayStatusBar@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z
-void cv::displayStatusBar(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,int)
-}
-procedure displayStatusBar(const winname:CppString; const text:CppString; delayms :int= 0);
-external opencv_world_dll name '?displayStatusBar@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0H@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Saves parameters of the specified window.
-
-The function saveWindowParameters saves size, location, flags, trackbars value, zoom and panning
-location of the window windowName.
-
-@param windowName Name of the window.
- *)
-//CV_EXPORTS void saveWindowParameters(const String& windowName);
-{
-6212
-?saveWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-?saveWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-void cv::saveWindowParameters(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-}
-procedure saveWindowParameters(const windowName:CppString);
-external opencv_world_dll name '?saveWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Loads parameters of the specified window.
-
-The function loadWindowParameters loads size, location, flags, trackbars value, zoom and panning
-location of the window windowName.
-
-@param windowName Name of the window.
- *)
-//CV_EXPORTS void loadWindowParameters(const String& windowName);
-{
-5487
-?loadWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-?loadWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-void cv::loadWindowParameters(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)
-}
-procedure loadWindowParameters(const windowName:CppString);
-external opencv_world_dll name '?loadWindowParameters@cv@@YAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-Type
-  Targv = ^PAnsiChar;
-  Tpt2Func = function(argc:int; argv:Targv):int;
-
-//CV_EXPORTS  int startLoop(int (*pt2Func)(int argc, char *argv[]), int argc, char* argv[]);
-{
-6529
-?startLoop@cv@@YAHP6AHHQEAPEAD@ZH0@Z
-?startLoop@cv@@YAHP6AHHQEAPEAD@ZH0@Z
-int cv::startLoop(int (*)(int,char * * const),int,char * * const)
-}
-function startLoop(pt2Func:Tpt2Func; argc:int; argv:Targv):int;
-external opencv_world_dll name '?startLoop@cv@@YAHP6AHHQEAPEAD@ZH0@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-//CV_EXPORTS  void stopLoop();
-{
-6558
-?stopLoop@cv@@YAXXZ
-?stopLoop@cv@@YAXXZ
-void cv::stopLoop(void)
-}
-procedure stopLoop(); external opencv_world_dll name '?stopLoop@cv@@YAXXZ'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-(** @brief Attaches a button to the control panel.
-
-The function createButton attaches a button to the control panel. Each button is added to a
-buttonbar to the right of the last button. A new buttonbar is created if nothing was attached to the
-control panel before, or if the last element attached to the control panel was a trackbar or if the
-QT_NEW_BUTTONBAR flag is added to the type.
-
-See below various examples of the cv::createButton function call: :
-@code
-    createButton('',callbackButton);//create a push button 'button 0', that will call callbackButton.
-    createButton('button2',callbackButton,NULL,QT_CHECKBOX,0);
-    createButton('button3',callbackButton,&value);
-    createButton('button5',callbackButton1,NULL,QT_RADIOBOX);
-    createButton('button6',callbackButton2,NULL,QT_PUSH_BUTTON,1);
-    createButton('button6',callbackButton2,NULL,QT_PUSH_BUTTON|QT_NEW_BUTTONBAR);// create a push button in a new row
-@endcode
-
-@param  bar_name Name of the button.
-@param on_change Pointer to the function to be called every time the button changes its state.
-This function should be prototyped as void Foo(int state,\*void); . *state* is the current state
-of the button. It could be -1 for a push button, 0 or 1 for a check/radio box button.
-@param userdata Pointer passed to the callback function.
-@param type Optional type of the button. Available types are: (cv::QtButtonTypes)
-@param initial_button_state Default state of the button. Use for checkbox and radiobox. Its
-value could be 0 or 1. (__Optional__)
 *)
+// CV_EXPORTS_W void selectROIs(const String& windowName, InputArray img,
+// CV_OUT std::vector<Rect>& boundingBoxes, bool showCrosshair = true, bool fromCenter = false);
+procedure selectROIs(const windowName: String;const img: TInputArray;const boundingBoxes: vector<TRect>; showCrosshair: bool = true; fromCenter: bool = false);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 
-//CV_EXPORTS int createButton( const String& bar_name, ButtonCallback on_change,
-//                             void* userdata = 0, int type = QT_PUSH_BUTTON,
-//                             bool initial_button_state = false);
-{
-4265
-?createButton@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHPEAX@Z1H_N@Z
-?createButton@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHPEAX@Z1H_N@Z
-int cv::createButton(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,void (*)(int,void *),void *,int,bool)
-}
-function createButton( const bar_name:CppString; on_change:TButtonCallback;
-                             userdata :Pointer = nil; &type :int= int(QT_PUSH_BUTTON);
-                             initial_button_state :bool= false):int; overload;
-external opencv_world_dll name '?createButton@cv@@YAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@P6AXHPEAX@Z1H_N@Z'
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function createButton( const bar_name:String; on_change:TButtonCallback;
-                             userdata :Pointer = nil; &type :QtButtonTypes= QT_PUSH_BUTTON;
-                             initial_button_state :bool= false):int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+ (* * @brief Creates a trackbar and attaches it to the specified window.
 
-{$I 'highgui/highgui_c.inc'}
+ The function createTrackbar creates a trackbar (a slider or range control) with the specified name
+ and range, assigns a variable value to be a position synchronized with the trackbar and specifies
+ the callback function onChange to be called on the trackbar position change. The created trackbar is
+ displayed in the specified window winname.
+
+ @note
+
+ [__Qt Backend Only__] winname can be empty if the trackbar should be attached to the
+ control panel.
+
+ Clicking the label of each trackbar enables editing the trackbar values manually.
+
+ @param trackbarname Name of the created trackbar.
+ @param winname Name of the window that will be used as a parent of the created trackbar.
+ @param value Optional pointer to an integer variable whose value reflects the position of the
+ slider. Upon creation, the slider position is defined by this variable.
+ @param count Maximal position of the slider. The minimal position is always 0.
+ @param onChange Pointer to the function to be called every time the slider changes position. This
+ function should be prototyped as void Foo(int,void\* ); , where the first parameter is the trackbar
+ position and the second parameter is the user data (see the next parameter). If the callback is
+ the NULL pointer, no callbacks are called, but only value is updated.
+ @param userdata User data that is passed as is to the callback. It can be used to handle trackbar
+ events without using global variables.
+ *)
+ // CV_EXPORTS int createTrackbar(const String& trackbarname, const String& winname,
+ // int* value, int count,
+ // TrackbarCallback onChange = 0,
+ // void* userdata = 0);
+function createTrackbar(const trackbarname: String;const winname: String; Value: pInt;
+         COUNT: int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+ (* * @brief Returns the trackbar position.
+
+ The function returns the current position of the specified trackbar.
+
+ @note
+
+ [__Qt Backend Only__] winname can be empty if the trackbar is attached to the control
+ panel.
+
+ @param trackbarname Name of the trackbar.
+ @param winname Name of the window that is the parent of the trackbar.
+ *)
+ // CV_EXPORTS_W int getTrackbarPos(const String& trackbarname, const String& winname);
+function getTrackbarPos(const trackbarname: String;const winname: String): int;{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ (* * @brief Sets the trackbar position.
+
+ The function sets the position of the specified trackbar in the specified window.
+
+ @note
+
+ [__Qt Backend Only__] winname can be empty if the trackbar is attached to the control
+ panel.
+
+ @param trackbarname Name of the trackbar.
+ @param winname Name of the window that is the parent of trackbar.
+ @param pos New position.
+ *)
+ // CV_EXPORTS_W void setTrackbarPos(const String& trackbarname, const String& winname, int pos);
+procedure setTrackbarPos(const trackbarname: String;const winname: String; pos: int);{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ (* * @brief Sets the trackbar maximum position.
+
+ The function sets the maximum position of the specified trackbar in the specified window.
+
+ @note
+
+ [__Qt Backend Only__] winname can be empty if the trackbar is attached to the control
+ panel.
+
+ @param trackbarname Name of the trackbar.
+ @param winname Name of the window that is the parent of trackbar.
+ @param maxval New maximum position.
+ *)
+ // CV_EXPORTS_W void setTrackbarMax(const String& trackbarname, const String& winname, int maxval);
+procedure setTrackbarMax(const trackbarname: String; const winname: String; maxval: int); {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ (* * @brief Sets the trackbar minimum position.
+
+ The function sets the minimum position of the specified trackbar in the specified window.
+
+ @note
+
+ [__Qt Backend Only__] winname can be empty if the trackbar is attached to the control
+ panel.
+
+ @param trackbarname Name of the trackbar.
+ @param winname Name of the window that is the parent of trackbar.
+ @param minval New minimum position.
+ *)
+ // CV_EXPORTS_W void setTrackbarMin(const String& trackbarname, const String& winname, int minval);
+procedure setTrackbarMin(const trackbarname: String;const winname: String; minval: int);{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ (* * @brief Displays OpenGL 2D texture in the specified window.
+
+ @param winname Name of the window.
+ @param tex OpenGL 2D texture data.
+ *)
+ // CV_EXPORTS void imshow(const String& winname, const ogl::Texture2D& tex);
+
+  (* * @brief Sets a callback function to be called to draw on top of displayed image.
+
+  The function setOpenGlDrawCallback can be used to draw 3D data on the window. See the example of
+  callback function below:
+  @code
+  void on_opengl(void* param)
+  {
+  glLoadIdentity();
+
+  glTranslated(0.0, 0.0, -1.0);
+
+  glRotatef( 55, 1, 0, 0 );
+  glRotatef( 45, 0, 1, 0 );
+  glRotatef( 0, 0, 0, 1 );
+
+  static const int coords[6][4][3] = {
+  { { +1, -1, -1 }, { -1, -1, -1 }, { -1, +1, -1 }, { +1, +1, -1 } },
+  { { +1, +1, -1 }, { -1, +1, -1 }, { -1, +1, +1 }, { +1, +1, +1 } },
+  { { +1, -1, +1 }, { +1, -1, -1 }, { +1, +1, -1 }, { +1, +1, +1 } },
+  { { -1, -1, -1 }, { -1, -1, +1 }, { -1, +1, +1 }, { -1, +1, -1 } },
+  { { +1, -1, +1 }, { -1, -1, +1 }, { -1, -1, -1 }, { +1, -1, -1 } },
+  { { -1, -1, +1 }, { +1, -1, +1 }, { +1, +1, +1 }, { -1, +1, +1 } }
+  };
+
+  for (int i = 0; i < 6; ++i) {
+  glColor3ub( i*20, 100+i*10, i*42 );
+  glBegin(GL_QUADS);
+  for (int j = 0; j < 4; ++j) {
+  glVertex3d(0.2 * coords[i][j][0], 0.2 * coords[i][j][1], 0.2 * coords[i][j][2]);
+  }
+  glEnd();
+  }
+  }
+  @endcode
+
+  @param winname Name of the window.
+  @param onOpenGlDraw Pointer to the function to be called every frame. This function should be
+  prototyped as void Foo(void\* ) .
+  @param userdata Pointer passed to the callback function.(__Optional__)
+  *)
+  // CV_EXPORTS void setOpenGlDrawCallback(const String& winname, OpenGlDrawCallback onOpenGlDraw, void* userdata = 0);
+procedure setOpenGlDrawCallback(const winname: String;const onOpenGlDraw: TOpenGlDrawCallback; userdata: Pointer = nil);{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ (* * @brief Sets the specified window as current OpenGL context.
+ @param winname Name of the window.
+ *)
+ // CV_EXPORTS void setOpenGlContext(const String& winname);
+procedure setOpenGlContext(const winname: String);{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ (* * @brief Force window to redraw its context and call draw callback ( See cv::setOpenGlDrawCallback ).
+ @param winname Name of the window.
+ *)
+// CV_EXPORTS void updateWindow(const String& winname);
+procedure updateWindow(const winname: String);{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+Type
+  (* * @brief QtFont available only for Qt. See cv::fontQt *)
+
+  TQtFont = record
+    nameFont: pAnsiChar; // !< Name of the font
+    color: TScalar; // !< Color of the font. Scalar(blue_component, green_component, red_component[, alpha_component])
+    font_face: int; // !< See cv::QtFontStyles
+    ascii: pInt;    // !< font data and metrics
+    greek: pInt;
+    cyrillic: pInt;
+    hscale, vscale: float;
+    shear: float;   // !< slope coefficient: 0 - normal, >0 - italic
+    thickness: int; // !< See cv::QtFontWeights
+    dx: float;      // !< horizontal interval between letters
+    line_type: int; // !< PointSize
+   end;
+
+   (* * @brief Creates the font to draw a text on an image.
+
+   The function fontQt creates a cv::QtFont object. This cv::QtFont is not compatible with putText .
+
+   A basic usage of this function is the following: :
+   @code
+   QtFont font = fontQt('Times');
+   addText( img1, 'Hello World !', Point(50,50), font);
+   @endcode
+
+   @param nameFont Name of the font. The name should match the name of a system font (such as
+   *Times* ). If the font is not found, a default one is used.
+   @param pointSize Size of the font. If not specified, equal zero or negative, the point size of the
+   font is set to a system-dependent default value. Generally, this is 12 points.
+   @param color Color of the font in BGRA where A = 255 is fully transparent. Use the macro CV_RGB
+   for simplicity.
+   @param weight Font weight. Available operation flags are : cv::QtFontWeights You can also specify a positive integer for better control.
+   @param style Font style. Available operation flags are : cv::QtFontStyles
+   @param spacing Spacing between characters. It can be negative or positive.
+   *)
+   // CV_EXPORTS QtFont fontQt(const String& nameFont, int pointSize = -1,
+   // Scalar color = Scalar::all(0), int weight = QT_FONT_NORMAL,
+   // int style = QT_STYLE_NORMAL, int spacing = 0);
+
+  (* * @brief Draws a text on the image.
+
+  The function addText draws *text* on the image *img* using a specific font *font* (see example cv::fontQt
+  )
+
+  @param img 8-bit 3-channel image where the text should be drawn.
+  @param text Text to write on an image.
+  @param org Point(x,y) where the text should start on an image.
+  @param font Font to use to draw a text.
+  *)
+  // CV_EXPORTS void addText( const Mat& img, const String& text, Point org, const QtFont& font);
+
+ (* * @brief Draws a text on the image.
+
+ @param img 8-bit 3-channel image where the text should be drawn.
+ @param text Text to write on an image.
+ @param org Point(x,y) where the text should start on an image.
+ @param nameFont Name of the font. The name should match the name of a system font (such as
+ *Times* ). If the font is not found, a default one is used.
+ @param pointSize Size of the font. If not specified, equal zero or negative, the point size of the
+ font is set to a system-dependent default value. Generally, this is 12 points.
+ @param color Color of the font in BGRA where A = 255 is fully transparent.
+ @param weight Font weight. Available operation flags are : cv::QtFontWeights You can also specify a positive integer for better control.
+ @param style Font style. Available operation flags are : cv::QtFontStyles
+ @param spacing Spacing between characters. It can be negative or positive.
+ *)
+ // CV_EXPORTS_W void addText(const Mat& img, const String& text, Point org, const String& nameFont, int pointSize = -1, Scalar color = Scalar::all(0),
+ // int weight = QT_FONT_NORMAL, int style = QT_STYLE_NORMAL, int spacing = 0);
+ procedure addText(const img: TMat;const text: String;const org: TPoint;const nameFont: String; pointSize: int { = -1 };
+                   const color: TScalar { = Scalar::all(0) }; weight: int = int(QT_FONT_NORMAL);
+                   style: int = int(QT_STYLE_NORMAL); spacing: int = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ (* * @brief Displays a text on a window image as an overlay for a specified duration.
+
+ The function displayOverlay displays useful information/tips on top of the window for a certain
+ amount of time *delayms*. The function does not modify the image, displayed in the window, that is,
+ after the specified delay the original content of the window is restored.
+
+ @param winname Name of the window.
+ @param text Overlay text to write on a window image.
+ @param delayms The period (in milliseconds), during which the overlay text is displayed. If this
+ function is called before the previous overlay text timed out, the timer is restarted and the text
+ is updated. If this value is zero, the text never disappears.
+ *)
+ // CV_EXPORTS_W void displayOverlay(const String& winname, const String& text, int delayms = 0);
+ procedure displayOverlay(const winname: String;const text: String; delayms: int = 0);{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+  (* * @brief Displays a text on the window statusbar during the specified period of time.
+
+  The function displayStatusBar displays useful information/tips on top of the window for a certain
+  amount of time *delayms* . This information is displayed on the window statusbar (the window must be
+  created with the CV_GUI_EXPANDED flags).
+
+  @param winname Name of the window.
+  @param text Text to write on the window statusbar.
+  @param delayms Duration (in milliseconds) to display the text. If this function is called before
+  the previous text timed out, the timer is restarted and the text is updated. If this value is
+  zero, the text never disappears.
+  *)
+  // CV_EXPORTS_W void displayStatusBar(const String& winname, const String& text, int delayms = 0);
+ procedure displayStatusBar(const winname: String;const text: String; delayms: int = 0);{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ (* * @brief Saves parameters of the specified window.
+
+ The function saveWindowParameters saves size, location, flags, trackbars value, zoom and panning
+ location of the window windowName.
+
+ @param windowName Name of the window.
+ *)
+ // CV_EXPORTS void saveWindowParameters(const String& windowName);
+ procedure saveWindowParameters(const windowName: String);{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+  (* * @brief Loads parameters of the specified window.
+
+  The function loadWindowParameters loads size, location, flags, trackbars value, zoom and panning
+  location of the window windowName.
+
+  @param windowName Name of the window.
+  *)
+ // CV_EXPORTS void loadWindowParameters(const String& windowName);
+ procedure loadWindowParameters(const windowName: String);{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+Type
+  Targv    = pCVChar;
+  Tpt2Func = function(argc: int; argv: Targv): int;
+
+ // CV_EXPORTS  int startLoop(int (*pt2Func)(int argc, char *argv[]), int argc, char* argv[]);
+ function startLoop(pt2Func: Tpt2Func; argc: int; argv: Targv): int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ // CV_EXPORTS  void stopLoop();
+ procedure stopLoop();{$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ (* * @brief Attaches a button to the control panel.
+
+ The function createButton attaches a button to the control panel. Each button is added to a
+ buttonbar to the right of the last button. A new buttonbar is created if nothing was attached to the
+ control panel before, or if the last element attached to the control panel was a trackbar or if the
+ QT_NEW_BUTTONBAR flag is added to the type.
+
+ See below various examples of the cv::createButton function call: :
+ @code
+ createButton('',callbackButton);//create a push button 'button 0', that will call callbackButton.
+ createButton('button2',callbackButton,NULL,QT_CHECKBOX,0);
+ createButton('button3',callbackButton,&value);
+ createButton('button5',callbackButton1,NULL,QT_RADIOBOX);
+ createButton('button6',callbackButton2,NULL,QT_PUSH_BUTTON,1);
+ createButton('button6',callbackButton2,NULL,QT_PUSH_BUTTON|QT_NEW_BUTTONBAR);// create a push button in a new row
+ @endcode
+
+ @param  bar_name Name of the button.
+ @param on_change Pointer to the function to be called every time the button changes its state.
+ This function should be prototyped as void Foo(int state,\*void); . *state* is the current state
+ of the button. It could be -1 for a push button, 0 or 1 for a check/radio box button.
+ @param userdata Pointer passed to the callback function.
+ @param type Optional type of the button. Available types are: (cv::QtButtonTypes)
+ @param initial_button_state Default state of the button. Use for checkbox and radiobox. Its
+ value could be 0 or 1. (__Optional__)
+ *)
+
+// CV_EXPORTS int createButton( const String& bar_name, ButtonCallback on_change,
+// void* userdata = 0, int type = QT_PUSH_BUTTON,
+// bool initial_button_state = false);
+function createButton(const bar_name: String; on_change: TButtonCallback;
+                      userdata: Pointer = nil; &type: int = QT_PUSH_BUTTON;
+                      initial_button_state: bool = false): int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+{$if not defined(OPENCV_HIGHGUI_H)}{$I 'highgui/highgui_c.inc'}{$IFEND}
 
 {$IFEND OPENCV_HIGHGUI_HPP}

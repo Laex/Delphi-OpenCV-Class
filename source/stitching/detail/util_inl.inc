@@ -20,11 +20,11 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_STITCHING_UTIL_INL_HPP}
+{$if not defined(OPENCV_STITCHING_UTIL_INL_HPP)}
 {$define OPENCV_STITCHING_UTIL_INL_HPP}
 
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-{$i 'stitching/detail/util.inc'} // Make your IDE see declarations
+{$if not defined(OPENCV_STITCHING_UTIL_HPP)}{$i 'stitching/detail/util.inc'}{$ifend} // Make your IDE see declarations
 
 //! @cond IGNORED
 
@@ -41,7 +41,8 @@
 //            body(*edge);
 //    }
 //    return body;
-//}
+//}
+
 
 
 //template <typename B>
@@ -107,4 +108,4 @@
 
 //! @endcond
 
-{$endif OPENCV_STITCHING_UTIL_INL_HPP}
+{$ifend} //OPENCV_STITCHING_UTIL_INL_HPP

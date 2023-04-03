@@ -165,7 +165,7 @@
   {$I <limits.h>
   {$endif}
 *)
-{$I 'core/hal/interface.inc'}
+{$IF not defined(OPENCV_CORE_HAL_INTERFACE_H)}{$I 'core/hal/interface.inc'}{$ifend}
 (*
   #if defined __ICL
   #  define CV_ICC   __ICL
@@ -481,11 +481,11 @@ function CV_ELEM_SIZE(&type:int):int;inline;
   // #ifndef MIN
   // #  define MIN(a,b)  ((a) > (b) ? (b) : (a))
   // {$endif}
-function MIN(a, b: Int): Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) > (b) ? (b) : (a))
+function cvMIN(a, b: Int): Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) > (b) ? (b) : (a))
 // #ifndef MAX
 // #  define MAX(a,b)  ((a) < (b) ? (b) : (a))
 // {$endif}
-  function MAX(a, b: Int): Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) < (b) ? (b) : (a))
+function cvMAX(a, b: Int): Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((a) < (b) ? (b) : (a))
 
   /// ////////////////////////////////////// Enum operators ///////////////////////////////////////
 
@@ -955,7 +955,11 @@ function MIN(a, b: Int): Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// ((
     //! @}
   *)
   // #ifndef __cplusplus
-{$I 'core/fast_math.inc'}  // define cvRound(double)
+{$if not defined(OPENCV_CORE_FAST_MATH_HPP)}{$i 'core/fast_math.inc'}{$ifend}
+// define cvRound(double)
   // {$endif}
+
+{$ELSE}
+{$MESSAGE FATAL 'Duplicate included file - core/cvdef.inc'}
 
 {$IFEND} // OPENCV_CORE_CVDEF_H

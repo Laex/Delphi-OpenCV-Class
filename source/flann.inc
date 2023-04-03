@@ -24,7 +24,7 @@
 {$define OPENCV_FLANN_HPP}
 
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-{$I 'flann/miniflann.inc'}
+{$if not defined(OPENCV_MINIFLANN_HPP)}{$I 'flann/miniflann.inc'}{$ifend}
 {$I 'flann/flann_base.inc'}
 
 (**
@@ -40,13 +40,15 @@ can be found in @cite Muja2009 .
 //{
 //    CV_EXPORTS flann_distance_t flann_distance_type();
 //    CV_DEPRECATED CV_EXPORTS void set_distance_type(flann_distance_t distance_type, int order);
-//}
+//}
+
 
 
 //namespace cv
 //{
 //namespace flann
-//{
+//{
+
 
 
 //! @addtogroup flann
@@ -598,7 +600,8 @@ generic metric distances.
 //        'For other distance types you must use cv::flann::hierarchicalClustering<Distance>\n');
 //        CV_Assert(0);
 //    }
-//}
+//}
+
 
 //! @endcond
 

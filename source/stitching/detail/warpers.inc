@@ -25,7 +25,7 @@
 
 {$if not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$ifend}
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-{$i 'core/cuda.inc'}
+{$if not defined(OPENCV_CORE_CUDA_HPP)}{$i 'core/cuda.inc'}{$IFEND}
 {$if not defined(OPENCV_IMGPROC_HPP)}{$I 'imgproc.inc'}{$ifend}
 
 //namespace cv {

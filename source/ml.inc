@@ -303,6 +303,8 @@ Type
     overload;static; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
 
+  TPtr_TTrainData = TPtr<TTrainData>;
+
   (* * @brief Base class for statistical models in OpenCV ML.
   *)
   // class CV_EXPORTS_W StatModel : public Algorithm
@@ -832,6 +834,8 @@ Type
     function predict(const samples: TInputArray; const results: TOutputArray; flags: Int = 0): float; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function predict(const samples: TInputArray): float; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
+
+  TPtr_TSVM_pT = TPtr<TSVM>.pT;
 
   (* ***************************************************************************************\
     *                              Expectation - Maximization                                *
@@ -1643,6 +1647,8 @@ Type
    function predict(const samples:TInputArray;const results:TOutputArray{=noArray()} ):float; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
    function predict(const samples:TInputArray):float; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
   end;
+
+  TPtr_TANN_MLP = TPtr<TANN_MLP>;
 
 {$IFNDEF DISABLE_OPENCV_3_COMPATIBILITY}
 

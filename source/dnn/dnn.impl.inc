@@ -26,33 +26,45 @@
 
 class operator TNet.Initialize(out Dest: TNet); // CV_WRAP Net();  //!< Default constructor.
 begin
+{$IF not defined(PACKAGE)}
   constructor_CV_DNN_DNN_NET_1(Dest);
+{$IFEND}
 end;
 
 class operator TNet.Finalize(var Dest: TNet); // CV_WRAP ~Net(); //!< Destructor frees the net only if there aren't references to the net anymore.
 begin
+{$IF not defined(PACKAGE)}
   destructor_CV_DNN_DNN_NET(Dest);
+{$IFEND}
 end;
 
 function TNet.forward(const outputName: String = ''): TMat;
 begin
+{$IF not defined(PACKAGE)}
   class_func_CV_DNN_DNN_NET_forward(Self, Result, outputName);
   // Result := class_func_CV_DNN_DNN_NET_forward(Self, CppString(outputName));
+{$IFEND}
 end;
 
 procedure TNet.setPreferableBackend(backendId: int);
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_DNN_DNN_NET_setPreferableBackend(Self, backendId);
+{$IFEND}
 end;
 
 procedure TNet.setPreferableTarget(targetId: int);
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_DNN_DNN_NET_setPreferableTarget(Self, targetId);
+{$IFEND}
 end;
 
 procedure TNet.setInput(const blob: TInputArray; const name: String { = '' }; scalefactor: double { = 1.0 }; const mean: TScalar { = Scalar() } );
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_DNN_DNN_NET_setInput(Self, blob, name, scalefactor, mean);
+{$IFEND}
 end;
 
 procedure TNet.setInput(const blob: TInputArray; const name: String { = '' }; scalefactor: double = 1.0);
@@ -69,7 +81,9 @@ end;
 
 function blobFromImages(const images: TInputArrayOfArrays; scalefactor: double { =1.0 }; const size: TSize { = Size() }; const mean: TScalar { = Scalar() }; swapRB: bool = false; crop: bool = false; ddepth: int = CV_32F): TMat;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_blobFromImages(images, scalefactor, size, mean, swapRB, crop, ddepth);
+{$IFEND}
 end;
 
 function blobFromImages(const images: TInputArrayOfArrays; scalefactor: double { =1.0 }; const size: TSize { = Size() }
@@ -85,7 +99,9 @@ end;
 
 procedure blobFromImages(const images: TInputArrayOfArrays; const blob: TOutputArray; scalefactor: double { =1.0 }; const size: TSize { = Size() }; const mean: TScalar { = Scalar() }; swapRB: bool = false; crop: bool = false; ddepth: int = CV_32F);
 begin
+{$IF not defined(PACKAGE)}
   proc_blobFromImages(images, blob, scalefactor, size, mean, swapRB, crop, ddepth);
+{$IFEND}
 end;
 
 procedure blobFromImages(const images: TInputArrayOfArrays; const blob: TOutputArray; scalefactor: double { =1.0 }; const size: TSize { = Size() }
@@ -101,36 +117,48 @@ end;
 
 function readNet(const model: String; const config: String = ''; const framework: String = ''): TNet;
 begin
+{$IF not defined(PACKAGE)}
   Result := func_readNet(CppString(model), CppString(config), CppString(framework));
+{$IFEND}
 end;
 
 { TModel }
 
 procedure _Model.setInputParams(scale: double { = 1.0 }; const size: TSize { = Size() }; const mean: TScalar { = Scalar() }; swapRB: bool = false; crop: bool = false);
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_DNN_DNN_MODEL_setInputParams(Self, scale, size, mean, swapRB, crop);
+{$IFEND}
 end;
 
 { TTextRecognitionModel }
 
 class operator _TextRecognitionModel.Initialize(out Dest: _TextRecognitionModel);
 begin
+{$IF not defined(PACKAGE)}
   constructor_CV_DNN_DNN_TEXTRECOGNITIONMODEL_4(Dest);
+{$IFEND}
 end;
 
 class operator _TextRecognitionModel.Finalize(var Dest: _TextRecognitionModel);
 begin
+{$IF not defined(PACKAGE)}
   destructor_CV_DNN_DNN_TEXTRECOGNITIONMODEL(Dest);
+{$IFEND}
 end;
 
 constructor _TextRecognitionModel.TextRecognitionModel(const network: _Net);
 begin
+{$IF not defined(PACKAGE)}
   constructor_CV_DNN_DNN_TEXTRECOGNITIONMODEL_3(Self, network);
+{$IFEND}
 end;
 
 constructor _TextRecognitionModel.TextRecognitionModel(const model: CppString; const config: CppString);
 begin
+{$IF not defined(PACKAGE)}
   constructor_CV_DNN_DNN_TEXTRECOGNITIONMODEL_2(Self, model, config);
+{$IFEND}
 end;
 
 constructor _TextRecognitionModel.TextRecognitionModel(const model: CppString);
@@ -150,18 +178,23 @@ end;
 
 function _TextRecognitionModel.setVocabulary(const vocabulary: vector<CppString>): pTextRecognitionModel;
 begin
-  Result := class_func_CV_DNN_DNN_TEXTRECOGNITIONMODEL_setVocabulary(Self, vocabulary);
-
+{$IF not defined(PACKAGE)}
+  Result := pTextRecognitionModel(class_func_CV_DNN_DNN_TEXTRECOGNITIONMODEL_setVocabulary(Self, vocabulary));
+{$IFEND}
 end;
 
 function _TextRecognitionModel.setDecodeType(const decodeType: CppString): pTextRecognitionModel;
 begin
+{$IF not defined(PACKAGE)}
   Result := class_func_CV_DNN_DNN_TEXTRECOGNITIONMODEL_setDecodeType(Self, decodeType);
+{$IFEND}
 end;
 
 procedure _TextRecognitionModel.setInputParams(scale: double { = 1.0 }; const size: TSize { = Size() }; const mean: TScalar { = Scalar() }; swapRB: bool = false; crop: bool = false);
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_DNN_DNN_MODEL_setInputParams(Self.model, scale, size, mean, swapRB, crop);
+{$IFEND}
 end;
 
 procedure _TextRecognitionModel.setInputParams(scale: double { = 1.0 }; const size: TSize { = Size() } );
@@ -176,7 +209,9 @@ end;
 
 function _TextRecognitionModel.recognize(const frame: TInputArray): String;
 begin
+{$IF not defined(PACKAGE)}
   Result := class_func_CV_DNN_DNN_TEXTRECOGNITIONMODEL_recognize(Self, frame);
+{$IFEND}
 end;
 
 {$IFEND}

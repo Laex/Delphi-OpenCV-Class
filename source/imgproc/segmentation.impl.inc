@@ -20,43 +20,58 @@
   limitations under the License.
 *)
 
-{$IFDEF OPENCV_IMGPROC_SEGMENTATION_HPP}
+{$IF DEFINED(OPENCV_IMGPROC_SEGMENTATION_HPP) and (not DEFINED(OPENCV_IMGPROC_SEGMENTATION_HPP_IMPL))}
+{$DEFINE OPENCV_IMGPROC_SEGMENTATION_HPP_IMPL}
+
 { TIntelligentScissorsMB }
 
 function TIntelligentScissorsMB.applyImage(const image: TInputArray): pIntelligentScissorsMB;
 begin
-  Result := class_func_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_applyImage(Self, image);
+{$IF not defined(PACKAGE)}
+  Result := pIntelligentScissorsMB(class_func_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_applyImage(Self, image));
+{$IFEND}
 end;
 
 procedure TIntelligentScissorsMB.buildMap(const sourcePt: TPoint);
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_buildMap(Self, sourcePt);
+{$IFEND}
 end;
 
 class operator TIntelligentScissorsMB.Finalize(var Dest: TIntelligentScissorsMB);
 begin
+{$IF not defined(PACKAGE)}
   destructor_CV_SEGMENTATION_INTELLIGENTSCISSORSMB(Dest);
+{$IFEND}
 end;
 
 procedure TIntelligentScissorsMB.getContour(const targetPt: TPoint; const contour: TOutputArray; backward: BOOL);
 begin
+{$IF not defined(PACKAGE)}
   class_proc_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_getContour(Self, targetPt, contour, backward);
+{$IFEND}
 end;
 
 class operator TIntelligentScissorsMB.Initialize(out Dest: TIntelligentScissorsMB);
 begin
+{$IF not defined(PACKAGE)}
   constructor_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_2(Dest);
+{$IFEND}
 end;
 
-function TIntelligentScissorsMB.setEdgeFeatureCannyParameters(threshold1, threshold2: double; apertureSize: Int; L2gradient: BOOL)
-  : pIntelligentScissorsMB;
+function TIntelligentScissorsMB.setEdgeFeatureCannyParameters(threshold1, threshold2: double; apertureSize: Int; L2gradient: BOOL): pIntelligentScissorsMB;
 begin
-  Result := class_func_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_setEdgeFeatureCannyParameters(Self, threshold1, threshold2, apertureSize, L2gradient);
+{$IF not defined(PACKAGE)}
+  Result := pIntelligentScissorsMB(class_func_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_setEdgeFeatureCannyParameters(Self, threshold1, threshold2, apertureSize, L2gradient));
+{$IFEND}
 end;
 
 function TIntelligentScissorsMB.setGradientMagnitudeMaxLimit(gradient_magnitude_threshold_max: float): pIntelligentScissorsMB;
 begin
-  Result := class_func_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_setGradientMagnitudeMaxLimit(Self, gradient_magnitude_threshold_max);
+{$IF not defined(PACKAGE)}
+  Result := pIntelligentScissorsMB(class_func_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_setGradientMagnitudeMaxLimit(Self, gradient_magnitude_threshold_max));
+{$IFEND}
 end;
 
-{$ENDIF}
+{$IFEND}

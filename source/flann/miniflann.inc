@@ -20,7 +20,7 @@
   limitations under the License.
 *)
 
-{$ifndef OPENCV_MINIFLANN_HPP}
+{$if not defined(OPENCV_MINIFLANN_HPP)}
 {$define OPENCV_MINIFLANN_HPP}
 
 //! @cond IGNORED
@@ -162,4 +162,4 @@ Type
 
 //! @endcond
 
-{$endif}
+{$ifend}

@@ -23,12 +23,12 @@
 {$IF defined(OPENCV_CORE_CVDEF_H) and (not defined(OPENCV_CORE_CVDEF_H_IMPL))}
 {$DEFINE  OPENCV_CORE_CVDEF_H_IMPL}
 
-function MIN(a, b: Int): Int;
+function cvMIN(a, b: Int): Int;
 begin
   Result := System.Math.MIN(a, b);
 end;
 
-function MAX(a, b: Int): Int;
+function cvMAX(a, b: Int): Int;
 begin
   Result := System.Math.MAX(a, b);
 end;
@@ -56,7 +56,7 @@ begin
   Result := CV_MAT_CN(&type)*CV_ELEM_SIZE1(&type);
 end;
 
-{$i core/hal/interface.impl.inc}
-{$i core/fast_math.impl.inc}
+{$if defined(OPENCV_CORE_HAL_INTERFACE_H) and (not defined(OPENCV_CORE_HAL_INTERFACE_H_IMPL))}{$i core/hal/interface.impl.inc}{$ifend}
+{$if defined(OPENCV_CORE_FAST_MATH_HPP) and (not defined(OPENCV_CORE_FAST_MATH_HPP_IMPL))}{$i core/fast_math.impl.inc}{$ifend}
 
 {$IFEND OPENCV_CORE_CVDEF_H_IMPL}

@@ -28,7 +28,7 @@
 //#endif
 
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-{$i 'core/cuda.inc'}
+{$if not defined(OPENCV_CORE_CUDA_HPP)}{$i 'core/cuda.inc'}{$IFEND}
 
 //namespace cv {
 //namespace detail {

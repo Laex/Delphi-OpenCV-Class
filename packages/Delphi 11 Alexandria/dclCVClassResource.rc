@@ -1,4 +1,0 @@
-DOCVSPLASH BITMAP "..\\resource\\CVClass.bmp"
-TCVVIEW BITMAP "..\\resource\\CVView.bmp"
-TCVCAPTURESOURCE BITMAP "..\\resource\\CVCaptureSource.bmp"
-TCVVIDEOWRITER BITMAP "..\\resource\\CVVideoWriter.bmp"

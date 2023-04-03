@@ -21,13 +21,14 @@
 *)
 
 {$IF defined(OPENCV_CORE_SATURATE_HPP) and (not defined(OPENCV_CORE_SATURATE_HPP_IMPL))}
-{$define OPENCV_CORE_SATURATE_HPP_IMPL}
-
+{$DEFINE OPENCV_CORE_SATURATE_HPP_IMPL}
+//
 {$MESSAGE WARN 'TODO: saturate_cast<T>'}
 
 class function saturate_cast<T>.cast(const v: Int): T;
 begin
-  Result := TValue(v).AsType<T>;
+  Assert(False);
+  // Result := TValue(v).AsType<T>;
   // if TypeInfo(T)=TypeInfo(Int) then
   // pInt(@Result)^ := v else
   // if TypeInfo(T)=TypeInfo(uchar) then
@@ -36,12 +37,14 @@ end;
 
 class function saturate_cast<T>.cast(const v: float): T;
 begin
-  Result := TValue(v).AsType<T>;
+  Assert(False);
+  // Result := TValue(v).AsType<T>;
 end;
 
 class function saturate_cast<T>.cast(const v: double): T;
 begin
-  Result := TValue(v).AsType<T>;
+  Assert(False);
+  // Result := TValue(v).AsType<T>;
 end;
 
 {$IFEND}

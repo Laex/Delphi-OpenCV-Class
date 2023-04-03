@@ -25,7 +25,6 @@
 
 {$if not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$ifend}
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-
 {$if defined(HAVE_OPENCV_FLANN)}{$I 'flann/miniflann.inc'}{$endif}
 
 (**
@@ -193,6 +192,8 @@ Type
     // see corresponding cv::Algorithm method
 // CV_WRAP inline void write(const Ptr<FileStorage>& fs, const String& name = String()) const { Algorithm::write(fs, name); }
  end;
+
+ TPtr_TFeature2D = TPtr<TFeature2D>;
 
 (** Feature detectors in OpenCV have wrappers with a common interface that enables you to easily switch
 between different algorithms solving the same problem. All objects that implement keypoint detectors
@@ -1171,6 +1172,9 @@ private
 //    std::vector<Mat> trainDescCollection;
 //    std::vector<UMat> utrainDescCollection;
 end;
+
+TPtr_TDescriptorMatcher = TPtr<TDescriptorMatcher>;
+
 
 (** @brief Brute-force descriptor matcher.
 

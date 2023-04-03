@@ -23,7 +23,7 @@
 {$if not defined(OPENCV_CORE_C_H)}
 {$define OPENCV_CORE_C_H}
 
-{$include 'core/types_c.inc'}
+{$if not defined(OPENCV_CORE_TYPES_H)}{$i 'core/types_c.inc'}{$ifend}
 
 (** @addtogroup core_c
     @{
@@ -38,15 +38,7 @@
    (as well as other OpenCV functions that call cvAlloc)
    raises an error. *)
 //CVAPI(void*)  cvAlloc( size_t size );
-function cvAlloc(size:size_t):pointer;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7632
-{$ELSE}
-  name 'cvAlloc'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+function cvAlloc(size:size_t):pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** `free` wrapper.
    Here and further all the memory releasing functions
@@ -56,33 +48,17 @@ external opencv_world_dll
 *)
 //CVAPI(void)   cvFree_( void* ptr );
 //#define cvFree(ptr) (cvFree_(*(ptr)), *(ptr)=0)
-procedure cvFree(ptr:pointer);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7753
-{$ELSE}
-  name 'cvFree_'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+procedure cvFree(ptr:pointer); {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Creates an image header but does not allocate the image data.
-
 @param size Image width and height
 @param depth Image depth (see cvCreateImage )
 @param channels Number of channels (see cvCreateImage )
  *)
 //CVAPI(IplImage*)  cvCreateImageHeader( CvSize size, int depth, int channels );
-function cvCreateImageHeader(  size:TCvSize; depth,  channels:int ):pIplImage;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7700
-{$ELSE}
-  name 'cvCreateImageHeader'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+function cvCreateImageHeader(size:TCvSize; depth,  channels:int ):pIplImage; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Initializes an image header that was previously allocated.
-
 The returned IplImage\* points to the initialized header.
 @param image Image header to initialize
 @param size Image width and height
@@ -97,14 +73,7 @@ The returned IplImage\* points to the initialized header.
 function cvInitImageHeader(Var image:TIplImage; size:TCvSize; depth:int;
                                    channels:int; origin:int= 0;
                                    align:int=4):pIplImage;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7819
-{$ELSE}
-  name 'cvInitImageHeader'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Creates an image header and allocates the image data.
 
@@ -120,13 +89,7 @@ images with interleaved channels.
  *)
 //CVAPI(IplImage*)  cvCreateImage( CvSize size, int depth, int channels );
 function cvCreateImage( size:TCvSize; depth, channels:int ):pIplImage;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7699
-{$ELSE}
-  name 'cvCreateImage'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Deallocates an image header.
 
@@ -143,13 +106,7 @@ but it does not use IPL functions by default (see the CV_TURN_ON_IPL_COMPATIBILI
  *)
 //CVAPI(void)  cvReleaseImageHeader( IplImage** image );
 procedure cvReleaseImageHeader(Var image:pIplImage);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7904
-{$ELSE}
-  name 'cvReleaseImageHeader'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Deallocates the image header and the image data.
 
@@ -165,24 +122,19 @@ This call is a shortened form of :
 *)
 //CVAPI(void)  cvReleaseImage( IplImage** image );
 procedure cvReleaseImage(Var image:pIplImage);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7903
-{$ELSE}
-  name 'cvReleaseImage'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** Creates a copy of IPL image (widthStep may differ) *)
 //CVAPI(IplImage*) cvCloneImage( const IplImage* image );
 function cvCloneImage( const image:pIplImage  ):pIplImage;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7669
-{$ELSE}
-  name 'cvCloneImage'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7669
+//{$ELSE}
+//  name 'cvCloneImage'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets the channel of interest in an IplImage.
 
@@ -196,13 +148,14 @@ etc. Note that the channel indices become 1-based.
  *)
 //CVAPI(void)  cvSetImageCOI( IplImage* image, int coi );
 procedure cvSetImageCOI(var image:TIplImage; coi:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7956
-{$ELSE}
-  name 'cvSetImageCOI'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7956
+//{$ELSE}
+//  name 'cvSetImageCOI'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns the index of the channel of interest.
 
@@ -212,13 +165,14 @@ cvSetImageCOI.
  *)
 //CVAPI(int)  cvGetImageCOI( const IplImage* image );
 function cvGetImageCOI(const image:pIplImage):Int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7772
-{$ELSE}
-  name 'cvGetImageCOI'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7772
+//{$ELSE}
+//  name 'cvGetImageCOI'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets an image Region Of Interest (ROI) for a given rectangle.
 
@@ -233,13 +187,14 @@ ROI, not the original image.
  *)
 //CVAPI(void)  cvSetImageROI( IplImage* image, CvRect rect );
 procedure cvSetImageROI(var image:TIplImage; rect:TCvRect );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7957
-{$ELSE}
-  name 'cvSetImageROI'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7957
+//{$ELSE}
+//  name 'cvSetImageROI'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Resets the image ROI to include the entire image and releases the ROI structure.
 
@@ -252,13 +207,14 @@ This produces a similar result to the following, but in addition it releases the
  *)
 //CVAPI(void)  cvResetImageROI( IplImage* image );
 procedure cvResetImageROI(Var image:TIplImage);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7914
-{$ELSE}
-  name 'cvResetImageROI'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7914
+//{$ELSE}
+//  name 'cvResetImageROI'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns the image ROI.
 
@@ -267,13 +223,14 @@ If there is no ROI set, cvRect(0,0,image-\>width,image-\>height) is returned.
  *)
 //CVAPI(CvRect) cvGetImageROI( const IplImage* image );
 function cvGetImageROI(const  image:pIplImage ):TCvRect;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7773
-{$ELSE}
-  name 'cvGetImageROI'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7773
+//{$ELSE}
+//  name 'cvGetImageROI'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates a matrix header but does not allocate the matrix data.
 
@@ -285,13 +242,14 @@ allocated using cvCreateData or set explicitly to user-allocated data via cvSetD
  *)
 //CVAPI(CvMat*)  cvCreateMatHeader( int rows, int cols, int type );
 function cvCreateMatHeader( rows, cols, &type:int ):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7702
-{$ELSE}
-  name 'cvCreateMatHeader'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7702
+//{$ELSE}
+//  name 'cvCreateMatHeader'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_AUTOSTEP  =$7fffffff;
@@ -334,13 +292,14 @@ possible step is used which assumes there are no gaps between subsequent rows of
 function cvInitMatHeader(var mat:TCvMat; rows, cols,
                               &type:int; data:pointer = nil;
                               step:int = CV_AUTOSTEP ):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7821
-{$ELSE}
-  name 'cvInitMatHeader'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7821
+//{$ELSE}
+//  name 'cvInitMatHeader'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates a matrix header and allocates the matrix data.
 
@@ -358,13 +317,14 @@ example, CV _ 8UC1 means the elements are 8-bit unsigned and the there is 1 chan
  *)
 //CVAPI(CvMat*)  cvCreateMat( int rows, int cols, int type );
 function cvCreateMat( rows, cols, &type:int ):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7701
-{$ELSE}
-  name 'cvCreateMat'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7701
+//{$ELSE}
+//  name 'cvCreateMat'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Deallocates a matrix.
 
@@ -379,13 +339,14 @@ reference counter is 0, it also deallocates the data. :
  *)
 //CVAPI(void)  cvReleaseMat( CvMat** mat );
 procedure cvReleaseMat(var mat:pCvMat);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7905
-{$ELSE}
-  name 'cvReleaseMat'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7905
+//{$ELSE}
+//  name 'cvReleaseMat'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Decrements an array data reference counter.
 
@@ -447,13 +408,14 @@ function cvIncRefData( arr:pCvArr ):int;inline;
 (** Creates an exact copy of the input matrix (except, may be, step value) *)
 //CVAPI(CvMat*) cvCloneMat( const CvMat* mat );
 function cvCloneMat( const mat:pCvMat ):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7670
-{$ELSE}
-  name 'cvCloneMat'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7670
+//{$ELSE}
+//  name 'cvCloneMat'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** @brief Returns matrix header corresponding to the rectangular sub-array of input image or matrix.
@@ -468,21 +430,24 @@ taken into account by the function so the sub-array of ROI is actually extracted
  *)
 //CVAPI(CvMat*) cvGetSubRect( const CvArr* arr, CvMat* submat, CvRect rect );
 function cvGetSubRect( const arr:pCvArr; submat:pCvMat; rect:TCvRect ):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7793
-{$ELSE}
-  name 'cvGetSubRect'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7793
+//{$ELSE}
+//  name 'cvGetSubRect'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 function cvGetSubArr( const arr:pCvArr; submat:pCvMat; rect:TCvRect ):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7793
-{$ELSE}
-  name 'cvGetSubRect'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7793
+//{$ELSE}
+//  name 'cvGetSubRect'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns array row or row span.
 
@@ -501,13 +466,14 @@ row from start_row and up to (but not including) end_row .
 function cvGetRows( const arr:pCvArr;  submat:pCvMat;
                         start_row, end_row:int;
                         delta_row:int= 1):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7788
-{$ELSE}
-  name 'cvGetRows'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7788
+//{$ELSE}
+//  name 'cvGetRows'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload
 @param arr Input array
@@ -537,13 +503,14 @@ cvGetCols(arr, submat, col, col+1).
 //                        int start_col, int end_col );
 function cvGetCols( const arr:pCvArr; submat:pCvMat;
                         start_col, end_col:int ):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7762
-{$ELSE}
-  name 'cvGetCols'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7762
+//{$ELSE}
+//  name 'cvGetCols'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload
 @param arr Input array
@@ -569,36 +536,39 @@ forth.
 //                            int diag CV_DEFAULT(0));
 function cvGetDiag( const arr:pCvArr; submat:pCvMat;
                             diag:int=0):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7763
-{$ELSE}
-  name 'cvGetDiag'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7763
+//{$ELSE}
+//  name 'cvGetDiag'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** low-level scalar <-> raw data conversion functions *)
 //CVAPI(void) cvScalarToRawData( const CvScalar* scalar, void* data, int type,
 //                              int extend_to_12 CV_DEFAULT(0) );
 procedure cvScalarToRawData( const scalar:pCvScalar; data:Pointer; &type:int;
                               extend_to_12:int= 0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7926
-{$ELSE}
-  name 'cvScalarToRawData'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7926
+//{$ELSE}
+//  name 'cvScalarToRawData'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvRawDataToScalar( const void* data, int type, CvScalar* scalar );
 procedure cvRawDataToScalar( const data:Pointer; &type:int; scalar:pCvScalar );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7892
-{$ELSE}
-  name 'cvRawDataToScalar'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7892
+//{$ELSE}
+//  name 'cvRawDataToScalar'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates a new matrix header but does not allocate the matrix data.
 
@@ -610,13 +580,14 @@ allocated using cvCreateData or set explicitly to user-allocated data via cvSetD
  *)
 //CVAPI(CvMatND*)  cvCreateMatNDHeader( int dims, const int* sizes, int type );
 function cvCreateMatNDHeader( dims:int; const sizes:pint; &type:int ):pCvMatND;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7704
-{$ELSE}
-  name 'cvCreateMatNDHeader'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7704
+//{$ELSE}
+//  name 'cvCreateMatNDHeader'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates the header and allocates the data for a multi-dimensional dense array.
 
@@ -632,13 +603,14 @@ changed at build time).
  *)
 //CVAPI(CvMatND*)  cvCreateMatND( int dims, const int* sizes, int type );
 function cvCreateMatND( dims:int; const sizes:pint; &type:int ):pCvMatND;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7703
-{$ELSE}
-  name 'cvCreateMatND'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7703
+//{$ELSE}
+//  name 'cvCreateMatND'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Initializes a pre-allocated multi-dimensional array header.
 
@@ -652,13 +624,14 @@ external opencv_world_dll
 //                                    int type, void* data CV_DEFAULT(NULL) );
 function cvInitMatNDHeader( mat:pCvMatND; dims:int; const sizes:pint;
                                     &type:int; data:pointer =nil ):pCvMatND;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7822
-{$ELSE}
-  name 'cvInitMatNDHeader'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7822
+//{$ELSE}
+//  name 'cvInitMatNDHeader'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Deallocates a multi-dimensional array.
 
@@ -680,13 +653,14 @@ procedure cvReleaseMatND( var mat:pCvMatND );inline;
 (** Creates a copy of CvMatND (except, may be, steps) *)
 //CVAPI(CvMatND*) cvCloneMatND( const CvMatND* mat );
 function cvCloneMatND( const mat:pCvMatND ):pCvMatND;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7671
-{$ELSE}
-  name 'cvCloneMatND'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7671
+//{$ELSE}
+//  name 'cvCloneMatND'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates sparse array.
 
@@ -699,13 +673,14 @@ practically unlimited (up to \f$2^{16}\f$ ).
  *)
 //CVAPI(CvSparseMat*)  cvCreateSparseMat( int dims, const int* sizes, int type );
 function cvCreateSparseMat( dims:int; const sizes:pint; &type:int ):pCvSparseMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7710
-{$ELSE}
-  name 'cvCreateSparseMat'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7710
+//{$ELSE}
+//  name 'cvCreateSparseMat'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Deallocates sparse array.
 
@@ -714,24 +689,26 @@ The function releases the sparse array and clears the array pointer upon exit.
  *)
 //CVAPI(void)  cvReleaseSparseMat( CvSparseMat** mat );
 procedure cvReleaseSparseMat( var mat:pCvSparseMat );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7908
-{$ELSE}
-  name 'cvReleaseSparseMat'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7908
+//{$ELSE}
+//  name 'cvReleaseSparseMat'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Creates a copy of CvSparseMat (except, may be, zero items) *)
 //CVAPI(CvSparseMat*) cvCloneSparseMat( const CvSparseMat* mat );
 function cvCloneSparseMat( const mat:pCvSparseMat ):pCvSparseMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7672
-{$ELSE}
-  name 'cvCloneSparseMat'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7672
+//{$ELSE}
+//  name 'cvCloneSparseMat'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Initializes sparse array elements iterator.
 
@@ -743,13 +720,14 @@ or NULL if the array is empty.
 //CVAPI(CvSparseNode*) cvInitSparseMatIterator( const CvSparseMat* mat,
 //                                              CvSparseMatIterator* mat_iterator );
 function cvInitSparseMatIterator( const mat:pCvSparseMat; mat_iterator:pCvSparseMatIterator ):pCvSparseNode;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7824
-{$ELSE}
-  name 'cvInitSparseMatIterator'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7824
+//{$ELSE}
+//  name 'cvInitSparseMatIterator'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns the next sparse matrix element
 
@@ -834,24 +812,26 @@ function cvInitNArrayIterator( count:int; var arrs:pCvArr;
                                  const mask:pCvArr; stubs:pCvMatND;
                                  array_iterator:pCvNArrayIterator;
                                  flags:int=0):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7823
-{$ELSE}
-  name 'cvInitNArrayIterator'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7823
+//{$ELSE}
+//  name 'cvInitNArrayIterator'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** returns zero value if iteration is finished, non-zero (slice length) otherwise *)
 //CVAPI(int) cvNextNArraySlice( CvNArrayIterator* array_iterator );
 function cvNextNArraySlice( array_iterator:pCvNArrayIterator ):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7862
-{$ELSE}
-  name 'cvNextNArraySlice'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7862
+//{$ELSE}
+//  name 'cvNextNArraySlice'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns type of array elements.
 
@@ -865,13 +845,14 @@ The code cvGetElemType(img) will return CV_8UC3.
  *)
 //CVAPI(int) cvGetElemType( const CvArr* arr );
 function cvGetElemType( const arr:pCvArr ):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7766
-{$ELSE}
-  name 'cvGetElemType'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7766
+//{$ELSE}
+//  name 'cvGetElemType'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Return number of array dimensions
 
@@ -891,14 +872,14 @@ following code calculates total number of array elements:
  *)
 //CVAPI(int) cvGetDims( const CvArr* arr, int* sizes CV_DEFAULT(NULL) );
 function cvGetDims( const arr:pCvArr; sizes:pint = nil ):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7765
-{$ELSE}
-  name 'cvGetDims'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7765
+//{$ELSE}
+//  name 'cvGetDims'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns array size along the specified dimension.
 
@@ -908,13 +889,14 @@ columns; for images 0 means height, 1 means width)
  *)
 //CVAPI(int) cvGetDimSize( const CvArr* arr, int index );
 function cvGetDimSize( const arr:pCvArr; index:int ):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7764
-{$ELSE}
-  name 'cvGetDimSize'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7764
+//{$ELSE}
+//  name 'cvGetDimSize'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Return pointer to a particular array element.
 
@@ -933,35 +915,40 @@ All these as well as other functions accessing array elements ( cvGetND , cvGetR
  *)
 //CVAPI(uchar*) cvPtr1D( const CvArr* arr, int idx0, int* type CV_DEFAULT(NULL));
 function cvPtr1D( const arr:pCvArr; idx0:int; &type:pint=nil):puchar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7880
-{$ELSE}
-  name 'cvPtr1D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7880
+//{$ELSE}
+//  name 'cvPtr1D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(uchar*) cvPtr2D( const CvArr* arr, int idx0, int idx1, int* type CV_DEFAULT(NULL) );
 function cvPtr2D( const arr:pCvArr; idx0, idx1:int ; &type:pint =nil ):puchar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7881
-{$ELSE}
-  name 'cvPtr2D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7881
+//{$ELSE}
+//  name 'cvPtr2D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(uchar*) cvPtr3D( const CvArr* arr, int idx0, int idx1, int idx2,
 //                      int* type CV_DEFAULT(NULL));
 function cvPtr3D( const arr:pCvArr; idx0, idx1, idx2:int;
                       &type:pint=nil):puchar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7882
-{$ELSE}
-  name 'cvPtr3D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7882
+//{$ELSE}
+//  name 'cvPtr3D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload
 @param arr Input array
@@ -979,13 +966,14 @@ It is useful for speeding up pair-wise operations (TODO: provide an example)
 function cvPtrND( const arr:pCvArr; const idx:pint; &type:pint=nil;
                       create_node:int=1;
                       precalc_hashval:punsigned =nil):puchar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7883
-{$ELSE}
-  name 'cvPtrND'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7883
+//{$ELSE}
+//  name 'cvPtrND'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Return a specific array element.
 
@@ -996,46 +984,53 @@ if the requested node does not exist (no new node is created by the functions).
  *)
 //CVAPI(CvScalar) cvGet1D( const CvArr* arr, int idx0 );
 function cvGet1D( const arr:pCvArr; idx0:int ):TCvScalar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7755
-{$ELSE}
-  name 'cvGet1D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7755
+//{$ELSE}
+//  name 'cvGet1D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(CvScalar) cvGet2D( const CvArr* arr, int idx0, int idx1 );
 function cvGet2D( const arr:pCvArr; idx0, idx1:int ):TCvScalar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7756
-{$ELSE}
-  name 'cvGet2D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7756
+//{$ELSE}
+//  name 'cvGet2D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(CvScalar) cvGet3D( const CvArr* arr, int idx0, int idx1, int idx2 );
 function cvGet3D( const arr:pCvArr;  idx0, idx1, idx2:int ):TCvScalar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7757
-{$ELSE}
-  name 'cvGet3D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7757
+//{$ELSE}
+//  name 'cvGet3D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload
 @param arr Input array
 @param idx Array of the element indices
 *)
 //CVAPI(CvScalar) cvGetND( const CvArr* arr, const int* idx );
 function cvGetND( const arr:pCvArr; const idx:pint ):TCvScalar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7776
-{$ELSE}
-  name 'cvGetND'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7776
+//{$ELSE}
+//  name 'cvGetND'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Return a specific element of single-channel 1D, 2D, 3D or nD array.
 
@@ -1050,46 +1045,53 @@ node is created by the functions).
  *)
 //CVAPI(double) cvGetReal1D( const CvArr* arr, int idx0 );
 function cvGetReal1D( const arr:pCvArr; idx0:int ):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7783
-{$ELSE}
-  name 'cvGetReal1D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7783
+//{$ELSE}
+//  name 'cvGetReal1D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(double) cvGetReal2D( const CvArr* arr, int idx0, int idx1 );
 function cvGetReal2D( const arr:pCvArr; idx0, idx1:int ):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7784
-{$ELSE}
-  name 'cvGetReal2D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7784
+//{$ELSE}
+//  name 'cvGetReal2D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(double) cvGetReal3D( const CvArr* arr, int idx0, int idx1, int idx2 );
 function cvGetReal3D( const arr:pCvArr; idx0, idx1, idx2:int ):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7785
-{$ELSE}
-  name 'cvGetReal3D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7785
+//{$ELSE}
+//  name 'cvGetReal3D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload
 @param arr Input array. Must have a single channel.
 @param idx Array of the element indices
 *)
 //CVAPI(double) cvGetRealND( const CvArr* arr, const int* idx );
 function cvGetRealND( const arr:pCvArr; const idx:pint ):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7786
-{$ELSE}
-  name 'cvGetRealND'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7786
+//{$ELSE}
+//  name 'cvGetRealND'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Change the particular array element.
 
@@ -1101,33 +1103,39 @@ functions create the node if it does not exist yet.
  *)
 //CVAPI(void) cvSet1D( CvArr* arr, int idx0, CvScalar value );
 procedure cvSet1D( arr:pCvArr; idx0:int; value:TCvScalar );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7945
-{$ELSE}
-  name 'cvSet1D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7945
+//{$ELSE}
+//  name 'cvSet1D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(void) cvSet2D( CvArr* arr, int idx0, int idx1, CvScalar value );
 procedure cvSet2D( arr:pCvArr; idx0, idx1:int; value:TCvScalar );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7946
-{$ELSE}
-  name 'cvSet2D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7946
+//{$ELSE}
+//  name 'cvSet2D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(void) cvSet3D( CvArr* arr, int idx0, int idx1, int idx2, CvScalar value );
 procedure cvSet3D( arr:pCvArr; idx0, idx1, idx2:int; value:TCvScalar );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7947
-{$ELSE}
-  name 'cvSet3D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7947
+//{$ELSE}
+//  name 'cvSet3D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload
 @param arr Input array
 @param idx Array of the element indices
@@ -1135,13 +1143,14 @@ external opencv_world_dll
 *)
 //CVAPI(void) cvSetND( CvArr* arr, const int* idx, CvScalar value );
 procedure cvSetND( arr:pCvArr; const idx:pint; value:TCvScalar );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7959
-{$ELSE}
-  name 'cvSetND'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7959
+//{$ELSE}
+//  name 'cvSetND'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Change a specific array element.
 
@@ -1156,35 +1165,41 @@ In the case of a sparse array the functions create the node if it does not yet e
  *)
 //CVAPI(void) cvSetReal1D( CvArr* arr, int idx0, double value );
 procedure cvSetReal1D( arr:pCvArr; idx0:int; value:double );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7965
-{$ELSE}
-  name 'cvSetReal1D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7965
+//{$ELSE}
+//  name 'cvSetReal1D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(void) cvSetReal2D( CvArr* arr, int idx0, int idx1, double value );
 procedure cvSetReal2D( arr:pCvArr; idx0, idx1:int; value:double );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7966
-{$ELSE}
-  name 'cvSetReal2D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7966
+//{$ELSE}
+//  name 'cvSetReal2D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload *)
 //CVAPI(void) cvSetReal3D( CvArr* arr, int idx0,
 //                        int idx1, int idx2, double value );
 procedure cvSetReal3D( arr:pCvArr; idx0,
                         idx1, idx2:int; value:double );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7967
-{$ELSE}
-  name 'cvSetReal3D'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7967
+//{$ELSE}
+//  name 'cvSetReal3D'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** @overload
 @param arr Input array
 @param idx Array of the element indices
@@ -1192,25 +1207,27 @@ external opencv_world_dll
 *)
 //CVAPI(void) cvSetRealND( CvArr* arr, const int* idx, double value );
 procedure cvSetRealND( arr:pCvArr; const idx:pint; value:double );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7968
-{$ELSE}
-  name 'cvSetRealND'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7968
+//{$ELSE}
+//  name 'cvSetRealND'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** clears element of ND dense array,
    in case of sparse arrays it deletes the specified node *)
 //CVAPI(void) cvClearND( CvArr* arr, const int* idx );
 procedure cvClearND( arr:pCvArr; const idx:pint );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7663
-{$ELSE}
-  name 'cvClearND'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7663
+//{$ELSE}
+//  name 'cvClearND'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns matrix header for arbitrary array.
 
@@ -1240,13 +1257,14 @@ more than 2 dimensions). The CvMatND array must be continuous.
 function cvGetMat( const arr:pCvArr; header:pCvMat;
                        coi:pint = nil;
                        allowND:int=0):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7774
-{$ELSE}
-  name 'cvGetMat'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7774
+//{$ELSE}
+//  name 'cvGetMat'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns image header for arbitrary array.
 
@@ -1260,13 +1278,14 @@ this function, we will get different headers if the ROI is set in the original i
  *)
 //CVAPI(IplImage*) cvGetImage( const CvArr* arr, IplImage* image_header );
 function cvGetImage( const arr:pCvArr; image_header:pIplImage ):pIplImage;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7771
-{$ELSE}
-  name 'cvGetImage'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7771
+//{$ELSE}
+//  name 'cvGetImage'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Changes the shape of a multi-dimensional array without copying the data.
 
@@ -1310,13 +1329,14 @@ used.
 function cvReshapeMatND( const arr:pCvArr;
                              sizeof_header:int; header:pCvArr;
                              new_cn, new_dims:int; new_sizes:pint ):pCvArr;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7916
-{$ELSE}
-  name 'cvReshapeMatND'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7916
+//{$ELSE}
+//  name 'cvReshapeMatND'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //#define cvReshapeND( arr, header, new_cn, new_dims, new_sizes )   \
 //      cvReshapeMatND( (arr), sizeof( *(header)), (header),         \
@@ -1356,25 +1376,27 @@ unchanged unless it needs to be changed according to new_cn value.
 //                        int new_cn, int new_rows CV_DEFAULT(0) );
 function cvReshape( const arr:pCvArr; header:pCvMat;
                         new_cn:int; new_rows:int=0):pCvMat;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7915
-{$ELSE}
-  name 'cvReshape'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7915
+//{$ELSE}
+//  name 'cvReshape'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Repeats source 2d array several times in both horizontal and
    vertical direction to fill destination array *)
 //CVAPI(void) cvRepeat( const CvArr* src, CvArr* dst );
 procedure cvRepeat( const src:pCvArr; dst:pCvArr );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7913
-{$ELSE}
-  name 'cvRepeat'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7913
+//{$ELSE}
+//  name 'cvRepeat'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Allocates array data
 
@@ -1386,13 +1408,14 @@ to allocate the data.
  *)
 //CVAPI(void)  cvCreateData( CvArr* arr );
 procedure cvCreateData( arr:pCvArr );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7693
-{$ELSE}
-  name 'cvCreateData'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7693
+//{$ELSE}
+//  name 'cvCreateData'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Releases array data.
 
@@ -1403,13 +1426,14 @@ cvCreateData .
  *)
 //CVAPI(void)  cvReleaseData( CvArr* arr );
 procedure cvReleaseData( arr:pCvArr );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7900
-{$ELSE}
-  name 'cvReleaseData'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7900
+//{$ELSE}
+//  name 'cvReleaseData'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Assigns user data to the array header.
 
@@ -1422,13 +1446,14 @@ cvInitImageHeader or cvInitMatNDHeader.
  *)
 //CVAPI(void)  cvSetData( CvArr* arr, void* data, int step );
 procedure cvSetData( arr:pCvArr; data:Pointer; step:int );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7950
-{$ELSE}
-  name 'cvSetData'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7950
+//{$ELSE}
+//  name 'cvSetData'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Retrieves low-level information about the array.
 
@@ -1462,13 +1487,14 @@ array elements :
 procedure cvGetRawData( const arr:pCvArr; data:puchar;
                          step:pint = nil;
                          roi_size:pCvSize = nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7782
-{$ELSE}
-  name 'cvGetRawData'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7782
+//{$ELSE}
+//  name 'cvGetRawData'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns size of matrix or image ROI.
 
@@ -1478,13 +1504,14 @@ input matrix or image. In the case of image the size of ROI is returned.
  *)
 //CVAPI(CvSize) cvGetSize( const CvArr* arr );
 function cvGetSize( const arr:pCvArr ):TCvSize;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7791
-{$ELSE}
-  name 'cvGetSize'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7791
+//{$ELSE}
+//  name 'cvGetSize'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Copies one array to another.
 
@@ -1504,13 +1531,14 @@ to be changed
 //                     const CvArr* mask CV_DEFAULT(NULL) );
 procedure cvCopy( const src:pCvArr; dst:pCvArr;
                      const mask:pCvArr = nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7684
-{$ELSE}
-  name 'cvCopy'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7684
+//{$ELSE}
+//  name 'cvCopy'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets every element of an array to a given value.
 
@@ -1526,13 +1554,14 @@ array to be changed
 //                    const CvArr* mask CV_DEFAULT(NULL) );
 procedure cvSet( arr:pCvArr; value:TCvScalar;
                     const mask:pCvArr=nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7944
-{$ELSE}
-  name 'cvSet'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7944
+//{$ELSE}
+//  name 'cvSet'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Clears the array.
 
@@ -1543,22 +1572,25 @@ elements are removed.
  *)
 //CVAPI(void)  cvSetZero( CvArr* arr );
 procedure cvSetZero( arr:pCvArr );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7976
-{$ELSE}
-  name 'cvSetZero'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7976
+//{$ELSE}
+//  name 'cvSetZero'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvZero  cvSetZero
 procedure cvZero( arr:pCvArr );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7976
-{$ELSE}
-  name 'cvSetZero'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7976
+//{$ELSE}
+//  name 'cvSetZero'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Splits a multi-channel array into the set of single-channel arrays or
    extracts particular [color] plane *)
@@ -1566,13 +1598,14 @@ external opencv_world_dll
 //                      CvArr* dst2, CvArr* dst3 );
 procedure cvSplit( const src:pCvArr; dst0:pCvArr; dst1:pCvArr;
                       dst2:pCvArr; dst3:pCvArr );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7985
-{$ELSE}
-  name 'cvSplit'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7985
+//{$ELSE}
+//  name 'cvSplit'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Merges a set of single-channel arrays into the single multi-channel array
    or inserts one particular [color] plane to the array *)
@@ -1582,13 +1615,14 @@ external opencv_world_dll
 procedure cvMerge( const src0:pCvArr; const src1:pCvArr;
                       const src2:pCvArr; const src3:pCvArr;
                       dst:pCvArr );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7846
-{$ELSE}
-  name 'cvMerge'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7846
+//{$ELSE}
+//  name 'cvMerge'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Copies several channels from input arrays to
    certain channels of output arrays *)
@@ -1598,13 +1632,14 @@ external opencv_world_dll
 procedure cvMixChannels( const src:pCvArr; src_count:int;
                             dst:pCvArr; dst_count:int;
                             const from_to:pint; pair_count:int );
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7852
-{$ELSE}
-  name 'cvMixChannels'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7852
+//{$ELSE}
+//  name 'cvMixChannels'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Converts one array to another with optional linear transformation.
 
@@ -1630,36 +1665,40 @@ set to the nearest representable value on the real axis.
 procedure cvConvertScale( const src:pCvArr; dst:pCvArr;
                              scale:double=1;
                              shift:double=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7680
-{$ELSE}
-  name 'cvConvertScale'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7680
+//{$ELSE}
+//  name 'cvConvertScale'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //#define cvCvtScale cvConvertScale
 procedure cvCvtScale( const src:pCvArr; dst:pCvArr;
                              scale:double=1;
                              shift:double=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7680
-{$ELSE}
-  name 'cvConvertScale'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7680
+//{$ELSE}
+//  name 'cvConvertScale'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvScale  cvConvertScale
 procedure cvScale( const src:pCvArr; dst:pCvArr;
                              scale:double=1;
                              shift:double=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7680
-{$ELSE}
-  name 'cvConvertScale'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7680
+//{$ELSE}
+//  name 'cvConvertScale'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //#define cvConvert( src, dst )  cvConvertScale( (src), (dst), 1, 0 )
 procedure cvConvert( const src:pCvArr; dst:pCvArr); inline;
@@ -1676,26 +1715,27 @@ procedure cvConvert( const src:pCvArr; dst:pCvArr); inline;
 procedure cvConvertScaleAbs( const src:pCvArr; dst:pCvArr;
                                 scale:double=1;
                                 shift:double=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7681
-{$ELSE}
-  name 'cvConvertScaleAbs'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7681
+//{$ELSE}
+//  name 'cvConvertScaleAbs'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //#define cvCvtScaleAbs  cvConvertScaleAbs
 procedure cvCvtScaleAbs( const src:pCvArr; dst:pCvArr;
                                 scale:double=1;
                                 shift:double=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7681
-{$ELSE}
-  name 'cvConvertScaleAbs'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7681
+//{$ELSE}
+//  name 'cvConvertScaleAbs'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** checks termination criteria validity and
    sets eps to default_eps (if it is not set),
@@ -1707,13 +1747,14 @@ external opencv_world_dll
 function cvCheckTermCriteria( criteria:TCvTermCriteria;
                                            default_eps:double;
                                            default_max_iters:int ):TCvTermCriteria;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7658
-{$ELSE}
-  name 'cvCheckTermCriteria'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7658
+//{$ELSE}
+//  name 'cvCheckTermCriteria'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (****************************************************************************************\
 *                   Arithmetic, logic and comparison operations                          *
@@ -1724,39 +1765,42 @@ external opencv_world_dll
 //                    const CvArr* mask CV_DEFAULT(NULL));
 procedure cvAdd( const src1:pCvArr; const src2:pCvArr; dst:pCvArr;
                     const mask:pCvArr=nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-  index 7629
-{$ELSE}
-  name 'cvAdd'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//  index 7629
+//{$ELSE}
+//  name 'cvAdd'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** dst(mask) = src(mask) + value *)
 //CVAPI(void)  cvAddS( const CvArr* src, CvScalar value, CvArr* dst,
 //                     const CvArr* mask CV_DEFAULT(NULL));
 procedure cvAddS(const src:pCvArr; value:TCvScalar; dst:pCvArr; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7630
-{$ELSE}
-name 'cvAddS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7630
+//{$ELSE}
+//name 'cvAddS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** dst(mask) = src1(mask) - src2(mask) *)
 //CVAPI(void)  cvSub( const CvArr* src1, const CvArr* src2, CvArr* dst,
 //                    const CvArr* mask CV_DEFAULT(NULL));
 procedure cvSub(const src1:pCvArr; const src2:pCvArr; dst:pCvArr; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7994
-{$ELSE}
-name 'cvSub'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7994
+//{$ELSE}
+//name 'cvSub'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(mask) = src(mask) - value = src(mask) + (-value) *)
 //CV_INLINE  void  cvSubS( const CvArr* src, CvScalar value, CvArr* dst,
@@ -1771,26 +1815,28 @@ procedure cvSubS(const src:pCvArr; value:TCvScalar; dst:pCvArr; const mask:pCvAr
 //CVAPI(void)  cvSubRS( const CvArr* src, CvScalar value, CvArr* dst,
 //                      const CvArr* mask CV_DEFAULT(NULL));
 procedure cvSubRS(const src:pCvArr; value:TCvScalar; dst:pCvArr; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7995
-{$ELSE}
-name 'cvSubRS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7995
+//{$ELSE}
+//name 'cvSubRS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = src1(idx) * src2(idx) * scale
    (scaled element-wise multiplication of 2 arrays) *)
 //CVAPI(void)  cvMul( const CvArr* src1, const CvArr* src2,
 //                    CvArr* dst, double scale CV_DEFAULT(1) );
 procedure cvMul(const src1:pCvArr; const src2:pCvArr; dst:pCvArr; scale:double=1);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7856
-{$ELSE}
-name 'cvMul'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7856
+//{$ELSE}
+//name 'cvMul'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** element-wise division/inversion with scaling:
     dst(idx) = src1(idx) * scale / src2(idx)
@@ -1798,25 +1844,27 @@ name 'cvMul'
 //CVAPI(void)  cvDiv( const CvArr* src1, const CvArr* src2,
 //                    CvArr* dst, double scale CV_DEFAULT(1));
 procedure cvDiv(const src1:pCvArr; const src2:pCvArr; dst:pCvArr; scale:double=1);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7725
-{$ELSE}
-name 'cvDiv'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7725
+//{$ELSE}
+//name 'cvDiv'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst = src1 * scale + src2 *)
 //CVAPI(void)  cvScaleAdd( const CvArr* src1, CvScalar scale,
 //                         const CvArr* src2, CvArr* dst );
 procedure cvScaleAdd(const src1:pCvArr; scale:TCvScalar; const src2:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7927
-{$ELSE}
-name 'cvScaleAdd'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7927
+//{$ELSE}
+//name 'cvScaleAdd'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {TODO:cvAXPY}
 //#define cvAXPY( A, real_scalar, B, C ) cvScaleAdd(A, cvRealScalar(real_scalar), B, C)
@@ -1826,13 +1874,14 @@ name 'cvScaleAdd'
 //                            const CvArr* src2, double beta,
 //                            double gamma, CvArr* dst );
 procedure cvAddWeighted(const src1:pCvArr; alpha:double; const src2:pCvArr; beta:double; gamma:double; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7631
-{$ELSE}
-name 'cvAddWeighted'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7631
+//{$ELSE}
+//name 'cvAddWeighted'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** @brief Calculates the dot product of two arrays in Euclidean metrics.
@@ -1849,124 +1898,132 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
  *)
 //CVAPI(double)  cvDotProduct( const CvArr* src1, const CvArr* src2 );
 function cvDotProduct(const src1:pCvArr; const src2:pCvArr):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7726
-{$ELSE}
-name 'cvDotProduct'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7726
+//{$ELSE}
+//name 'cvDotProduct'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = src1(idx) & src2(idx) *)
 //CVAPI(void) cvAnd( const CvArr* src1, const CvArr* src2,
 //                  CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
 procedure cvAnd(const src1:pCvArr; const src2:pCvArr; dst:pCvArr; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7633
-{$ELSE}
-name 'cvAnd'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7633
+//{$ELSE}
+//name 'cvAnd'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = src(idx) & value *)
 //CVAPI(void) cvAndS( const CvArr* src, CvScalar value,
 //                   CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
 procedure cvAndS(const src:pCvArr; value:TCvScalar; dst:pCvArr; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7634
-{$ELSE}
-name 'cvAndS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7634
+//{$ELSE}
+//name 'cvAndS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** dst(idx) = src1(idx) | src2(idx) *)
 //CVAPI(void) cvOr( const CvArr* src1, const CvArr* src2,
 //                 CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
 procedure cvOr(const src1:pCvArr; const src2:pCvArr; dst:pCvArr; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7869
-{$ELSE}
-name 'cvOr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7869
+//{$ELSE}
+//name 'cvOr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = src(idx) | value *)
 //CVAPI(void) cvOrS( const CvArr* src, CvScalar value,
 //                  CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
 procedure cvOrS(const src:pCvArr; value:TCvScalar; dst:pCvArr; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7870
-{$ELSE}
-name 'cvOrS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7870
+//{$ELSE}
+//name 'cvOrS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = src1(idx) ^ src2(idx) *)
 //CVAPI(void) cvXor( const CvArr* src1, const CvArr* src2,
 //                  CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
 procedure cvXor(const src1:pCvArr; const src2:pCvArr; dst:pCvArr; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8011
-{$ELSE}
-name 'cvXor'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8011
+//{$ELSE}
+//name 'cvXor'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = src(idx) ^ value *)
 //CVAPI(void) cvXorS( const CvArr* src, CvScalar value,
 //                   CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
 procedure cvXorS(const src:pCvArr; value:TCvScalar; dst:pCvArr; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8012
-{$ELSE}
-name 'cvXorS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8012
+//{$ELSE}
+//name 'cvXorS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = ~src(idx) *)
 //CVAPI(void) cvNot( const CvArr* src, CvArr* dst );
 procedure cvNot(const src:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7867
-{$ELSE}
-name 'cvNot'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7867
+//{$ELSE}
+//name 'cvNot'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = lower(idx) <= src(idx) < upper(idx) *)
 //CVAPI(void) cvInRange( const CvArr* src, const CvArr* lower,
 //                      const CvArr* upper, CvArr* dst );
 procedure cvInRange(const src:pCvArr; const lower:pCvArr; const upper:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7816
-{$ELSE}
-name 'cvInRange'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7816
+//{$ELSE}
+//name 'cvInRange'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** dst(idx) = lower <= src(idx) < upper *)
 //CVAPI(void) cvInRangeS( const CvArr* src, CvScalar lower,
 //                       CvScalar upper, CvArr* dst );
 procedure cvInRangeS(const src:pCvArr; lower:TCvScalar; upper:TCvScalar; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7817
-{$ELSE}
-name 'cvInRangeS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7817
+//{$ELSE}
+//name 'cvInRangeS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_CMP_EQ  = 0;
@@ -1982,90 +2039,98 @@ const
 (** dst(idx) = src1(idx) _cmp_op_ src2(idx) *)
 //CVAPI(void) cvCmp( const CvArr* src1, const CvArr* src2, CvArr* dst, int cmp_op );
 procedure cvCmp(const src1:pCvArr; const src2:pCvArr; dst:pCvArr; cmp_op:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7673
-{$ELSE}
-name 'cvCmp'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7673
+//{$ELSE}
+//name 'cvCmp'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = src1(idx) _cmp_op_ value *)
 //CVAPI(void) cvCmpS( const CvArr* src, double value, CvArr* dst, int cmp_op );
 procedure cvCmpS(const src:pCvArr; value:double; dst:pCvArr; cmp_op:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7674
-{$ELSE}
-name 'cvCmpS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7674
+//{$ELSE}
+//name 'cvCmpS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = min(src1(idx),src2(idx)) *)
 //CVAPI(void) cvMin( const CvArr* src1, const CvArr* src2, CvArr* dst );
 procedure cvMin(const src1:pCvArr; const src2:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7847
-{$ELSE}
-name 'cvMin'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7847
+//{$ELSE}
+//name 'cvMin'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = max(src1(idx),src2(idx)) *)
 //CVAPI(void) cvMax( const CvArr* src1, const CvArr* src2, CvArr* dst );
 procedure cvMax(const src1:pCvArr; const src2:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7842
-{$ELSE}
-name 'cvMax'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7842
+//{$ELSE}
+//name 'cvMax'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = min(src(idx),value) *)
 //CVAPI(void) cvMinS( const CvArr* src, double value, CvArr* dst );
 procedure cvMinS(const src:pCvArr; value:double; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7851
-{$ELSE}
-name 'cvMinS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7851
+//{$ELSE}
+//name 'cvMinS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(idx) = max(src(idx),value) *)
 //CVAPI(void) cvMaxS( const CvArr* src, double value, CvArr* dst );
 procedure cvMaxS(const src:pCvArr; value:double; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7844
-{$ELSE}
-name 'cvMaxS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7844
+//{$ELSE}
+//name 'cvMaxS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(x,y,c) = abs(src1(x,y,c) - src2(x,y,c)) *)
 //CVAPI(void) cvAbsDiff( const CvArr* src1, const CvArr* src2, CvArr* dst );
 procedure cvAbsDiff(const src1:pCvArr; const src2:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7625
-{$ELSE}
-name 'cvAbsDiff'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7625
+//{$ELSE}
+//name 'cvAbsDiff'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** dst(x,y,c) = abs(src(x,y,c) - value(c)) *)
 //CVAPI(void) cvAbsDiffS( const CvArr* src, CvArr* dst, CvScalar value );
 procedure cvAbsDiffS(const src:pCvArr; dst:pCvArr; value:TCvScalar);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7626
-{$ELSE}
-name 'cvAbsDiffS'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7626
+//{$ELSE}
+//name 'cvAbsDiffS'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {TODO:cvAbs}
 //#define cvAbs( src, dst ) cvAbsDiffS( (src), (dst), cvScalarAll(0))
@@ -2080,13 +2145,14 @@ name 'cvAbsDiffS'
 //                            CvArr* magnitude, CvArr* angle CV_DEFAULT(NULL),
 //                            int angle_in_degrees CV_DEFAULT(0));
 procedure cvCartToPolar(const x:pCvArr; const y:pCvArr; magnitude:pCvArr; angle:pCvArr= nil; angle_in_degrees:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7652
-{$ELSE}
-name 'cvCartToPolar'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7652
+//{$ELSE}
+//name 'cvCartToPolar'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Does polar->cartesian coordinates conversion.
    Either of output components (magnitude or angle) is optional.
@@ -2095,37 +2161,40 @@ name 'cvCartToPolar'
 //                            CvArr* x, CvArr* y,
 //                            int angle_in_degrees CV_DEFAULT(0));
 procedure cvPolarToCart(const magnitude:pCvArr; const angle:pCvArr; x:pCvArr; y:pCvArr; angle_in_degrees:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7874
-{$ELSE}
-name 'cvPolarToCart'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7874
+//{$ELSE}
+//name 'cvPolarToCart'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Does powering: dst(idx) = src(idx)^power *)
 //CVAPI(void)  cvPow( const CvArr* src, CvArr* dst, double power );
 procedure cvPow(const src:pCvArr; dst:pCvArr; power:double);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7876
-{$ELSE}
-name 'cvPow'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7876
+//{$ELSE}
+//name 'cvPow'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Does exponention: dst(idx) = exp(src(idx)).
    Overflow is not handled yet. Underflow is handled.
    Maximal relative error is ~7e-6 for single-precision input *)
 //CVAPI(void)  cvExp( const CvArr* src, CvArr* dst );
 procedure cvExp(const src:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7738
-{$ELSE}
-name 'cvExp'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7738
+//{$ELSE}
+//name 'cvExp'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Calculates natural logarithms: dst(idx) = log(abs(src(idx))).
    Logarithm of 0 gives large negative number(~-700)
@@ -2133,35 +2202,38 @@ name 'cvExp'
 *)
 //CVAPI(void)  cvLog( const CvArr* src, CvArr* dst );
 procedure cvLog(const src:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7835
-{$ELSE}
-name 'cvLog'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7835
+//{$ELSE}
+//name 'cvLog'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Fast arctangent calculation *)
 //CVAPI(float) cvFastArctan( float y, float x );
 function cvFastArctan(y:float; x:float):float;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7739
-{$ELSE}
-name 'cvFastArctan'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7739
+//{$ELSE}
+//name 'cvFastArctan'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Fast cubic root calculation *)
 //CVAPI(float)  cvCbrt( float value );
 function cvCbrt(value:float):float;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7653
-{$ELSE}
-name 'cvCbrt'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7653
+//{$ELSE}
+//name 'cvCbrt'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
   CV_CHECK_RANGE   = 1;
@@ -2173,22 +2245,25 @@ const
 //CVAPI(int)  cvCheckArr( const CvArr* arr, int flags CV_DEFAULT(0),
 //                        double min_val CV_DEFAULT(0), double max_val CV_DEFAULT(0));
 function cvCheckArr(const arr:pCvArr; flags:int=0; min_val:double=0; max_val:double=0):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7655
-{$ELSE}
-name 'cvCheckArr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7655
+//{$ELSE}
+//name 'cvCheckArr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvCheckArray cvCheckArr
 function cvCheckArray(const arr:pCvArr; flags:int=0; min_val:double=0; max_val:double=0):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7655
-{$ELSE}
-name 'cvCheckArr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7655
+//{$ELSE}
+//name 'cvCheckArr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_RAND_UNI     = 0;
@@ -2213,24 +2288,26 @@ it is the standard deviation of the random numbers.
 //CVAPI(void) cvRandArr( CvRNG* rng, CvArr* arr, int dist_type,
 //                      CvScalar param1, CvScalar param2 );
 procedure cvRandArr(rng:pCvRNG; arr:pCvArr; dist_type:int; param1:TCvScalar; param2:TCvScalar);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7889
-{$ELSE}
-name 'cvRandArr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7889
+//{$ELSE}
+//name 'cvRandArr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvRandShuffle( CvArr* mat, CvRNG* rng,
 //                           double iter_factor CV_DEFAULT(1.));
 procedure cvRandShuffle(mat:pCvArr; rng:pCvRNG; iter_factor:double=1);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7890
-{$ELSE}
-name 'cvRandShuffle'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7890
+//{$ELSE}
+//name 'cvRandShuffle'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_SORT_EVERY_ROW        = 0;
@@ -2242,39 +2319,41 @@ const
 //                    CvArr* idxmat CV_DEFAULT(NULL),
 //                    int flags CV_DEFAULT(0));
 procedure cvSort(const src:pCvArr; dst:pCvArr= nil; idxmat:pCvArr= nil; flags:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7984
-{$ELSE}
-name 'cvSort'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7984
+//{$ELSE}
+//name 'cvSort'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Finds real roots of a cubic equation *)
 //CVAPI(int) cvSolveCubic( const CvMat* coeffs, CvMat* roots );
 function cvSolveCubic(const coeffs:pCvMat; roots:pCvMat):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7982
-{$ELSE}
-name 'cvSolveCubic'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7982
+//{$ELSE}
+//name 'cvSolveCubic'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Finds all real and complex roots of a polynomial equation *)
 //CVAPI(void) cvSolvePoly(const CvMat* coeffs, CvMat *roots2,
 //      int maxiter CV_DEFAULT(20), int fig CV_DEFAULT(100));
 procedure cvSolvePoly(const coeffs:pCvMat; roots2:pCvMat; maxiter:int=20; fig:int=100);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7983
-{$ELSE}
-name 'cvSolvePoly'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7983
+//{$ELSE}
+//name 'cvSolvePoly'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (****************************************************************************************\
 *                                Matrix operations                                       *
@@ -2292,13 +2371,14 @@ or:
  *)
 //CVAPI(void)  cvCrossProduct( const CvArr* src1, const CvArr* src2, CvArr* dst );
 procedure cvCrossProduct(const src1:pCvArr; const src2:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7715
-{$ELSE}
-name 'cvCrossProduct'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7715
+//{$ELSE}
+//name 'cvCrossProduct'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {TODO: cvMatMulAdd and cvMatMul}
 (** Matrix transform: dst = A*B + C, C is optional *)
@@ -2315,22 +2395,25 @@ const
 //                     const CvArr* src3, double beta, CvArr* dst,
 //                     int tABC CV_DEFAULT(0));
 procedure cvGEMM(const src1:pCvArr; const src2:pCvArr; alpha:double; const src3:pCvArr; beta:double; dst:pCvArr; tABC:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7754
-{$ELSE}
-name 'cvGEMM'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7754
+//{$ELSE}
+//name 'cvGEMM'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvMatMulAddEx cvGEMM
 procedure cvMatMulAddEx(const src1:pCvArr; const src2:pCvArr; alpha:double; const src3:pCvArr; beta:double; dst:pCvArr; tABC:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7754
-{$ELSE}
-name 'cvGEMM'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7754
+//{$ELSE}
+//name 'cvGEMM'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Transforms each element of source array and stores
    resultant vectors in destination array *)
@@ -2338,78 +2421,87 @@ name 'cvGEMM'
 //                          const CvMat* transmat,
 //                          const CvMat* shiftvec CV_DEFAULT(NULL));
 procedure cvTransform(const src:pCvArr; dst:pCvArr; const transmat:pCvMat; const shiftvec:pCvMat= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8001
-{$ELSE}
-name 'cvTransform'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8001
+//{$ELSE}
+//name 'cvTransform'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvMatMulAddS cvTransform
 procedure cvMatMulAddS(const src:pCvArr; dst:pCvArr; const transmat:pCvMat; const shiftvec:pCvMat= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8001
-{$ELSE}
-name 'cvTransform'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8001
+//{$ELSE}
+//name 'cvTransform'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Does perspective transform on every element of input array *)
 //CVAPI(void)  cvPerspectiveTransform( const CvArr* src, CvArr* dst,
 //                                     const CvMat* mat );
 procedure cvPerspectiveTransform(const src:pCvArr; dst:pCvArr; const mat:pCvMat);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7871
-{$ELSE}
-name 'cvPerspectiveTransform'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7871
+//{$ELSE}
+//name 'cvPerspectiveTransform'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Calculates (A-delta)*(A-delta)^T (order=0) or (A-delta)^T*(A-delta) (order=1) *)
 //CVAPI(void) cvMulTransposed( const CvArr* src, CvArr* dst, int order,
 //                             const CvArr* delta CV_DEFAULT(NULL),
 //                             double scale CV_DEFAULT(1.) );
 procedure cvMulTransposed(const src:pCvArr; dst:pCvArr; order:int; const delta:pCvArr= nil; scale:double=1);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7858
-{$ELSE}
-name 'cvMulTransposed'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7858
+//{$ELSE}
+//name 'cvMulTransposed'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Transposes matrix. Square matrices can be transposed in-place *)
 //CVAPI(void)  cvTranspose( const CvArr* src, CvArr* dst );
 procedure cvTranspose(const src:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8002
-{$ELSE}
-name 'cvTranspose'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8002
+//{$ELSE}
+//name 'cvTranspose'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvT cvTranspose
 procedure cvT(const src:pCvArr; dst:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8002
-{$ELSE}
-name 'cvTranspose'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8002
+//{$ELSE}
+//name 'cvTranspose'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 (** Completes the symmetric matrix from the lower (LtoR=0) or from the upper (LtoR!=0) part *)
 //CVAPI(void)  cvCompleteSymm( CvMat* matrix, int LtoR CV_DEFAULT(0) );
 procedure cvCompleteSymm(matrix:pCvMat; LtoR:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7677
-{$ELSE}
-name 'cvCompleteSymm'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7677
+//{$ELSE}
+//name 'cvCompleteSymm'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Mirror array data around horizontal (flip=0),
    vertical (flip=1) or both(flip=-1) axises:
@@ -2417,22 +2509,25 @@ name 'cvCompleteSymm'
 //CVAPI(void)  cvFlip( const CvArr* src, CvArr* dst CV_DEFAULT(NULL),
 //                     int flip_mode CV_DEFAULT(0));
 procedure cvFlip(const src:pCvArr; dst:pCvArr= nil; flip_mode:Int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7750
-{$ELSE}
-name 'cvFlip'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7750
+//{$ELSE}
+//name 'cvFlip'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvMirror cvFlip
 procedure cvMirror(const src:pCvArr; dst:pCvArr= nil; flip_mode:Int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7750
-{$ELSE}
-name 'cvFlip'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7750
+//{$ELSE}
+//name 'cvFlip'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_SVD_MODIFY_A   =1;
@@ -2443,13 +2538,14 @@ const
 //CVAPI(void)   cvSVD( CvArr* A, CvArr* W, CvArr* U CV_DEFAULT(NULL),
 //                     CvArr* V CV_DEFAULT(NULL), int flags CV_DEFAULT(0));
 procedure cvSVD(A:pCvArr; W:pCvArr; U:pCvArr= nil; V:pCvArr= nil; flags:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7923
-{$ELSE}
-name 'cvSVD'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7923
+//{$ELSE}
+//name 'cvSVD'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Performs Singular Value Back Substitution (solves A*X = B):
    flags must be the same as in cvSVD *)
@@ -2457,13 +2553,14 @@ name 'cvSVD'
 //                        const CvArr* V, const CvArr* B,
 //                        CvArr* X, int flags );
 procedure cvSVBkSb(const W:pCvArr; const U:pCvArr; const V:pCvArr; const B:pCvArr; X:pCvArr; flags:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7922
-{$ELSE}
-name 'cvSVBkSb'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7922
+//{$ELSE}
+//name 'cvSVBkSb'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_LU         =0;
@@ -2477,22 +2574,25 @@ const
 //CVAPI(double)  cvInvert( const CvArr* src, CvArr* dst,
 //                         int method CV_DEFAULT(CV_LU));
 function cvInvert(const src:pCvArr; dst:pCvArr; method:int=CV_LU):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7829
-{$ELSE}
-name 'cvInvert'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7829
+//{$ELSE}
+//name 'cvInvert'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvInv cvInvert
 function cvInv(const src:pCvArr; dst:pCvArr; method:int=CV_LU):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7829
-{$ELSE}
-name 'cvInvert'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7829
+//{$ELSE}
+//name 'cvInvert'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Solves linear system (src1)*(dst) = (src2)
@@ -2500,35 +2600,38 @@ name 'cvInvert'
 //CVAPI(int)  cvSolve( const CvArr* src1, const CvArr* src2, CvArr* dst,
 //                     int method CV_DEFAULT(CV_LU));
 function cvSolve(const src1:pCvArr; const src2:pCvArr; dst:pCvArr; method:int=CV_LU):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7981
-{$ELSE}
-name 'cvSolve'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7981
+//{$ELSE}
+//name 'cvSolve'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Calculates determinant of input matrix *)
 //CVAPI(double) cvDet( const CvArr* mat );
 function cvDet(const mat:pCvArr):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7722
-{$ELSE}
-name 'cvDet'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7722
+//{$ELSE}
+//name 'cvDet'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Calculates trace of the matrix (sum of elements on the main diagonal) *)
 //CVAPI(CvScalar) cvTrace( const CvArr* mat );
 function cvTrace(const mat:pCvArr):TCvScalar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8000
-{$ELSE}
-name 'cvTrace'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8000
+//{$ELSE}
+//name 'cvTrace'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Finds eigen values and vectors of a symmetric matrix *)
 //CVAPI(void)  cvEigenVV( CvArr* mat, CvArr* evects, CvArr* evals,
@@ -2536,13 +2639,14 @@ name 'cvTrace'
 //                        int lowindex CV_DEFAULT(-1),
 //                        int highindex CV_DEFAULT(-1));
 procedure cvEigenVV(mat:pCvArr; evects:pCvArr; evals:pCvArr; eps:double=0; lowindex:int=-1; highindex:int=-1);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7728
-{$ELSE}
-name 'cvEigenVV'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7728
+//{$ELSE}
+//name 'cvEigenVV'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //(* Finds selected eigen values and vectors of a symmetric matrix *)
 //CVAPI(void)  cvSelectedEigenVV( CvArr* mat, CvArr* evects, CvArr* evals,
@@ -2551,25 +2655,27 @@ name 'cvEigenVV'
 (** Makes an identity matrix (mat_ij = i == j) *)
 //CVAPI(void)  cvSetIdentity( CvArr* mat, CvScalar value CV_DEFAULT(cvRealScalar(1)) );
 procedure cvSetIdentity(mat:pCvArr; value:TCvScalar); overload;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7955
-{$ELSE}
-name 'cvSetIdentity'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7955
+//{$ELSE}
+//name 'cvSetIdentity'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 procedure cvSetIdentity(mat:pCvArr); overload;
 
 (** Fills matrix with given range of numbers *)
 //CVAPI(CvArr*)  cvRange( CvArr* mat, double start, double end );
 function cvRange(mat:pCvArr; start:double; &end:double):pCvArr;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7891
-{$ELSE}
-name 'cvRange'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7891
+//{$ELSE}
+//name 'cvRange'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (**   @anchor core_c_CovarFlags
 @name Flags for cvCalcCovarMatrix
@@ -2605,13 +2711,14 @@ const
 //CVAPI(void)  cvCalcCovarMatrix( const CvArr** vects, int count,
 //                                CvArr* cov_mat, CvArr* avg, int flags );
 procedure cvCalcCovarMatrix(const vects:pCvArr; count:int; cov_mat:pCvArr; avg:pCvArr; flags:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7647
-{$ELSE}
-name 'cvCalcCovarMatrix'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7647
+//{$ELSE}
+//name 'cvCalcCovarMatrix'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_PCA_DATA_AS_ROW =0;
@@ -2621,57 +2728,61 @@ const
 //CVAPI(void)  cvCalcPCA( const CvArr* data, CvArr* mean,
 //                        CvArr* eigenvals, CvArr* eigenvects, int flags );
 procedure cvCalcPCA(const data:pCvArr; mean:pCvArr; eigenvals:pCvArr; eigenvects:pCvArr; flags:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7649
-{$ELSE}
-name 'cvCalcPCA'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7649
+//{$ELSE}
+//name 'cvCalcPCA'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void)  cvProjectPCA( const CvArr* data, const CvArr* mean,
 //                           const CvArr* eigenvects, CvArr* result );
 procedure cvProjectPCA(const data:pCvArr; const mean:pCvArr; const eigenvects:pCvArr; result:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7879
-{$ELSE}
-name 'cvProjectPCA'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7879
+//{$ELSE}
+//name 'cvProjectPCA'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void)  cvBackProjectPCA( const CvArr* proj, const CvArr* mean,
 //                               const CvArr* eigenvects, CvArr* result );
 procedure cvBackProjectPCA(const proj:pCvArr; const mean:pCvArr; const eigenvects:pCvArr; result:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7640
-{$ELSE}
-name 'cvBackProjectPCA'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7640
+//{$ELSE}
+//name 'cvBackProjectPCA'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Calculates Mahalanobis(weighted) distance *)
 //CVAPI(double)  cvMahalanobis( const CvArr* vec1, const CvArr* vec2, const CvArr* mat );
 function cvMahalanobis(const vec1:pCvArr; const vec2:pCvArr; const mat:pCvArr):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7837
-{$ELSE}
-name 'cvMahalanobis'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7837
+//{$ELSE}
+//name 'cvMahalanobis'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvMahalonobis  cvMahalanobis
 function cvMahalonobis(const vec1:pCvArr; const vec2:pCvArr; const mat:pCvArr):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7837
-{$ELSE}
-name 'cvMahalanobis'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7837
+//{$ELSE}
+//name 'cvMahalanobis'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (****************************************************************************************\
 *                                    Array Statistics                                    *
@@ -2680,47 +2791,51 @@ name 'cvMahalanobis'
 (** Finds sum of array elements *)
 //CVAPI(CvScalar)  cvSum( const CvArr* arr );
 function cvSum(const arr:pCvArr):TCvScalar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7997
-{$ELSE}
-name 'cvSum'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7997
+//{$ELSE}
+//name 'cvSum'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Calculates number of non-zero pixels *)
 //CVAPI(int)  cvCountNonZero( const CvArr* arr );
 function cvCountNonZero(const arr:pCvArr):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7690
-{$ELSE}
-name 'cvCountNonZero'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7690
+//{$ELSE}
+//name 'cvCountNonZero'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Calculates mean value of array elements *)
 //CVAPI(CvScalar)  cvAvg( const CvArr* arr, const CvArr* mask CV_DEFAULT(NULL) );
 function cvAvg(const arr:pCvArr; const mask:pCvArr= nil):TCvScalar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7638
-{$ELSE}
-name 'cvAvg'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7638
+//{$ELSE}
+//name 'cvAvg'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Calculates mean and standard deviation of pixel values *)
 //CVAPI(void)  cvAvgSdv( const CvArr* arr, CvScalar* mean, CvScalar* std_dev,
 //                       const CvArr* mask CV_DEFAULT(NULL) );
 procedure cvAvgSdv(const arr:pCvArr; mean:pCvScalar; std_dev:pCvScalar; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7639
-{$ELSE}
-name 'cvAvgSdv'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7639
+//{$ELSE}
+//name 'cvAvgSdv'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Finds global minimum, maximum and their positions *)
 //CVAPI(void)  cvMinMaxLoc( const CvArr* arr, double* min_val, double* max_val,
@@ -2729,13 +2844,14 @@ name 'cvAvgSdv'
 //                          const CvArr* mask CV_DEFAULT(NULL) );
 procedure cvMinMaxLoc(const arr:pCvArr; min_val:pdouble; max_val:pdouble; min_loc:pCvPoint= nil;
                       max_loc:pCvPoint= nil; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7850
-{$ELSE}
-name 'cvMinMaxLoc'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7850
+//{$ELSE}
+//name 'cvMinMaxLoc'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @anchor core_c_NormFlags
   @name Flags for cvNorm and cvNormalize
@@ -2765,13 +2881,14 @@ const
 //                       int norm_type CV_DEFAULT(CV_L2),
 //                       const CvArr* mask CV_DEFAULT(NULL) );
 function cvNorm(const arr1:pCvArr; const arr2:pCvArr= nil; norm_type:int=CV_L2; const mask:pCvArr= nil):double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7864
-{$ELSE}
-name 'cvNorm'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7864
+//{$ELSE}
+//name 'cvNorm'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @see ref core_c_NormFlags "flags" *)
 //CVAPI(void)  cvNormalize( const CvArr* src, CvArr* dst,
@@ -2779,13 +2896,14 @@ name 'cvNorm'
 //                          int norm_type CV_DEFAULT(CV_L2),
 //                          const CvArr* mask CV_DEFAULT(NULL) );
 procedure cvNormalize(const src:pCvArr; dst:pCvArr; a:double=1.; b:double=0.; norm_type:int=CV_L2; const mask:pCvArr= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7865
-{$ELSE}
-name 'cvNormalize'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7865
+//{$ELSE}
+//name 'cvNormalize'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @anchor core_c_ReduceFlags
   @name Flags for cvReduce
@@ -2802,13 +2920,14 @@ const
 //CVAPI(void)  cvReduce( const CvArr* src, CvArr* dst, int dim CV_DEFAULT(-1),
 //                       int op CV_DEFAULT(CV_REDUCE_SUM) );
 procedure cvReduce(const src:pCvArr; dst:pCvArr; dim:int=-1; op:int=CV_REDUCE_SUM);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7897
-{$ELSE}
-name 'cvReduce'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7897
+//{$ELSE}
+//name 'cvReduce'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (****************************************************************************************\
 *                      Discrete Linear Transforms and Related Functions                  *
@@ -2837,22 +2956,25 @@ const
 //CVAPI(void)  cvDFT( const CvArr* src, CvArr* dst, int flags,
 //                    int nonzero_rows CV_DEFAULT(0) );
 procedure cvDFT(const src:pCvArr; dst:pCvArr; flags:int; nonzero_rows:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7719
-{$ELSE}
-name 'cvDFT'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7719
+//{$ELSE}
+//name 'cvDFT'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvFFT cvDFT
 procedure cvFFT(const src:pCvArr; dst:pCvArr; flags:int; nonzero_rows:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7719
-{$ELSE}
-name 'cvDFT'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7719
+//{$ELSE}
+//name 'cvDFT'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Multiply results of DFTs: DFT(X)*DFT(Y) or DFT(X)*conj(DFT(Y))
 @see core_c_DftFlags "flags"
@@ -2860,37 +2982,40 @@ name 'cvDFT'
 //CVAPI(void)  cvMulSpectrums( const CvArr* src1, const CvArr* src2,
 //                             CvArr* dst, int flags );
 procedure cvMulSpectrums(const src1:pCvArr; const src2:pCvArr; dst:pCvArr; flags:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7857
-{$ELSE}
-name 'cvMulSpectrums'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7857
+//{$ELSE}
+//name 'cvMulSpectrums'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Finds optimal DFT vector size >= size0 *)
 //CVAPI(int)  cvGetOptimalDFTSize( int size0 );
 function cvGetOptimalDFTSize(size0:int):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7779
-{$ELSE}
-name 'cvGetOptimalDFTSize'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7779
+//{$ELSE}
+//name 'cvGetOptimalDFTSize'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Discrete Cosine Transform
 @see core_c_DftFlags "flags"
 *)
 //CVAPI(void)  cvDCT( const CvArr* src, CvArr* dst, int flags );
 procedure cvDCT(const src:pCvArr; dst:pCvArr; flags:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7718
-{$ELSE}
-name 'cvDCT'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7718
+//{$ELSE}
+//name 'cvDCT'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (****************************************************************************************\
 *                              Dynamic data structures                                   *
@@ -2899,49 +3024,53 @@ name 'cvDCT'
 (** Calculates length of sequence slice (with support of negative indices). *)
 //CVAPI(int) cvSliceLength( CvSlice slice, const CvSeq* seq );
 function cvSliceLength(slice:TCvSlice; const seq:pCvSeq):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7978
-{$ELSE}
-name 'cvSliceLength'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7978
+//{$ELSE}
+//name 'cvSliceLength'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Creates new memory storage.
    block_size == 0 means that default,
    somewhat optimal size, is used (currently, it is 64K) *)
 //CVAPI(CvMemStorage*)  cvCreateMemStorage( int block_size CV_DEFAULT(0));
 function cvCreateMemStorage(block_size:int=0):pCvMemStorage;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7705
-{$ELSE}
-name 'cvCreateMemStorage'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7705
+//{$ELSE}
+//name 'cvCreateMemStorage'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Creates a memory storage that will borrow memory blocks from parent storage *)
 //CVAPI(CvMemStorage*)  cvCreateChildMemStorage( CvMemStorage* parent );
 function cvCreateChildMemStorage(parent:pCvMemStorage):pCvMemStorage;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7692
-{$ELSE}
-name 'cvCreateChildMemStorage'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7692
+//{$ELSE}
+//name 'cvCreateChildMemStorage'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Releases memory storage. All the children of a parent must be released before
    the parent. A child storage returns all the blocks to parent when it is released *)
 //CVAPI(void)  cvReleaseMemStorage( CvMemStorage** storage );
 procedure cvReleaseMemStorage(storage:pCvMemStorage);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7906
-{$ELSE}
-name 'cvReleaseMemStorage'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7906
+//{$ELSE}
+//name 'cvReleaseMemStorage'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Clears memory storage. This is the only way(!!!) (besides cvRestoreMemStoragePos)
    to reuse memory allocated for the storage - cvClearSeq,cvClearSet ...
@@ -2949,46 +3078,50 @@ name 'cvReleaseMemStorage'
    A child storage returns all the blocks to the parent when it is cleared *)
 //CVAPI(void)  cvClearMemStorage( CvMemStorage* storage );
 procedure cvClearMemStorage(storage:pCvMemStorage);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7662
-{$ELSE}
-name 'cvClearMemStorage'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7662
+//{$ELSE}
+//name 'cvClearMemStorage'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Remember a storage "free memory" position *)
 //CVAPI(void)  cvSaveMemStoragePos( const CvMemStorage* storage, CvMemStoragePos* pos );
 procedure cvSaveMemStoragePos(const storage:pCvMemStorage; pos:pCvMemStoragePos);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7925
-{$ELSE}
-name 'cvSaveMemStoragePos'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7925
+//{$ELSE}
+//name 'cvSaveMemStoragePos'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Restore a storage "free memory" position *)
 //CVAPI(void)  cvRestoreMemStoragePos( CvMemStorage* storage, CvMemStoragePos* pos );
 procedure cvRestoreMemStoragePos(storage:pCvMemStorage; pos:pCvMemStoragePos);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7919
-{$ELSE}
-name 'cvRestoreMemStoragePos'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7919
+//{$ELSE}
+//name 'cvRestoreMemStoragePos'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Allocates continuous buffer of the specified size in the storage *)
 //CVAPI(void*) cvMemStorageAlloc( CvMemStorage* storage, size_t size );
 function cvMemStorageAlloc(storage:pCvMemStorage; size:size_t):pointer;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7845
-{$ELSE}
-name 'cvMemStorageAlloc'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7845
+//{$ELSE}
+//name 'cvMemStorageAlloc'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Allocates string in memory storage *)
 //CVAPI(CvString) cvMemStorageAllocString( CvMemStorage* storage, const char* ptr,
@@ -2999,72 +3132,76 @@ name 'cvMemStorageAlloc'
 //CVAPI(CvSeq*)  cvCreateSeq( int seq_flags, size_t header_size,
 //                            size_t elem_size, CvMemStorage* storage );
 function cvCreateSeq(seq_flags:int; header_size:size_t; elem_size:size_t; storage:pCvMemStorage):pCvSeq;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7707
-{$ELSE}
-name 'cvCreateSeq'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7707
+//{$ELSE}
+//name 'cvCreateSeq'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Changes default size (granularity) of sequence blocks.
    The default size is ~1Kbyte *)
 //CVAPI(void)  cvSetSeqBlockSize( CvSeq* seq, int delta_elems );
 procedure cvSetSeqBlockSize(seq:pCvSeq; delta_elems:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7970
-{$ELSE}
-name 'cvSetSeqBlockSize'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7970
+//{$ELSE}
+//name 'cvSetSeqBlockSize'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Adds new element to the end of sequence. Returns pointer to the element *)
 //CVAPI(schar*)  cvSeqPush( CvSeq* seq, const void* element CV_DEFAULT(NULL));
 function cvSeqPush(seq:pCvSeq; const element:pvoid= nil):pschar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7936
-{$ELSE}
-name 'cvSeqPush'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7936
+//{$ELSE}
+//name 'cvSeqPush'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Adds new element to the beginning of sequence. Returns pointer to it *)
 //CVAPI(schar*)  cvSeqPushFront( CvSeq* seq, const void* element CV_DEFAULT(NULL));
 function cvSeqPushFront(seq:pCvSeq; const element:pvoid= nil):pschar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7937
-{$ELSE}
-name 'cvSeqPushFront'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7937
+//{$ELSE}
+//name 'cvSeqPushFront'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Removes the last element from sequence and optionally saves it *)
 //CVAPI(void)  cvSeqPop( CvSeq* seq, void* element CV_DEFAULT(NULL));
 procedure cvSeqPop(seq:pCvSeq; element:pvoid= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7933
-{$ELSE}
-name 'cvSeqPop'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7933
+//{$ELSE}
+//name 'cvSeqPop'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Removes the first element from sequence and optioanally saves it *)
 //CVAPI(void)  cvSeqPopFront( CvSeq* seq, void* element CV_DEFAULT(NULL));
 procedure cvSeqPopFront(seq:pCvSeq; element:pvoid= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7934
-{$ELSE}
-name 'cvSeqPopFront'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7934
+//{$ELSE}
+//name 'cvSeqPopFront'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_FRONT =1;
@@ -3073,63 +3210,67 @@ const
 //CVAPI(void)  cvSeqPushMulti( CvSeq* seq, const void* elements,
 //                             int count, int in_front CV_DEFAULT(0) );
 procedure cvSeqPushMulti(seq:pCvSeq; const elements:pvoid; count:int; in_front:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7938
-{$ELSE}
-name 'cvSeqPushMulti'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7938
+//{$ELSE}
+//name 'cvSeqPushMulti'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Removes several elements from the end of sequence and optionally saves them *)
 //CVAPI(void)  cvSeqPopMulti( CvSeq* seq, void* elements,
 //                            int count, int in_front CV_DEFAULT(0) );
 procedure cvSeqPopMulti(seq:pCvSeq; elements:pvoid; count:int; in_front:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7935
-{$ELSE}
-name 'cvSeqPopMulti'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7935
+//{$ELSE}
+//name 'cvSeqPopMulti'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Inserts a new element in the middle of sequence.
    cvSeqInsert(seq,0,elem) == cvSeqPushFront(seq,elem) *)
 //CVAPI(schar*)  cvSeqInsert( CvSeq* seq, int before_index,
 //                            const void* element CV_DEFAULT(NULL));
 function cvSeqInsert(seq:pCvSeq; before_index:int; const element:pvoid= nil):pschar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7929
-{$ELSE}
-name 'cvSeqInsert'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7929
+//{$ELSE}
+//name 'cvSeqInsert'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Removes specified sequence element *)
 //CVAPI(void)  cvSeqRemove( CvSeq* seq, int index );
 procedure cvSeqRemove(seq:pCvSeq; index:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7939
-{$ELSE}
-name 'cvSeqRemove'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7939
+//{$ELSE}
+//name 'cvSeqRemove'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Removes all the elements from the sequence. The freed memory
    can be reused later only by the same sequence unless cvClearMemStorage
    or cvRestoreMemStoragePos is called *)
 //CVAPI(void)  cvClearSeq( CvSeq* seq );
 procedure cvClearSeq(seq:pCvSeq);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7664
-{$ELSE}
-name 'cvClearSeq'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7664
+//{$ELSE}
+//name 'cvClearSeq'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Retrieves pointer to specified sequence element.
@@ -3137,51 +3278,54 @@ name 'cvClearSeq'
    (e.g -1 means the last sequence element) *)
 //CVAPI(schar*)  cvGetSeqElem( const CvSeq* seq, int index );
 function cvGetSeqElem(const seq:pCvSeq; index:int):pschar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7789
-{$ELSE}
-name 'cvGetSeqElem'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7789
+//{$ELSE}
+//name 'cvGetSeqElem'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Calculates index of the specified sequence element.
    Returns -1 if element does not belong to the sequence *)
 //CVAPI(int)  cvSeqElemIdx( const CvSeq* seq, const void* element,
 //                         CvSeqBlock** block CV_DEFAULT(NULL) );
 function cvSeqElemIdx(const seq:pCvSeq; const element:pvoid; block:pCvSeqBlock= nil):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7928
-{$ELSE}
-name 'cvSeqElemIdx'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7928
+//{$ELSE}
+//name 'cvSeqElemIdx'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Initializes sequence writer. The new elements will be added to the end of sequence *)
 //CVAPI(void)  cvStartAppendToSeq( CvSeq* seq, CvSeqWriter* writer );
 procedure cvStartAppendToSeq(seq:pCvSeq; writer:pCvSeqWriter);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7987
-{$ELSE}
-name 'cvStartAppendToSeq'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7987
+//{$ELSE}
+//name 'cvStartAppendToSeq'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Combination of cvCreateSeq and cvStartAppendToSeq *)
 //CVAPI(void)  cvStartWriteSeq( int seq_flags, int header_size,
 //                              int elem_size, CvMemStorage* storage,
 //                              CvSeqWriter* writer );
 procedure cvStartWriteSeq(seq_flags:int; header_size:int; elem_size:int; storage:pCvMemStorage; writer:pCvSeqWriter);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7992
-{$ELSE}
-name 'cvStartWriteSeq'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7992
+//{$ELSE}
+//name 'cvStartWriteSeq'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Closes sequence writer, updates sequence header and returns pointer
    to the resultant sequence
@@ -3189,75 +3333,81 @@ name 'cvStartWriteSeq'
 *)
 //CVAPI(CvSeq*)  cvEndWriteSeq( CvSeqWriter* writer );
 function cvEndWriteSeq(writer:pCvSeqWriter):pCvSeq;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7732
-{$ELSE}
-name 'cvEndWriteSeq'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7732
+//{$ELSE}
+//name 'cvEndWriteSeq'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Updates sequence header. May be useful to get access to some of previously
    written elements via cvGetSeqElem or sequence reader *)
 //CVAPI(void)   cvFlushSeqWriter( CvSeqWriter* writer );
 procedure cvFlushSeqWriter(writer:pCvSeqWriter);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7752
-{$ELSE}
-name 'cvFlushSeqWriter'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7752
+//{$ELSE}
+//name 'cvFlushSeqWriter'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Initializes sequence reader.
    The sequence can be read in forward or backward direction *)
 //CVAPI(void) cvStartReadSeq( const CvSeq* seq, CvSeqReader* reader,
 //                           int reverse CV_DEFAULT(0) );
 procedure cvStartReadSeq(const seq:pCvSeq; reader:pCvSeqReader; reverse:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7990
-{$ELSE}
-name 'cvStartReadSeq'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7990
+//{$ELSE}
+//name 'cvStartReadSeq'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Returns current sequence reader position (currently observed sequence element) *)
 //CVAPI(int)  cvGetSeqReaderPos( CvSeqReader* reader );
 function cvGetSeqReaderPos(reader:pCvSeqReader):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7790
-{$ELSE}
-name 'cvGetSeqReaderPos'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7790
+//{$ELSE}
+//name 'cvGetSeqReaderPos'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Changes sequence reader position. It may seek to an absolute or
    to relative to the current position *)
 //CVAPI(void)   cvSetSeqReaderPos( CvSeqReader* reader, int index,
 //                                 int is_relative CV_DEFAULT(0));
 procedure cvSetSeqReaderPos(reader:pCvSeqReader; index:int; is_relative:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7971
-{$ELSE}
-name 'cvSetSeqReaderPos'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7971
+//{$ELSE}
+//name 'cvSetSeqReaderPos'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Copies sequence content to a continuous piece of memory *)
 //CVAPI(void*)  cvCvtSeqToArray( const CvSeq* seq, void* elements,
 //                               CvSlice slice CV_DEFAULT(CV_WHOLE_SEQ) );
 function cvCvtSeqToArray(const seq:pCvSeq; elements:pvoid; slice:TCvSlice):pointer; overload;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7717
-{$ELSE}
-name 'cvCvtSeqToArray'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7717
+//{$ELSE}
+//name 'cvCvtSeqToArray'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 function cvCvtSeqToArray(const seq:pCvSeq; elements:pvoid):pointer; overload; inline;
 
 (** Creates sequence header for array.
@@ -3267,26 +3417,28 @@ function cvCvtSeqToArray(const seq:pCvSeq; elements:pvoid):pointer; overload; in
 //                                       int elem_size, void* elements, int total,
 //                                       CvSeq* seq, CvSeqBlock* block );
 function cvMakeSeqHeaderForArray(seq_type:int; header_size:int; elem_size:int; elements:pvoid; total:int; seq:pCvSeq; block:pCvSeqBlock):pCvSeq;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7839
-{$ELSE}
-name 'cvMakeSeqHeaderForArray'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7839
+//{$ELSE}
+//name 'cvMakeSeqHeaderForArray'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Extracts sequence slice (with or without copying sequence elements) *)
 //CVAPI(CvSeq*) cvSeqSlice( const CvSeq* seq, CvSlice slice,
 //                         CvMemStorage* storage CV_DEFAULT(NULL),
 //                         int copy_data CV_DEFAULT(0));
 function cvSeqSlice(const seq:pCvSeq; slice:TCvSlice; storage:pCvMemStorage= nil; copy_data:int=0):pCvSeq;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7942
-{$ELSE}
-name 'cvSeqSlice'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7942
+//{$ELSE}
+//name 'cvSeqSlice'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CV_INLINE CvSeq* cvCloneSeq( const CvSeq* seq, CvMemStorage* storage CV_DEFAULT(NULL))
 //{
@@ -3297,24 +3449,26 @@ function cvCloneSeq(const seq:pCvSeq; storage:pCvMemStorage= nil):pCvSeq;inline;
 (** Removes sequence slice *)
 //CVAPI(void)  cvSeqRemoveSlice( CvSeq* seq, CvSlice slice );
 procedure cvSeqRemoveSlice(seq:pCvSeq; slice:TCvSlice);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7940
-{$ELSE}
-name 'cvSeqRemoveSlice'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7940
+//{$ELSE}
+//name 'cvSeqRemoveSlice'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Inserts a sequence or array into another sequence *)
 //CVAPI(void)  cvSeqInsertSlice( CvSeq* seq, int before_index, const CvArr* from_arr );
 procedure cvSeqInsertSlice(seq:pCvSeq; before_index:int; const from_arr:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7930
-{$ELSE}
-name 'cvSeqInsertSlice'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7930
+//{$ELSE}
+//name 'cvSeqInsertSlice'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** a < b ? -1 : a > b ? 1 : 0 *)
 //typedef int (CV_CDECL* CvCmpFunc)(const void* a, const void* b, void* userdata );
@@ -3324,95 +3478,103 @@ type
 (** Sorts sequence in-place given element comparison function *)
 //CVAPI(void) cvSeqSort( CvSeq* seq, CvCmpFunc func, void* userdata CV_DEFAULT(NULL) );
 procedure cvSeqSort(seq:pCvSeq; func:TCvCmpFunc; userdata:pvoid= nil);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7943
-{$ELSE}
-name 'cvSeqSort'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7943
+//{$ELSE}
+//name 'cvSeqSort'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Finds element in a [sorted] sequence *)
 //CVAPI(schar*) cvSeqSearch( CvSeq* seq, const void* elem, CvCmpFunc func,
 //                           int is_sorted, int* elem_idx,
 //                           void* userdata CV_DEFAULT(NULL) );
 function cvSeqSearch(seq:pCvSeq; const elem:pvoid; func:TCvCmpFunc; is_sorted:int; elem_idx:pint; userdata:pvoid= nil):pschar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7941
-{$ELSE}
-name 'cvSeqSearch'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7941
+//{$ELSE}
+//name 'cvSeqSearch'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Reverses order of sequence elements in-place *)
 //CVAPI(void) cvSeqInvert( CvSeq* seq );
 procedure cvSeqInvert(seq:pCvSeq);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7931
-{$ELSE}
-name 'cvSeqInvert'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7931
+//{$ELSE}
+//name 'cvSeqInvert'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Splits sequence into one or more equivalence classes using the specified criteria *)
 //CVAPI(int)  cvSeqPartition( const CvSeq* seq, CvMemStorage* storage,
 //                            CvSeq** labels, CvCmpFunc is_equal, void* userdata );
 function cvSeqPartition(const seq:pCvSeq; storage:pCvMemStorage; labels:pCvSeq; is_equal:TCvCmpFunc; userdata:pvoid):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7932
-{$ELSE}
-name 'cvSeqPartition'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7932
+//{$ELSE}
+//name 'cvSeqPartition'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (************ Internal sequence functions ************)
 //CVAPI(void)  cvChangeSeqBlock( void* reader, int direction );
 procedure cvChangeSeqBlock(reader:pvoid; direction:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7654
-{$ELSE}
-name 'cvChangeSeqBlock'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7654
+//{$ELSE}
+//name 'cvChangeSeqBlock'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void)  cvCreateSeqBlock( CvSeqWriter* writer );
 procedure cvCreateSeqBlock(writer:pCvSeqWriter);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7708
-{$ELSE}
-name 'cvCreateSeqBlock'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7708
+//{$ELSE}
+//name 'cvCreateSeqBlock'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Creates a new set *)
 //CVAPI(CvSet*)  cvCreateSet( int set_flags, int header_size,
 //                            int elem_size, CvMemStorage* storage );
 function cvCreateSet(set_flags:int; header_size:int; elem_size:int; storage:pCvMemStorage):pCvSet;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7709
-{$ELSE}
-name 'cvCreateSet'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7709
+//{$ELSE}
+//name 'cvCreateSet'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Adds new element to the set and returns pointer to it *)
 //CVAPI(int)  cvSetAdd( CvSet* set_header, CvSetElem* elem CV_DEFAULT(NULL),
 //                      CvSetElem** inserted_elem CV_DEFAULT(NULL) );
 function cvSetAdd(set_header:pCvSet; elem:pCvSetElem= nil; inserted_elem:pCvSetElem= nil):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7948
-{$ELSE}
-name 'cvSetAdd'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7948
+//{$ELSE}
+//name 'cvSetAdd'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Fast variant of cvSetAdd *)
 //CV_INLINE  CvSetElem* cvSetNew( CvSet* set_header )
@@ -3447,13 +3609,14 @@ procedure cvSetRemoveByPtr(set_header:pCvSet; elem:pvoid);inline;
 (** Removes element from the set by its index  *)
 //CVAPI(void)   cvSetRemove( CvSet* set_header, int index );
 procedure cvSetRemove(set_header:pCvSet; index:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7969
-{$ELSE}
-name 'cvSetRemove'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7969
+//{$ELSE}
+//name 'cvSetRemove'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Returns a set element by index. If the element doesn't belong to the set,
    NULL is returned *)
@@ -3467,59 +3630,64 @@ function cvGetSetElem(const set_header:pCvSet; idx:int):pCvSetElem;inline;
 (** Removes all the elements from the set *)
 //CVAPI(void)  cvClearSet( CvSet* set_header );
 procedure cvClearSet(set_header:pCvSet);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7665
-{$ELSE}
-name 'cvClearSet'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7665
+//{$ELSE}
+//name 'cvClearSet'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Creates new graph *)
 //CVAPI(CvGraph*)  cvCreateGraph( int graph_flags, int header_size,
 //                                int vtx_size, int edge_size,
 //                                CvMemStorage* storage );
 function cvCreateGraph(graph_flags:int; header_size:int; vtx_size:int; edge_size:int; storage:pCvMemStorage):pCvGraph;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7696
-{$ELSE}
-name 'cvCreateGraph'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7696
+//{$ELSE}
+//name 'cvCreateGraph'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Adds new vertex to the graph *)
 //CVAPI(int)  cvGraphAddVtx( CvGraph* graph, const CvGraphVtx* vtx CV_DEFAULT(NULL),
 //                           CvGraphVtx** inserted_vtx CV_DEFAULT(NULL) );
 function cvGraphAddVtx(graph:pCvGraph; const vtx:pCvGraphVtx= nil; inserted_vtx:pCvGraphVtx= nil):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7806
-{$ELSE}
-name 'cvGraphAddVtx'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7806
+//{$ELSE}
+//name 'cvGraphAddVtx'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Removes vertex from the graph together with all incident edges *)
 //CVAPI(int)  cvGraphRemoveVtx( CvGraph* graph, int index );
 function cvGraphRemoveVtx(graph:pCvGraph; index:int):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7809
-{$ELSE}
-name 'cvGraphRemoveVtx'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7809
+//{$ELSE}
+//name 'cvGraphRemoveVtx'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(int)  cvGraphRemoveVtxByPtr( CvGraph* graph, CvGraphVtx* vtx );
 function cvGraphRemoveVtxByPtr(graph:pCvGraph; vtx:pCvGraphVtx):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7810
-{$ELSE}
-name 'cvGraphRemoveVtxByPtr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7810
+//{$ELSE}
+//name 'cvGraphRemoveVtxByPtr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Link two vertices specified by indices or pointers if they
@@ -3531,122 +3699,134 @@ name 'cvGraphRemoveVtxByPtr'
 //                            const CvGraphEdge* edge CV_DEFAULT(NULL),
 //                            CvGraphEdge** inserted_edge CV_DEFAULT(NULL) );
 function cvGraphAddEdge(graph:pCvGraph; start_idx:int; end_idx:int; const edge:pCvGraphEdge= nil; inserted_edge:pCvGraphEdge= nil):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7804
-{$ELSE}
-name 'cvGraphAddEdge'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7804
+//{$ELSE}
+//name 'cvGraphAddEdge'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(int)  cvGraphAddEdgeByPtr( CvGraph* graph,
 //                               CvGraphVtx* start_vtx, CvGraphVtx* end_vtx,
 //                               const CvGraphEdge* edge CV_DEFAULT(NULL),
 //                               CvGraphEdge** inserted_edge CV_DEFAULT(NULL) );
 function cvGraphAddEdgeByPtr(graph:pCvGraph; start_vtx:pCvGraphVtx; end_vtx:pCvGraphVtx; const edge:pCvGraphEdge= nil; inserted_edge:pCvGraphEdge= nil):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7805
-{$ELSE}
-name 'cvGraphAddEdgeByPtr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7805
+//{$ELSE}
+//name 'cvGraphAddEdgeByPtr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Remove edge connecting two vertices *)
 //CVAPI(void)  cvGraphRemoveEdge( CvGraph* graph, int start_idx, int end_idx );
 procedure cvGraphRemoveEdge(graph:pCvGraph; start_idx:int; end_idx:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7807
-{$ELSE}
-name 'cvGraphRemoveEdge'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7807
+//{$ELSE}
+//name 'cvGraphRemoveEdge'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void)  cvGraphRemoveEdgeByPtr( CvGraph* graph, CvGraphVtx* start_vtx,
 //                                     CvGraphVtx* end_vtx );
 procedure cvGraphRemoveEdgeByPtr(graph:pCvGraph; start_vtx:pCvGraphVtx; end_vtx:pCvGraphVtx);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7808
-{$ELSE}
-name 'cvGraphRemoveEdgeByPtr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7808
+//{$ELSE}
+//name 'cvGraphRemoveEdgeByPtr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Find edge connecting two vertices *)
 //CVAPI(CvGraphEdge*)  cvFindGraphEdge( const CvGraph* graph, int start_idx, int end_idx );
 function cvFindGraphEdge(const graph:pCvGraph; start_idx:int; end_idx:int):pCvGraphEdge;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7745
-{$ELSE}
-name 'cvFindGraphEdge'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7745
+//{$ELSE}
+//name 'cvFindGraphEdge'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvGraphFindEdge cvFindGraphEdge
 function cvGraphFindEdge(const graph:pCvGraph; start_idx:int; end_idx:int):pCvGraphEdge;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7745
-{$ELSE}
-name 'cvFindGraphEdge'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7745
+//{$ELSE}
+//name 'cvFindGraphEdge'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(CvGraphEdge*)  cvFindGraphEdgeByPtr( const CvGraph* graph,
 //                                           const CvGraphVtx* start_vtx,
 //                                           const CvGraphVtx* end_vtx );
 function cvFindGraphEdgeByPtr(const graph:pCvGraph; const start_vtx:pCvGraphVtx; const end_vtx:pCvGraphVtx):pCvGraphEdge;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7746
-{$ELSE}
-name 'cvFindGraphEdgeByPtr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7746
+//{$ELSE}
+//name 'cvFindGraphEdgeByPtr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 //#define cvGraphFindEdgeByPtr cvFindGraphEdgeByPtr
 function cvGraphFindEdgeByPtr(const graph:pCvGraph; const start_vtx:pCvGraphVtx; const end_vtx:pCvGraphVtx):pCvGraphEdge;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7746
-{$ELSE}
-name 'cvFindGraphEdgeByPtr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7746
+//{$ELSE}
+//name 'cvFindGraphEdgeByPtr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Remove all vertices and edges from the graph *)
 //CVAPI(void)  cvClearGraph( CvGraph* graph );
 procedure cvClearGraph(graph:pCvGraph);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7660
-{$ELSE}
-name 'cvClearGraph'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7660
+//{$ELSE}
+//name 'cvClearGraph'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Count number of edges incident to the vertex *)
 //CVAPI(int)  cvGraphVtxDegree( const CvGraph* graph, int vtx_idx );
 function cvGraphVtxDegree(const graph:pCvGraph; vtx_idx:int):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7811
-{$ELSE}
-name 'cvGraphVtxDegree'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7811
+//{$ELSE}
+//name 'cvGraphVtxDegree'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(int)  cvGraphVtxDegreeByPtr( const CvGraph* graph, const CvGraphVtx* vtx );
 function cvGraphVtxDegreeByPtr(const graph:pCvGraph; const vtx:pCvGraphVtx):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7812
-{$ELSE}
-name 'cvGraphVtxDegreeByPtr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7812
+//{$ELSE}
+//name 'cvGraphVtxDegreeByPtr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Retrieves graph vertex by given index *)
 {TODO:cvGetGraphVtx}
@@ -3710,58 +3890,63 @@ TCvGraphScanner = _CvGraphScanner;
 //                                             CvGraphVtx* vtx CV_DEFAULT(NULL),
 //                                             int mask CV_DEFAULT(CV_GRAPH_ALL_ITEMS));
 function cvCreateGraphScanner(graph:pCvGraph; vtx:pCvGraphVtx= nil; mask:int=CV_GRAPH_ALL_ITEMS):pCvGraphScanner;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7697
-{$ELSE}
-name 'cvCreateGraphScanner'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7697
+//{$ELSE}
+//name 'cvCreateGraphScanner'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Releases graph scanner. *)
 //CVAPI(void) cvReleaseGraphScanner( CvGraphScanner** scanner );
 procedure cvReleaseGraphScanner(scanner:pCvGraphScanner);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7901
-{$ELSE}
-name 'cvReleaseGraphScanner'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7901
+//{$ELSE}
+//name 'cvReleaseGraphScanner'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Get next graph element *)
 //CVAPI(int)  cvNextGraphItem( CvGraphScanner* scanner );
 function cvNextGraphItem(scanner:pCvGraphScanner):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7861
-{$ELSE}
-name 'cvNextGraphItem'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7861
+//{$ELSE}
+//name 'cvNextGraphItem'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Creates a copy of graph *)
 //CVAPI(CvGraph*) cvCloneGraph( const CvGraph* graph, CvMemStorage* storage );
 function cvCloneGraph(const graph:pCvGraph; storage:pCvMemStorage):pCvGraph;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7668
-{$ELSE}
-name 'cvCloneGraph'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7668
+//{$ELSE}
+//name 'cvCloneGraph'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Does look-up transformation. Elements of the source array
    (that should be 8uC1 or 8sC1) are used as indexes in lutarr 256-element table *)
 //CVAPI(void) cvLUT( const CvArr* src, CvArr* dst, const CvArr* lut );
 procedure cvLUT(const src:pCvArr; dst:pCvArr; const lut:pCvArr);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7831
-{$ELSE}
-name 'cvLUT'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7831
+//{$ELSE}
+//name 'cvLUT'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (******************* Iteration through the sequence tree *****************)
 type
@@ -3776,70 +3961,76 @@ TCvTreeNodeIterator = _CvTreeNodeIterator;
 //CVAPI(void) cvInitTreeNodeIterator( CvTreeNodeIterator* tree_iterator,
 //                                   const void* first, int max_level );
 procedure cvInitTreeNodeIterator(tree_iterator:pCvTreeNodeIterator; const first:pvoid; max_level:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7826
-{$ELSE}
-name 'cvInitTreeNodeIterator'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7826
+//{$ELSE}
+//name 'cvInitTreeNodeIterator'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void*) cvNextTreeNode( CvTreeNodeIterator* tree_iterator );
 function cvNextTreeNode(tree_iterator:pCvTreeNodeIterator):pointer;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7863
-{$ELSE}
-name 'cvNextTreeNode'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7863
+//{$ELSE}
+//name 'cvNextTreeNode'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void*) cvPrevTreeNode( CvTreeNodeIterator* tree_iterator );
 function cvPrevTreeNode(tree_iterator:pCvTreeNodeIterator):pointer;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7878
-{$ELSE}
-name 'cvPrevTreeNode'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7878
+//{$ELSE}
+//name 'cvPrevTreeNode'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Inserts sequence into tree with specified "parent" sequence.
    If parent is equal to frame (e.g. the most external contour),
    then added contour will have null pointer to parent. *)
 //CVAPI(void) cvInsertNodeIntoTree( void* node, void* parent, void* frame );
 procedure cvInsertNodeIntoTree(node:pvoid; parent:pvoid; frame:pvoid);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7827
-{$ELSE}
-name 'cvInsertNodeIntoTree'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7827
+//{$ELSE}
+//name 'cvInsertNodeIntoTree'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Removes contour from tree (together with the contour children). *)
 //CVAPI(void) cvRemoveNodeFromTree( void* node, void* frame );
 procedure cvRemoveNodeFromTree(node:pvoid; frame:pvoid);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7912
-{$ELSE}
-name 'cvRemoveNodeFromTree'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7912
+//{$ELSE}
+//name 'cvRemoveNodeFromTree'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Gathers pointers to all the sequences,
    accessible from the `first`, to the single sequence *)
 //CVAPI(CvSeq*) cvTreeToNodeSeq( const void* first, int header_size,
 //                              CvMemStorage* storage );
 function cvTreeToNodeSeq(const first:pvoid; header_size:int; storage:pCvMemStorage):pCvSeq;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8003
-{$ELSE}
-name 'cvTreeToNodeSeq'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8003
+//{$ELSE}
+//name 'cvTreeToNodeSeq'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** The function implements the K-means algorithm for clustering an array of sample
    vectors in a specified number of classes *)
@@ -3851,14 +4042,14 @@ const
 //                      CvRNG* rng CV_DEFAULT(0), int flags CV_DEFAULT(0),
 //                      CvArr* _centers CV_DEFAULT(0), double* compactness CV_DEFAULT(0) );
 function cvKMeans2(const samples:pCvArr; cluster_count:int; labels:pCvArr; termcrit:TCvTermCriteria; attempts:int=1; rng:pCvRNG=nil; flags:int=0; _centers:pCvArr=nil; compactness:pdouble=nil):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7830
-{$ELSE}
-name 'cvKMeans2'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7830
+//{$ELSE}
+//name 'cvKMeans2'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (****************************************************************************************\
 *                                    System functions                                    *
@@ -3867,13 +4058,14 @@ name 'cvKMeans2'
 (** Loads optimized functions from IPP, MKL etc. or switches back to pure C code *)
 //CVAPI(int)  cvUseOptimized( int on_off );
 function cvUseOptimized(on_off:int):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 8005
-{$ELSE}
-name 'cvUseOptimized'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 8005
+//{$ELSE}
+//name 'cvUseOptimized'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 type
 // IplImage* (CV_STDCALL* Cv_iplCreateImageHeader)
@@ -3913,13 +4105,14 @@ to IPL allocation functions. :
 //                               Cv_iplCreateROI create_roi,
 //                               Cv_iplCloneImage clone_image );
 procedure cvSetIPLAllocators(create_header:TCv_iplCreateImageHeader; allocate_data:TCv_iplAllocateImageData; deallocate:TCv_iplDeallocate; create_roi:TCv_iplCreateROI; clone_image:TCv_iplCloneImage);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7954
-{$ELSE}
-name 'cvSetIPLAllocators'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7954
+//{$ELSE}
+//name 'cvSetIPLAllocators'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 {TODO:CV_TURN_ON_IPL_COMPATIBILITY}
@@ -3938,13 +4131,14 @@ name 'cvSetIPLAllocators'
  *)
 //CVAPI(void) cvRelease( void** struct_ptr );
 procedure cvRelease(struct_ptr:pvoid);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7898
-{$ELSE}
-name 'cvRelease'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7898
+//{$ELSE}
+//name 'cvRelease'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Makes a clone of an object.
 
@@ -3955,13 +4149,14 @@ function, like cvCloneMat.
  *)
 //CVAPI(void*) cvClone( const void* struct_ptr );
 function cvClone(const struct_ptr:pvoid):pointer;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7667
-{$ELSE}
-name 'cvClone'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7667
+//{$ELSE}
+//name 'cvClone'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (*********************************** Measuring Execution Time ***************************)
 
@@ -3969,70 +4164,76 @@ name 'cvClone'
    uses internal clock counter on x86 *)
 //CVAPI(int64)  cvGetTickCount( void );
 function cvGetTickCount():int64;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7796
-{$ELSE}
-name 'cvGetTickCount'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7796
+//{$ELSE}
+//name 'cvGetTickCount'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(double) cvGetTickFrequency( void );
 function cvGetTickFrequency():double;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7797
-{$ELSE}
-name 'cvGetTickFrequency'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7797
+//{$ELSE}
+//name 'cvGetTickFrequency'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (*********************************** CPU capabilities ***********************************)
 
 //CVAPI(int) cvCheckHardwareSupport(int feature);
 function cvCheckHardwareSupport(feature:int):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7657
-{$ELSE}
-name 'cvCheckHardwareSupport'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7657
+//{$ELSE}
+//name 'cvCheckHardwareSupport'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (*********************************** Multi-Threading ************************************)
 
 (** retrieve/set the number of threads used in OpenMP implementations *)
 //CVAPI(int)  cvGetNumThreads( void );
 function cvGetNumThreads():int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7778
-{$ELSE}
-name 'cvGetNumThreads'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7778
+//{$ELSE}
+//name 'cvGetNumThreads'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvSetNumThreads( int threads CV_DEFAULT(0) );
 procedure cvSetNumThreads(threads:int=0);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7960
-{$ELSE}
-name 'cvSetNumThreads'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7960
+//{$ELSE}
+//name 'cvSetNumThreads'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** get index of the thread being executed *)
 //CVAPI(int)  cvGetThreadNum( void );
 function cvGetThreadNum():int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7795
-{$ELSE}
-name 'cvGetThreadNum'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7795
+//{$ELSE}
+//name 'cvGetThreadNum'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (********************************** Error Handling **************************************)
@@ -4040,25 +4241,27 @@ name 'cvGetThreadNum'
 (** Get current OpenCV error status *)
 //CVAPI(int) cvGetErrStatus( void );
 function cvGetErrStatus():int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7769
-{$ELSE}
-name 'cvGetErrStatus'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7769
+//{$ELSE}
+//name 'cvGetErrStatus'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Sets error status silently *)
 //CVAPI(void) cvSetErrStatus( int status );
 procedure cvSetErrStatus(status:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7952
-{$ELSE}
-name 'cvSetErrStatus'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7952
+//{$ELSE}
+//name 'cvSetErrStatus'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_ErrModeLeaf     =0;   (* Print error and exit program *)
@@ -4068,24 +4271,26 @@ const
 (** Retrieves current error processing mode *)
 //CVAPI(int)  cvGetErrMode( void );
 function cvGetErrMode():int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7768
-{$ELSE}
-name 'cvGetErrMode'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7768
+//{$ELSE}
+//name 'cvGetErrMode'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Sets error processing mode, returns previously used mode *)
 //CVAPI(int) cvSetErrMode( int mode );
 function cvSetErrMode(mode:int):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7951
-{$ELSE}
-name 'cvSetErrMode'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7951
+//{$ELSE}
+//name 'cvSetErrMode'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Sets error status and performs some additional actions (displaying message box,
  writing message to stderr, terminating application etc.)
@@ -4093,48 +4298,52 @@ name 'cvSetErrMode'
 //CVAPI(void) cvError( int status, const char* func_name,
 //                    const char* err_msg, const char* file_name, int line );
 procedure cvError(status:int; const func_name:pcvchar; const err_msg:pcvchar; const file_name:pcvchar; line:int);
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7735
-{$ELSE}
-name 'cvError'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7735
+//{$ELSE}
+//name 'cvError'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Retrieves textual description of the error given its code *)
 //CVAPI(const char*) cvErrorStr( int status );
 function cvErrorStr(status:Int):pcvchar;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7737
-{$ELSE}
-name 'cvErrorStr'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7737
+//{$ELSE}
+//name 'cvErrorStr'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Retrieves detailed information about the last error occurred *)
 //CVAPI(int) cvGetErrInfo( const char** errcode_desc, const char** description,
 //                        const char** filename, int* line );
 function cvGetErrInfo(const errcode_desc:pcvchar; const description:pcvchar; const filename:pcvchar; line:pint):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7767
-{$ELSE}
-name 'cvGetErrInfo'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7767
+//{$ELSE}
+//name 'cvGetErrInfo'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 
 (** Maps IPP error codes to the counterparts from OpenCV *)
 //CVAPI(int) cvErrorFromIppStatus( int ipp_status );
 function cvErrorFromIppStatus(ipp_status:int):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7736
-{$ELSE}
-name 'cvErrorFromIppStatus'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7736
+//{$ELSE}
+//name 'cvErrorFromIppStatus'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 type
 //int (CV_CDECL *CvErrorCallback)( int status, const char* func_name,
@@ -4147,49 +4356,53 @@ TCvErrorCallback = function( status:int; const func_name:pcvchar;
 //                                       void* userdata CV_DEFAULT(NULL),
 //                                       void** prev_userdata CV_DEFAULT(NULL) );
 function cvRedirectError(error_handler:TCvErrorCallback; userdata:pvoid= nil; prev_userdata:pvoid= nil):TCvErrorCallback;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7896
-{$ELSE}
-name 'cvRedirectError'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7896
+//{$ELSE}
+//name 'cvRedirectError'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Output nothing *)
 //CVAPI(int) cvNulDevReport( int status, const char* func_name, const char* err_msg,
 //                          const char* file_name, int line, void* userdata );
 function cvNulDevReport(status:int; const func_name:pcvchar; const err_msg:pcvchar; const file_name:pcvchar; line:int; userdata:pvoid):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7868
-{$ELSE}
-name 'cvNulDevReport'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7868
+//{$ELSE}
+//name 'cvNulDevReport'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Output to console(fprintf(stderr,...)) *)
 //CVAPI(int) cvStdErrReport( int status, const char* func_name, const char* err_msg,
 //                          const char* file_name, int line, void* userdata );
 function cvStdErrReport(status:int; const func_name:pcvchar; const err_msg:pcvchar; const file_name:pcvchar; line:int; userdata:pvoid):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7993
-{$ELSE}
-name 'cvStdErrReport'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7993
+//{$ELSE}
+//name 'cvStdErrReport'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Output to MessageBox(WIN32) *)
 //CVAPI(int) cvGuiBoxReport( int status, const char* func_name, const char* err_msg,
 //                          const char* file_name, int line, void* userdata );
 function cvGuiBoxReport(status:int; const func_name:pcvchar; const err_msg:pcvchar; const file_name:pcvchar; line:int; userdata:pvoid):int;
-external opencv_world_dll
-{$IFDEF CALL_BY_FNC_NUM}
-index 7813
-{$ELSE}
-name 'cvGuiBoxReport'
-{$ENDIF}
-{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+//external opencv_world_dll
+//{$IFDEF CALL_BY_FNC_NUM}
+//index 7813
+//{$ELSE}
+//name 'cvGuiBoxReport'
+//{$ENDIF}
+//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 {TODO:OPENCV_ERROR}
 //#define OPENCV_ERROR(status,func,context)                           \
@@ -4264,7 +4477,7 @@ name 'cvGuiBoxReport'
 
 (** @} core_c *)
 
-{$include 'core/utility.inc'}
+{$IF not defined(OPENCV_CORE_UTILITY_H)}{$i 'core/utility.inc'}{$ifend}
 
 //namespace cv
 //{
@@ -4696,4 +4909,4 @@ procedure seqInsertSlice(seq:pCvSeq; before_index:int; const from_arr:pCvArr);{$
 
 //#endif
 
-{$ifend OPENCV_CORE_C_H}
+{$ifend} //OPENCV_CORE_C_H

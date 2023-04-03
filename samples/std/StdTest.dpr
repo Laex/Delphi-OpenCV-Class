@@ -15,7 +15,7 @@ begin
   //  CppString
   Writeln(s.length);
   Writeln(s.size);
-  s.assign('sdfgsdfgsdfg');
+  s:='sdfgsdfgsdfg';
   r:=s;
   Writeln(r);
   r:='1234234';
