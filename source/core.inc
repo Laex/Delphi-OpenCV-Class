@@ -1039,9 +1039,6 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //                    name '?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z'
 //{$ENDIF}
 //{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure normalize(const src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 };
-                    norm_type: NormTypes { = NORM_L2 }; dtype: int { = -1 }; const mask: TInputArray { = noArray() } );
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 procedure normalize(const src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0;
                     norm_type: NormTypes = NORM_L2; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                       (*

@@ -47,7 +47,7 @@ begin
 
     const audioBaseIndex :int= Trunc(cap.get(CAP_PROP_AUDIO_BASE_INDEX));
     const numberOfChannels :int= Trunc(cap.get(CAP_PROP_AUDIO_TOTAL_CHANNELS));
-    cout + 'CAP_PROP_AUDIO_DATA_DEPTH: ' + depthToString(Trunc(cap.get(CAP_PROP_AUDIO_DATA_DEPTH))) + endl;
+    cout + 'CAP_PROP_AUDIO_DATA_DEPTH: ' + String(depthToString(Trunc(cap.get(CAP_PROP_AUDIO_DATA_DEPTH)))) + endl;
     cout + 'CAP_PROP_AUDIO_SAMPLES_PER_SECOND: ' + cap.get(CAP_PROP_AUDIO_SAMPLES_PER_SECOND) + endl;
     cout + 'CAP_PROP_AUDIO_TOTAL_CHANNELS: ' + numberOfChannels + endl;
     cout + 'CAP_PROP_AUDIO_TOTAL_STREAMS: ' + cap.get(CAP_PROP_AUDIO_TOTAL_STREAMS) + endl;

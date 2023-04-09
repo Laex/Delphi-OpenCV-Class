@@ -212,8 +212,7 @@ end;
 
 class operator TRect_<T>.BitwiseAnd(const a, b: TRect_<T>): TRect_<T>;
 begin
-Assert(False);
-(*
+
   Result := default (TRect_<T>);
   if TypeInfo(T) = TypeInfo(Int) then
   begin
@@ -244,7 +243,7 @@ Assert(False);
   end
   else
     Assert(false, 'Point type must be numeric');
-*)
+
 end;
 
 class function TRect_<T>.Rect(const _x: T; _y, _width, _height: T): TRect_<T>;

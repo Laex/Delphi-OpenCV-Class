@@ -57,7 +57,7 @@ Var
 
 begin
   /// Parameters for Shi-Tomasi algorithm
-  maxCorners := MAX(maxCorners, 1);
+  maxCorners := cvMAX(maxCorners, 1);
   Var
     corners: Vector<TPoint2f>;
   Var

@@ -1,23 +1,23 @@
 (*
- This file is part of Delphi-OpenCV-Class project.
- https://github.com/Laex/Delphi-OpenCV-Class
+  This file is part of Delphi-OpenCV-Class project.
+  https://github.com/Laex/Delphi-OpenCV-Class
 
- It is subject to the license terms in the LICENSE file found in the top-level directory
- of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+  It is subject to the license terms in the LICENSE file found in the top-level directory
+  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
 
-Copyright 2021, Laentir Valetov, laex@bk.ru
+  Copyright 2021, Laentir Valetov, laex@bk.ru
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 *)
 program Smoothing;
 
@@ -53,10 +53,26 @@ begin
   Result := 0;
 end;
 
+// procedure _putText(const a: TINPUTOUTPUTARRAY; const b: CppString; //
+// const c: tPOINT; d: INT; e: DOUBLE; const f: TSCALAR; //
+// g: INT = 1; h: INT = LINE_8; i: BOOL = False); overload; external opencv_world_dll
+// {$IFDEF CALL_BY_FNC_NUM}
+// index 6599
+// {$ELSE}
+// {$IFDEF DEBUG}
+// name '?putText@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z'
+// {$ELSE}
+// name '?putText@cv@@YAXAEBV_InputOutputArray@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$Point_@H@1@HNV?$Scalar_@N@1@HH_N@Z'
+// {$ENDIF}
+// {$ENDIF}
+// {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
 function display_caption(const caption: String): Integer;
 begin
   dst := TMat.zeros(src.size, src.&type);
-  putText(dst, caption, Point(src.cols div 4, src.rows div 2), FONT_HERSHEY_COMPLEX, 1, Scalar(255, 255, 255));
+  Var
+    P: tPOINT := Point(src.cols div 4, src.rows div 2);
+  putText(dst, caption, P, FONT_HERSHEY_COMPLEX, 1, Scalar(255, 255, 255));
   Result := display_dst(DELAY_CAPTION);
 end;
 
@@ -153,9 +169,9 @@ begin
     display_caption('Done!');
 
   except
-    on E: Exception do
+    on e: Exception do
     begin
-      WriteLn(E.ClassName, ': ', E.Message);
+      WriteLn(e.ClassName, ': ', e.Message);
       Readln;
     end;
   end;

@@ -101,7 +101,7 @@ begin
     end;
 
     namedWindow('Laplacian', WINDOW_AUTOSIZE);
-    createTrackbar('Sigma', 'Laplacian', sigma, 15, nil);
+    createTrackbar('Sigma', 'Laplacian', @sigma, 15, nil);
 
     Var
       smoothed, laplace, result: TMat;

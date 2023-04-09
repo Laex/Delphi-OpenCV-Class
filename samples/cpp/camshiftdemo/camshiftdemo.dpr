@@ -48,8 +48,8 @@ procedure onMouse(event, x, y, v: int; p: pointer);
 begin
   if (selectObject) then
   begin
-    selection.x := MIN(x, origin.x);
-    selection.y := MIN(y, origin.y);
+    selection.x := cvMIN(x, origin.x);
+    selection.y := cvMIN(y, origin.y);
     selection.width := abs(x - origin.x);
     selection.height := abs(y - origin.y);
 
@@ -133,9 +133,9 @@ begin
     namedWindow('Histogram', 0);
     namedWindow('CamShift Demo', 0);
     setMouseCallback('CamShift Demo', onMouse, nil);
-    createTrackbar('Vmin', 'CamShift Demo', vmin, 256, nil);
-    createTrackbar('Vmax', 'CamShift Demo', vmax, 256, nil);
-    createTrackbar('Smin', 'CamShift Demo', smin, 256, nil);
+    createTrackbar('Vmin', 'CamShift Demo', @vmin, 256, nil);
+    createTrackbar('Vmax', 'CamShift Demo', @vmax, 256, nil);
+    createTrackbar('Smin', 'CamShift Demo', @smin, 256, nil);
 
     Var
       frame, hsv, hue, mask, { hist, } backproj: TMat;
@@ -166,7 +166,7 @@ begin
           Var
             _vmax: int := vmax;
 
-          inRange(hsv, Scalar(0, smin, MIN(_vmin, _vmax)), Scalar(180, 256, MAX(_vmin, _vmax)), mask);
+          inRange(hsv, Scalar(0, smin, cvMIN(_vmin, _vmax)), Scalar(180, 256, cvMAX(_vmin, _vmax)), mask);
           Var
             ch: TArray<int> := [0, 0];
 
@@ -232,7 +232,7 @@ begin
             Var
               rows: int := backproj.rows;
             var
-              r: int := (MIN(cols, rows) + 5) div 6;
+              r: int := (cvMIN(cols, rows) + 5) div 6;
             trackWindow := Rect(trackWindow.x - r, trackWindow.y - r, trackWindow.x + r, trackWindow.y + r) and Rect(0, 0, cols, rows);
           end;
 

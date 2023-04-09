@@ -405,37 +405,39 @@ ConnectedComponentsTypes =(//
 );
 
 //! mode of the contour retrieval algorithm
- RetrievalModes =(//
+ RetrievalModes = type int;
+const
     (** retrieves only the extreme outer contours. It sets `hierarchy[i][2]=hierarchy[i][3]=-1` for
     all the contours. *)
-    RETR_EXTERNAL  = 0,
+    RETR_EXTERNAL  = 0;
     (** retrieves all of the contours without establishing any hierarchical relationships. *)
-    RETR_LIST      = 1,
+    RETR_LIST      = 1;
     (** retrieves all of the contours and organizes them into a two-level hierarchy. At the top
     level, there are external boundaries of the components. At the second level, there are
     boundaries of the holes. If there is another contour inside a hole of a connected component, it
     is still put at the top level. *)
-    RETR_CCOMP     = 2,
+    RETR_CCOMP     = 2;
     (** retrieves all of the contours and reconstructs a full hierarchy of nested contours.*)
-    RETR_TREE      = 3,
-    RETR_FLOODFILL = 4 //!<
-);
+    RETR_TREE      = 3;
+    RETR_FLOODFILL = 4; //!<
 
+type
 //! the contour approximation algorithm
- ContourApproximationModes =(//
+ ContourApproximationModes = type int;
+const
     (** stores absolutely all the contour points. That is, any 2 subsequent points (x1,y1) and
     (x2,y2) of the contour will be either horizontal, vertical or diagonal neighbors, that is,
     max(abs(x1-x2),abs(y2-y1))==1. *)
-    CHAIN_APPROX_NONE      = 1,
+    CHAIN_APPROX_NONE      = 1;
     (** compresses horizontal, vertical, and diagonal segments and leaves only their end points.
     For example, an up-right rectangular contour is encoded with 4 points. *)
-    CHAIN_APPROX_SIMPLE    = 2,
+    CHAIN_APPROX_SIMPLE    = 2;
     (** applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *)
-    CHAIN_APPROX_TC89_L1   = 3,
+    CHAIN_APPROX_TC89_L1   = 3;
     (** applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *)
-    CHAIN_APPROX_TC89_KCOS = 4
-);
+    CHAIN_APPROX_TC89_KCOS = 4;
 
+type
 (** @brief Shape matching methods
 
 \f$A\f$ denotes object1,\f$B\f$ denotes object2
@@ -811,18 +813,19 @@ type
 (** Only a subset of Hershey fonts <https://en.wikipedia.org/wiki/Hershey_fonts> are supported
 @ingroup imgproc_draw
 *)
- HersheyFonts =(//
-    FONT_HERSHEY_SIMPLEX        = 0, //!< normal size sans-serif font
-    FONT_HERSHEY_PLAIN          = 1, //!< small size sans-serif font
-    FONT_HERSHEY_DUPLEX         = 2, //!< normal size sans-serif font (more complex than FONT_HERSHEY_SIMPLEX)
-    FONT_HERSHEY_COMPLEX        = 3, //!< normal size serif font
-    FONT_HERSHEY_TRIPLEX        = 4, //!< normal size serif font (more complex than FONT_HERSHEY_COMPLEX)
-    FONT_HERSHEY_COMPLEX_SMALL  = 5, //!< smaller version of FONT_HERSHEY_COMPLEX
-    FONT_HERSHEY_SCRIPT_SIMPLEX = 6, //!< hand-writing style font
-    FONT_HERSHEY_SCRIPT_COMPLEX = 7, //!< more complex variant of FONT_HERSHEY_SCRIPT_SIMPLEX
-    FONT_ITALIC                 = 16 //!< flag for italic font
-);
+ HersheyFonts = type int;
+const
+    FONT_HERSHEY_SIMPLEX        = 0; //!< normal size sans-serif font
+    FONT_HERSHEY_PLAIN          = 1; //!< small size sans-serif font
+    FONT_HERSHEY_DUPLEX         = 2; //!< normal size sans-serif font (more complex than FONT_HERSHEY_SIMPLEX)
+    FONT_HERSHEY_COMPLEX        = 3; //!< normal size serif font
+    FONT_HERSHEY_TRIPLEX        = 4; //!< normal size serif font (more complex than FONT_HERSHEY_COMPLEX)
+    FONT_HERSHEY_COMPLEX_SMALL  = 5; //!< smaller version of FONT_HERSHEY_COMPLEX
+    FONT_HERSHEY_SCRIPT_SIMPLEX = 6; //!< hand-writing style font
+    FONT_HERSHEY_SCRIPT_COMPLEX = 7; //!< more complex variant of FONT_HERSHEY_SCRIPT_SIMPLEX
+    FONT_ITALIC                 = 16; //!< flag for italic font
 
+Type
 (** Possible set of marker types used for the cv::drawMarker function
 @ingroup imgproc_draw
 *)
@@ -3584,8 +3587,9 @@ arrays, or to update the histogram in time.
   void cv::calcHist(class cv::Mat const *, int, int const *, class cv::_InputArray const &, class cv::_OutputArray const &,
   int, int const *, float const * *,bool,bool)
 }
-procedure calcHist(Var images: TMat; nimages: Int; channels: pInt; const mask: TInputArray; const hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; UNIFORM: BOOL = true;
-  accumulate: BOOL = false);
+procedure calcHist( const images: TMat; nimages: Int; channels: pInt; const mask: TInputArray;
+                    const hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; UNIFORM: BOOL = true;
+                    accumulate: BOOL = false);
 overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 //  external opencv_world_dll
 //{$IFDEF USE_DEBUG_DLLS}

@@ -138,5 +138,8 @@ uses
 initialization
 
 {$I 'core.init.inc'}
+{$IF defined(OPENCV_CORE_HAL_INTERFACE_H) and defined(OPENCV_CORE_HAL_INTERFACE_H_IMPL)}{$I 'core/hal/interface.init.inc'}{$ifend}
 
 end.
+
+

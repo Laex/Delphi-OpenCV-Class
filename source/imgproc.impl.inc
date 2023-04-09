@@ -28,11 +28,6 @@ begin
   blur(Src, dst, ksize, Point(-1, -1), BORDER_DEFAULT);
 end;
 
-function getStructuringElement(shape: MorphShapes; const ksize: TSize): TMat;
-begin
-  Result := getStructuringElement(shape, ksize, Point(-1, -1));
-end;
-
 function morphologyDefaultBorderValue(): TScalar;
 begin
   Result := TScalar.all(DBL_MAX);
@@ -125,6 +120,11 @@ begin
 {$IF not defined(PACKAGE)}
   Result := class_func_CV_SUBDIV2D_insert(Self, pt);
 {$IFEND}
+end;
+
+function getStructuringElement(shape: MorphShapes; const ksize: TSize): TMat;
+begin
+  Result := getStructuringElement(shape, ksize, Point(-1, -1));
 end;
 
 function getStructuringElement(shape: MorphShapes; ksize: TSize; anchor: TPoint): TMat;
@@ -337,7 +337,7 @@ begin
 {$IFEND}
 end;
 
-procedure calcHist(Var images: TMat; nimages: Int; channels: pInt; const mask: TInputArray; const hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; UNIFORM: BOOL = true; accumulate: BOOL = false);
+procedure calcHist(const images: TMat; nimages: Int; channels: pInt; const mask: TInputArray; const hist: TOutputArray; dims: Int; const histSize: pInt; const ranges: pFloat; UNIFORM: BOOL = true; accumulate: BOOL = false);
 begin
 {$IF not defined(PACKAGE)}
   proc_calcHist_2(images, nimages, channels, mask, hist, dims, histSize, ranges, UNIFORM, accumulate);
@@ -561,10 +561,10 @@ begin
 {$IFEND}
 end;
 
-function getTextSize(text: String; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil):TSize;
+function getTextSize(text: String; fontFace: Int; fontScale: double; thickness: Int; baseLine: pInt = nil): TSize;
 begin
 {$IF not defined(PACKAGE)}
-  Result := func_getTextSize(text, fontFace,fontScale,thickness,baseLine);
+  func_getTextSize(pCV_SIZE__OF_INT(@Result), CppString(text), fontFace, fontScale, thickness, baseLine);
 {$IFEND}
 end;
 

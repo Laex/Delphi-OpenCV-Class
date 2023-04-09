@@ -402,7 +402,8 @@ end;
 procedure CppString.assign(const p: pCVCHAR);
 begin
 {$IF not defined(PACKAGE)}
-  class_virt_func_STD_BASIC_STRING_OF_CVCHAR_assign_3(Self, p);
+  if Assigned(p) then
+    class_virt_func_STD_BASIC_STRING_OF_CVCHAR_assign_3(Self, p);
 {$IFEND}
 end;
 

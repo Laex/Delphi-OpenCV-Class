@@ -306,10 +306,10 @@ procedure TGCApplication.setRectInMask;
 begin
   Assert(not mask.empty());
   mask.setTo(int(GC_BGD));
-  r.x := max(0, r.x);
-  r.y := max(0, r.y);
-  r.width := min(r.width, image.cols - r.x);
-  r.height := min(r.height, image.rows - r.y);
+  r.x := cvMax(0, r.x);
+  r.y := cvMax(0, r.y);
+  r.width := cvMin(r.width, image.cols - r.x);
+  r.height := cvMin(r.height, image.rows - r.y);
   mask.mat(r).setTo(Scalar(int(GC_PR_FGD)));
 end;
 

@@ -57,7 +57,7 @@ begin
       Var
         shift: TPoint2d := phaseCorrelate(prev64f, curr64f, hann);
       Var
-        radius: double := sqrt(shift.x * shift.x + shift.y * shift.y);
+        radius: double := system.sqrt(shift.x * shift.x + shift.y * shift.y);
 
       if (radius > 5) then
       begin

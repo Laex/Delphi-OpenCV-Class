@@ -59,7 +59,7 @@ const
 procedure myShiTomasi_function(a: int; p: pointer);
 begin
   myShiTomasi_copy := src.clone();
-  myShiTomasi_qualityLevel := MAX(myShiTomasi_qualityLevel, 1);
+  myShiTomasi_qualityLevel := cvMAX(myShiTomasi_qualityLevel, 1);
 
   for Var i: int := 0 to src_gray.rows - 1 do
     for Var j: int := 0 to src_gray.cols - 1 do
@@ -74,7 +74,7 @@ end;
 procedure myHarris_function(a: int; p: pointer);
 begin
   myHarris_copy := src.clone();
-  myHarris_qualityLevel := MAX(myHarris_qualityLevel, 1);
+  myHarris_qualityLevel := cvMAX(myHarris_qualityLevel, 1);
 
   for Var i: int := 0 to src_gray.rows - 1 do
     for Var j: int := 0 to src_gray.cols - 1 do

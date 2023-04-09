@@ -375,19 +375,17 @@ begin
   Result := kmeans(data, K, bestLabels, criteria, attempts, flags, TOutputArray.noArray());
 end;
 
-procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; alpha: double { = 1 }; beta: double { = 0 }; norm_type: int { = int(NORM_L2) }; dtype: int { = -1 }; const mask: TInputArray { = noArray() } );
+procedure normalize( const Src: TInputArray; const dst: TInputOutputArray; alpha: double { = 1 };
+                     beta: double { = 0 }; norm_type: int { = int(NORM_L2) }; dtype: int { = -1 };
+                     const mask: TInputArray { = noArray() } );
 begin
 {$IF not defined(PACKAGE)}
   proc_normalize_1(Src, dst, alpha, beta, norm_type, dtype, mask);
 {$IFEND}
 end;
 
-procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double { = 1 }; beta: double { = 0 }; norm_type: NormTypes { = NORM_L2 }; dtype: int { = -1 }; const mask: TInputArray { = noArray() } );
-begin
-  normalize(Src, dst, alpha, beta, int(norm_type), dtype, mask);
-end;
-
-procedure normalize(const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: int = -1);
+procedure normalize( const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1;
+                     beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: int = -1);
 begin
   normalize(Src, dst, alpha, beta, norm_type, dtype, TInputArray.noArray);
 end;

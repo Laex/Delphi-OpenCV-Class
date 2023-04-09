@@ -179,7 +179,7 @@ const
 
 type
   // ! Mouse Events see cv::MouseCallback
-  MouseEventTypes = type int; //
+  MouseEventTypes = {type }int; //
 
 const
   EVENT_MOUSEMOVE     = 0;  // !< indicates that the mouse pointer has moved over the window.

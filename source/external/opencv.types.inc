@@ -45,11 +45,11 @@ Type
   // CVIPLIMAGE                                       = type TEmptyRec;
   CVLEVMARQ = type TEmptyRec;
   // CV_MAT                                            = {$IF Declared(CVMAT)}CVMAT{$ELSE}type TEmptyRec{$IFEND};
-  CV_MATND      = {$IF Declared(TCvMatND)}TCvMatND{$ELSE} type TEmptyRec{$IFEND};
+  CV_MATND        = {$IF Declared(TCvMatND)}TCvMatND{$ELSE} type TEmptyRec{$IFEND};
   CV_CVMEMSTORAGE = {$IF Declared(TCvMemStorage)}TCvMemStorage{$ELSE} type TEmptyRec{$IFEND};
-  CVROUND64     = type TEmptyRec;
-  CV_CVSEQ      = {$IF Declared(TCvSeq)}TCvSeq{$ELSE} type TEmptyRec{$IFEND};
-  CV_SLICE      = {$IF Declared(TCvSlice)}TCvSlice{$ELSE} type TEmptyRec{$IFEND};
+  CVROUND64       = type TEmptyRec;
+  CV_CVSEQ        = {$IF Declared(TCvSeq)}TCvSeq{$ELSE} type TEmptyRec{$IFEND};
+  CV_SLICE        = {$IF Declared(TCvSlice)}TCvSlice{$ELSE} type TEmptyRec{$IFEND};
   // CV_SPARSEMAT                                      = type TEmptyRec;
   CV_TERMCRITERIA                                  = TTermCriteria; // type TEmptyRec;
   CVTRUNC                                          = type TEmptyRec;
@@ -724,7 +724,7 @@ Type
   CV_POINTSETREGISTRATOR_CALLBACK                        = type TEmptyRec;
   CV_POINT__OF_DOUBLE                                    = TPoint2d; // type TEmptyRec;
   CV_POINT__OF_FLOAT                                     = TPoint2f; // type TEmptyRec;
-  CV_POINT__OF_INT                                       = TPoint; // type TEmptyRec;
+  CV_POINT__OF_INT                                       = UInt64; // TPoint; // type TEmptyRec;
   CV_POINT__OF___INT64                                   = type TEmptyRec;
   CV_PTR_OF_CV_AFFINEFEATURE                             = type TEmptyRec;
   CV_PTR_OF_CV_AGASTFEATUREDETECTOR                      = type TEmptyRec;
@@ -1863,7 +1863,8 @@ Type
   pCV_CvFont                = {$IF Declared(pCvFont)}pCvFont{$ELSE} type pointer{$IFEND};
   CV_CvTrackbarCallback     = {$IF Declared(TCvTrackbarCallback)}TCvTrackbarCallback{$ELSE} type pointer{$IFEND};
   CV_CvTrackbarCallback2    = {$IF Declared(TCvTrackbarCallback2)}TCvTrackbarCallback2{$ELSE} type pointer{$IFEND};
-  CV_CvMouseCallback        = {$IF Declared(TCvMouseCallback)}TCvMouseCallback{$ELSE} type pointer{$IFEND};
+  CV_CvMouseCallback        = {$IF Declared(TCvMouseCallback)}TMouseCallback{$ELSE} type pointer{$IFEND};
   CV_CvOpenGlDrawCallback   = {$IF Declared(TCvOpenGlDrawCallback)}TCvOpenGlDrawCallback{$ELSE} type pointer{$IFEND};
+  pCV_SIZE__OF_INT          = ^CV_SIZE__OF_INT;
 
 {$IFEND OPENCV_EXTERNAL_TYPES}

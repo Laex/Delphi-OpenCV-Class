@@ -177,7 +177,6 @@ const
   NORM_RELATIVE = 8;                     // !< flag
   NORM_MINMAX = 32;                       // !< flag
 
-
 type
 // ! comparison types
 CmpTypes = (  //
