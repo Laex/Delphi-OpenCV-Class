@@ -45,4 +45,4 @@ __For the library to work properly, you need__
 
 [1]: https://github.com/Laex/Delphi-OpenCV-Class/archive/refs/heads/main.zip
 [2]: https://github.com/Laex/Delphi-OpenCV-Class.git
-[3]: https://github.com/opencv/opencv/releases/download/4.7.0/opencv-4.7.0-windows.zip
+[3]: https://github.com/opencv/opencv/releases/download/4.7.0/opencv-4.7.0-windows.exe

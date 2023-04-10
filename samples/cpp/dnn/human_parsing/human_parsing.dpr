@@ -136,7 +136,7 @@ begin
 
     if not parser.check then
     begin
-      parser.printError();
+//      parser.printError();
       Halt(0);
     end;
 

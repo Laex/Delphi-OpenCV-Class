@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{4AD7B31B-8F51-495C-923E-4E24C2B9BB19}</ProjectGuid>
+        <ProjectGuid>{E65E49BA-5320-4F90-AB16-B033E919523F}</ProjectGuid>
         <MainSource>human_parsing.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>

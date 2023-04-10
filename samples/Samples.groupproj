@@ -123,6 +123,9 @@
         <Projects Include="cpp\tutorial_code\ImgProc\Smoothing\Smoothing.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="cpp\dnn\human_parsing\human_parsing.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="cpp\tutorial_code\snippets\imgproc_segmentation\imgproc_segmentation.dproj">
             <Dependencies/>
         </Projects>
@@ -130,9 +133,6 @@
             <Dependencies/>
         </Projects>
         <Projects Include="cpp\delaunay2\delaunay2.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="cpp\minarea\minarea.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -503,6 +503,15 @@
     <Target Name="Smoothing:Make">
         <MSBuild Projects="cpp\tutorial_code\ImgProc\Smoothing\Smoothing.dproj" Targets="Make"/>
     </Target>
+    <Target Name="human_parsing">
+        <MSBuild Projects="cpp\dnn\human_parsing\human_parsing.dproj"/>
+    </Target>
+    <Target Name="human_parsing:Clean">
+        <MSBuild Projects="cpp\dnn\human_parsing\human_parsing.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="human_parsing:Make">
+        <MSBuild Projects="cpp\dnn\human_parsing\human_parsing.dproj" Targets="Make"/>
+    </Target>
     <Target Name="imgproc_segmentation">
         <MSBuild Projects="cpp\tutorial_code\snippets\imgproc_segmentation\imgproc_segmentation.dproj"/>
     </Target>
@@ -530,23 +539,14 @@
     <Target Name="delaunay2:Make">
         <MSBuild Projects="cpp\delaunay2\delaunay2.dproj" Targets="Make"/>
     </Target>
-    <Target Name="minarea">
-        <MSBuild Projects="cpp\minarea\minarea.dproj"/>
-    </Target>
-    <Target Name="minarea:Clean">
-        <MSBuild Projects="cpp\minarea\minarea.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="minarea:Make">
-        <MSBuild Projects="cpp\minarea\minarea.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="AddingImages;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm;cvdecolor;npr_demo;phase_corr;videocapture_basic;videocapture_image_sequence;dis_opticalflow;facedetect;segment_objects;video_write;facial_features;camshiftdemo;lkdemo;cv_laplace;peopledetect;cvinpaint;morphology2;contours2;distrans;opencv_version;stitching;cvgrabcut;cvdft;BasicLinearTransformsTrackbar;CannyDetector_Demo;cvconvexhull;neural_network;videocapture_audio;videocapture_microphone;Smoothing;imgproc_segmentation;videocapture_realsense;delaunay2;minarea"/>
+        <CallTarget Targets="AddingImages;Thresholdp;morph_lines_detection;objectDetection;calcHist_Demo;drawing;edge;cornerDetector_Demo;goodFeaturesToTrack_Demo;optical_flow;introduction_to_svm;cvdecolor;npr_demo;phase_corr;videocapture_basic;videocapture_image_sequence;dis_opticalflow;facedetect;segment_objects;video_write;facial_features;camshiftdemo;lkdemo;cv_laplace;peopledetect;cvinpaint;morphology2;contours2;distrans;opencv_version;stitching;cvgrabcut;cvdft;BasicLinearTransformsTrackbar;CannyDetector_Demo;cvconvexhull;neural_network;videocapture_audio;videocapture_microphone;Smoothing;human_parsing;imgproc_segmentation;videocapture_realsense;delaunay2"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="AddingImages:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean;cvdecolor:Clean;npr_demo:Clean;phase_corr:Clean;videocapture_basic:Clean;videocapture_image_sequence:Clean;dis_opticalflow:Clean;facedetect:Clean;segment_objects:Clean;video_write:Clean;facial_features:Clean;camshiftdemo:Clean;lkdemo:Clean;cv_laplace:Clean;peopledetect:Clean;cvinpaint:Clean;morphology2:Clean;contours2:Clean;distrans:Clean;opencv_version:Clean;stitching:Clean;cvgrabcut:Clean;cvdft:Clean;BasicLinearTransformsTrackbar:Clean;CannyDetector_Demo:Clean;cvconvexhull:Clean;neural_network:Clean;videocapture_audio:Clean;videocapture_microphone:Clean;Smoothing:Clean;imgproc_segmentation:Clean;videocapture_realsense:Clean;delaunay2:Clean;minarea:Clean"/>
+        <CallTarget Targets="AddingImages:Clean;Thresholdp:Clean;morph_lines_detection:Clean;objectDetection:Clean;calcHist_Demo:Clean;drawing:Clean;edge:Clean;cornerDetector_Demo:Clean;goodFeaturesToTrack_Demo:Clean;optical_flow:Clean;introduction_to_svm:Clean;cvdecolor:Clean;npr_demo:Clean;phase_corr:Clean;videocapture_basic:Clean;videocapture_image_sequence:Clean;dis_opticalflow:Clean;facedetect:Clean;segment_objects:Clean;video_write:Clean;facial_features:Clean;camshiftdemo:Clean;lkdemo:Clean;cv_laplace:Clean;peopledetect:Clean;cvinpaint:Clean;morphology2:Clean;contours2:Clean;distrans:Clean;opencv_version:Clean;stitching:Clean;cvgrabcut:Clean;cvdft:Clean;BasicLinearTransformsTrackbar:Clean;CannyDetector_Demo:Clean;cvconvexhull:Clean;neural_network:Clean;videocapture_audio:Clean;videocapture_microphone:Clean;Smoothing:Clean;human_parsing:Clean;imgproc_segmentation:Clean;videocapture_realsense:Clean;delaunay2:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="AddingImages:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make;cvdecolor:Make;npr_demo:Make;phase_corr:Make;videocapture_basic:Make;videocapture_image_sequence:Make;dis_opticalflow:Make;facedetect:Make;segment_objects:Make;video_write:Make;facial_features:Make;camshiftdemo:Make;lkdemo:Make;cv_laplace:Make;peopledetect:Make;cvinpaint:Make;morphology2:Make;contours2:Make;distrans:Make;opencv_version:Make;stitching:Make;cvgrabcut:Make;cvdft:Make;BasicLinearTransformsTrackbar:Make;CannyDetector_Demo:Make;cvconvexhull:Make;neural_network:Make;videocapture_audio:Make;videocapture_microphone:Make;Smoothing:Make;imgproc_segmentation:Make;videocapture_realsense:Make;delaunay2:Make;minarea:Make"/>
+        <CallTarget Targets="AddingImages:Make;Thresholdp:Make;morph_lines_detection:Make;objectDetection:Make;calcHist_Demo:Make;drawing:Make;edge:Make;cornerDetector_Demo:Make;goodFeaturesToTrack_Demo:Make;optical_flow:Make;introduction_to_svm:Make;cvdecolor:Make;npr_demo:Make;phase_corr:Make;videocapture_basic:Make;videocapture_image_sequence:Make;dis_opticalflow:Make;facedetect:Make;segment_objects:Make;video_write:Make;facial_features:Make;camshiftdemo:Make;lkdemo:Make;cv_laplace:Make;peopledetect:Make;cvinpaint:Make;morphology2:Make;contours2:Make;distrans:Make;opencv_version:Make;stitching:Make;cvgrabcut:Make;cvdft:Make;BasicLinearTransformsTrackbar:Make;CannyDetector_Demo:Make;cvconvexhull:Make;neural_network:Make;videocapture_audio:Make;videocapture_microphone:Make;Smoothing:Make;human_parsing:Make;imgproc_segmentation:Make;videocapture_realsense:Make;delaunay2:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
