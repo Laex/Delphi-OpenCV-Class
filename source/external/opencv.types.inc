@@ -723,7 +723,7 @@ Type
   CV_POINTSETREGISTRATOR                                 = type TEmptyRec;
   CV_POINTSETREGISTRATOR_CALLBACK                        = type TEmptyRec;
   CV_POINT__OF_DOUBLE                                    = TPoint2d; // type TEmptyRec;
-  CV_POINT__OF_FLOAT                                     = TPoint2f; // type TEmptyRec;
+  CV_POINT__OF_FLOAT                                     = UInt64;//TPoint2f; // type TEmptyRec;
   CV_POINT__OF_INT                                       = UInt64; // TPoint; // type TEmptyRec;
   CV_POINT__OF___INT64                                   = type TEmptyRec;
   CV_PTR_OF_CV_AFFINEFEATURE                             = type TEmptyRec;

@@ -118,7 +118,7 @@ end;
 function readNet(const model: String; const config: String = ''; const framework: String = ''): TNet;
 begin
 {$IF not defined(PACKAGE)}
-  Result := func_readNet(CppString(model), CppString(config), CppString(framework));
+  func_readNet(Result, CppString(model), CppString(config), CppString(framework));
 {$IFEND}
 end;
 

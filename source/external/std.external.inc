@@ -722,7 +722,8 @@ procedure proc_StdSetItem(const Obj: pVector; vt: TVectorType; index: UInt64; co
   unsigned __int64 StdSize(void *,int)
   unsigned __int64 __cdecl StdSize(void * __ptr64,int)
 }
-function func_StdSize(Obj: pVector; vt: TVectorType): UNSIGNED___INT64; overload; external opencv_delphi_dll
+function func_StdSize(Obj: pVector; vt: TVectorType): UNSIGNED___INT64;
+overload; external opencv_delphi_dll
 {$IFDEF CALL_BY_FNC_NUM}
   index 47
 {$ELSE}

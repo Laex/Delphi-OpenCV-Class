@@ -1132,7 +1132,7 @@ public:
     vertices. i.e. p1_x = v[0], p1_y = v[1], p2_x = v[2], p2_y = v[3], p3_x = v[4], p3_y = v[5].
      *)
 //    CV_WRAP void getTriangleList(CV_OUT std::vector<Vec6f>& triangleList) const;
-    procedure getTriangleList(const triangleList:vector<TVec6f>); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure getTriangleList(Var triangleList:vector<TVec6f>); {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     (** @brief Returns a list of all Voronoi facets.
 
@@ -1208,7 +1208,8 @@ public:
     @returns vertex ID.
      *)
 //    CV_WRAP int edgeOrg(int edge, CV_OUT Point2f* orgpt = 0) const;
-    function edgeOrg(edge:int; var orgpt:TPoint2f):Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function edgeOrg(edge:int; Var orgpt:TPoint2f):Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function edgeOrg(edge:int):Int; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
     (** @brief Returns the edge destination.
 

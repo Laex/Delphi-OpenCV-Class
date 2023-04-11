@@ -35,7 +35,7 @@ end;
 procedure TIntelligentScissorsMB.buildMap(const sourcePt: TPoint);
 begin
 {$IF not defined(PACKAGE)}
-  class_proc_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_buildMap(Self, sourcePt);
+  class_proc_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_buildMap(Self, @sourcePt);
 {$IFEND}
 end;
 
@@ -49,7 +49,7 @@ end;
 procedure TIntelligentScissorsMB.getContour(const targetPt: TPoint; const contour: TOutputArray; backward: BOOL);
 begin
 {$IF not defined(PACKAGE)}
-  class_proc_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_getContour(Self, targetPt, contour, backward);
+  class_proc_CV_SEGMENTATION_INTELLIGENTSCISSORSMB_getContour(Self, @targetPt, contour, backward);
 {$IFEND}
 end;
 

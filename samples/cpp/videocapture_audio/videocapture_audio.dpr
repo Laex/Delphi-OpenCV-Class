@@ -33,9 +33,14 @@ uses
 begin
   try
     Var
-      filename: string := 'C:\Users\All Users\Documents\Embarcadero\Studio\22.0\Samples\CPP\Mobile Snippets\PlayAudioFile\soundsample.mp3';
+      filename: string := 'soundsample.mp3';
     if (ParamCount > 0) and FileExists(ParamStr(1)) then
-      filename := ParamStr(1);
+      filename := ParamStr(1)
+    else
+    begin
+      cerr + 'ERROR! Can''t to open file: ' + filename + endl;
+      Halt(1);
+    end;
 
     Var
       frame: TMat;
@@ -44,7 +49,7 @@ begin
     Var
       cap: TVideoCapture;
     Var
-      params: vector<int> := [int(CAP_PROP_AUDIO_STREAM), 0, int(CAP_PROP_VIDEO_STREAM), -1, int(CAP_PROP_AUDIO_DATA_DEPTH), CV_16S];
+      params: vector<int> := [CAP_PROP_AUDIO_STREAM, 0, CAP_PROP_VIDEO_STREAM, -1, CAP_PROP_AUDIO_DATA_DEPTH, CV_16S];
 
     cap.open(filename, CAP_MSMF, params);
     if (not cap.isOpened()) then
@@ -57,7 +62,7 @@ begin
       audioBaseIndex: int = Trunc(cap.get(CAP_PROP_AUDIO_BASE_INDEX));
     const
       numberOfChannels: int = Trunc(cap.get(CAP_PROP_AUDIO_TOTAL_CHANNELS));
-    cout + 'CAP_PROP_AUDIO_DATA_DEPTH: ' + String(depthToString(Trunc(cap.get(CAP_PROP_AUDIO_DATA_DEPTH)))) + endl;
+    cout + 'CAP_PROP_AUDIO_DATA_DEPTH: ' + depthToString(Trunc(cap.get(CAP_PROP_AUDIO_DATA_DEPTH))) + endl;
     cout + 'CAP_PROP_AUDIO_SAMPLES_PER_SECOND: ' + cap.get(CAP_PROP_AUDIO_SAMPLES_PER_SECOND) + endl;
     cout + 'CAP_PROP_AUDIO_TOTAL_CHANNELS: ' + numberOfChannels + endl;
     cout + 'CAP_PROP_AUDIO_TOTAL_STREAMS: ' + cap.get(CAP_PROP_AUDIO_TOTAL_STREAMS) + endl;

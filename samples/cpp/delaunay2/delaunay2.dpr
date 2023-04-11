@@ -44,7 +44,7 @@ end;
 
 procedure draw_subdiv_point(const img: TMat; const fp: TPoint2f; const color: TScalar);
 begin
-  circle(img, fp, 3, color, Int(FILLED), LINE_8, 0);
+  circle(img, fp, 3, color, FILLED, LINE_8, 0);
 end;
 
 procedure draw_subdiv(const img: TMat; const subdiv: TSubdiv2D; const delaunay_color: TScalar);

@@ -32,50 +32,58 @@ uses
 
 begin
   try
-    Var frame:TMat;
-    Var audioData:vector<TMat>;
-    Var cap:TVideoCapture;
-    Var params :vector<int> :=[    Int(CAP_PROP_AUDIO_STREAM), 0,
-                                   Int(CAP_PROP_VIDEO_STREAM), -1   ];
+    Var
+      frame: TMat;
+    Var
+      audioData: vector<TMat>;
+    Var
+      cap: TVideoCapture;
+    Var
+      params: vector<int> := [CAP_PROP_AUDIO_STREAM, 0, CAP_PROP_VIDEO_STREAM, -1];
 
     cap.open(0, CAP_MSMF, params);
     if (not cap.isOpened()) then
     begin
-        cerr + 'ERROR! Can''t to open microphone' + endl;
-        Halt(1);
+      cerr + 'ERROR! Can''t to open microphone' + endl;
+      Halt(1);
     end;
 
-    const audioBaseIndex :int= Trunc(cap.get(CAP_PROP_AUDIO_BASE_INDEX));
-    const numberOfChannels :int= Trunc(cap.get(CAP_PROP_AUDIO_TOTAL_CHANNELS));
-    cout + 'CAP_PROP_AUDIO_DATA_DEPTH: ' + String(depthToString(Trunc(cap.get(CAP_PROP_AUDIO_DATA_DEPTH)))) + endl;
+    const
+      audioBaseIndex: int = Trunc(cap.get(CAP_PROP_AUDIO_BASE_INDEX));
+    const
+      numberOfChannels: int = Trunc(cap.get(CAP_PROP_AUDIO_TOTAL_CHANNELS));
+    cout + 'CAP_PROP_AUDIO_DATA_DEPTH: ' + depthToString(Trunc(cap.get(CAP_PROP_AUDIO_DATA_DEPTH))) + endl;
     cout + 'CAP_PROP_AUDIO_SAMPLES_PER_SECOND: ' + cap.get(CAP_PROP_AUDIO_SAMPLES_PER_SECOND) + endl;
     cout + 'CAP_PROP_AUDIO_TOTAL_CHANNELS: ' + numberOfChannels + endl;
     cout + 'CAP_PROP_AUDIO_TOTAL_STREAMS: ' + cap.get(CAP_PROP_AUDIO_TOTAL_STREAMS) + endl;
 
-    const cvTickFreq : double = getTickFrequency();
-    var sysTimeCurr :int64:= getTickCount();
-    Var sysTimePrev :int64:= sysTimeCurr;
-    while ((sysTimeCurr-sysTimePrev) / cvTickFreq) < 10 do
+    const
+      cvTickFreq: double = getTickFrequency();
+    var
+      sysTimeCurr: int64 := getTickCount();
+    Var
+      sysTimePrev: int64 := sysTimeCurr;
+    while ((sysTimeCurr - sysTimePrev) / cvTickFreq) < 10 do
     begin
-        if (cap.grab()) then
+      if (cap.grab()) then
+      begin
+        for Var nCh: int := 0 to numberOfChannels - 1 do
         begin
-            for Var nCh :int:= 0 to numberOfChannels-1  do
-            begin
-                cap.retrieve(frame, audioBaseIndex+nCh);
-                audioData.push_back(frame);
-                sysTimeCurr := getTickCount();
-            end
+          cap.retrieve(frame, audioBaseIndex + nCh);
+          audioData.push_back(frame);
+          sysTimeCurr := getTickCount();
         end
-        else
-        begin
-            cerr + 'Grab error' + endl;
-            break;
-        end;
+      end
+      else
+      begin
+        cerr + 'Grab error' + endl;
+        break;
+      end;
     end;
-    Var numberOfSamles :int:= 0;
+    Var
+      numberOfSamles: int := 0;
 
-    for var i:int:=0 to audioData.size-1 do
-        numberOfSamles :=numberOfSamles+audioData[i].cols;
+      for var i: int := 0 to audioData.size - 1 do numberOfSamles := numberOfSamles + audioData[i].cols;
 
     cout + 'Number of samples: ' + numberOfSamles + endl;
 

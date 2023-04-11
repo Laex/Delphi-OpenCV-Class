@@ -35,32 +35,33 @@ begin
   try
     Var
       capture: TVideoCapture := TVideoCapture.capture(0, CAP_INTELPERC);
-    While True do
-    begin
-      Var
-       depthMap, image, irImage, adjMap: TMat;
+    if capture.isOpened then
+      While True do
+      begin
+        Var
+          depthMap, image, irImage, adjMap: TMat;
 
-      capture.grab();
-      capture.retrieve(depthMap, CAP_INTELPERC_DEPTH_MAP);
-      capture.retrieve(image, CAP_INTELPERC_IMAGE);
-      capture.retrieve(irImage, CAP_INTELPERC_IR_MAP);
+        capture.grab();
+        capture.retrieve(depthMap, CAP_INTELPERC_DEPTH_MAP);
+        capture.retrieve(image, CAP_INTELPERC_IMAGE);
+        capture.retrieve(irImage, CAP_INTELPERC_IR_MAP);
 
-      if not depthMap.empty then
-        normalize(depthMap, adjMap, 0, 255, NORM_MINMAX, CV_8UC1);
+        if not depthMap.empty then
+          normalize(depthMap, adjMap, 0, 255, NORM_MINMAX, CV_8UC1);
 
-      if not adjMap.empty then
-        applyColorMap(adjMap, adjMap, COLORMAP_JET);
+        if not adjMap.empty then
+          applyColorMap(adjMap, adjMap, COLORMAP_JET);
 
-      if not image.empty then
-        imshow('RGB', image);
-      if not irImage.empty then
-        imshow('IR', irImage);
-      if not adjMap.empty then
-        imshow('DEPTH', adjMap);
+        if not image.empty then
+          imshow('RGB', image);
+        if not irImage.empty then
+          imshow('IR', irImage);
+        if not adjMap.empty then
+          imshow('DEPTH', adjMap);
 
-      if (waitKey(30) >= 0) then
-        break;
-    end;
+        if (waitKey(30) >= 0) then
+          break;
+      end;
 
   except
     on E: Exception do

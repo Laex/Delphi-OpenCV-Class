@@ -62,6 +62,8 @@ begin
     tool.getContour(target_point, pts);
     // ! [usage_example_intelligent_scissors]
 
+    WriteLn(pts.size);
+
   except
     on E: Exception do
     begin

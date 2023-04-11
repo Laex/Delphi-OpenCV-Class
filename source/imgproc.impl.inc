@@ -61,7 +61,7 @@ begin
 {$IFEND}
 end;
 
-procedure TSubdiv2D.getTriangleList(const triangleList: vector<TVec6f>);
+procedure TSubdiv2D.getTriangleList(Var triangleList: vector<TVec6f>);
 begin
 {$IF not defined(PACKAGE)}
   class_proc_CV_SUBDIV2D_getTriangleList(Self, triangleList);
@@ -75,17 +75,24 @@ begin
 {$IFEND}
 end;
 
+function TSubdiv2D.edgeOrg(edge: Int): Int;
+begin
+{$IF not defined(PACKAGE)}
+  Result := class_func_CV_SUBDIV2D_edgeOrg(Self, edge, nil);
+{$IFEND}
+end;
+
 function TSubdiv2D.edgeOrg(edge: Int; var orgpt: TPoint2f): Int;
 begin
 {$IF not defined(PACKAGE)}
-  Result := class_func_CV_SUBDIV2D_edgeOrg(Self, edge, orgpt);
+  Result := class_func_CV_SUBDIV2D_edgeOrg(Self, edge, pCV_POINT__OF_FLOAT(@orgpt));
 {$IFEND}
 end;
 
 function TSubdiv2D.edgeDst(edge: Int; var dstpt: TPoint2f): Int;
 begin
 {$IF not defined(PACKAGE)}
-  Result := class_func_CV_SUBDIV2D_edgeOrg(Self, edge, dstpt);
+  Result := class_func_CV_SUBDIV2D_edgeDst(Self, edge, pCV_POINT__OF_FLOAT(@dstpt));
 {$IFEND}
 end;
 

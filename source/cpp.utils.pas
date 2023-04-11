@@ -190,6 +190,9 @@ const
 
 type
   Tcout = record
+    class operator Add(const C: Tcout; const B: pAnsiChar): Tcout; inline;
+    class operator Add(const C: Tcout; const B: pChar): Tcout; inline;
+    class operator Add(const C: Tcout; const B: pCvChar): Tcout; inline;
     class operator Add(const C: Tcout; const B: String): Tcout; inline;
     class operator Add(const C: Tcout; const B: DOUBLE): Tcout; inline;
   end;
@@ -520,6 +523,24 @@ end;
 class operator Tcout.Add(const C: Tcout; const B: DOUBLE): Tcout;
 begin
   write(B.ToString);
+  Result := C;
+end;
+
+class operator Tcout.Add(const C: Tcout; const B: pChar): Tcout;
+begin
+  write(CppReplace(String(B)));
+  Result := C;
+end;
+
+class operator Tcout.Add(const C: Tcout; const B: pAnsiChar): Tcout;
+begin
+  write(CppReplace(String(B)));
+  Result := C;
+end;
+
+class operator Tcout.Add(const C: Tcout; const B: pCvChar): Tcout;
+begin
+  write(CppReplace(String(B)));
   Result := C;
 end;
 
