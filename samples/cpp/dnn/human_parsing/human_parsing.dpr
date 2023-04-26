@@ -31,8 +31,7 @@ uses
   cv.opencv,
   CmdLineParser;
 
-function parse_human(const image: TMat; const model: string; backend: int = int(backend.DNN_BACKEND_DEFAULT);
-  target: int = int(target.DNN_TARGET_CPU)): TMat;
+function parse_human(const image: TMat; const model: string; backend: int = int(backend.DNN_BACKEND_DEFAULT); target: int = int(target.DNN_TARGET_CPU)): TMat;
 begin
   Var
     flipped: TMat;
@@ -46,6 +45,7 @@ begin
 
   Var
     net: TNet := readNet(model);
+
   net.setPreferableBackend(backend);
   net.setPreferableTarget(target);
   net.setInput(blob);
@@ -58,9 +58,7 @@ begin
     // 10 Jumpsuits, 11 Scarf, 12 Skirt, 13 Face, 14 LeftArm, 15 RightArm, 16 LeftLeg, 17 RightLeg, 18 LeftShoe. 19 RightShoe
   Var
     colors: TArray<TVec3b> := [ //
-      Vec3b(0, 0, 0), Vec3b(128, 0, 0), Vec3b(255, 0, 0), Vec3b(0, 85, 0), Vec3b(170, 0, 51), Vec3b(255, 85, 0), Vec3b(0, 0, 85), Vec3b(0, 119, 221),
-      Vec3b(85, 85, 0), Vec3b(0, 85, 85), Vec3b(85, 51, 0), Vec3b(52, 86, 128), Vec3b(0, 128, 0), Vec3b(0, 0, 255), Vec3b(51, 170, 221),
-      Vec3b(0, 255, 255), Vec3b(85, 255, 170), Vec3b(170, 255, 85), Vec3b(255, 255, 0), Vec3b(255, 170, 0)];
+      Vec3b(0, 0, 0), Vec3b(128, 0, 0), Vec3b(255, 0, 0), Vec3b(0, 85, 0), Vec3b(170, 0, 51), Vec3b(255, 85, 0), Vec3b(0, 0, 85), Vec3b(0, 119, 221), Vec3b(85, 85, 0), Vec3b(0, 85, 85), Vec3b(85, 51, 0), Vec3b(52, 86, 128), Vec3b(0, 128, 0), Vec3b(0, 0, 255), Vec3b(51, 170, 221), Vec3b(0, 255, 255), Vec3b(85, 255, 170), Vec3b(170, 255, 85), Vec3b(255, 255, 0), Vec3b(255, 170, 0)];
 
   Var
     segm: TMat := TMat.Mat(image.Size, CV_8UC3, Scalar(0, 0, 0));
@@ -136,7 +134,7 @@ begin
 
     if not parser.check then
     begin
-//      parser.printError();
+      // parser.printError();
       Halt(0);
     end;
 

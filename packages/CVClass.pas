@@ -73,10 +73,10 @@ Type
     // property FPS: double read GetFPS;
   end;
 
-  TCVReceiverList = TThreadList<ICVDataReceiver>;
-  TOnCVNotify = procedure(Sender: TObject; const AMat: TMat) of object;
-  TOnCVNotifyVar = procedure(Sender: TObject; Var AMat: TMat) of object;
-  TOnCVAfterPaint = TOnCVNotify;
+  TCVReceiverList         = TThreadList<ICVDataReceiver>;
+  TOnCVNotify             = procedure(Sender: TObject; const AMat: TMat) of object;
+  TOnCVNotifyVar          = procedure(Sender: TObject; Var AMat: TMat) of object;
+  TOnCVAfterPaint         = TOnCVNotify;
   TOnBeforeNotifyReceiver = TOnCVNotifyVar;
 
   TCVDataSource = class(TComponent, ICVDataSource)
@@ -130,6 +130,7 @@ Type
     property Source: ICVDataSource Read FCVSource write SetCVSource;
   end;
 
+  [ComponentPlatformsAttribute(pidWin64)]
   TCVView = class(TCustomControl, ICVDataReceiver)
   private
     FMat: pMat; // Stored last received Mat
@@ -182,7 +183,7 @@ Type
     property Enabled;
   end;
 
-  TOCVLock = TLightweightMREW;
+  TOCVLock                   = TLightweightMREW;
   TPersistentAccessProtected = class(TPersistent);
 
   TCVCaptureThread = class(TThread)
@@ -203,8 +204,7 @@ Type
     procedure Execute; override;
   public
     constructor Create(const AFileName: string; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: VideoCaptureAPIs = CAP_ANY); overload;
-    constructor Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: VideoCaptureAPIs = CAP_ANY);
-      overload;
+    constructor Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: VideoCaptureAPIs = CAP_ANY); overload;
     procedure SetResolution(const Width, Height: Double);
     property OnNoData: TNotifyEvent Read FOnNoData write FOnNoData;
     property OnNotifyData: TOnCVNotify Read FOnNotifyData write FOnNotifyData;
@@ -312,6 +312,8 @@ const
     );
 
 Type
+
+  [ComponentPlatformsAttribute(pidWin64)]
   TCVWebCameraSource = class(TCVCustomSource)
   private
     FResolution: TCVWebCameraResolution;
@@ -328,6 +330,7 @@ Type
     property CustomResolution: TCVCustomResolution read FCustomResolution write FCustomResolution;
   end;
 
+  [ComponentPlatformsAttribute(pidWin64)]
   TCVFileSource = class(TCVCustomSource)
   private
     FFileName: TFileName;
@@ -349,6 +352,7 @@ Type
     procedure SetPropertiesClass(Value: TCVSourceTypeClass);
   end;
 
+  [ComponentPlatformsAttribute(pidWin64)]
   TCVCaptureSource = class(TCVDataSource, ICVEditorPropertiesContainer)
   protected
     FSourceThread: TCVCaptureThread;
@@ -401,6 +405,7 @@ Type
     property Enabled stored True;
   end;
 
+  [ComponentPlatformsAttribute(pidWin64)]
   TCVVideoWriter = class(TCVDataProxy)
   private
     FWriter: pVideoWriter;
@@ -454,7 +459,7 @@ implementation
 function ipDraw(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
 
 Type
-  pCOLORREF = ^COLORREF;
+  pCOLORREF         = ^COLORREF;
   pBITMAPINFOHEADER = ^BITMAPINFOHEADER;
 
 Var
