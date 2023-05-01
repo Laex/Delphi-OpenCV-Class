@@ -575,5 +575,19 @@ begin
 {$IFEND}
 end;
 
+function boundingRect(const arr: TInputArray): TRect;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_boundingRect(arr);
+{$IFEND}
+end;
+
+function arcLength(const curve: TInputArray; closed: BOOL): double;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_arcLength(curve, closed);
+{$IFEND}
+end;
+
 {$I 'imgproc/segmentation.impl.inc'}
 {$IFEND}

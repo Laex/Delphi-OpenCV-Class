@@ -4601,6 +4601,8 @@ The function computes a curve length or a closed contour perimeter.
 @param closed Flag indicating whether the curve is closed or not.
  *)
 //CV_EXPORTS_W double arcLength( InputArray curve, bool closed );
+function arcLength(const curve:TInputArray; closed:bool ):Double;
+overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Calculates the up-right bounding rectangle of a point set or non-zero pixels of gray-scale image.
 
@@ -4610,6 +4612,8 @@ non-zero pixels of gray-scale image.
 @param array Input gray-scale image or 2D point set, stored in std::vector or Mat.
  *)
 //CV_EXPORTS_W Rect boundingRect( InputArray array );
+function boundingRect(const arr:TInputArray):TRect;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (** @brief Calculates a contour area.
 
