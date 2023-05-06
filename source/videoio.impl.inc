@@ -67,7 +67,7 @@ begin
   Result.open(index);
 end;
 
-class function TVideoCapture.Capture(const index: Int; const apiPreference: VideoCaptureAPIs = CAP_ANY): TVideoCapture;
+class function TVideoCapture.Capture(const index: Int; const apiPreference: TVideoCaptureAPIs = CAP_ANY): TVideoCapture;
 begin
   Result.open(index, apiPreference);
 end;
@@ -86,7 +86,7 @@ begin
 {$IFEND}
 end;
 
-function TVideoCapture.open(const filename: String; const apiPreference: VideoCaptureAPIs; const params: Vector<Int>): BOOL;
+function TVideoCapture.open(const filename: String; const apiPreference: TVideoCaptureAPIs; const params: Vector<Int>): BOOL;
 begin
 {$IF not defined(PACKAGE)}
   try
@@ -97,7 +97,7 @@ begin
 {$IFEND}
 end;
 
-function TVideoCapture.open(const filename: String; const apiPreference: VideoCaptureAPIs): BOOL;
+function TVideoCapture.open(const filename: String; const apiPreference: TVideoCaptureAPIs): BOOL;
 begin
 {$IF not defined(PACKAGE)}
   try
@@ -108,7 +108,7 @@ begin
 {$IFEND}
 end;
 
-function TVideoCapture.open(const index: Int; const apiPreference: VideoCaptureAPIs; const params: Vector<Int>): BOOL;
+function TVideoCapture.open(const index: Int; const apiPreference: TVideoCaptureAPIs; const params: Vector<Int>): BOOL;
 begin
 {$IF not defined(PACKAGE)}
   try
@@ -119,7 +119,7 @@ begin
 {$IFEND}
 end;
 
-function TVideoCapture.open(const index: Int; const apiPreference: VideoCaptureAPIs): BOOL;
+function TVideoCapture.open(const index: Int; const apiPreference: TVideoCaptureAPIs): BOOL;
 begin
 {$IF not defined(PACKAGE)}
   try

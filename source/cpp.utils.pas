@@ -88,6 +88,8 @@ Type
 
   pVector = type pointer;
 
+  TVector_Enumerator<T> = class;
+
   Vector<T> = record
   private
 {$HINTS OFF}
@@ -121,6 +123,19 @@ Type
     class operator Implicit(const A: TArray<T>): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const size: Integer): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function noVector: Vector<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  public
+    function GetEnumerator: TVector_Enumerator<T>;
+  end;
+
+  TVector_Enumerator<T> = class
+  protected
+    Parent: Vector<T>;
+    Position: Integer;
+  public
+    constructor Create(AParent: Vector<T>);
+    function MoveNext: boolean;
+    function GetCurrent: T;
+    property Current: T read GetCurrent;
   end;
 
   pCppString = ^CppString;
@@ -192,7 +207,7 @@ type
   Tcout = record
     class operator Add(const C: Tcout; const B: pAnsiChar): Tcout; inline;
     class operator Add(const C: Tcout; const B: pChar): Tcout; inline;
-    class operator Add(const C: Tcout; const B: pCvChar): Tcout; inline;
+    class operator Add(const C: Tcout; const B: pCVCHAR): Tcout; inline;
     class operator Add(const C: Tcout; const B: String): Tcout; inline;
     class operator Add(const C: Tcout; const B: DOUBLE): Tcout; inline;
   end;
@@ -285,6 +300,11 @@ begin
 {$IFEND}
 end;
 
+function Vector<T>.GetEnumerator: TVector_Enumerator<T>;
+begin
+  Result := TVector_Enumerator<T>.Create(Self);
+end;
+
 function Vector<T>.GetItems(const index: uint64): T;
 begin
 {$IF not defined(PACKAGE)}
@@ -361,33 +381,33 @@ end;
 class function Vector<T>.vt: TVectorType;
 begin
   if TypeInfo(T) = TypeInfo(TMat) then
-    vt := vtMat
+    vt := TVectorType.vtMat
   else if TypeInfo(T) = TypeInfo(TRect) then
-    vt := vtRect
+    vt := TVectorType.vtRect
   else if TypeInfo(T) = TypeInfo(TPoint) then
-    vt := vtPoint
+    vt := TVectorType.vtPoint
   else if TypeInfo(T) = TypeInfo(Vector<TPoint>) then
-    vt := vtVectorPoint
+    vt := TVectorType.vtVectorPoint
   else if TypeInfo(T) = TypeInfo(TPoint2f) then
-    vt := vtPoint2f
+    vt := TVectorType.vtPoint2f
   else if TypeInfo(T) = TypeInfo(TScalar) then
-    vt := vtScalar
+    vt := TVectorType.vtScalar
   else if TypeInfo(T) = TypeInfo(uchar) then // vector<uchar>
-    vt := vtUchar
+    vt := TVectorType.vtUchar
   else if TypeInfo(T) = TypeInfo(FLOAT) then // vector<float>
-    vt := vtFloat
+    vt := TVectorType.vtFloat
   else if TypeInfo(T) = TypeInfo(INT) then // vector<float>
-    vt := vtInt
+    vt := TVectorType.vtInt
   else if TypeInfo(T) = TypeInfo(TVec4i) then // vector<float>
-    vt := vtVec4i
+    vt := TVectorType.vtVec4i
   else if TypeInfo(T) = TypeInfo(TVec6f) then // vector<float>
-    vt := vtVec6f
+    vt := TVectorType.vtVec6f
   else if TypeInfo(T) = TypeInfo(Vector<TPoint2f>) then // vector<float>
-    vt := vtVectorPoint2f
+    vt := TVectorType.vtVectorPoint2f
   else if TypeInfo(T) = TypeInfo(Vector<TMat>) then // vector<float>
-    vt := vtVectorMat
+    vt := TVectorType.vtVectorMat
   else if TypeInfo(T) = TypeInfo(CppString) then // vector<CppString>
-    vt := vtString
+    vt := TVectorType.vtString
   else
   begin
     Var
@@ -538,7 +558,7 @@ begin
   Result := C;
 end;
 
-class operator Tcout.Add(const C: Tcout; const B: pCvChar): Tcout;
+class operator Tcout.Add(const C: Tcout; const B: pCVCHAR): Tcout;
 begin
   write(CppReplace(String(B)));
   Result := C;
@@ -650,6 +670,27 @@ begin
     Result := ifTrue
   else
     Result := ifFalse;
+end;
+
+{ TVector_Enumerator<T> }
+
+constructor TVector_Enumerator<T>.Create(AParent: Vector<T>);
+begin
+  inherited Create;
+  Position := -1;
+  Parent := AParent;
+end;
+
+function TVector_Enumerator<T>.GetCurrent: T;
+begin
+  Result := Parent[Position];
+end;
+
+function TVector_Enumerator<T>.MoveNext: boolean;
+begin
+  Result := Position < (Parent.size - 1);
+  if Result then
+    Inc(Position);
 end;
 
 initialization

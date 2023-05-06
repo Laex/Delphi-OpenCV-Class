@@ -43,7 +43,7 @@ end;
 
 { TORB }
 
-class function TORB.create(nfeatures: int = 500; scaleFactor: float = 1.2; nlevels: int = 8; edgeThreshold: int = 31; firstLevel: int = 0; WTA_K: int = 2; scoreType: scoreTypes = HARRIS_SCORE; patchSize: int = 31; fastThreshold: int = 20): TPtr<TFeature2D>;
+class function TORB.create(nfeatures: int = 500; scaleFactor: float = 1.2; nlevels: int = 8; edgeThreshold: int = 31; firstLevel: int = 0; WTA_K: int = 2; scoreType: TScoreTypes = HARRIS_SCORE; patchSize: int = 31; fastThreshold: int = 20): TPtr<TFeature2D>;
 begin
 {$IF not defined(PACKAGE)}
   class_proc_CV_ORB_create(Result, nfeatures, scaleFactor, nlevels, edgeThreshold, firstLevel, WTA_K, int(scoreType), patchSize, fastThreshold);

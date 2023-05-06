@@ -103,26 +103,28 @@
 // ! @{
 
 // ! matrix decomposition types
-DecompTypes = ( //
+DecompTypes = type int; //
+const
   (* * Gaussian elimination with the optimal pivot element chosen. *)
-  DECOMP_LU = 0,
+  DECOMP_LU = 0;
   (* * singular value decomposition (SVD) method; the system can be over-defined and/or the matrix
     src1 can be singular *)
-  DECOMP_SVD = 1,
+  DECOMP_SVD = 1;
   (* * eigenvalue decomposition; the matrix src1 must be symmetrical *)
-  DECOMP_EIG = 2,
+  DECOMP_EIG = 2;
   (* * Cholesky \f$LL^T\f$ factorization; the matrix src1 must be symmetrical and positively
     defined *)
-  DECOMP_CHOLESKY = 3,
+  DECOMP_CHOLESKY = 3;
   (* * QR factorization; the system can be over-defined and/or the matrix src1 can be singular *)
-  DECOMP_QR = 4,
+  DECOMP_QR = 4;
   (* * while all the previous flags are mutually exclusive, this flag can be used together with
     any of the previous; it means that the normal equations
     \f$\texttt{src1}^T\cdot\texttt{src1}\cdot\texttt{dst}=\texttt{src1}^T\texttt{src2}\f$ are
     solved instead of the original system
     \f$\texttt{src1}\cdot\texttt{dst}=\texttt{src2}\f$ *)
-  DECOMP_NORMAL = 16);
+  DECOMP_NORMAL = 16;
 
+type
 (* * norm types
   src1 and src2 denote input arrays.
 *)

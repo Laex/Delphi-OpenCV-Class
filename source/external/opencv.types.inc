@@ -388,8 +388,8 @@ Type
   CV_FASTFEATUREDETECTOR                                 = type TEmptyRec;
   CV_FASTFEATUREDETECTOR_DETECTORTYPE                    = type TEmptyRec;
   CV_FEATURE2D                                           = type TEmptyRec;
-  CV_FILENODE                                            = type TEmptyRec;
-  CV_FILENODEITERATOR                                    = type TEmptyRec;
+  CV_FILENODE                                            = {$IF Declared(TFileNode)}TFileNode{$ELSE} type TEmptyRec{$IFEND};
+  CV_FILENODEITERATOR                                    = {$IF Declared(TFileNodeIterator)}TFileNodeIterator{$ELSE} type TEmptyRec{$IFEND};
   CV_FILESTORAGE                                         = type TEmptyRec;
   CV_FILESTORAGE_IMPL                                    = type TEmptyRec;
   CV_FISHEYE                                             = type TEmptyRec;
@@ -600,7 +600,7 @@ Type
   CV_HIGHGUI_BACKEND_UIWINDOW                            = type TEmptyRec;
   CV_HIGHGUI_BACKEND_UIWINDOWBASE                        = type TEmptyRec;
   CV_HOGDESCRIPTOR                                       = {$IF Declared(THOGDescriptor)}THOGDescriptor{$ELSE} type TEmptyRec{$IFEND};
-  CV_HOGDESCRIPTOR_HISTOGRAMNORMTYPE                     = {$IF Declared(THOGDescriptor.HistogramNormType)}THOGDescriptor.HistogramNormType{$ELSE} type TEmptyRec{$IFEND};
+  CV_HOGDESCRIPTOR_HISTOGRAMNORMTYPE                     = {$IF Declared(THOGDescriptor.THistogramNormType)}THOGDescriptor.THistogramNormType{$ELSE} type TEmptyRec{$IFEND};
   CV_IMAGECOLLECTION                                     = type TEmptyRec;
   CV_IMAGECOLLECTION_ITERATOR                            = type TEmptyRec;
   CV_INSTR                                               = type TEmptyRec;

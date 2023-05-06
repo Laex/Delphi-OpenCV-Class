@@ -92,14 +92,14 @@ begin
 {$IFEND}
 end;
 
-class function THOGDescriptor.HOGDescriptor(const _winSize: TSize; const _blockSize: TSize; const _blockStride: TSize; const _cellSize: TSize; _nbins: Int; _derivAperture: Int = 1; _winSigma: double = -1; _histogramNormType: HistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false; _nlevels: Int = DEFAULT_NLEVELS; _signedGradient: BOOL = false): THOGDescriptor;
+class function THOGDescriptor.HOGDescriptor(const _winSize: TSize; const _blockSize: TSize; const _blockStride: TSize; const _cellSize: TSize; _nbins: Int; _derivAperture: Int = 1; _winSigma: double = -1; _histogramNormType: THistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false; _nlevels: Int = DEFAULT_NLEVELS; _signedGradient: BOOL = false): THOGDescriptor;
 begin
 {$IF not defined(PACKAGE)}
   constructor_CV_HOGDESCRIPTOR_2(Result, _winSize, _blockSize, _blockStride, _cellSize, _nbins, _derivAperture, _winSigma, _histogramNormType, _L2HysThreshold, _gammaCorrection, _nlevels, _signedGradient);
 {$IFEND}
 end;
 
-class procedure THOGDescriptor.HOGDescriptor(Var R: THOGDescriptor; const _winSize: TSize; const _blockSize: TSize; const _blockStride: TSize; const _cellSize: TSize; _nbins: Int; _derivAperture: Int = 1; _winSigma: double = -1; _histogramNormType: HistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false; _nlevels: Int = DEFAULT_NLEVELS; _signedGradient: BOOL = false);
+class procedure THOGDescriptor.HOGDescriptor(Var R: THOGDescriptor; const _winSize: TSize; const _blockSize: TSize; const _blockStride: TSize; const _cellSize: TSize; _nbins: Int; _derivAperture: Int = 1; _winSigma: double = -1; _histogramNormType: THistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false; _nlevels: Int = DEFAULT_NLEVELS; _signedGradient: BOOL = false);
 begin
 {$IF not defined(PACKAGE)}
   constructor_CV_HOGDESCRIPTOR_2(R, _winSize, _blockSize, _blockStride, _cellSize, _nbins, _derivAperture, _winSigma, _histogramNormType, _L2HysThreshold, _gammaCorrection, _nlevels, _signedGradient);

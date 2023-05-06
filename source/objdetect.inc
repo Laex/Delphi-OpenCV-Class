@@ -364,13 +364,14 @@ Type
     vft: vftable_func;
 {$HINTS ON}
   public type
-    HistogramNormType = ( //
-      L2Hys = 0           // !< Default histogramNormType
-      );
+    THistogramNormType = type int; //
+    const
+      L2Hys = 0;           // !< Default histogramNormType
   public const
     DEFAULT_NLEVELS = 64; // !< Default nlevels value.
   public type
-    DescriptorStorageFormat = ( //
+    TDescriptorStorageFormat =  //
+    (
       DESCR_FORMAT_COL_BY_COL,  //
       DESCR_FORMAT_ROW_BY_ROW   //
       );
@@ -410,10 +411,10 @@ Type
     // gammaCorrection(_gammaCorrection), free_coef(-1.f), nlevels(_nlevels), signedGradient(_signedGradient)
     // {}
     class function HOGDescriptor(const _winSize: TSize; const _blockSize: TSize; const _blockStride: TSize; const _cellSize: TSize; _nbins: Int; _derivAperture: Int = 1;
-      _winSigma: double = -1; _histogramNormType: HistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false; _nlevels: Int = DEFAULT_NLEVELS;
+      _winSigma: double = -1; _histogramNormType: THistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false; _nlevels: Int = DEFAULT_NLEVELS;
       _signedGradient: BOOL = false): THOGDescriptor; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class procedure HOGDescriptor(Var R: THOGDescriptor; const _winSize: TSize; const _blockSize: TSize; const _blockStride: TSize; const _cellSize: TSize; _nbins: Int;
-      _derivAperture: Int = 1; _winSigma: double = -1; _histogramNormType: HistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false;
+      _derivAperture: Int = 1; _winSigma: double = -1; _histogramNormType: THistogramNormType = L2Hys; _L2HysThreshold: double = 0.2; _gammaCorrection: BOOL = false;
       _nlevels: Int = DEFAULT_NLEVELS; _signedGradient: BOOL = false); overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     (* * @overload
       @param filename The file name containing HOGDescriptor properties and coefficients for the linear SVM classifier.
@@ -619,7 +620,7 @@ Type
     winSigma: double;
     // ! histogramNormType
     // CV_PROP HOGDescriptor::HistogramNormType histogramNormType;
-    _histogramNormType: HistogramNormType;
+    _histogramNormType: THistogramNormType;
     // ! L2-Hys normalization method shrinkage.
     // CV_PROP double L2HysThreshold;
     L2HysThreshold: double;

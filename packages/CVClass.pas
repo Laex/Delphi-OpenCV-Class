@@ -192,7 +192,7 @@ Type
   private
     FSourceType: TSourceType;
     FFileName: String;
-    FVideoAPIs: VideoCaptureAPIs;
+    FVideoAPIs: TVideoCaptureAPIs;
     FCameraIndex: Integer;
   private
     FCapture: TVideoCapture;
@@ -203,8 +203,8 @@ Type
     procedure TerminatedSet; override;
     procedure Execute; override;
   public
-    constructor Create(const AFileName: string; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: VideoCaptureAPIs = CAP_ANY); overload;
-    constructor Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: VideoCaptureAPIs = CAP_ANY); overload;
+    constructor Create(const AFileName: string; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: TVideoCaptureAPIs = CAP_ANY); overload;
+    constructor Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: TVideoCaptureAPIs = CAP_ANY); overload;
     procedure SetResolution(const Width, Height: Double);
     property OnNoData: TNotifyEvent Read FOnNoData write FOnNoData;
     property OnNotifyData: TOnCVNotify Read FOnNotifyData write FOnNotifyData;
@@ -440,6 +440,7 @@ Type
     property Resolution: TCVCustomResolution read FResolution write FResolution;
   end;
 
+  [ComponentPlatformsAttribute(pidWin64)]
   TRegisteredCaptureSource = class(TStringList)
   public
     function FindByClassName(const ClassName: String): TCVSourceTypeClass;
@@ -858,7 +859,7 @@ end;
 { TCVCaptureSource }
 
 Var
-  CVVideoCaptureAPIs: array [TCVVideoCaptureAPIs] of VideoCaptureAPIs = //
+  CVVideoCaptureAPIs: array [TCVVideoCaptureAPIs] of TVideoCaptureAPIs = //
     ( //
     CAP_ANY,         // !< Auto detect == 0
     CAP_VFW,         // !< Video For Windows obsolete, removed)
@@ -1251,7 +1252,7 @@ end;
 
 { TCVCaptureThread }
 
-constructor TCVCaptureThread.Create(const AFileName: string; const AThreadDelay: Cardinal; const VideoAPIs: VideoCaptureAPIs);
+constructor TCVCaptureThread.Create(const AFileName: string; const AThreadDelay: Cardinal; const VideoAPIs: TVideoCaptureAPIs);
 begin
   Inherited Create(True);
   FThreadDelay := AThreadDelay;
@@ -1260,7 +1261,7 @@ begin
   FVideoAPIs := VideoAPIs;
 end;
 
-constructor TCVCaptureThread.Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal; const VideoAPIs: VideoCaptureAPIs);
+constructor TCVCaptureThread.Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal; const VideoAPIs: TVideoCaptureAPIs);
 begin
   Inherited Create(True);
   FThreadDelay := AThreadDelay;

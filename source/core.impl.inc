@@ -29,7 +29,7 @@
 {$I 'core/matx.impl.inc' }
 {$I 'core/types.impl.inc'}
 {$I 'core/mat.impl.inc'}
-{ .$I 'core/persistence.impl.inc' }
+{$I 'core/persistence.impl.inc'}
 {$I 'core/utility.impl.inc'}
 
 procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);

@@ -379,7 +379,10 @@ k-tuples) are rotated according to the measured orientation).
     Dummy:array[0..(32-1)-SizeOf(vftable_func)] of Byte;
     {$HINTS OFF}
    public type
-    ScoreTypes =( HARRIS_SCORE=0, FAST_SCORE=1 );
+    TScoreTypes = type int;
+    const
+     HARRIS_SCORE=0;
+     FAST_SCORE=1;
    public const
     kBytes :int = 32;
    public
@@ -417,7 +420,7 @@ k-tuples) are rotated according to the measured orientation).
 //    CV_WRAP static Ptr<ORB> create(int nfeatures=500, float scaleFactor=1.2f, int nlevels=8, int edgeThreshold=31,
 //        int firstLevel=0, int WTA_K=2, ORB::ScoreType scoreType=ORB::HARRIS_SCORE, int patchSize=31, int fastThreshold=20);
 class function create(nfeatures:int=500; scaleFactor:float=1.2; nlevels:int=8; edgeThreshold:int=31;
-        firstLevel:int=0; WTA_K:int=2; scoreType:ScoreTypes=HARRIS_SCORE; patchSize:int=31;
+        firstLevel:int=0; WTA_K:int=2; scoreType:TScoreTypes=HARRIS_SCORE; patchSize:int=31;
         fastThreshold:int=20):TPtr<TFeature2D>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 //    CV_WRAP virtual void setMaxFeatures(int maxFeatures) = 0;
@@ -688,41 +691,47 @@ minConvexity (inclusive) and maxConvexity (exclusive).
 
 Default values of parameters are tuned to extract dark circular blobs.
  *)
-//class CV_EXPORTS_W SimpleBlobDetector : public Feature2D
-//{
-//public:
-//  struct CV_EXPORTS_W_SIMPLE Params
-//  {
-//      CV_WRAP Params();
-//      CV_PROP_RW float thresholdStep;
-//      CV_PROP_RW float minThreshold;
-//      CV_PROP_RW float maxThreshold;
-//      CV_PROP_RW size_t minRepeatability;
-//      CV_PROP_RW float minDistBetweenBlobs;
-//
-//      CV_PROP_RW bool filterByColor;
-//      CV_PROP_RW uchar blobColor;
-//
-//      CV_PROP_RW bool filterByArea;
-//      CV_PROP_RW float minArea, maxArea;
-//
-//      CV_PROP_RW bool filterByCircularity;
-//      CV_PROP_RW float minCircularity, maxCircularity;
-//
-//      CV_PROP_RW bool filterByInertia;
-//      CV_PROP_RW float minInertiaRatio, maxInertiaRatio;
-//
-//      CV_PROP_RW bool filterByConvexity;
-//      CV_PROP_RW float minConvexity, maxConvexity;
-//
-//      void read( const FileNode& fn );
-//      void write( FileStorage& fs ) const;
-//  };
-//
-//  CV_WRAP static Ptr<SimpleBlobDetector>
-//    create(const SimpleBlobDetector::Params &parameters = SimpleBlobDetector::Params());
+
+ TSimpleBlobDetector = record
+ public
+  Feature2D:TFeature2D;
+ public
+   Type
+     TParams = record
+     public
+//      class operator Initialize (out Dest: TParams);
+//      class function Params():TParams; static;
+     public
+      thresholdStep:float;
+      minThreshold:float;
+      maxThreshold:float;
+      minRepeatability:size_t ;
+      minDistBetweenBlobs:float;
+
+      filterByColor:bool;
+      blobColor:uchar;
+
+      filterByArea:bool;
+      minArea, maxArea:float;
+
+      filterByCircularity:bool;
+      minCircularity, maxCircularity:float;
+
+      filterByInertia:bool;
+      minInertiaRatio, maxInertiaRatio:float;
+
+      filterByConvexity:bool;
+      minConvexity, maxConvexity:float;
+
+//      procedure read( const fn:TFileNode);
+//      procedure write(const fs:TFileStorage);
+   end;
+  public
+//   function create():TPtr<TSimpleBlobDetector>; overload;
+//   function create(const parameters:TSimpleBlobDetector.TParams {= TSimpleBlobDetector.TParams.Params()}):TPtr<TSimpleBlobDetector>; overload;
 //  CV_WRAP virtual String getDefaultName() const CV_OVERRIDE;
-//};
+//   function getDefaultName():CppString;
+end;
 
 //! @} features2d_main
 

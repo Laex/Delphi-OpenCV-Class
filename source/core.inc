@@ -31,11 +31,10 @@
 {$IF not defined(OPENCV_CORE_BASE_HPP)}{$I 'core/base.inc'}{$IFEND}
 {$IF not defined(OPENCV_CORE_CVSTD_HPP)}{$I 'core/cvstd.inc'}{$IFEND}
 {$IF not defined(OPENCV_CORE_TRAITS_HPP)}{$I 'core/traits.inc'}{$IFEND}
-{$if not defined(OPENCV_CORE_MATX_HPP)}{$I 'core/matx.inc'}{$ifend}
-{$if not defined(OPENCV_CORE_TYPES_HPP)}{$I 'core/types.inc'}{$ifend}
-{$IF not defined(OPENCV_CORE_MAT_HPP)}{$I 'core/mat.inc'}{$ifend}
-{ .$I 'core/persistence.inc' }
-
+{$IF not defined(OPENCV_CORE_MATX_HPP)}{$I 'core/matx.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_TYPES_HPP)}{$I 'core/types.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_MAT_HPP)}{$I 'core/mat.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_PERSISTENCE_HPP)}{$I 'core/persistence.inc'}{$IFEND}
 (*
   (*! @brief Class passed to an error.
 
@@ -161,7 +160,7 @@ procedure swap(var a, b: TMat); inline;
 
 (* * @overload *)
 // CV_EXPORTS void swap( UMat& a, UMat& b );
-//procedure swap(var a, b: TUMat); inline;
+// procedure swap(var a, b: TUMat); inline;
 
 (* * @brief Computes the source location of an extrapolated pixel.
 
@@ -191,1116 +190,1090 @@ procedure swap(var a, b: TMat); inline;
   ?borderInterpolate@cv@@YAHHHH@Z
   int cv::borderInterpolate(int,int,int)
 }
-function borderInterpolate(p: int; len: int; borderType: int): int; inline;
-//external opencv_world_dll name '?borderInterpolate@cv@@YAHHHH@Z'
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+  function borderInterpolate(p: int; len: int; borderType: int): int; inline;
+  // external opencv_world_dll name '?borderInterpolate@cv@@YAHHHH@Z'
+  // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @example samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp
-  An example using copyMakeBorder function.
-  Check @ref tutorial_copyMakeBorder "the corresponding tutorial" for more details
-*)
-
-(* * @brief Forms a border around an image.
-
-  The function copies the source image into the middle of the destination image. The areas to the
-  left, to the right, above and below the copied source image will be filled with extrapolated
-  pixels. This is not what filtering functions based on it do (they extrapolate pixels on-fly), but
-  what other more complex functions, including your own, may do to simplify image boundary handling.
-
-  The function supports the mode when src is already in the middle of dst . In this case, the
-  function does not copy src itself but simply constructs the border, for example:
-
-  @code{.cpp}
-  // let border be the same in all directions
-  int border=2;
-  // constructs a larger image to fit both the image and the border
-  Mat gray_buf(rgb.rows + border*2, rgb.cols + border*2, rgb.depth());
-  // select the middle part of it w/o copying data
-  Mat gray(gray_canvas, Rect(border, border, rgb.cols, rgb.rows));
-  // convert image from RGB to grayscale
-  cvtColor(rgb, gray, COLOR_RGB2GRAY);
-  // form a border in-place
-  copyMakeBorder(gray, gray_buf, border, border,
-  border, border, BORDER_REPLICATE);
-  // now do some custom filtering ...
-  ...
-  @endcode
-  @note When the source image is a part (ROI) of a bigger image, the function will try to use the
-  pixels outside of the ROI to form a border. To disable this feature and always do extrapolation, as
-  if src was not a ROI, use borderType | #BORDER_ISOLATED.
-
-  @param src Source image.
-  @param dst Destination image of the same type as src and the size Size(src.cols+left+right,
-  src.rows+top+bottom) .
-  @param top the top pixels
-  @param bottom the bottom pixels
-  @param left the left pixels
-  @param right Parameter specifying how many pixels in each direction from the source image rectangle
-  to extrapolate. For example, top=1, bottom=1, left=1, right=1 mean that 1 pixel-wide border needs
-  to be built.
-  @param borderType Border type. See borderInterpolate for details.
-  @param value Border value if borderType==BORDER_CONSTANT .
-
-  @sa  borderInterpolate
-*)
-// CV_EXPORTS_W void copyMakeBorder(InputArray src, OutputArray dst,
-// int top, int bottom, int left, int right,
-// int borderType, const Scalar& value = Scalar() );
-{
-  4066
-  ?copyMakeBorder@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHHHAEBV?$Scalar_@N@1@@Z
-  ?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z
-  void cv::copyMakeBorder(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,int,int,class cv::Scalar_<double> const &)
-}
-procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray;
-          top, bottom, left, right: int; borderType: borderTypes; const value: TScalar { = Scalar() } ); overload; inline;
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//  name '?copyMakeBorder@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHHHAEBV?$Scalar_@N@1@@Z'
-//{$ELSE}
-//  name '?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes);
-overload; inline;
-  (* * @brief Calculates the per-element sum of two arrays or an array and a scalar.
-
-    The function add calculates:
-    - Sum of two arrays when both input arrays have the same size and the same number of channels:
-    \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) +  \texttt{src2}(I)) \quad \texttt{if mask}(I) \ne0\f]
-    - Sum of an array and a scalar when src2 is constructed from Scalar or has the same number of
-    elements as `src1.channels()`:
-    \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) +  \texttt{src2} ) \quad \texttt{if mask}(I) \ne0\f]
-    - Sum of a scalar and an array when src1 is constructed from Scalar or has the same number of
-    elements as `src2.channels()`:
-    \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1} +  \texttt{src2}(I) ) \quad \texttt{if mask}(I) \ne0\f]
-    where `I` is a multi-dimensional index of array elements. In case of multi-channel arrays, each
-    channel is processed independently.
-
-    The first function in the list above can be replaced with matrix expressions:
-    @code{.cpp}
-    dst = src1 + src2;
-    dst += src1; // equivalent to add(dst, src1, dst);
-    @endcode
-    The input arrays and the output array can all have the same or different depths. For example, you
-    can add a 16-bit unsigned array to a 8-bit signed array and store the sum as a 32-bit
-    floating-point array. Depth of the output array is determined by the dtype parameter. In the second
-    and third cases above, as well as in the first case, when src1.depth() == src2.depth(), dtype can
-    be set to the default -1. In this case, the output array will have the same depth as the input
-    array, be it src1, src2 or both.
-    @note Saturation is not applied when the output array has the depth CV_32S. You may even get
-    result of an incorrect sign in the case of overflow.
-    @param src1 first input array or a scalar.
-    @param src2 second input array or a scalar.
-    @param dst output array that has the same size and number of channels as the input array(s); the
-    depth is defined by dtype or src1/src2.
-    @param mask optional operation mask - 8-bit single channel array, that specifies elements of the
-    output array to be changed.
-    @param dtype optional depth of the output array (see the discussion below).
-    @sa subtract, addWeighted, scaleAdd, Mat::convertTo
+  (* * @example samples/cpp/tutorial_code/ImgTrans/copyMakeBorder_demo.cpp
+    An example using copyMakeBorder function.
+    Check @ref tutorial_copyMakeBorder "the corresponding tutorial" for more details
   *)
-  // CV_EXPORTS_W void add(InputArray src1, InputArray src2, OutputArray dst,
-  // InputArray mask = noArray(), int dtype = -1);
-  {
-    3488
-    ?add@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z
-    ?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z
-    void cv::add(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
-  }
-procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray;
-          const mask: TInputArray { = noArray() }; dtype: int { = -1 } ); overload; inline;
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//    name '?add@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z'
-//{$ELSE}
-//    name '?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; inline;
-procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray); overload; inline;
-      (* * @brief Calculates the per-element difference between two arrays or array and a scalar.
 
-        The function subtract calculates:
-        - Difference between two arrays, when both input arrays have the same size and the same number of
-        channels:
-        \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) -  \texttt{src2}(I)) \quad \texttt{if mask}(I) \ne0\f]
-        - Difference between an array and a scalar, when src2 is constructed from Scalar or has the same
-        number of elements as `src1.channels()`:
-        \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) -  \texttt{src2} ) \quad \texttt{if mask}(I) \ne0\f]
-        - Difference between a scalar and an array, when src1 is constructed from Scalar or has the same
-        number of elements as `src2.channels()`:
-        \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1} -  \texttt{src2}(I) ) \quad \texttt{if mask}(I) \ne0\f]
-        - The reverse difference between a scalar and an array in the case of `SubRS`:
-        \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src2} -  \texttt{src1}(I) ) \quad \texttt{if mask}(I) \ne0\f]
-        where I is a multi-dimensional index of array elements. In case of multi-channel arrays, each
+  (* * @brief Forms a border around an image.
+
+    The function copies the source image into the middle of the destination image. The areas to the
+    left, to the right, above and below the copied source image will be filled with extrapolated
+    pixels. This is not what filtering functions based on it do (they extrapolate pixels on-fly), but
+    what other more complex functions, including your own, may do to simplify image boundary handling.
+
+    The function supports the mode when src is already in the middle of dst . In this case, the
+    function does not copy src itself but simply constructs the border, for example:
+
+    @code{.cpp}
+    // let border be the same in all directions
+    int border=2;
+    // constructs a larger image to fit both the image and the border
+    Mat gray_buf(rgb.rows + border*2, rgb.cols + border*2, rgb.depth());
+    // select the middle part of it w/o copying data
+    Mat gray(gray_canvas, Rect(border, border, rgb.cols, rgb.rows));
+    // convert image from RGB to grayscale
+    cvtColor(rgb, gray, COLOR_RGB2GRAY);
+    // form a border in-place
+    copyMakeBorder(gray, gray_buf, border, border,
+    border, border, BORDER_REPLICATE);
+    // now do some custom filtering ...
+    ...
+    @endcode
+    @note When the source image is a part (ROI) of a bigger image, the function will try to use the
+    pixels outside of the ROI to form a border. To disable this feature and always do extrapolation, as
+    if src was not a ROI, use borderType | #BORDER_ISOLATED.
+
+    @param src Source image.
+    @param dst Destination image of the same type as src and the size Size(src.cols+left+right,
+    src.rows+top+bottom) .
+    @param top the top pixels
+    @param bottom the bottom pixels
+    @param left the left pixels
+    @param right Parameter specifying how many pixels in each direction from the source image rectangle
+    to extrapolate. For example, top=1, bottom=1, left=1, right=1 mean that 1 pixel-wide border needs
+    to be built.
+    @param borderType Border type. See borderInterpolate for details.
+    @param value Border value if borderType==BORDER_CONSTANT .
+
+    @sa  borderInterpolate
+  *)
+  // CV_EXPORTS_W void copyMakeBorder(InputArray src, OutputArray dst,
+  // int top, int bottom, int left, int right,
+  // int borderType, const Scalar& value = Scalar() );
+  {
+    4066
+    ?copyMakeBorder@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHHHAEBV?$Scalar_@N@1@@Z
+    ?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z
+    void cv::copyMakeBorder(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,int,int,class cv::Scalar_<double> const &)
+  }
+    procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes; const value: TScalar { = Scalar() } ); overload; inline;
+    // external opencv_world_dll
+    // {$IFDEF USE_DEBUG_DLLS}
+    // name '?copyMakeBorder@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHHHAEBV?$Scalar_@N@1@@Z'
+    // {$ELSE}
+    // name '?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z'
+    // {$ENDIF}
+    // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+      procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes); overload; inline;
+      (* * @brief Calculates the per-element sum of two arrays or an array and a scalar.
+
+        The function add calculates:
+        - Sum of two arrays when both input arrays have the same size and the same number of channels:
+        \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) +  \texttt{src2}(I)) \quad \texttt{if mask}(I) \ne0\f]
+        - Sum of an array and a scalar when src2 is constructed from Scalar or has the same number of
+        elements as `src1.channels()`:
+        \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) +  \texttt{src2} ) \quad \texttt{if mask}(I) \ne0\f]
+        - Sum of a scalar and an array when src1 is constructed from Scalar or has the same number of
+        elements as `src2.channels()`:
+        \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1} +  \texttt{src2}(I) ) \quad \texttt{if mask}(I) \ne0\f]
+        where `I` is a multi-dimensional index of array elements. In case of multi-channel arrays, each
         channel is processed independently.
 
         The first function in the list above can be replaced with matrix expressions:
         @code{.cpp}
-        dst = src1 - src2;
-        dst -= src1; // equivalent to subtract(dst, src1, dst);
+        dst = src1 + src2;
+        dst += src1; // equivalent to add(dst, src1, dst);
         @endcode
         The input arrays and the output array can all have the same or different depths. For example, you
-        can subtract to 8-bit unsigned arrays and store the difference in a 16-bit signed array. Depth of
-        the output array is determined by dtype parameter. In the second and third cases above, as well as
-        in the first case, when src1.depth() == src2.depth(), dtype can be set to the default -1. In this
-        case the output array will have the same depth as the input array, be it src1, src2 or both.
+        can add a 16-bit unsigned array to a 8-bit signed array and store the sum as a 32-bit
+        floating-point array. Depth of the output array is determined by the dtype parameter. In the second
+        and third cases above, as well as in the first case, when src1.depth() == src2.depth(), dtype can
+        be set to the default -1. In this case, the output array will have the same depth as the input
+        array, be it src1, src2 or both.
         @note Saturation is not applied when the output array has the depth CV_32S. You may even get
         result of an incorrect sign in the case of overflow.
         @param src1 first input array or a scalar.
         @param src2 second input array or a scalar.
-        @param dst output array of the same size and the same number of channels as the input array.
-        @param mask optional operation mask; this is an 8-bit single channel array that specifies elements
-        of the output array to be changed.
-        @param dtype optional depth of the output array
-        @sa  add, addWeighted, scaleAdd, Mat::convertTo
+        @param dst output array that has the same size and number of channels as the input array(s); the
+        depth is defined by dtype or src1/src2.
+        @param mask optional operation mask - 8-bit single channel array, that specifies elements of the
+        output array to be changed.
+        @param dtype optional depth of the output array (see the discussion below).
+        @sa subtract, addWeighted, scaleAdd, Mat::convertTo
       *)
-      // CV_EXPORTS_W void subtract(InputArray src1, InputArray src2, OutputArray dst,
+      // CV_EXPORTS_W void add(InputArray src1, InputArray src2, OutputArray dst,
       // InputArray mask = noArray(), int dtype = -1);
       {
-        6576
-        ?subtract@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z
-        ?subtract@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z
-        void cv::subtract(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
+        3488
+        ?add@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z
+        ?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z
+        void cv::add(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
       }
-procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() }; dtype: int = -1);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//      overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//        name '?subtract@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z'
-//{$ELSE}
-//        name '?subtract@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-        (*
-          (** @brief Calculates the per-element scaled product of two arrays.
+        procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() }; dtype: int { = -1 } ); overload; inline;
+        // external opencv_world_dll
+        // {$IFDEF USE_DEBUG_DLLS}
+        // name '?add@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z'
+        // {$ELSE}
+        // name '?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
+        // {$ENDIF}
+        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+          procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; inline;
+            procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray); overload; inline;
+            (* * @brief Calculates the per-element difference between two arrays or array and a scalar.
 
-          The function multiply calculates the per-element product of two arrays:
+              The function subtract calculates:
+              - Difference between two arrays, when both input arrays have the same size and the same number of
+              channels:
+              \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) -  \texttt{src2}(I)) \quad \texttt{if mask}(I) \ne0\f]
+              - Difference between an array and a scalar, when src2 is constructed from Scalar or has the same
+              number of elements as `src1.channels()`:
+              \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1}(I) -  \texttt{src2} ) \quad \texttt{if mask}(I) \ne0\f]
+              - Difference between a scalar and an array, when src1 is constructed from Scalar or has the same
+              number of elements as `src2.channels()`:
+              \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src1} -  \texttt{src2}(I) ) \quad \texttt{if mask}(I) \ne0\f]
+              - The reverse difference between a scalar and an array in the case of `SubRS`:
+              \f[\texttt{dst}(I) =  \texttt{saturate} ( \texttt{src2} -  \texttt{src1}(I) ) \quad \texttt{if mask}(I) \ne0\f]
+              where I is a multi-dimensional index of array elements. In case of multi-channel arrays, each
+              channel is processed independently.
 
-          \f[\texttt{dst} (I)= \texttt{saturate} ( \texttt{scale} \cdot \texttt{src1} (I)  \cdot \texttt{src2} (I))\f]
-
-          There is also a @ref MatrixExpressions -friendly variant of the first function. See Mat::mul .
-
-          For a not-per-element matrix product, see gemm .
-
-          @note Saturation is not applied when the output array has the depth
-          CV_32S. You may even get result of an incorrect sign in the case of
-          overflow.
-          @param src1 first input array.
-          @param src2 second input array of the same size and the same type as src1.
-          @param dst output array of the same size and type as src1.
-          @param scale optional scale factor.
-          @param dtype optional depth of the output array
-          @sa add, subtract, divide, scaleAdd, addWeighted, accumulate, accumulateProduct, accumulateSquare,
-          Mat::convertTo
-        *)
-        // CV_EXPORTS_W void multiply(InputArray src1, InputArray src2,
-        // OutputArray dst, double scale = 1, int dtype = -1);
-        {
-          5714
-          ?multiply@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z
-          ?multiply@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z
-          void cv::multiply(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,int)
-        }
-procedure Multiply(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; scale: double = 1; dtype: int = -1);
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?multiply@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
-//{$ELSE}
-//          name '?multiply@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @brief Performs per-element division of two arrays or a scalar by an array.
-
-          The function cv::divide divides one array by another:
-          \f[\texttt{dst(I) = saturate(src1(I)*scale/src2(I))}\f]
-          or a scalar by an array when there is no src1 :
-          \f[\texttt{dst(I) = saturate(scale/src2(I))}\f]
-
-          Different channels of multi-channel arrays are processed independently.
-
-          For integer types when src2(I) is zero, dst(I) will also be zero.
-
-          @note In case of floating point data there is no special defined behavior for zero src2(I) values.
-          Regular floating-point division is used.
-          Expect correct IEEE-754 behaviour for floating-point data (with NaN, Inf result values).
-
-          @note Saturation is not applied when the output array has the depth CV_32S. You may even get
-          result of an incorrect sign in the case of overflow.
-          @param src1 first input array.
-          @param src2 second input array of the same size and type as src1.
-          @param scale scalar factor.
-          @param dst output array of the same size and type as src2.
-          @param dtype optional depth of the output array; if -1, dst will have depth src2.depth(), but in
-          case of an array-by-array division, you can only pass -1 when src1.depth()==src2.depth().
-          @sa  multiply, add, subtract
-        *)
-        // CV_EXPORTS_W void divide(InputArray src1, InputArray src2, OutputArray dst,
-        // double scale = 1, int dtype = -1);
-        {
-          4518
-          ?divide@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z
-          ?divide@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z
-          void cv::divide(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,int)
-        }
-procedure divide(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; scale: double = 1; dtype: int = -1);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?divide@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
-//{$ELSE}
-//          name '?divide@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @overload *)
-        // CV_EXPORTS_W void divide(double scale, InputArray src2,
-        // OutputArray dst, int dtype = -1);
-        {
-          4519
-          ?divide@cv@@YAXNAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z
-          ?divide@cv@@YAXNAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
-          void cv::divide(double,class cv::_InputArray const &,class cv::_OutputArray const &,int)
-        }
-procedure divide(scale: double; const src2: TInputArray; const dst: TOutputArray; dtype: int = -1);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?divide@cv@@YAXNAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//          name '?divide@cv@@YAXNAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @brief Calculates the sum of a scaled array and another array.
-
-          The function scaleAdd is one of the classical primitive linear algebra operations, known as DAXPY
-          or SAXPY in [BLAS](http://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms). It calculates
-          the sum of a scaled array and another array:
-          \f[\texttt{dst} (I)= \texttt{scale} \cdot \texttt{src1} (I) +  \texttt{src2} (I)\f]
-          The function can also be emulated with a matrix expression, for example:
-          @code{.cpp}
-          Mat A(3, 3, CV_64F);
-          ...
-          A.row(0) = A.row(1)*2 + A.row(2);
-          @endcode
-          @param src1 first input array.
-          @param alpha scale factor for the first array.
-          @param src2 second input array of the same size and type as src1.
-          @param dst output array of the same size and type as src1.
-          @sa add, addWeighted, subtract, Mat::dot, Mat::convertTo
-        *)
-        // CV_EXPORTS_W void scaleAdd(InputArray src1, double alpha, InputArray src2, OutputArray dst);
-        {
-          6214
-          ?scaleAdd@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0AEBV_OutputArray@31@@Z
-          ?scaleAdd@cv@@YAXAEBV_InputArray@1@N0AEBV_OutputArray@1@@Z
-          void cv::scaleAdd(class cv::_InputArray const &,double,class cv::_InputArray const &,class cv::_OutputArray const &)
-        }
-procedure scaleAdd(const src1: TInputArray; alpha: double; const src2: TInputArray; const dst: TOutputArray);
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?scaleAdd@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//          name '?scaleAdd@cv@@YAXAEBV_InputArray@1@N0AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @example samples/cpp/tutorial_code/HighGUI/AddingImagesTrackbar.cpp
-          Check @ref tutorial_trackbar "the corresponding tutorial" for more details
-        *)
-        (* * @brief Calculates the weighted sum of two arrays.
-
-          The function addWeighted calculates the weighted sum of two arrays as follows:
-          \f[\texttt{dst} (I)= \texttt{saturate} ( \texttt{src1} (I)* \texttt{alpha} +  \texttt{src2} (I)* \texttt{beta} +  \texttt{gamma} )\f]
-          where I is a multi-dimensional index of array elements. In case of multi-channel arrays, each
-          channel is processed independently.
-          The function can be replaced with a matrix expression:
-          @code{.cpp}
-          dst = src1*alpha + src2*beta + gamma;
-          @endcode
-          @note Saturation is not applied when the output array has the depth CV_32S. You may even get
-          result of an incorrect sign in the case of overflow.
-          @param src1 first input array.
-          @param alpha weight of the first array elements.
-          @param src2 second input array of the same size and channel number as src1.
-          @param beta weight of the second array elements.
-          @param gamma scalar added to each sum.
-          @param dst output array that has the same size and number of channels as the input arrays.
-          @param dtype optional depth of the output array; when both input arrays have the same depth, dtype
-          can be set to -1, which will be equivalent to src1.depth().
-          @sa  add, subtract, scaleAdd, Mat::convertTo
-        *)
-        // CV_EXPORTS_W void addWeighted(InputArray src1, double alpha, InputArray src2,
-        // double beta, double gamma, OutputArray dst, int dtype = -1);
-        {
-          index 3519
-          ?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z
-          ?addWeighted@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0NNAEBV_OutputArray@31@H@Z
-          void cv::addWeighted(class cv::_InputArray const &,double,class cv::_InputArray const &,double,double,class cv::_OutputArray const &,int)
-        }
-procedure addWeighted(const src1: TInputArray; alpha: double; const src2: TInputArray; beta, gamma: double; const dst: TOutputArray; dtype: int = -1);
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?addWeighted@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0NNAEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//          name '?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @brief Scales, calculates absolute values, and converts the result to 8-bit.
-
-          On each element of the input array, the function convertScaleAbs
-          performs three operations sequentially: scaling, taking an absolute
-          value, conversion to an unsigned 8-bit type:
-          \f[\texttt{dst} (I)= \texttt{saturate\_cast<uchar>} (| \texttt{src} (I)* \texttt{alpha} +  \texttt{beta} |)\f]
-          In case of multi-channel arrays, the function processes each channel
-          independently. When the output is not 8-bit, the operation can be
-          emulated by calling the Mat::convertTo method (or by using matrix
-          expressions) and then by calculating an absolute value of the result.
-          For example:
-          @code{.cpp}
-          Mat_<float> A(30,30);
-          randu(A, Scalar(-100), Scalar(100));
-          Mat_<float> B = A*5 + 3;
-          B = abs(B);
-          // Mat_<float> B = abs(A*5+3) will also do the job,
-          // but it will allocate a temporary matrix
-          @endcode
-          @param src input array.
-          @param dst output array.
-          @param alpha optional scale factor.
-          @param beta optional delta added to the scaled values.
-          @sa  Mat::convertTo, cv::abs(const Mat&)
-        *)
-        // CV_EXPORTS_W void convertScaleAbs(InputArray src, OutputArray dst,
-        // double alpha = 1, double beta = 0);
-        {
-          4040
-          ?convertScaleAbs@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NN@Z
-          ?convertScaleAbs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NN@Z
-          void cv::convertScaleAbs(class cv::_InputArray const &,class cv::_OutputArray const &,double,double)
-        }
-procedure convertScaleAbs(const src: TInputArray; const dst: TOutputArray; alpha: double = 1; beta: double = 0);
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?convertScaleAbs@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NN@Z'
-//{$ELSE}
-//          name '?convertScaleAbs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NN@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @brief Converts an array to half precision floating number.
-
-          This function converts FP32 (single precision floating point) from/to FP16 (half precision floating point). CV_16S format is used to represent FP16 data.
-          There are two use modes (src -> dst): CV_32F -> CV_16S and CV_16S -> CV_32F. The input array has to have type of CV_32F or
-          CV_16S to represent the bit depth. If the input array is neither of them, the function will raise an error.
-          The format of half precision floating point is defined in IEEE 754-2008.
-
-          @param src input array.
-          @param dst output array.
-        *)
-        // CV_EXPORTS_W void convertFp16(InputArray src, OutputArray dst);
-        {
-          4028
-          ?convertFp16@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
-          ?convertFp16@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
-          void cv::convertFp16(class cv::_InputArray const &,class cv::_OutputArray const &)
-        }
-procedure convertFp16(const src: TInputArray; const dst: TOutputArray);
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?convertFp16@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//          name '?convertFp16@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @brief Performs a look-up table transform of an array.
-
-          The function LUT fills the output array with values from the look-up table. Indices of the entries
-          are taken from the input array. That is, the function processes each element of src as follows:
-          \f[\texttt{dst} (I)  \leftarrow \texttt{lut(src(I) + d)}\f]
-          where
-          \f[d =  \fork{0}{if \(\texttt{src}\) has depth \(\texttt{CV_8U}\)}{128}{if \(\texttt{src}\) has depth \(\texttt{CV_8S}\)}\f]
-          @param src input array of 8-bit elements.
-          @param lut look-up table of 256 elements; in case of multi-channel input array, the table should
-          either have a single channel (in this case the same table is used for all channels) or the same
-          number of channels as in the input array.
-          @param dst output array of the same size and number of channels as src, and the same depth as lut.
-          @sa  convertScaleAbs, Mat::convertTo
-        *)
-        // CV_EXPORTS_W void LUT(InputArray src, InputArray lut, OutputArray dst);
-        {
-          3390
-          ?LUT@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z
-          ?LUT@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
-          void cv::LUT(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
-        }
-procedure LUT(const src: TInputArray; const LUT: TInputArray; const dst: TOutputArray);
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?LUT@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//          name '?LUT@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @brief Calculates the sum of array elements.
-
-          The function cv::sum calculates and returns the sum of array elements,
-          independently for each channel.
-          @param src input array that must have from 1 to 4 channels.
-          @sa  countNonZero, mean, meanStdDev, norm, minMaxLoc, reduce
-        *)
-        // CV_EXPORTS_AS(sumElems) Scalar sum(InputArray src);
-        {
-          6577
-          ?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@@Z
-          ?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@@Z
-          class cv::Scalar_<double> cv::sum(class cv::_InputArray const &)
-        }
-function sum(const src: TInputArray): TScalar;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@@Z'
-//{$ELSE}
-//          name '?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @brief Counts non-zero array elements.
-
-          The function returns the number of non-zero elements in src :
-          \f[\sum _{I: \; \texttt{src} (I) \ne0 } 1\f]
-          @param src single-channel array.
-          @sa  mean, meanStdDev, norm, minMaxLoc, calcCovarMatrix
-        *)
-        // CV_EXPORTS_W int countNonZero( InputArray src );
-        {
-          4097
-          ?countNonZero@cv@@YAHAEBV_InputArray@debug_build_guard@1@@Z
-          ?countNonZero@cv@@YAHAEBV_InputArray@1@@Z
-          int cv::countNonZero(class cv::_InputArray const &)
-        }
-function countNonZero(const src: TInputArray): int;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?countNonZero@cv@@YAHAEBV_InputArray@debug_build_guard@1@@Z'
-//{$ELSE}
-//          name '?countNonZero@cv@@YAHAEBV_InputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @brief Returns the list of locations of non-zero pixels
-
-          Given a binary matrix (likely returned from an operation such
-          as threshold(), compare(), >, ==, etc, return all of
-          the non-zero indices as a cv::Mat or std::vector<cv::Point> (x,y)
-          For example:
-          @code{.cpp}
-          cv::Mat binaryImage; // input, binary image
-          cv::Mat locations;   // output, locations of non-zero pixels
-          cv::findNonZero(binaryImage, locations);
-
-          // access pixel coordinates
-          Point pnt = locations.at<Point>(i);
-          @endcode
-          or
-          @code{.cpp}
-          cv::Mat binaryImage; // input, binary image
-          vector<Point> locations;   // output, locations of non-zero pixels
-          cv::findNonZero(binaryImage, locations);
-
-          // access pixel coordinates
-          Point pnt = locations[i];
-          @endcode
-          @param src single-channel array
-          @param idx the output array, type of cv::Mat or std::vector<Point>, corresponding to non-zero indices in the input
-        *)
-        // CV_EXPORTS_W void findNonZero( InputArray src, OutputArray idx );
-        {
-          4765
-          ?findNonZero@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
-          ?findNonZero@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
-          void cv::findNonZero(class cv::_InputArray const &,class cv::_OutputArray const &)
-        }
-procedure findNonZero(const src: TInputArray; const idx: TOutputArray);
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?findNonZero@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//          name '?findNonZero@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
-        (* * @brief Calculates an average (mean) of array elements.
-
-          The function cv::mean calculates the mean value M of array elements,
-          independently for each channel, and return it:
-          \f[\begin{array}{l} N =  \sum _{I: \; \texttt{mask} (I) \ne 0} 1 \\ M_c =  \left ( \sum _{I: \; \texttt{mask} (I) \ne 0}{ \texttt{mtx} (I)_c} \right )/N \end{array}\f]
-          When all the mask elements are 0's, the function returns Scalar::all(0)
-          @param src input array that should have from 1 to 4 channels so that the result can be stored in
-          Scalar_ .
-          @param mask optional operation mask.
-          @sa  countNonZero, meanStdDev, norm, minMaxLoc
-        *)
-        // CV_EXPORTS_W Scalar mean(InputArray src, InputArray mask = noArray());
-        {
-          5624
-          ?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z
-          ?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z
-          class cv::Scalar_<double> cv::mean(class cv::_InputArray const &,class cv::_InputArray const &)
-        }
-function mean(const src: TInputArray; const mask: TInputArray { = noArray() } ): TScalar;
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//          name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z'
-//{$ELSE}
-//          name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function mean(const src: TInputArray): TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-          (* * Calculates a mean and standard deviation of array elements.
-
-            The function cv::meanStdDev calculates the mean and the standard deviation M
-            of array elements independently for each channel and returns it via the
-            output parameters:
-            \f[\begin{array}{l} N =  \sum _{I, \texttt{mask} (I)  \ne 0} 1 \\ \texttt{mean} _c =  \frac{\sum_{ I: \; \texttt{mask}(I) \ne 0} \texttt{src} (I)_c}{N} \\ \texttt{stddev} _c =  \sqrt{\frac{\sum_{ I: \; \texttt{mask}(I) \ne 0} \left ( \texttt{src} (I)_c -  \texttt{mean} _c \right )^2}{N}} \end{array}\f]
-            When all the mask elements are 0's, the function returns
-            mean=stddev=Scalar::all(0).
-            @note The calculated standard deviation is only the diagonal of the
-            complete normalized covariance matrix. If the full matrix is needed, you
-            can reshape the multi-channel array M x N to the single-channel array
-            M\*N x mtx.channels() (only possible when the matrix is continuous) and
-            then pass the matrix to calcCovarMatrix .
-            @param src input array that should have from 1 to 4 channels so that the results can be stored in
-            Scalar_ 's.
-            @param mean output parameter: calculated mean value.
-            @param stddev output parameter: calculated standard deviation.
-            @param mask optional operation mask.
-            @sa  countNonZero, mean, norm, minMaxLoc, calcCovarMatrix
-          *)
-          // CV_EXPORTS_W void meanStdDev(InputArray src, OutputArray mean, OutputArray stddev,
-          // InputArray mask=noArray());
-          {
-            5627
-            ?meanStdDev@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@10@Z
-            ?meanStdDev@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@10@Z
-            void cv::meanStdDev(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
-          }
-procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray; const mask: TInputArray { =noArray() } );
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//            name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z'
-//{$ELSE}
-//            name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-            (* * @brief Calculates the  absolute norm of an array.
-
-              This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using #NormTypes.
-
-              As example for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
-              The \f$ L_{1}, L_{2} \f$ and \f$ L_{\infty} \f$ norm for the sample value \f$r(-1) = \begin{pmatrix} -1 \\ 2 \end{pmatrix}\f$
-              is calculated as follows
-              \f{align*}
-              \| r(-1) \|_{L_1} &= |-1| + |2| = 3 \\
-              \| r(-1) \|_{L_2} &= \sqrt{(-1)^{2} + (2)^{2}} = \sqrt{5} \\
-              \| r(-1) \|_{L_\infty} &= \max(|-1|,|2|) = 2
-              \f}
-              and for \f$r(0.5) = \begin{pmatrix} 0.5 \\ 0.5 \end{pmatrix}\f$ the calculation is
-              \f{align*}
-              \| r(0.5) \|_{L_1} &= |0.5| + |0.5| = 1 \\
-              \| r(0.5) \|_{L_2} &= \sqrt{(0.5)^{2} + (0.5)^{2}} = \sqrt{0.5} \\
-              \| r(0.5) \|_{L_\infty} &= \max(|0.5|,|0.5|) = 0.5.
-              \f}
-              The following graphic shows all values for the three norm functions \f$\| r(x) \|_{L_1}, \| r(x) \|_{L_2}\f$ and \f$\| r(x) \|_{L_\infty}\f$.
-              It is notable that the \f$ L_{1} \f$ norm forms the upper and the \f$ L_{\infty} \f$ norm forms the lower border for the example function \f$ r(x) \f$.
-              ![Graphs for the different norm functions from the above example](pics/NormTypes_OneArray_1-2-INF.png)
-
-              When the mask parameter is specified and it is not empty, the norm is
-
-              If normType is not specified, #NORM_L2 is used.
-              calculated only over the region specified by the mask.
-
-              Multi-channel input arrays are treated as single-channel arrays, that is,
-              the results for all channels are combined.
-
-              Hamming norms can only be calculated with CV_8U depth arrays.
-
-              @param src1 first input array.
-              @param normType type of the norm (see #NormTypes).
-              @param mask optional operation mask; it must have the same size as src1 and CV_8UC1 type.
+              The first function in the list above can be replaced with matrix expressions:
+              @code{.cpp}
+              dst = src1 - src2;
+              dst -= src1; // equivalent to subtract(dst, src1, dst);
+              @endcode
+              The input arrays and the output array can all have the same or different depths. For example, you
+              can subtract to 8-bit unsigned arrays and store the difference in a 16-bit signed array. Depth of
+              the output array is determined by dtype parameter. In the second and third cases above, as well as
+              in the first case, when src1.depth() == src2.depth(), dtype can be set to the default -1. In this
+              case the output array will have the same depth as the input array, be it src1, src2 or both.
+              @note Saturation is not applied when the output array has the depth CV_32S. You may even get
+              result of an incorrect sign in the case of overflow.
+              @param src1 first input array or a scalar.
+              @param src2 second input array or a scalar.
+              @param dst output array of the same size and the same number of channels as the input array.
+              @param mask optional operation mask; this is an 8-bit single channel array that specifies elements
+              of the output array to be changed.
+              @param dtype optional depth of the output array
+              @sa  add, addWeighted, scaleAdd, Mat::convertTo
             *)
-            // CV_EXPORTS_W double norm(InputArray src1, int normType = NORM_L2, InputArray mask = noArray());
+            // CV_EXPORTS_W void subtract(InputArray src1, InputArray src2, OutputArray dst,
+            // InputArray mask = noArray(), int dtype = -1);
             {
-              5748
-              ?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@H0@Z
-              ?norm@cv@@YANAEBV_InputArray@1@H0@Z
-              double cv::norm(class cv::_InputArray const &,int,class cv::_InputArray const &)
+              6576
+              ?subtract@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z
+              ?subtract@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z
+              void cv::subtract(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
             }
-function norm(const src1: TInputArray; normType: int { = int(NORM_L2) }; const mask: TInputArray { = noArray() } ): double;
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//              name '?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@H0@Z'
-//{$ELSE}
-//              name '?norm@cv@@YANAEBV_InputArray@1@H0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function norm(const src1: TInputArray; normType: NormTypes = NORM_L2): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-              (* * @brief Calculates an absolute difference norm or a relative difference norm.
+              procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() }; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+              // overload; external opencv_world_dll
+              // {$IFDEF USE_DEBUG_DLLS}
+              // name '?subtract@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z'
+              // {$ELSE}
+              // name '?subtract@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
+              // {$ENDIF}
+              // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                (*
+                  (** @brief Calculates the per-element scaled product of two arrays.
 
-                This version of cv::norm calculates the absolute difference norm
-                or the relative difference norm of arrays src1 and src2.
-                The type of norm to calculate is specified using #NormTypes.
+                  The function multiply calculates the per-element product of two arrays:
 
-                @param src1 first input array.
-                @param src2 second input array of the same size and the same type as src1.
-                @param normType type of the norm (see #NormTypes).
-                @param mask optional operation mask; it must have the same size as src1 and CV_8UC1 type.
-              *)
-              // CV_EXPORTS_W double norm(InputArray src1, InputArray src2,
-              // int normType = NORM_L2, InputArray mask = noArray());
-              {
-                5747
-                ?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@0H0@Z
-                ?norm@cv@@YANAEBV_InputArray@1@0H0@Z
-                double cv::norm(class cv::_InputArray const &,class cv::_InputArray const &,int,class cv::_InputArray const &)
-              }
-function norm(const src1: TInputArray; const src2: TInputArray; normType: int { = int(NORM_L2) }; const mask: TInputArray { = noArray() } ): double;
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                name '?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@0H0@Z'
-//{$ELSE}
-//                name '?norm@cv@@YANAEBV_InputArray@1@0H0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function norm(const src1: TInputArray; const src2: TInputArray; normType: NormTypes = NORM_L2): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                (* * @overload
-                  @param src first input array.
-                  @param normType type of the norm (see #NormTypes).
-                *)
-                // CV_EXPORTS double norm( const SparseMat& src, int normType);
+                  \f[\texttt{dst} (I)= \texttt{saturate} ( \texttt{scale} \cdot \texttt{src1} (I)  \cdot \texttt{src2} (I))\f]
 
-                (* * @brief Computes the Peak Signal-to-Noise Ratio (PSNR) image quality metric.
+                  There is also a @ref MatrixExpressions -friendly variant of the first function. See Mat::mul .
 
-                  This function calculates the Peak Signal-to-Noise Ratio (PSNR) image quality metric in decibels (dB),
-                  between two input arrays src1 and src2. The arrays must have the same type.
+                  For a not-per-element matrix product, see gemm .
 
-                  The PSNR is calculated as follows:
-
-                  \f[
-                  \texttt{PSNR} = 10 \cdot \log_{10}{\left( \frac{R^2}{MSE} \right) }
-                  \f]
-
-                  where R is the maximum integer value of depth (e.g. 255 in the case of CV_8U data)
-                  and MSE is the mean squared error between the two arrays.
-
+                  @note Saturation is not applied when the output array has the depth
+                  CV_32S. You may even get result of an incorrect sign in the case of
+                  overflow.
                   @param src1 first input array.
-                  @param src2 second input array of the same size as src1.
-                  @param R the maximum pixel value (255 by default)
-
+                  @param src2 second input array of the same size and the same type as src1.
+                  @param dst output array of the same size and type as src1.
+                  @param scale optional scale factor.
+                  @param dtype optional depth of the output array
+                  @sa add, subtract, divide, scaleAdd, addWeighted, accumulate, accumulateProduct, accumulateSquare,
+                  Mat::convertTo
                 *)
-                // CV_EXPORTS_W double PSNR(InputArray src1, InputArray src2, double R=255.);
+                // CV_EXPORTS_W void multiply(InputArray src1, InputArray src2,
+                // OutputArray dst, double scale = 1, int dtype = -1);
                 {
-                  3418
-                  ?PSNR@cv@@YANAEBV_InputArray@debug_build_guard@1@0N@Z
-                  ?PSNR@cv@@YANAEBV_InputArray@1@0N@Z
-                  double cv::PSNR(class cv::_InputArray const &,class cv::_InputArray const &,double)
+                  5714
+                  ?multiply@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z
+                  ?multiply@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z
+                  void cv::multiply(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,int)
                 }
-function PSNR(const src1: TInputArray; const src2: TInputArray; R: double = 255): double;
+                  procedure Multiply(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; scale: double = 1; dtype: int = -1);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                  name '?PSNR@cv@@YANAEBV_InputArray@debug_build_guard@1@0N@Z'
-//{$ELSE}
-//                  name '?PSNR@cv@@YANAEBV_InputArray@1@0N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                  // external opencv_world_dll
+                  // {$IFDEF USE_DEBUG_DLLS}
+                  // name '?multiply@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
+                  // {$ELSE}
+                  // name '?multiply@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
+                  // {$ENDIF}
+                  // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                (* * @brief naive nearest neighbor finder
+                  (* * @brief Performs per-element division of two arrays or a scalar by an array.
 
-                  see http://en.wikipedia.org/wiki/Nearest_neighbor_search
-                  @todo document
-                *)
-                // CV_EXPORTS_W void batchDistance(InputArray src1, InputArray src2,
-                // OutputArray dist, int dtype, OutputArray nidx,
-                // int normType = NORM_L2, int K = 0,
-                // InputArray mask = noArray(), int update = 0,
-                // bool crosscheck = false);
-                {
-                  3610
-                  ?batchDistance@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H1HH0H_N@Z
-                  ?batchDistance@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H1HH0H_N@Z
-                  void cv::batchDistance(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,int,class cv::_OutputArray const &,int,int,class cv::_InputArray const &,int,bool)
-                }
-procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray; normType: int { = int(NORM_L2) }; K: int { = 0 }; const mask: TInputArray { = noArray() }; update: int = 0; crosscheck: bool = false);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                  name '?batchDistance@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H1HH0H_N@Z'
-//{$ELSE}
-//                  name '?batchDistance@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H1HH0H_N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                    The function cv::divide divides one array by another:
+                    \f[\texttt{dst(I) = saturate(src1(I)*scale/src2(I))}\f]
+                    or a scalar by an array when there is no src1 :
+                    \f[\texttt{dst(I) = saturate(scale/src2(I))}\f]
 
-procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray; normType: NormTypes = NORM_L2; K: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                  (* * @brief Normalizes the norm or value range of an array.
+                    Different channels of multi-channel arrays are processed independently.
 
-                    The function cv::normalize normalizes scale and shift the input array elements so that
-                    \f[\| \texttt{dst} \| _{L_p}= \texttt{alpha}\f]
-                    (where p=Inf, 1 or 2) when normType=NORM_INF, NORM_L1, or NORM_L2, respectively; or so that
-                    \f[\min _I  \texttt{dst} (I)= \texttt{alpha} , \, \, \max _I  \texttt{dst} (I)= \texttt{beta}\f]
+                    For integer types when src2(I) is zero, dst(I) will also be zero.
 
-                    when normType=NORM_MINMAX (for dense arrays only). The optional mask specifies a sub-array to be
-                    normalized. This means that the norm or min-n-max are calculated over the sub-array, and then this
-                    sub-array is modified to be normalized. If you want to only use the mask to calculate the norm or
-                    min-max but modify the whole array, you can use norm and Mat::convertTo.
+                    @note In case of floating point data there is no special defined behavior for zero src2(I) values.
+                    Regular floating-point division is used.
+                    Expect correct IEEE-754 behaviour for floating-point data (with NaN, Inf result values).
 
-                    In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
-                    the range transformation for sparse matrices is not allowed since it can shift the zero level.
-
-                    Possible usage with some positive example data:
-                    @code{.cpp}
-                    vector<double> positiveData = { 2.0, 8.0, 10.0 };
-                    vector<double> normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
-
-                    // Norm to probability (total count)
-                    // sum(numbers) = 20.0
-                    // 2.0      0.1     (2.0/20.0)
-                    // 8.0      0.4     (8.0/20.0)
-                    // 10.0     0.5     (10.0/20.0)
-                    normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
-
-                    // Norm to unit vector: ||positiveData|| = 1.0
-                    // 2.0      0.15
-                    // 8.0      0.62
-                    // 10.0     0.77
-                    normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
-
-                    // Norm to max element
-                    // 2.0      0.2     (2.0/10.0)
-                    // 8.0      0.8     (8.0/10.0)
-                    // 10.0     1.0     (10.0/10.0)
-                    normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
-
-                    // Norm to range [0.0;1.0]
-                    // 2.0      0.0     (shift to left border)
-                    // 8.0      0.75    (6.0/8.0)
-                    // 10.0     1.0     (shift to right border)
-                    normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
-                    @endcode
-
-                    @param src input array.
-                    @param dst output array of the same size as src .
-                    @param alpha norm value to normalize to or the lower range boundary in case of the range
-                    normalization.
-                    @param beta upper range boundary in case of the range normalization; it is not used for the norm
-                    normalization.
-                    @param norm_type normalization type (see cv::NormTypes).
-                    @param dtype when negative, the output array has the same type as src; otherwise, it has the same
-                    number of channels as src and the depth =CV_MAT_DEPTH(dtype).
-                    @param mask optional operation mask.
-                    @sa norm, Mat::convertTo, SparseMat::convertTo
+                    @note Saturation is not applied when the output array has the depth CV_32S. You may even get
+                    result of an incorrect sign in the case of overflow.
+                    @param src1 first input array.
+                    @param src2 second input array of the same size and type as src1.
+                    @param scale scalar factor.
+                    @param dst output array of the same size and type as src2.
+                    @param dtype optional depth of the output array; if -1, dst will have depth src2.depth(), but in
+                    case of an array-by-array division, you can only pass -1 when src1.depth()==src2.depth().
+                    @sa  multiply, add, subtract
                   *)
-                  // CV_EXPORTS_W void normalize( InputArray src, InputOutputArray dst, double alpha = 1, double beta = 0,
-                  // int norm_type = NORM_L2, int dtype = -1, InputArray mask = noArray());
+                  // CV_EXPORTS_W void divide(InputArray src1, InputArray src2, OutputArray dst,
+                  // double scale = 1, int dtype = -1);
                   {
-                    5761
-                    ?normalize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@NNHH0@Z
-                    ?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z
-                    void cv::normalize(class cv::_InputArray const &,class cv::_InputOutputArray const &,double,double,int,int,class cv::_InputArray const &)
+                    4518
+                    ?divide@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z
+                    ?divide@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z
+                    void cv::divide(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,int)
                   }
-procedure normalize(const src: TInputArray; const dst: TInputOutputArray; alpha: double { = 1 }; beta: double { = 0 };
-                    norm_type: int { = int(NORM_L2) }; dtype: int { = -1 }; const mask: TInputArray { = noArray() } );
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                    name '?normalize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@NNHH0@Z'
-//{$ELSE}
-//                    name '?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure normalize(const src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0;
-                    norm_type: NormTypes = NORM_L2; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                      (*
-                        (** @overload
-                        @param src input array.
-                        @param dst output array of the same size as src .
-                        @param alpha norm value to normalize to or the lower range boundary in case of the range
-                        normalization.
-                        @param normType normalization type (see cv::NormTypes).
+                    procedure divide(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; scale: double = 1; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                    // overload; external opencv_world_dll
+                    // {$IFDEF USE_DEBUG_DLLS}
+                    // name '?divide@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
+                    // {$ELSE}
+                    // name '?divide@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z'
+                    // {$ENDIF}
+                    // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                    (* * @overload *)
+                    // CV_EXPORTS_W void divide(double scale, InputArray src2,
+                    // OutputArray dst, int dtype = -1);
+                    {
+                      4519
+                      ?divide@cv@@YAXNAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z
+                      ?divide@cv@@YAXNAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
+                      void cv::divide(double,class cv::_InputArray const &,class cv::_OutputArray const &,int)
+                    }
+                      procedure divide(scale: double; const src2: TInputArray; const dst: TOutputArray; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                      // overload; external opencv_world_dll
+                      // {$IFDEF USE_DEBUG_DLLS}
+                      // name '?divide@cv@@YAXNAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                      // {$ELSE}
+                      // name '?divide@cv@@YAXNAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                      // {$ENDIF}
+                      // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                      (* * @brief Calculates the sum of a scaled array and another array.
+
+                        The function scaleAdd is one of the classical primitive linear algebra operations, known as DAXPY
+                        or SAXPY in [BLAS](http://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms). It calculates
+                        the sum of a scaled array and another array:
+                        \f[\texttt{dst} (I)= \texttt{scale} \cdot \texttt{src1} (I) +  \texttt{src2} (I)\f]
+                        The function can also be emulated with a matrix expression, for example:
+                        @code{.cpp}
+                        Mat A(3, 3, CV_64F);
+                        ...
+                        A.row(0) = A.row(1)*2 + A.row(2);
+                        @endcode
+                        @param src1 first input array.
+                        @param alpha scale factor for the first array.
+                        @param src2 second input array of the same size and type as src1.
+                        @param dst output array of the same size and type as src1.
+                        @sa add, addWeighted, subtract, Mat::dot, Mat::convertTo
                       *)
-                      // CV_EXPORTS void normalize( const SparseMat& src, SparseMat& dst, double alpha, int normType );
-
-                      (* * @brief Finds the global minimum and maximum in an array.
-
-                        The function cv::minMaxLoc finds the minimum and maximum element values and their positions. The
-                        extremums are searched across the whole array or, if mask is not an empty array, in the specified
-                        array region.
-
-                        The function do not work with multi-channel arrays. If you need to find minimum or maximum
-                        elements across all the channels, use Mat::reshape first to reinterpret the array as
-                        single-channel. Or you may extract the particular channel using either extractImageCOI , or
-                        mixChannels , or split .
-                        @param src input single-channel array.
-                        @param minVal pointer to the returned minimum value; NULL is used if not required.
-                        @param maxVal pointer to the returned maximum value; NULL is used if not required.
-                        @param minLoc pointer to the returned minimum location (in 2D case); NULL is used if not required.
-                        @param maxLoc pointer to the returned maximum location (in 2D case); NULL is used if not required.
-                        @param mask optional mask used to select a sub-array.
-                        @sa max, min, compare, inRange, extractImageCOI, mixChannels, split, Mat::reshape
-                      *)
-                      // CV_EXPORTS_W void minMaxLoc(InputArray src, CV_OUT double* minVal,
-                      // CV_OUT double* maxVal = 0, CV_OUT Point* minLoc = 0,
-                      // CV_OUT Point* maxLoc = 0, InputArray mask = noArray());
+                      // CV_EXPORTS_W void scaleAdd(InputArray src1, double alpha, InputArray src2, OutputArray dst);
                       {
-                        5673
-                        ?minMaxLoc@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAV?$Point_@H@1@20@Z
-                        ?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z
-                        void cv::minMaxLoc(class cv::_InputArray const &,double *,double *,class cv::Point_<int> *,class cv::Point_<int> *,class cv::_InputArray const &)
+                        6214
+                        ?scaleAdd@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0AEBV_OutputArray@31@@Z
+                        ?scaleAdd@cv@@YAXAEBV_InputArray@1@N0AEBV_OutputArray@1@@Z
+                        void cv::scaleAdd(class cv::_InputArray const &,double,class cv::_InputArray const &,class cv::_OutputArray const &)
                       }
-procedure minMaxLoc(const src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil }; const minLoc: pPoint { = nil };
-                    const maxLoc: pPoint { = nil }; const mask: TInputArray { = noArray() } );
-overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                        name '?minMaxLoc@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAV?$Point_@H@1@20@Z'
-//{$ELSE}
-//                        name '?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil };
-                    var maxLoc: TPoint { = nil }; const mask: TInputArray { = noArray() } ); overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil };
-                    var maxLoc: TPoint { = nil } ); overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil } );
-                    overload;{$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-procedure minMaxLoc(const src: TInputArray; Var minVal: double); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                                (* * @brief Finds the global minimum and maximum in an array
-
-                                  The function cv::minMaxIdx finds the minimum and maximum element values and their positions. The
-                                  extremums are searched across the whole array or, if mask is not an empty array, in the specified
-                                  array region. The function does not work with multi-channel arrays. If you need to find minimum or
-                                  maximum elements across all the channels, use Mat::reshape first to reinterpret the array as
-                                  single-channel. Or you may extract the particular channel using either extractImageCOI , or
-                                  mixChannels , or split . In case of a sparse matrix, the minimum is found among non-zero elements
-                                  only.
-                                  @note When minIdx is not NULL, it must have at least 2 elements (as well as maxIdx), even if src is
-                                  a single-row or single-column matrix. In OpenCV (following MATLAB) each array has at least 2
-                                  dimensions, i.e. single-column matrix is Mx1 matrix (and therefore minIdx/maxIdx will be
-                                  (i1,0)/(i2,0)) and single-row matrix is 1xN matrix (and therefore minIdx/maxIdx will be
-                                  (0,j1)/(0,j2)).
-                                  @param src input single-channel array.
-                                  @param minVal pointer to the returned minimum value; NULL is used if not required.
-                                  @param maxVal pointer to the returned maximum value; NULL is used if not required.
-                                  @param minIdx pointer to the returned minimum location (in nD case); NULL is used if not required;
-                                  Otherwise, it must point to an array of src.dims elements, the coordinates of the minimum element
-                                  in each dimension are stored there sequentially.
-                                  @param maxIdx pointer to the returned maximum location (in nD case). NULL is used if not required.
-                                  @param mask specified array region
-                                *)
-                                // CV_EXPORTS void minMaxIdx(InputArray src, double* minVal, double* maxVal = 0,
-                                // int* minIdx = 0, int* maxIdx = 0, InputArray mask = noArray());
-                                {
-                                  5671
-                                  ?minMaxIdx@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAH20@Z
-                                  ?minMaxIdx@cv@@YAXAEBV_InputArray@1@PEAN1PEAH20@Z
-                                  void cv::minMaxIdx(class cv::_InputArray const &,double *,double *,int *,int *,class cv::_InputArray const &)
-                                }
-procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble { = nil }; minIdx: Pointer { = nil }; maxIdx: pInt { = nil };
-                    const mask: TInputArray { = noArray() } );
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                  name '?minMaxIdx@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAH20@Z'
-//{$ELSE}
-//                                  name '?minMaxIdx@cv@@YAXAEBV_InputArray@1@PEAN1PEAH20@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble = nil;
-                    minIdx: Pointer = nil; maxIdx: pInt = nil); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                                  (* * @overload
-                                    @param a input single-channel array.
-                                    @param minVal pointer to the returned minimum value; NULL is used if not required.
-                                    @param maxVal pointer to the returned maximum value; NULL is used if not required.
-                                    @param minIdx pointer to the returned minimum location (in nD case); NULL is used if not required;
-                                    Otherwise, it must point to an array of src.dims elements, the coordinates of the minimum element
-                                    in each dimension are stored there sequentially.
-                                    @param maxIdx pointer to the returned maximum location (in nD case). NULL is used if not required.
-                                  *)
-                                  // CV_EXPORTS void minMaxLoc(const SparseMat& a, double* minVal,
-                                  // double* maxVal, int* minIdx = 0, int* maxIdx = 0);
-
-                                  (* * @brief Reduces a matrix to a vector.
-
-                                    The function #reduce reduces the matrix to a vector by treating the matrix rows/columns as a set of
-                                    1D vectors and performing the specified operation on the vectors until a single row/column is
-                                    obtained. For example, the function can be used to compute horizontal and vertical projections of a
-                                    raster image. In case of #REDUCE_MAX and #REDUCE_MIN , the output image should have the same type as the source one.
-                                    In case of #REDUCE_SUM and #REDUCE_AVG , the output may have a larger element bit-depth to preserve accuracy.
-                                    And multi-channel arrays are also supported in these two reduction modes.
-
-                                    The following code demonstrates its usage for a single channel matrix.
-                                    @snippet snippets/core_reduce.cpp example
-
-                                    And the following code demonstrates its usage for a two-channel matrix.
-                                    @snippet snippets/core_reduce.cpp example2
-
-                                    @param src input 2D matrix.
-                                    @param dst output vector. Its size and type is defined by dim and dtype parameters.
-                                    @param dim dimension index along which the matrix is reduced. 0 means that the matrix is reduced to
-                                    a single row. 1 means that the matrix is reduced to a single column.
-                                    @param rtype reduction operation that could be one of #ReduceTypes
-                                    @param dtype when negative, the output vector will have the same type as the input matrix,
-                                    otherwise, its type will be CV_MAKE_TYPE(CV_MAT_DEPTH(dtype), src.channels()).
-                                    @sa repeat
-                                  *)
-                                  // CV_EXPORTS_W void reduce(InputArray src, OutputArray dst, int dim, int rtype, int dtype = -1);
-                                  {
-                                    6072
-                                    ?reduce@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z
-                                    ?reduce@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z
-                                    void cv::reduce(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
-                                  }
-procedure reduce(const src: TInputArray; const dst: TOutputArray; dim, rtype: int; dtype: int = -1);
+                        procedure scaleAdd(const src1: TInputArray; alpha: double; const src2: TInputArray; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                    name '?reduce@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z'
-//{$ELSE}
-//                                    name '?reduce@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                        // external opencv_world_dll
+                        // {$IFDEF USE_DEBUG_DLLS}
+                        // name '?scaleAdd@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0AEBV_OutputArray@31@@Z'
+                        // {$ELSE}
+                        // name '?scaleAdd@cv@@YAXAEBV_InputArray@1@N0AEBV_OutputArray@1@@Z'
+                        // {$ENDIF}
+                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                  (* * @brief Creates one multi-channel array out of several single-channel ones.
+                        (* * @example samples/cpp/tutorial_code/HighGUI/AddingImagesTrackbar.cpp
+                          Check @ref tutorial_trackbar "the corresponding tutorial" for more details
+                        *)
+                        (* * @brief Calculates the weighted sum of two arrays.
 
-                                    The function cv::merge merges several arrays to make a single multi-channel array. That is, each
-                                    element of the output array will be a concatenation of the elements of the input arrays, where
-                                    elements of i-th input array are treated as mv[i].channels()-element vectors.
+                          The function addWeighted calculates the weighted sum of two arrays as follows:
+                          \f[\texttt{dst} (I)= \texttt{saturate} ( \texttt{src1} (I)* \texttt{alpha} +  \texttt{src2} (I)* \texttt{beta} +  \texttt{gamma} )\f]
+                          where I is a multi-dimensional index of array elements. In case of multi-channel arrays, each
+                          channel is processed independently.
+                          The function can be replaced with a matrix expression:
+                          @code{.cpp}
+                          dst = src1*alpha + src2*beta + gamma;
+                          @endcode
+                          @note Saturation is not applied when the output array has the depth CV_32S. You may even get
+                          result of an incorrect sign in the case of overflow.
+                          @param src1 first input array.
+                          @param alpha weight of the first array elements.
+                          @param src2 second input array of the same size and channel number as src1.
+                          @param beta weight of the second array elements.
+                          @param gamma scalar added to each sum.
+                          @param dst output array that has the same size and number of channels as the input arrays.
+                          @param dtype optional depth of the output array; when both input arrays have the same depth, dtype
+                          can be set to -1, which will be equivalent to src1.depth().
+                          @sa  add, subtract, scaleAdd, Mat::convertTo
+                        *)
+                        // CV_EXPORTS_W void addWeighted(InputArray src1, double alpha, InputArray src2,
+                        // double beta, double gamma, OutputArray dst, int dtype = -1);
+                        {
+                          index 3519
+                          ?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z
+                          ?addWeighted@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0NNAEBV_OutputArray@31@H@Z
+                          void cv::addWeighted(class cv::_InputArray const &,double,class cv::_InputArray const &,double,double,class cv::_OutputArray const &,int)
+                        }
+                          procedure addWeighted(const src1: TInputArray; alpha: double; const src2: TInputArray; beta, gamma: double; const dst: TOutputArray; dtype: int = -1);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+                          // overload; external opencv_world_dll
+                          // {$IFDEF USE_DEBUG_DLLS}
+                          // name '?addWeighted@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0NNAEBV_OutputArray@31@H@Z'
+                          // {$ELSE}
+                          // name '?addWeighted@cv@@YAXAEBV_InputArray@1@N0NNAEBV_OutputArray@1@H@Z'
+                          // {$ENDIF}
+                          // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                    The function cv::split does the reverse operation. If you need to shuffle channels in some other
-                                    advanced way, use cv::mixChannels.
+                          (* * @brief Scales, calculates absolute values, and converts the result to 8-bit.
 
-                                    The following example shows how to merge 3 single channel matrices into a single 3-channel matrix.
-                                    @snippet snippets/core_merge.cpp example
+                            On each element of the input array, the function convertScaleAbs
+                            performs three operations sequentially: scaling, taking an absolute
+                            value, conversion to an unsigned 8-bit type:
+                            \f[\texttt{dst} (I)= \texttt{saturate\_cast<uchar>} (| \texttt{src} (I)* \texttt{alpha} +  \texttt{beta} |)\f]
+                            In case of multi-channel arrays, the function processes each channel
+                            independently. When the output is not 8-bit, the operation can be
+                            emulated by calling the Mat::convertTo method (or by using matrix
+                            expressions) and then by calculating an absolute value of the result.
+                            For example:
+                            @code{.cpp}
+                            Mat_<float> A(30,30);
+                            randu(A, Scalar(-100), Scalar(100));
+                            Mat_<float> B = A*5 + 3;
+                            B = abs(B);
+                            // Mat_<float> B = abs(A*5+3) will also do the job,
+                            // but it will allocate a temporary matrix
+                            @endcode
+                            @param src input array.
+                            @param dst output array.
+                            @param alpha optional scale factor.
+                            @param beta optional delta added to the scaled values.
+                            @sa  Mat::convertTo, cv::abs(const Mat&)
+                          *)
+                          // CV_EXPORTS_W void convertScaleAbs(InputArray src, OutputArray dst,
+                          // double alpha = 1, double beta = 0);
+                          {
+                            4040
+                            ?convertScaleAbs@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NN@Z
+                            ?convertScaleAbs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NN@Z
+                            void cv::convertScaleAbs(class cv::_InputArray const &,class cv::_OutputArray const &,double,double)
+                          }
+                            procedure convertScaleAbs(const src: TInputArray; const dst: TOutputArray; alpha: double = 1; beta: double = 0);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+                            // overload; external opencv_world_dll
+                            // {$IFDEF USE_DEBUG_DLLS}
+                            // name '?convertScaleAbs@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@NN@Z'
+                            // {$ELSE}
+                            // name '?convertScaleAbs@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@NN@Z'
+                            // {$ENDIF}
+                            // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                    @param mv input array of matrices to be merged; all the matrices in mv must have the same
-                                    size and the same depth.
-                                    @param count number of input matrices when mv is a plain C array; it must be greater than zero.
-                                    @param dst output array of the same size and the same depth as mv[0]; The number of channels will
-                                    be equal to the parameter count.
-                                    @sa  mixChannels, split, Mat::reshape
+                            (* * @brief Converts an array to half precision floating number.
+
+                              This function converts FP32 (single precision floating point) from/to FP16 (half precision floating point). CV_16S format is used to represent FP16 data.
+                              There are two use modes (src -> dst): CV_32F -> CV_16S and CV_16S -> CV_32F. The input array has to have type of CV_32F or
+                              CV_16S to represent the bit depth. If the input array is neither of them, the function will raise an error.
+                              The format of half precision floating point is defined in IEEE 754-2008.
+
+                              @param src input array.
+                              @param dst output array.
+                            *)
+                            // CV_EXPORTS_W void convertFp16(InputArray src, OutputArray dst);
+                            {
+                              4028
+                              ?convertFp16@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
+                              ?convertFp16@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
+                              void cv::convertFp16(class cv::_InputArray const &,class cv::_OutputArray const &)
+                            }
+                              procedure convertFp16(const src: TInputArray; const dst: TOutputArray);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+                              // overload; external opencv_world_dll
+                              // {$IFDEF USE_DEBUG_DLLS}
+                              // name '?convertFp16@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                              // {$ELSE}
+                              // name '?convertFp16@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                              // {$ENDIF}
+                              // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                              (* * @brief Performs a look-up table transform of an array.
+
+                                The function LUT fills the output array with values from the look-up table. Indices of the entries
+                                are taken from the input array. That is, the function processes each element of src as follows:
+                                \f[\texttt{dst} (I)  \leftarrow \texttt{lut(src(I) + d)}\f]
+                                where
+                                \f[d =  \fork{0}{if \(\texttt{src}\) has depth \(\texttt{CV_8U}\)}{128}{if \(\texttt{src}\) has depth \(\texttt{CV_8S}\)}\f]
+                                @param src input array of 8-bit elements.
+                                @param lut look-up table of 256 elements; in case of multi-channel input array, the table should
+                                either have a single channel (in this case the same table is used for all channels) or the same
+                                number of channels as in the input array.
+                                @param dst output array of the same size and number of channels as src, and the same depth as lut.
+                                @sa  convertScaleAbs, Mat::convertTo
+                              *)
+                              // CV_EXPORTS_W void LUT(InputArray src, InputArray lut, OutputArray dst);
+                              {
+                                3390
+                                ?LUT@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z
+                                ?LUT@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
+                                void cv::LUT(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
+                              }
+                                procedure LUT(const src: TInputArray; const LUT: TInputArray; const dst: TOutputArray);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+                                // overload; external opencv_world_dll
+                                // {$IFDEF USE_DEBUG_DLLS}
+                                // name '?LUT@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
+                                // {$ELSE}
+                                // name '?LUT@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
+                                // {$ENDIF}
+                                // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                                (* * @brief Calculates the sum of array elements.
+
+                                  The function cv::sum calculates and returns the sum of array elements,
+                                  independently for each channel.
+                                  @param src input array that must have from 1 to 4 channels.
+                                  @sa  countNonZero, mean, meanStdDev, norm, minMaxLoc, reduce
+                                *)
+                                // CV_EXPORTS_AS(sumElems) Scalar sum(InputArray src);
+                                {
+                                  6577
+                                  ?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@@Z
+                                  ?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@@Z
+                                  class cv::Scalar_<double> cv::sum(class cv::_InputArray const &)
+                                }
+                                  function sum(const src: TInputArray): TScalar;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+                                  // overload; external opencv_world_dll
+                                  // {$IFDEF USE_DEBUG_DLLS}
+                                  // name '?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@@Z'
+                                  // {$ELSE}
+                                  // name '?sum@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@@Z'
+                                  // {$ENDIF}
+                                  // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                                  (* * @brief Counts non-zero array elements.
+
+                                    The function returns the number of non-zero elements in src :
+                                    \f[\sum _{I: \; \texttt{src} (I) \ne0 } 1\f]
+                                    @param src single-channel array.
+                                    @sa  mean, meanStdDev, norm, minMaxLoc, calcCovarMatrix
                                   *)
-                                  // CV_EXPORTS void merge(const Mat* mv, size_t count, OutputArray dst);
+                                  // CV_EXPORTS_W int countNonZero( InputArray src );
                                   {
-                                    5642
-                                    ?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z
-                                    ?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z
-                                    void cv::merge(class cv::Mat const *,unsigned __int64,class cv::_OutputArray const &)
+                                    4097
+                                    ?countNonZero@cv@@YAHAEBV_InputArray@debug_build_guard@1@@Z
+                                    ?countNonZero@cv@@YAHAEBV_InputArray@1@@Z
+                                    int cv::countNonZero(class cv::_InputArray const &)
                                   }
-procedure merge(const mv: pMat; COUNT: size_t; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                    name '?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z'
-//{$ELSE}
-//                                    name '?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure merge(const mv: TArray<TMat>; dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                                    (* * @overload
-                                      @param mv input vector of matrices to be merged; all the matrices in mv must have the same
-                                      size and the same depth.
-                                      @param dst output array of the same size and the same depth as mv[0]; The number of channels will
-                                      be the total number of channels in the matrix array.
+                                    function countNonZero(const src: TInputArray): int;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+                                    // overload; external opencv_world_dll
+                                    // {$IFDEF USE_DEBUG_DLLS}
+                                    // name '?countNonZero@cv@@YAHAEBV_InputArray@debug_build_guard@1@@Z'
+                                    // {$ELSE}
+                                    // name '?countNonZero@cv@@YAHAEBV_InputArray@1@@Z'
+                                    // {$ENDIF}
+                                    // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                                    (* * @brief Returns the list of locations of non-zero pixels
+
+                                      Given a binary matrix (likely returned from an operation such
+                                      as threshold(), compare(), >, ==, etc, return all of
+                                      the non-zero indices as a cv::Mat or std::vector<cv::Point> (x,y)
+                                      For example:
+                                      @code{.cpp}
+                                      cv::Mat binaryImage; // input, binary image
+                                      cv::Mat locations;   // output, locations of non-zero pixels
+                                      cv::findNonZero(binaryImage, locations);
+
+                                      // access pixel coordinates
+                                      Point pnt = locations.at<Point>(i);
+                                      @endcode
+                                      or
+                                      @code{.cpp}
+                                      cv::Mat binaryImage; // input, binary image
+                                      vector<Point> locations;   // output, locations of non-zero pixels
+                                      cv::findNonZero(binaryImage, locations);
+
+                                      // access pixel coordinates
+                                      Point pnt = locations[i];
+                                      @endcode
+                                      @param src single-channel array
+                                      @param idx the output array, type of cv::Mat or std::vector<Point>, corresponding to non-zero indices in the input
                                     *)
-                                    // CV_EXPORTS_W void merge(InputArrayOfArrays mv, OutputArray dst);
+                                    // CV_EXPORTS_W void findNonZero( InputArray src, OutputArray idx );
                                     {
-                                      5641
-                                      ?merge@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
-                                      ?merge@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
-                                      void cv::merge(class cv::_InputArray const &,class cv::_OutputArray const &)
+                                      4765
+                                      ?findNonZero@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
+                                      ?findNonZero@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
+                                      void cv::findNonZero(class cv::_InputArray const &,class cv::_OutputArray const &)
                                     }
-procedure merge(const mv: TInputArrayOfArrays; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                      name '?merge@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                      name '?merge@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                      procedure findNonZero(const src: TInputArray; const idx: TOutputArray);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+                                      // overload; external opencv_world_dll
+                                      // {$IFDEF USE_DEBUG_DLLS}
+                                      // name '?findNonZero@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                      // {$ELSE}
+                                      // name '?findNonZero@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                      // {$ENDIF}
+                                      // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                    (* * @brief Divides a multi-channel array into several single-channel arrays.
+                                      (* * @brief Calculates an average (mean) of array elements.
 
-                                      The function cv::split splits a multi-channel array into separate single-channel arrays:
-                                      \f[\texttt{mv} [c](I) =  \texttt{src} (I)_c\f]
-                                      If you need to extract a single channel or do some other sophisticated channel permutation, use
-                                      mixChannels .
+                                        The function cv::mean calculates the mean value M of array elements,
+                                        independently for each channel, and return it:
+                                        \f[\begin{array}{l} N =  \sum _{I: \; \texttt{mask} (I) \ne 0} 1 \\ M_c =  \left ( \sum _{I: \; \texttt{mask} (I) \ne 0}{ \texttt{mtx} (I)_c} \right )/N \end{array}\f]
+                                        When all the mask elements are 0's, the function returns Scalar::all(0)
+                                        @param src input array that should have from 1 to 4 channels so that the result can be stored in
+                                        Scalar_ .
+                                        @param mask optional operation mask.
+                                        @sa  countNonZero, meanStdDev, norm, minMaxLoc
+                                      *)
+                                      // CV_EXPORTS_W Scalar mean(InputArray src, InputArray mask = noArray());
+                                      {
+                                        5624
+                                        ?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z
+                                        ?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z
+                                        class cv::Scalar_<double> cv::mean(class cv::_InputArray const &,class cv::_InputArray const &)
+                                      }
+                                        function mean(const src: TInputArray; const mask: TInputArray { = noArray() } ): TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z'
+                                        // {$ELSE}
+                                        // name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        function mean(const src: TInputArray): TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (* * Calculates a mean and standard deviation of array elements.
 
-                                      The following example demonstrates how to split a 3-channel matrix into 3 single channel matrices.
-                                      @snippet snippets/core_split.cpp example
+                                        The function cv::meanStdDev calculates the mean and the standard deviation M
+                                        of array elements independently for each channel and returns it via the
+                                        output parameters:
+                                        \f[\begin{array}{l} N =  \sum _{I, \texttt{mask} (I)  \ne 0} 1 \\ \texttt{mean} _c =  \frac{\sum_{ I: \; \texttt{mask}(I) \ne 0} \texttt{src} (I)_c}{N} \\ \texttt{stddev} _c =  \sqrt{\frac{\sum_{ I: \; \texttt{mask}(I) \ne 0} \left ( \texttt{src} (I)_c -  \texttt{mean} _c \right )^2}{N}} \end{array}\f]
+                                        When all the mask elements are 0's, the function returns
+                                        mean=stddev=Scalar::all(0).
+                                        @note The calculated standard deviation is only the diagonal of the
+                                        complete normalized covariance matrix. If the full matrix is needed, you
+                                        can reshape the multi-channel array M x N to the single-channel array
+                                        M\*N x mtx.channels() (only possible when the matrix is continuous) and
+                                        then pass the matrix to calcCovarMatrix .
+                                        @param src input array that should have from 1 to 4 channels so that the results can be stored in
+                                        Scalar_ 's.
+                                        @param mean output parameter: calculated mean value.
+                                        @param stddev output parameter: calculated standard deviation.
+                                        @param mask optional operation mask.
+                                        @sa  countNonZero, mean, norm, minMaxLoc, calcCovarMatrix
+                                        *)
+                                        // CV_EXPORTS_W void meanStdDev(InputArray src, OutputArray mean, OutputArray stddev,
+                                        // InputArray mask=noArray());
+                                        {
+                                        5627
+                                        ?meanStdDev@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@10@Z
+                                        ?meanStdDev@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@10@Z
+                                        void cv::meanStdDev(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
+                                        }
+                                        procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray; const mask: TInputArray { =noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z'
+                                        // {$ELSE}
+                                        // name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (* * @brief Calculates the  absolute norm of an array.
 
-                                      @param src input multi-channel array.
-                                      @param mvbegin output array; the number of arrays must match src.channels(); the arrays themselves are
-                                      reallocated, if needed.
-                                      @sa merge, mixChannels, cvtColor
-                                    *)
-                                    // CV_EXPORTS void split(const Mat& src, Mat* mvbegin);
+                                        This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using #NormTypes.
 
-                                    {
-                                      6514
-                                      ?split@cv@@YAXAEBVMat@1@PEAV21@@Z
-                                      ?split@cv@@YAXAEBVMat@1@PEAV21@@Z
-                                      void cv::split(class cv::Mat const &,class cv::Mat *)
-                                    }
-procedure split(const m: TMat; const mv: pMat);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll name '?split@cv@@YAXAEBVMat@1@PEAV21@@Z'
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure split(const m: TMat; const mv: TArray<TMat>); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                                      (* * @overload
+                                        As example for one array consider the function \f$r(x)= \begin{pmatrix} x \\ 1-x \end{pmatrix}, x \in [-1;1]\f$.
+                                        The \f$ L_{1}, L_{2} \f$ and \f$ L_{\infty} \f$ norm for the sample value \f$r(-1) = \begin{pmatrix} -1 \\ 2 \end{pmatrix}\f$
+                                        is calculated as follows
+                                        \f{align*}
+                                        \| r(-1) \|_{L_1} &= |-1| + |2| = 3 \\
+                                        \| r(-1) \|_{L_2} &= \sqrt{(-1)^{2} + (2)^{2}} = \sqrt{5} \\
+                                        \| r(-1) \|_{L_\infty} &= \max(|-1|,|2|) = 2
+                                        \f}
+                                        and for \f$r(0.5) = \begin{pmatrix} 0.5 \\ 0.5 \end{pmatrix}\f$ the calculation is
+                                        \f{align*}
+                                        \| r(0.5) \|_{L_1} &= |0.5| + |0.5| = 1 \\
+                                        \| r(0.5) \|_{L_2} &= \sqrt{(0.5)^{2} + (0.5)^{2}} = \sqrt{0.5} \\
+                                        \| r(0.5) \|_{L_\infty} &= \max(|0.5|,|0.5|) = 0.5.
+                                        \f}
+                                        The following graphic shows all values for the three norm functions \f$\| r(x) \|_{L_1}, \| r(x) \|_{L_2}\f$ and \f$\| r(x) \|_{L_\infty}\f$.
+                                        It is notable that the \f$ L_{1} \f$ norm forms the upper and the \f$ L_{\infty} \f$ norm forms the lower border for the example function \f$ r(x) \f$.
+                                        ![Graphs for the different norm functions from the above example](pics/NormTypes_OneArray_1-2-INF.png)
+
+                                        When the mask parameter is specified and it is not empty, the norm is
+
+                                        If normType is not specified, #NORM_L2 is used.
+                                        calculated only over the region specified by the mask.
+
+                                        Multi-channel input arrays are treated as single-channel arrays, that is,
+                                        the results for all channels are combined.
+
+                                        Hamming norms can only be calculated with CV_8U depth arrays.
+
+                                        @param src1 first input array.
+                                        @param normType type of the norm (see #NormTypes).
+                                        @param mask optional operation mask; it must have the same size as src1 and CV_8UC1 type.
+                                        *)
+                                        // CV_EXPORTS_W double norm(InputArray src1, int normType = NORM_L2, InputArray mask = noArray());
+                                        {
+                                        5748
+                                        ?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@H0@Z
+                                        ?norm@cv@@YANAEBV_InputArray@1@H0@Z
+                                        double cv::norm(class cv::_InputArray const &,int,class cv::_InputArray const &)
+                                        }
+                                        function norm(const src1: TInputArray; normType: int { = int(NORM_L2) }; const mask: TInputArray { = noArray() } ): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@H0@Z'
+                                        // {$ELSE}
+                                        // name '?norm@cv@@YANAEBV_InputArray@1@H0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        function norm(const src1: TInputArray; normType: NormTypes = NORM_L2): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (* * @brief Calculates an absolute difference norm or a relative difference norm.
+
+                                        This version of cv::norm calculates the absolute difference norm
+                                        or the relative difference norm of arrays src1 and src2.
+                                        The type of norm to calculate is specified using #NormTypes.
+
+                                        @param src1 first input array.
+                                        @param src2 second input array of the same size and the same type as src1.
+                                        @param normType type of the norm (see #NormTypes).
+                                        @param mask optional operation mask; it must have the same size as src1 and CV_8UC1 type.
+                                        *)
+                                        // CV_EXPORTS_W double norm(InputArray src1, InputArray src2,
+                                        // int normType = NORM_L2, InputArray mask = noArray());
+                                        {
+                                        5747
+                                        ?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@0H0@Z
+                                        ?norm@cv@@YANAEBV_InputArray@1@0H0@Z
+                                        double cv::norm(class cv::_InputArray const &,class cv::_InputArray const &,int,class cv::_InputArray const &)
+                                        }
+                                        function norm(const src1: TInputArray; const src2: TInputArray; normType: int { = int(NORM_L2) }; const mask: TInputArray { = noArray() } ): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@0H0@Z'
+                                        // {$ELSE}
+                                        // name '?norm@cv@@YANAEBV_InputArray@1@0H0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        function norm(const src1: TInputArray; const src2: TInputArray; normType: NormTypes = NORM_L2): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (* * @overload
+                                        @param src first input array.
+                                        @param normType type of the norm (see #NormTypes).
+                                        *)
+                                        // CV_EXPORTS double norm( const SparseMat& src, int normType);
+
+                                        (* * @brief Computes the Peak Signal-to-Noise Ratio (PSNR) image quality metric.
+
+                                        This function calculates the Peak Signal-to-Noise Ratio (PSNR) image quality metric in decibels (dB),
+                                        between two input arrays src1 and src2. The arrays must have the same type.
+
+                                        The PSNR is calculated as follows:
+
+                                        \f[
+                                        \texttt{PSNR} = 10 \cdot \log_{10}{\left( \frac{R^2}{MSE} \right) }
+                                        \f]
+
+                                        where R is the maximum integer value of depth (e.g. 255 in the case of CV_8U data)
+                                        and MSE is the mean squared error between the two arrays.
+
+                                        @param src1 first input array.
+                                        @param src2 second input array of the same size as src1.
+                                        @param R the maximum pixel value (255 by default)
+
+                                        *)
+                                        // CV_EXPORTS_W double PSNR(InputArray src1, InputArray src2, double R=255.);
+                                        {
+                                        3418
+                                        ?PSNR@cv@@YANAEBV_InputArray@debug_build_guard@1@0N@Z
+                                        ?PSNR@cv@@YANAEBV_InputArray@1@0N@Z
+                                        double cv::PSNR(class cv::_InputArray const &,class cv::_InputArray const &,double)
+                                        }
+                                        function PSNR(const src1: TInputArray; const src2: TInputArray; R: double = 255): double;
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?PSNR@cv@@YANAEBV_InputArray@debug_build_guard@1@0N@Z'
+                                        // {$ELSE}
+                                        // name '?PSNR@cv@@YANAEBV_InputArray@1@0N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                                        (* * @brief naive nearest neighbor finder
+
+                                        see http://en.wikipedia.org/wiki/Nearest_neighbor_search
+                                        @todo document
+                                        *)
+                                        // CV_EXPORTS_W void batchDistance(InputArray src1, InputArray src2,
+                                        // OutputArray dist, int dtype, OutputArray nidx,
+                                        // int normType = NORM_L2, int K = 0,
+                                        // InputArray mask = noArray(), int update = 0,
+                                        // bool crosscheck = false);
+                                        {
+                                        3610
+                                        ?batchDistance@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H1HH0H_N@Z
+                                        ?batchDistance@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H1HH0H_N@Z
+                                        void cv::batchDistance(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,int,class cv::_OutputArray const &,int,int,class cv::_InputArray const &,int,bool)
+                                        }
+                                        procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray; normType: int { = int(NORM_L2) }; K: int { = 0 }; const mask: TInputArray { = noArray() }; update: int = 0; crosscheck: bool = false); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?batchDistance@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H1HH0H_N@Z'
+                                        // {$ELSE}
+                                        // name '?batchDistance@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H1HH0H_N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                                        procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray; normType: NormTypes = NORM_L2; K: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (* * @brief Normalizes the norm or value range of an array.
+
+                                        The function cv::normalize normalizes scale and shift the input array elements so that
+                                        \f[\| \texttt{dst} \| _{L_p}= \texttt{alpha}\f]
+                                        (where p=Inf, 1 or 2) when normType=NORM_INF, NORM_L1, or NORM_L2, respectively; or so that
+                                        \f[\min _I  \texttt{dst} (I)= \texttt{alpha} , \, \, \max _I  \texttt{dst} (I)= \texttt{beta}\f]
+
+                                        when normType=NORM_MINMAX (for dense arrays only). The optional mask specifies a sub-array to be
+                                        normalized. This means that the norm or min-n-max are calculated over the sub-array, and then this
+                                        sub-array is modified to be normalized. If you want to only use the mask to calculate the norm or
+                                        min-max but modify the whole array, you can use norm and Mat::convertTo.
+
+                                        In case of sparse matrices, only the non-zero values are analyzed and transformed. Because of this,
+                                        the range transformation for sparse matrices is not allowed since it can shift the zero level.
+
+                                        Possible usage with some positive example data:
+                                        @code{.cpp}
+                                        vector<double> positiveData = { 2.0, 8.0, 10.0 };
+                                        vector<double> normalizedData_l1, normalizedData_l2, normalizedData_inf, normalizedData_minmax;
+
+                                        // Norm to probability (total count)
+                                        // sum(numbers) = 20.0
+                                        // 2.0      0.1     (2.0/20.0)
+                                        // 8.0      0.4     (8.0/20.0)
+                                        // 10.0     0.5     (10.0/20.0)
+                                        normalize(positiveData, normalizedData_l1, 1.0, 0.0, NORM_L1);
+
+                                        // Norm to unit vector: ||positiveData|| = 1.0
+                                        // 2.0      0.15
+                                        // 8.0      0.62
+                                        // 10.0     0.77
+                                        normalize(positiveData, normalizedData_l2, 1.0, 0.0, NORM_L2);
+
+                                        // Norm to max element
+                                        // 2.0      0.2     (2.0/10.0)
+                                        // 8.0      0.8     (8.0/10.0)
+                                        // 10.0     1.0     (10.0/10.0)
+                                        normalize(positiveData, normalizedData_inf, 1.0, 0.0, NORM_INF);
+
+                                        // Norm to range [0.0;1.0]
+                                        // 2.0      0.0     (shift to left border)
+                                        // 8.0      0.75    (6.0/8.0)
+                                        // 10.0     1.0     (shift to right border)
+                                        normalize(positiveData, normalizedData_minmax, 1.0, 0.0, NORM_MINMAX);
+                                        @endcode
+
+                                        @param src input array.
+                                        @param dst output array of the same size as src .
+                                        @param alpha norm value to normalize to or the lower range boundary in case of the range
+                                        normalization.
+                                        @param beta upper range boundary in case of the range normalization; it is not used for the norm
+                                        normalization.
+                                        @param norm_type normalization type (see cv::NormTypes).
+                                        @param dtype when negative, the output array has the same type as src; otherwise, it has the same
+                                        number of channels as src and the depth =CV_MAT_DEPTH(dtype).
+                                        @param mask optional operation mask.
+                                        @sa norm, Mat::convertTo, SparseMat::convertTo
+                                        *)
+                                        // CV_EXPORTS_W void normalize( InputArray src, InputOutputArray dst, double alpha = 1, double beta = 0,
+                                        // int norm_type = NORM_L2, int dtype = -1, InputArray mask = noArray());
+                                        {
+                                        5761
+                                        ?normalize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@NNHH0@Z
+                                        ?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z
+                                        void cv::normalize(class cv::_InputArray const &,class cv::_InputOutputArray const &,double,double,int,int,class cv::_InputArray const &)
+                                        }
+                                        procedure normalize(const src: TInputArray; const dst: TInputOutputArray; alpha: double { = 1 }; beta: double { = 0 }; norm_type: int { = int(NORM_L2) }; dtype: int { = -1 }; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?normalize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@NNHH0@Z'
+                                        // {$ELSE}
+                                        // name '?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure normalize(const src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (*
+                                        (** @overload
+                                        @param src input array.
+                                        @param dst output array of the same size as src .
+                                        @param alpha norm value to normalize to or the lower range boundary in case of the range
+                                        normalization.
+                                        @param normType normalization type (see cv::NormTypes).
+                                        *)
+                                        // CV_EXPORTS void normalize( const SparseMat& src, SparseMat& dst, double alpha, int normType );
+
+                                        (* * @brief Finds the global minimum and maximum in an array.
+
+                                        The function cv::minMaxLoc finds the minimum and maximum element values and their positions. The
+                                        extremums are searched across the whole array or, if mask is not an empty array, in the specified
+                                        array region.
+
+                                        The function do not work with multi-channel arrays. If you need to find minimum or maximum
+                                        elements across all the channels, use Mat::reshape first to reinterpret the array as
+                                        single-channel. Or you may extract the particular channel using either extractImageCOI , or
+                                        mixChannels , or split .
+                                        @param src input single-channel array.
+                                        @param minVal pointer to the returned minimum value; NULL is used if not required.
+                                        @param maxVal pointer to the returned maximum value; NULL is used if not required.
+                                        @param minLoc pointer to the returned minimum location (in 2D case); NULL is used if not required.
+                                        @param maxLoc pointer to the returned maximum location (in 2D case); NULL is used if not required.
+                                        @param mask optional mask used to select a sub-array.
+                                        @sa max, min, compare, inRange, extractImageCOI, mixChannels, split, Mat::reshape
+                                        *)
+                                        // CV_EXPORTS_W void minMaxLoc(InputArray src, CV_OUT double* minVal,
+                                        // CV_OUT double* maxVal = 0, CV_OUT Point* minLoc = 0,
+                                        // CV_OUT Point* maxLoc = 0, InputArray mask = noArray());
+                                        {
+                                        5673
+                                        ?minMaxLoc@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAV?$Point_@H@1@20@Z
+                                        ?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z
+                                        void cv::minMaxLoc(class cv::_InputArray const &,double *,double *,class cv::Point_<int> *,class cv::Point_<int> *,class cv::_InputArray const &)
+                                        }
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil }; const minLoc: pPoint { = nil }; const maxLoc: pPoint { = nil }; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?minMaxLoc@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAV?$Point_@H@1@20@Z'
+                                        // {$ELSE}
+                                        // name '?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil }; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (* * @brief Finds the global minimum and maximum in an array
+
+                                        The function cv::minMaxIdx finds the minimum and maximum element values and their positions. The
+                                        extremums are searched across the whole array or, if mask is not an empty array, in the specified
+                                        array region. The function does not work with multi-channel arrays. If you need to find minimum or
+                                        maximum elements across all the channels, use Mat::reshape first to reinterpret the array as
+                                        single-channel. Or you may extract the particular channel using either extractImageCOI , or
+                                        mixChannels , or split . In case of a sparse matrix, the minimum is found among non-zero elements
+                                        only.
+                                        @note When minIdx is not NULL, it must have at least 2 elements (as well as maxIdx), even if src is
+                                        a single-row or single-column matrix. In OpenCV (following MATLAB) each array has at least 2
+                                        dimensions, i.e. single-column matrix is Mx1 matrix (and therefore minIdx/maxIdx will be
+                                        (i1,0)/(i2,0)) and single-row matrix is 1xN matrix (and therefore minIdx/maxIdx will be
+                                        (0,j1)/(0,j2)).
+                                        @param src input single-channel array.
+                                        @param minVal pointer to the returned minimum value; NULL is used if not required.
+                                        @param maxVal pointer to the returned maximum value; NULL is used if not required.
+                                        @param minIdx pointer to the returned minimum location (in nD case); NULL is used if not required;
+                                        Otherwise, it must point to an array of src.dims elements, the coordinates of the minimum element
+                                        in each dimension are stored there sequentially.
+                                        @param maxIdx pointer to the returned maximum location (in nD case). NULL is used if not required.
+                                        @param mask specified array region
+                                        *)
+                                        // CV_EXPORTS void minMaxIdx(InputArray src, double* minVal, double* maxVal = 0,
+                                        // int* minIdx = 0, int* maxIdx = 0, InputArray mask = noArray());
+                                        {
+                                        5671
+                                        ?minMaxIdx@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAH20@Z
+                                        ?minMaxIdx@cv@@YAXAEBV_InputArray@1@PEAN1PEAH20@Z
+                                        void cv::minMaxIdx(class cv::_InputArray const &,double *,double *,int *,int *,class cv::_InputArray const &)
+                                        }
+                                        procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble { = nil }; minIdx: Pointer { = nil }; maxIdx: pInt { = nil }; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?minMaxIdx@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAH20@Z'
+                                        // {$ELSE}
+                                        // name '?minMaxIdx@cv@@YAXAEBV_InputArray@1@PEAN1PEAH20@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble = nil; minIdx: Pointer = nil; maxIdx: pInt = nil); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (* * @overload
+                                        @param a input single-channel array.
+                                        @param minVal pointer to the returned minimum value; NULL is used if not required.
+                                        @param maxVal pointer to the returned maximum value; NULL is used if not required.
+                                        @param minIdx pointer to the returned minimum location (in nD case); NULL is used if not required;
+                                        Otherwise, it must point to an array of src.dims elements, the coordinates of the minimum element
+                                        in each dimension are stored there sequentially.
+                                        @param maxIdx pointer to the returned maximum location (in nD case). NULL is used if not required.
+                                        *)
+                                        // CV_EXPORTS void minMaxLoc(const SparseMat& a, double* minVal,
+                                        // double* maxVal, int* minIdx = 0, int* maxIdx = 0);
+
+                                        (* * @brief Reduces a matrix to a vector.
+
+                                        The function #reduce reduces the matrix to a vector by treating the matrix rows/columns as a set of
+                                        1D vectors and performing the specified operation on the vectors until a single row/column is
+                                        obtained. For example, the function can be used to compute horizontal and vertical projections of a
+                                        raster image. In case of #REDUCE_MAX and #REDUCE_MIN , the output image should have the same type as the source one.
+                                        In case of #REDUCE_SUM and #REDUCE_AVG , the output may have a larger element bit-depth to preserve accuracy.
+                                        And multi-channel arrays are also supported in these two reduction modes.
+
+                                        The following code demonstrates its usage for a single channel matrix.
+                                        @snippet snippets/core_reduce.cpp example
+
+                                        And the following code demonstrates its usage for a two-channel matrix.
+                                        @snippet snippets/core_reduce.cpp example2
+
+                                        @param src input 2D matrix.
+                                        @param dst output vector. Its size and type is defined by dim and dtype parameters.
+                                        @param dim dimension index along which the matrix is reduced. 0 means that the matrix is reduced to
+                                        a single row. 1 means that the matrix is reduced to a single column.
+                                        @param rtype reduction operation that could be one of #ReduceTypes
+                                        @param dtype when negative, the output vector will have the same type as the input matrix,
+                                        otherwise, its type will be CV_MAKE_TYPE(CV_MAT_DEPTH(dtype), src.channels()).
+                                        @sa repeat
+                                        *)
+                                        // CV_EXPORTS_W void reduce(InputArray src, OutputArray dst, int dim, int rtype, int dtype = -1);
+                                        {
+                                        6072
+                                        ?reduce@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z
+                                        ?reduce@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z
+                                        void cv::reduce(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int)
+                                        }
+                                        procedure reduce(const src: TInputArray; const dst: TOutputArray; dim, rtype: int; dtype: int = -1);
+{$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?reduce@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHH@Z'
+                                        // {$ELSE}
+                                        // name '?reduce@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHH@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                                        (* * @brief Creates one multi-channel array out of several single-channel ones.
+
+                                        The function cv::merge merges several arrays to make a single multi-channel array. That is, each
+                                        element of the output array will be a concatenation of the elements of the input arrays, where
+                                        elements of i-th input array are treated as mv[i].channels()-element vectors.
+
+                                        The function cv::split does the reverse operation. If you need to shuffle channels in some other
+                                        advanced way, use cv::mixChannels.
+
+                                        The following example shows how to merge 3 single channel matrices into a single 3-channel matrix.
+                                        @snippet snippets/core_merge.cpp example
+
+                                        @param mv input array of matrices to be merged; all the matrices in mv must have the same
+                                        size and the same depth.
+                                        @param count number of input matrices when mv is a plain C array; it must be greater than zero.
+                                        @param dst output array of the same size and the same depth as mv[0]; The number of channels will
+                                        be equal to the parameter count.
+                                        @sa  mixChannels, split, Mat::reshape
+                                        *)
+                                        // CV_EXPORTS void merge(const Mat* mv, size_t count, OutputArray dst);
+                                        {
+                                        5642
+                                        ?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z
+                                        ?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z
+                                        void cv::merge(class cv::Mat const *,unsigned __int64,class cv::_OutputArray const &)
+                                        }
+                                        procedure merge(const mv: pMat; COUNT: size_t; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z'
+                                        // {$ELSE}
+                                        // name '?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure merge(const mv: TArray<TMat>; dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (* * @overload
+                                        @param mv input vector of matrices to be merged; all the matrices in mv must have the same
+                                        size and the same depth.
+                                        @param dst output array of the same size and the same depth as mv[0]; The number of channels will
+                                        be the total number of channels in the matrix array.
+                                        *)
+                                        // CV_EXPORTS_W void merge(InputArrayOfArrays mv, OutputArray dst);
+                                        {
+                                        5641
+                                        ?merge@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
+                                        ?merge@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
+                                        void cv::merge(class cv::_InputArray const &,class cv::_OutputArray const &)
+                                        }
+                                        procedure merge(const mv: TInputArrayOfArrays; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?merge@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?merge@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+
+                                        (* * @brief Divides a multi-channel array into several single-channel arrays.
+
+                                        The function cv::split splits a multi-channel array into separate single-channel arrays:
+                                        \f[\texttt{mv} [c](I) =  \texttt{src} (I)_c\f]
+                                        If you need to extract a single channel or do some other sophisticated channel permutation, use
+                                        mixChannels .
+
+                                        The following example demonstrates how to split a 3-channel matrix into 3 single channel matrices.
+                                        @snippet snippets/core_split.cpp example
+
+                                        @param src input multi-channel array.
+                                        @param mvbegin output array; the number of arrays must match src.channels(); the arrays themselves are
+                                        reallocated, if needed.
+                                        @sa merge, mixChannels, cvtColor
+                                        *)
+                                        // CV_EXPORTS void split(const Mat& src, Mat* mvbegin);
+
+                                        {
+                                        6514
+                                        ?split@cv@@YAXAEBVMat@1@PEAV21@@Z
+                                        ?split@cv@@YAXAEBVMat@1@PEAV21@@Z
+                                        void cv::split(class cv::Mat const &,class cv::Mat *)
+                                        }
+                                        procedure split(const m: TMat; const mv: pMat); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll name '?split@cv@@YAXAEBVMat@1@PEAV21@@Z'
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure split(const m: TMat; const mv: TArray<TMat>); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        (* * @overload
                                         @param m input multi-channel array.
                                         @param mv output vector of arrays; the arrays themselves are reallocated, if needed.
-                                      *)
-                                      // CV_EXPORTS_W void split(InputArray m, OutputArrayOfArrays mv);
-                                      {
+                                        *)
+                                        // CV_EXPORTS_W void split(InputArray m, OutputArrayOfArrays mv);
+                                        {
                                         6515
                                         ?split@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
                                         ?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::split(class cv::_InputArray const &,class cv::_OutputArray const &)
-                                      }
-procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?split@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?split@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @brief Copies specified channels from input arrays to the specified channels of
+                                        (* * @brief Copies specified channels from input arrays to the specified channels of
                                         output arrays.
                                         The function cv::mixChannels provides an advanced mechanism for shuffling image channels.
 
@@ -1339,21 +1312,20 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         filled with zero .
                                         @param npairs number of index pairs in `fromTo`.
                                         @sa split, merge, extractChannel, insertChannel, cvtColor
-                                      *)
-                                      // CV_EXPORTS void mixChannels(const Mat* src, size_t nsrcs, Mat* dst, size_t ndsts,
-                                      // const int* fromTo, size_t npairs);
-                                      {
+                                        *)
+                                        // CV_EXPORTS void mixChannels(const Mat* src, size_t nsrcs, Mat* dst, size_t ndsts,
+                                        // const int* fromTo, size_t npairs);
+                                        {
                                         5678
                                         ?mixChannels@cv@@YAXPEBVMat@1@_KPEAV21@1PEBH1@Z
                                         ?mixChannels@cv@@YAXPEBVMat@1@_KPEAV21@1PEBH1@Z
                                         void cv::mixChannels(class cv::Mat const *,unsigned __int64,class cv::Mat *,unsigned __int64,int const *,unsigned __int64)
-                                      }
-procedure mixChannels(Var src: TMat; nsrcs: size_t; Var dst: TMat; ndsts: size_t; const fromTo: pInt; npairs: size_t);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll name '?mixChannels@cv@@YAXPEBVMat@1@_KPEAV21@1PEBH1@Z'
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure mixChannels(Var src: TMat; nsrcs: size_t; Var dst: TMat; ndsts: size_t; const fromTo: pInt; npairs: size_t); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll name '?mixChannels@cv@@YAXPEBVMat@1@_KPEAV21@1PEBH1@Z'
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @overload
+                                        (* * @overload
                                         @param src input array or vector of matrices; all of the matrices must have the same size and the
                                         same depth.
                                         @param dst output array or vector of matrices; all the matrices **must be allocated**; their size and
@@ -1366,26 +1338,25 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         channels; as a special case, when fromTo[k\*2] is negative, the corresponding output channel is
                                         filled with zero .
                                         @param npairs number of index pairs in fromTo.
-                                      *)
-                                      // CV_EXPORTS void mixChannels(InputArrayOfArrays src, InputOutputArrayOfArrays dst,
-                                      // const int* fromTo, size_t npairs);
-                                      {
+                                        *)
+                                        // CV_EXPORTS void mixChannels(InputArrayOfArrays src, InputOutputArrayOfArrays dst,
+                                        // const int* fromTo, size_t npairs);
+                                        {
                                         5677
                                         ?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@PEBH_K@Z
                                         ?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@PEBH_K@Z
                                         void cv::mixChannels(class cv::_InputArray const &,class cv::_InputOutputArray const &,int const *,unsigned __int64)
-                                      }
-procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: pInt; npairs: size_t);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@PEBH_K@Z'
-//{$ELSE}
-//                                        name '?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@PEBH_K@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: pInt; npairs: size_t); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@PEBH_K@Z'
+                                        // {$ELSE}
+                                        // name '?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@PEBH_K@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @overload
+                                        (* * @overload
                                         @param src input array or vector of matrices; all of the matrices must have the same size and the
                                         same depth.
                                         @param dst output array or vector of matrices; all the matrices **must be allocated**; their size and
@@ -1397,72 +1368,70 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         src[0].channels() + src[1].channels()-1, and so on, the same scheme is used for the output image
                                         channels; as a special case, when fromTo[k\*2] is negative, the corresponding output channel is
                                         filled with zero .
-                                      *)
-                                      // CV_EXPORTS_W void mixChannels(InputArrayOfArrays src, InputOutputArrayOfArrays dst,
-                                      // const std::vector<int>& fromTo);
-                                      {
+                                        *)
+                                        // CV_EXPORTS_W void mixChannels(InputArrayOfArrays src, InputOutputArrayOfArrays dst,
+                                        // const std::vector<int>& fromTo);
+                                        {
                                         5676
                                         ?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z
                                         ?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z
                                         void cv::mixChannels(class cv::_InputArray const &,class cv::_InputOutputArray const &,class std::vector<int,class std::allocator<int> > const &)
-                                      }
-procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: vector<int>);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z'
-//{$ELSE}
-//                                        name '?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: vector<int>); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z'
+                                        // {$ELSE}
+                                        // name '?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @brief Extracts a single channel from src (coi is 0-based index)
+                                        (* * @brief Extracts a single channel from src (coi is 0-based index)
                                         @param src input array
                                         @param dst output array
                                         @param coi index of channel to extract
                                         @sa mixChannels, split
-                                      *)
-                                      // CV_EXPORTS_W void extractChannel(InputArray src, OutputArray dst, int coi);
-                                      {
+                                        *)
+                                        // CV_EXPORTS_W void extractChannel(InputArray src, OutputArray dst, int coi);
+                                        {
                                         4672
                                         ?extractChannel@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z
                                         ?extractChannel@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
                                         void cv::extractChannel(class cv::_InputArray const &,class cv::_OutputArray const &,int)
-                                      }
-procedure extractChannel(const src: TInputArray; const dst: TOutputArray; coi: int);
+                                        }
+                                        procedure extractChannel(const src: TInputArray; const dst: TOutputArray; coi: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?extractChannel@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?extractChannel@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?extractChannel@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?extractChannel@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @brief Inserts a single channel to dst (coi is 0-based index)
+                                        (* * @brief Inserts a single channel to dst (coi is 0-based index)
                                         @param src input array
                                         @param dst output array
                                         @param coi index of channel for insertion
                                         @sa mixChannels, merge
-                                      *)
-                                      // CV_EXPORTS_W void insertChannel(InputArray src, InputOutputArray dst, int coi);
-                                      {
+                                        *)
+                                        // CV_EXPORTS_W void insertChannel(InputArray src, InputOutputArray dst, int coi);
+                                        {
                                         5323
                                         ?insertChannel@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@H@Z
                                         ?insertChannel@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@H@Z
                                         void cv::insertChannel(class cv::_InputArray const &,class cv::_InputOutputArray const &,int)
-                                      }
-procedure insertChannel(const src: TInputArray; const dst: TInputOutputArray; coi: int);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?insertChannel@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?insertChannel@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure insertChannel(const src: TInputArray; const dst: TInputOutputArray; coi: int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?insertChannel@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?insertChannel@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @brief Flips a 2D array around vertical, horizontal, or both axes.
+                                        (* * @brief Flips a 2D array around vertical, horizontal, or both axes.
 
                                         The function cv::flip flips the array in one of three different ways (row
                                         and column indices are 0-based):
@@ -1493,62 +1462,61 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         flipping around y-axis. Negative value (for example, -1) means flipping
                                         around both axes.
                                         @sa transpose , repeat , completeSymm
-                                      *)
-                                      // CV_EXPORTS_W void flip(InputArray src, OutputArray dst, int flipCode);
-                                      {
+                                        *)
+                                        // CV_EXPORTS_W void flip(InputArray src, OutputArray dst, int flipCode);
+                                        {
                                         4788
                                         ?flip@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z
                                         ?flip@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
                                         void cv::flip(class cv::_InputArray const &,class cv::_OutputArray const &,int)
-                                      }
-procedure flip(const src: TInputArray; const dst: TOutputArray; flipCode: int);
+                                        }
+                                        procedure flip(const src: TInputArray; const dst: TOutputArray; flipCode: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?flip@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?flip@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?flip@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?flip@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-type
-  RotateFlags = type int;
-const
-  ROTATE_90_CLOCKWISE = 0; // !<Rotate 90 degrees clockwise
-  ROTATE_180 = 1; // !<Rotate 180 degrees clockwise
-  ROTATE_90_COUNTERCLOCKWISE = 2; // !<Rotate 270 degrees clockwise
+                                        type
+                                        RotateFlags = type int;
+                                        const
+                                        ROTATE_90_CLOCKWISE = 0; // !<Rotate 90 degrees clockwise
+                                        ROTATE_180 = 1; // !<Rotate 180 degrees clockwise
+                                        ROTATE_90_COUNTERCLOCKWISE = 2; // !<Rotate 270 degrees clockwise
 
+                                        (* * @brief Rotates a 2D array in multiples of 90 degrees.
+                                        The function cv::rotate rotates the array in one of three different ways:
+                                        *   Rotate by 90 degrees clockwise (rotateCode = ROTATE_90_CLOCKWISE).
+                                        *   Rotate by 180 degrees clockwise (rotateCode = ROTATE_180).
+                                        *   Rotate by 270 degrees clockwise (rotateCode = ROTATE_90_COUNTERCLOCKWISE).
+                                        @param src input array.
+                                        @param dst output array of the same type as src.  The size is the same with ROTATE_180,
+                                        and the rows and cols are switched for ROTATE_90_CLOCKWISE and ROTATE_90_COUNTERCLOCKWISE.
+                                        @param rotateCode an enum to specify how to rotate the array; see the enum #RotateFlags
+                                        @sa transpose , repeat , completeSymm, flip, RotateFlags
+                                        *)
 
-(* * @brief Rotates a 2D array in multiples of 90 degrees.
-The function cv::rotate rotates the array in one of three different ways:
-*   Rotate by 90 degrees clockwise (rotateCode = ROTATE_90_CLOCKWISE).
-*   Rotate by 180 degrees clockwise (rotateCode = ROTATE_180).
-*   Rotate by 270 degrees clockwise (rotateCode = ROTATE_90_COUNTERCLOCKWISE).
-@param src input array.
-@param dst output array of the same type as src.  The size is the same with ROTATE_180,
-and the rows and cols are switched for ROTATE_90_CLOCKWISE and ROTATE_90_COUNTERCLOCKWISE.
-@param rotateCode an enum to specify how to rotate the array; see the enum #RotateFlags
-@sa transpose , repeat , completeSymm, flip, RotateFlags
-*)
-
- // CV_EXPORTS_W void rotate(InputArray src, OutputArray dst, int rotateCode);
- {
- 6167
- ?rotate@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z
- ?rotate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
- void cv::rotate(class cv::_InputArray const &,class cv::_OutputArray const &,int)
- }
-procedure rotate(const src: TInputArray; const dst: TOutputArray; rotateCode: int);
+                                        // CV_EXPORTS_W void rotate(InputArray src, OutputArray dst, int rotateCode);
+                                        {
+                                        6167
+                                        ?rotate@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z
+                                        ?rotate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
+                                        void cv::rotate(class cv::_InputArray const &,class cv::_OutputArray const &,int)
+                                        }
+                                        procedure rotate(const src: TInputArray; const dst: TOutputArray; rotateCode: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?rotate@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?rotate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?rotate@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?rotate@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @brief Fills the output array with repeated copies of the input array.
+                                        (* * @brief Fills the output array with repeated copies of the input array.
 
                                         The function cv::repeat duplicates the input array one or more times along each of the two axes:
                                         \f[\texttt{dst} _{ij}= \texttt{src} _{i\mod src.rows, \; j\mod src.cols }\f]
@@ -1560,44 +1528,42 @@ procedure rotate(const src: TInputArray; const dst: TOutputArray; rotateCode: in
                                         horizontal axis.
                                         @param dst output array of the same type as `src`.
                                         @sa cv::reduce
-                                      *)
-                                      // CV_EXPORTS_W void repeat(InputArray src, int ny, int nx, OutputArray dst);
-                                      {
+                                        *)
+                                        // CV_EXPORTS_W void repeat(InputArray src, int ny, int nx, OutputArray dst);
+                                        {
                                         6122
                                         ?repeat@cv@@YAXAEBV_InputArray@debug_build_guard@1@HHAEBV_OutputArray@31@@Z
                                         ?repeat@cv@@YAXAEBV_InputArray@1@HHAEBV_OutputArray@1@@Z
                                         void cv::repeat(class cv::_InputArray const &,int,int,class cv::_OutputArray const &)
-                                      }
-procedure &repeat(const src: TInputArray; ny, nx: int; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?repeat@cv@@YAXAEBV_InputArray@debug_build_guard@1@HHAEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?repeat@cv@@YAXAEBV_InputArray@1@HHAEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure &repeat(const src: TInputArray; ny, nx: int; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?repeat@cv@@YAXAEBV_InputArray@debug_build_guard@1@HHAEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?repeat@cv@@YAXAEBV_InputArray@1@HHAEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @overload
+                                        (* * @overload
                                         @param src input array to replicate.
                                         @param ny Flag to specify how many times the `src` is repeated along the
                                         vertical axis.
                                         @param nx Flag to specify how many times the `src` is repeated along the
                                         horizontal axis.
-                                      *)
-                                      // CV_EXPORTS Mat repeat(const Mat& src, int ny, int nx);
-                                      {
+                                        *)
+                                        // CV_EXPORTS Mat repeat(const Mat& src, int ny, int nx);
+                                        {
                                         6121
                                         ?repeat@cv@@YA?AVMat@1@AEBV21@HH@Z
                                         ?repeat@cv@@YA?AVMat@1@AEBV21@HH@Z
                                         class cv::Mat cv::repeat(class cv::Mat const &,int,int)
-                                      }
-function &repeat(const src: TMat; ny, nx: int): TMat;
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll name '?repeat@cv@@YA?AVMat@1@AEBV21@HH@Z'
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        function &repeat(const src: TMat; ny, nx: int): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll name '?repeat@cv@@YA?AVMat@1@AEBV21@HH@Z'
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @brief Applies horizontal concatenation to given matrices.
+                                        (* * @brief Applies horizontal concatenation to given matrices.
 
                                         The function horizontally concatenates two or more cv::Mat matrices (with the same number of rows).
                                         @code{.cpp}
@@ -1617,25 +1583,24 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         @param nsrc number of matrices in src.
                                         @param dst output array. It has the same number of rows and depth as the src, and the sum of cols of the src.
                                         @sa cv::vconcat(const Mat*, size_t, OutputArray), @sa cv::vconcat(InputArrayOfArrays, OutputArray) and @sa cv::vconcat(InputArray, InputArray, OutputArray)
-                                      *)
-                                      // CV_EXPORTS void hconcat(const Mat* src, size_t nsrc, OutputArray dst);
-                                      {
+                                        *)
+                                        // CV_EXPORTS void hconcat(const Mat* src, size_t nsrc, OutputArray dst);
+                                        {
                                         5241
                                         ?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z
                                         ?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z
                                         void cv::hconcat(class cv::Mat const *,unsigned __int64,class cv::_OutputArray const &)
-                                      }
-procedure hconcat(const src: pMat; nsrc: size_t; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z'
-//{$ELSE}
-//                                        name '?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure hconcat(const src: pMat; nsrc: size_t; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z'
+                                        // {$ELSE}
+                                        // name '?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @overload
+                                        (* * @overload
                                         @code{.cpp}
                                         cv::Mat_<float> A = (cv::Mat_<float>(3, 2) << 1, 4,
                                         2, 5,
@@ -1654,25 +1619,24 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         @param src1 first input array to be considered for horizontal concatenation.
                                         @param src2 second input array to be considered for horizontal concatenation.
                                         @param dst output array. It has the same number of rows and depth as the src1 and src2, and the sum of cols of the src1 and src2.
-                                      *)
-                                      // CV_EXPORTS void hconcat(InputArray src1, InputArray src2, OutputArray dst);
-                                      {
+                                        *)
+                                        // CV_EXPORTS void hconcat(InputArray src1, InputArray src2, OutputArray dst);
+                                        {
                                         5239
                                         ?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z
                                         ?hconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::hconcat(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
-                                      }
-procedure hconcat(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?hconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure hconcat(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?hconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @overload
+                                        (* * @overload
                                         @code{.cpp}
                                         std::vector<cv::Mat> matrices = { cv::Mat(4, 1, CV_8UC1, cv::Scalar(1)),
                                         cv::Mat(4, 1, CV_8UC1, cv::Scalar(2)),
@@ -1689,25 +1653,24 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         @param src input array or vector of matrices. all of the matrices must have the same number of rows and the same depth.
                                         @param dst output array. It has the same number of rows and depth as the src, and the sum of cols of the src.
                                         same depth.
-                                      *)
-                                      // CV_EXPORTS_W void hconcat(InputArrayOfArrays src, OutputArray dst);
-                                      {
+                                        *)
+                                        // CV_EXPORTS_W void hconcat(InputArrayOfArrays src, OutputArray dst);
+                                        {
                                         5240
                                         ?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
                                         ?hconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::hconcat(class cv::_InputArray const &,class cv::_OutputArray const &)
-                                      }
-procedure hconcat(const src: TInputArrayOfArrays; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?hconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure hconcat(const src: TInputArrayOfArrays; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?hconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @brief Applies vertical concatenation to given matrices.
+                                        (* * @brief Applies vertical concatenation to given matrices.
 
                                         The function vertically concatenates two or more cv::Mat matrices (with the same number of cols).
                                         @code{.cpp}
@@ -1726,10 +1689,10 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         @param nsrc number of matrices in src.
                                         @param dst output array. It has the same number of cols and depth as the src, and the sum of rows of the src.
                                         @sa cv::hconcat(const Mat*, size_t, OutputArray), @sa cv::hconcat(InputArrayOfArrays, OutputArray) and @sa cv::hconcat(InputArray, InputArray, OutputArray)
-                                      *)
-                                      // CV_EXPORTS void vconcat(const Mat* src, size_t nsrc, OutputArray dst);
+                                        *)
+                                        // CV_EXPORTS void vconcat(const Mat* src, size_t nsrc, OutputArray dst);
 
-                                      (* * @overload
+                                        (* * @overload
                                         @code{.cpp}
                                         cv::Mat_<float> A = (cv::Mat_<float>(3, 2) << 1, 7,
                                         2, 8,
@@ -1751,25 +1714,24 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         @param src1 first input array to be considered for vertical concatenation.
                                         @param src2 second input array to be considered for vertical concatenation.
                                         @param dst output array. It has the same number of cols and depth as the src1 and src2, and the sum of rows of the src1 and src2.
-                                      *)
-                                      // CV_EXPORTS void vconcat(InputArray src1, InputArray src2, OutputArray dst);
-                                      {
+                                        *)
+                                        // CV_EXPORTS void vconcat(InputArray src1, InputArray src2, OutputArray dst);
+                                        {
                                         6718
                                         ?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z
                                         ?vconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::vconcat(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
-                                      }
-procedure vconcat(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?vconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure vconcat(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?vconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @overload
+                                        (* * @overload
                                         @code{.cpp}
                                         std::vector<cv::Mat> matrices = { cv::Mat(1, 4, CV_8UC1, cv::Scalar(1)),
                                         cv::Mat(1, 4, CV_8UC1, cv::Scalar(2)),
@@ -1785,25 +1747,24 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         @param src input array or vector of matrices. all of the matrices must have the same number of cols and the same depth
                                         @param dst output array. It has the same number of cols and depth as the src, and the sum of rows of the src.
                                         same depth.
-                                      *)
-                                      // CV_EXPORTS_W void vconcat(InputArrayOfArrays src, OutputArray dst);
-                                      {
+                                        *)
+                                        // CV_EXPORTS_W void vconcat(InputArrayOfArrays src, OutputArray dst);
+                                        {
                                         6719
                                         ?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z
                                         ?vconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::vconcat(class cv::_InputArray const &,class cv::_OutputArray const &)
-                                      }
-procedure vconcat(const src: TInputArrayOfArrays; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?vconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        }
+                                        procedure vconcat(const src: TInputArrayOfArrays; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?vconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                      (* * @brief computes bitwise conjunction of the two arrays (dst = src1 & src2)
+                                        (* * @brief computes bitwise conjunction of the two arrays (dst = src1 & src2)
                                         Calculates the per-element bit-wise conjunction of two arrays or an
                                         array and a scalar.
 
@@ -1827,27 +1788,25 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         arrays.
                                         @param mask optional operation mask, 8-bit single channel array, that
                                         specifies elements of the output array to be changed.
-                                      *)
+                                        *)
 
-                                      // CV_EXPORTS_W void bitwise_and(InputArray src1, InputArray src2,
-                                      // OutputArray dst, InputArray mask = noArray());
-                                      {
+                                        // CV_EXPORTS_W void bitwise_and(InputArray src1, InputArray src2,
+                                        // OutputArray dst, InputArray mask = noArray());
+                                        {
                                         3626
                                         ?bitwise_and@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z
                                         ?bitwise_and@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z
                                         void cv::bitwise_and(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
-                                      }
-procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } );
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?bitwise_and@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
-//{$ELSE}
-//                                        name '?bitwise_and@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
+                                        }
+                                        procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?bitwise_and@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
+                                        // {$ELSE}
+                                        // name '?bitwise_and@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Calculates the per-element bit-wise disjunction of two arrays or an
                                         array and a scalar.
 
@@ -1880,16 +1839,15 @@ procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const ds
                                         ?bitwise_or@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z
                                         void cv::bitwise_or(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } );
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?bitwise_or@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
-//{$ELSE}
-//                                        name '?bitwise_or@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?bitwise_or@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
+                                        // {$ELSE}
+                                        // name '?bitwise_or@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Calculates the per-element bit-wise "exclusive or" operation on two
                                         arrays or an array and a scalar.
 
@@ -1923,16 +1881,15 @@ procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst
                                         ?bitwise_xor@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z
                                         void cv::bitwise_xor(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } );
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?bitwise_xor@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
-//{$ELSE}
-//                                        name '?bitwise_xor@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?bitwise_xor@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
+                                        // {$ELSE}
+                                        // name '?bitwise_xor@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief  Inverts every bit of an array.
 
                                         The function cv::bitwise_not calculates per-element bit-wise inversion of the input
@@ -1955,16 +1912,15 @@ procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const ds
                                         ?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z
                                         void cv::bitwise_not(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-procedure bitwise_not(const src: TInputArray; const dst: TOutputArray; mask: TInputArray { = noArray() } );
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?bitwise_not@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
-//{$ELSE}
-//                                        name '?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure bitwise_not(const src: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
+                                        procedure bitwise_not(const src: TInputArray; const dst: TOutputArray; mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?bitwise_not@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
+                                        // {$ELSE}
+                                        // name '?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure bitwise_not(const src: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
 
                                         (* * @brief Calculates the per-element absolute difference between two arrays or between an array and a scalar.
 
@@ -1996,15 +1952,15 @@ procedure bitwise_not(const src: TInputArray; const dst: TOutputArray); overload
                                         ?absdiff@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::absdiff(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure absdiff(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
+                                        procedure absdiff(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?absdiff@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?absdiff@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?absdiff@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?absdiff@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief  This is an overloaded member function, provided for convenience (python)
                                         Copies the matrix to another one.
@@ -2023,15 +1979,15 @@ procedure absdiff(const src1: TInputArray; const src2: TInputArray; const dst: T
                                         ?copyTo@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z
                                         void cv::copyTo(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-procedure copyTo(const src: TInputArray; const dst: TOutputArray; const mask: TInputArray);
+                                        procedure copyTo(const src: TInputArray; const dst: TOutputArray; const mask: TInputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?copyTo@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
-//{$ELSE}
-//                                        name '?copyTo@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?copyTo@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
+                                        // {$ELSE}
+                                        // name '?copyTo@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief  Checks if array elements lie between the elements of two other arrays.
 
@@ -2060,15 +2016,15 @@ procedure copyTo(const src: TInputArray; const dst: TOutputArray; const mask: TI
                                         ?inRange@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z
                                         void cv::inRange(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure inRange(const src: TInputArray; const lowerb: TInputArray; const upperb: TInputArray; const dst: TOutputArray);
+                                        procedure inRange(const src: TInputArray; const lowerb: TInputArray; const upperb: TInputArray; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?inRange@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?inRange@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?inRange@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?inRange@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Performs the per-element comparison of two arrays or an array and scalar value.
 
@@ -2098,7 +2054,7 @@ procedure inRange(const src: TInputArray; const lowerb: TInputArray; const upper
                                         *)
 
                                         // CV_EXPORTS_W void compare(InputArray src1, InputArray src2, OutputArray dst, int cmpop);
-procedure compare(const src1, src2: TInputArray; const dst: TOutputArray; cmpop: CmpTypes); {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure compare(const src1, src2: TInputArray; const dst: TOutputArray; cmpop: CmpTypes); {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (*
                                         // moved to "opencv.external.inc"
                                         {
@@ -2135,15 +2091,14 @@ procedure compare(const src1, src2: TInputArray; const dst: TOutputArray; cmpop:
                                         ?min@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::min(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure min(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?min@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?min@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure min(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?min@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?min@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @overload
                                         needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
@@ -2155,10 +2110,9 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?min@cv@@YAXAEBVMat@1@0AEAV21@@Z
                                         void cv::min(class cv::Mat const &,class cv::Mat const &,class cv::Mat &)
                                         }
-procedure min(const src1: TMat; const src2: TMat; Var dst: TMat);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll name '?min@cv@@YAXAEBVMat@1@0AEAV21@@Z'
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure min(const src1: TMat; const src2: TMat; Var dst: TMat); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll name '?min@cv@@YAXAEBVMat@1@0AEAV21@@Z'
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @overload
                                         needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
@@ -2183,15 +2137,14 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?max@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::max(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure max(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?max@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?max@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure max(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?max@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?max@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @overload
                                         needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
@@ -2203,10 +2156,9 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?max@cv@@YAXAEBVMat@1@0AEAV21@@Z
                                         void cv::max(class cv::Mat const &,class cv::Mat const &,class cv::Mat &)
                                         }
-procedure max(const src1: TMat; const src2: TMat; Var dst: TMat);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll name '?max@cv@@YAXAEBVMat@1@0AEAV21@@Z'
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure max(const src1: TMat; const src2: TMat; Var dst: TMat); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll name '?max@cv@@YAXAEBVMat@1@0AEAV21@@Z'
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @overload
                                         needed to avoid conflicts with const _Tp& std::min(const _Tp&, const _Tp&, _Compare)
@@ -2229,15 +2181,15 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?sqrt@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::sqrt(class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure sqrt(const src: TInputArray; const dst: TOutputArray);
+                                        procedure sqrt(const src: TInputArray; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?sqrt@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?sqrt@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?sqrt@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?sqrt@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Raises every array element to a power.
 
@@ -2269,15 +2221,15 @@ procedure sqrt(const src: TInputArray; const dst: TOutputArray);
                                         ?pow@cv@@YAXAEBV_InputArray@1@NAEBV_OutputArray@1@@Z
                                         void cv::pow(class cv::_InputArray const &,double,class cv::_OutputArray const &)
                                         }
-procedure pow(const src: TInputArray; power: double; const dst: TOutputArray);
+                                        procedure pow(const src: TInputArray; power: double; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?pow@cv@@YAXAEBV_InputArray@debug_build_guard@1@NAEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?pow@cv@@YAXAEBV_InputArray@1@NAEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?pow@cv@@YAXAEBV_InputArray@debug_build_guard@1@NAEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?pow@cv@@YAXAEBV_InputArray@1@NAEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the exponent of every array element.
 
@@ -2300,15 +2252,15 @@ procedure pow(const src: TInputArray; power: double; const dst: TOutputArray);
                                         ?exp@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::exp(class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure exp(const src: TInputArray; const dst: TOutputArray);
+                                        procedure exp(const src: TInputArray; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?exp@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?exp@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?exp@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?exp@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the natural logarithm of every array element.
 
@@ -2328,15 +2280,15 @@ procedure exp(const src: TInputArray; const dst: TOutputArray);
                                         ?log@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::log(class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure log(const src: TInputArray; const dst: TOutputArray);
+                                        procedure log(const src: TInputArray; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?log@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?log@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?log@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?log@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates x and y coordinates of 2D vectors from their magnitude and angle.
 
@@ -2366,15 +2318,15 @@ procedure log(const src: TInputArray; const dst: TOutputArray);
                                         ?polarToCart@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z
                                         void cv::polarToCart(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,bool)
                                         }
-procedure polarToCart(const magnitude: TInputArray; const angle: TInputArray; const x: TOutputArray; const y: TOutputArray; angleInDegrees: bool = false);
+                                        procedure polarToCart(const magnitude: TInputArray; const angle: TInputArray; const x: TOutputArray; const y: TOutputArray; angleInDegrees: bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?polarToCart@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@1_N@Z'
-//{$ELSE}
-//                                        name '?polarToCart@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?polarToCart@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@1_N@Z'
+                                        // {$ELSE}
+                                        // name '?polarToCart@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the magnitude and angle of 2D vectors.
 
@@ -2403,15 +2355,15 @@ procedure polarToCart(const magnitude: TInputArray; const angle: TInputArray; co
                                         ?cartToPolar@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z
                                         void cv::cartToPolar(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,bool)
                                         }
-procedure cartToPolar(const x: TInputArray; const y: TInputArray; const magnitude: TOutputArray; const angle: TOutputArray; angleInDegrees: bool = false);
+                                        procedure cartToPolar(const x: TInputArray; const y: TInputArray; const magnitude: TOutputArray; const angle: TOutputArray; angleInDegrees: bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?cartToPolar@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@1_N@Z'
-//{$ELSE}
-//                                        name '?cartToPolar@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?cartToPolar@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@1_N@Z'
+                                        // {$ELSE}
+                                        // name '?cartToPolar@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the rotation angle of 2D vectors.
 
@@ -2437,15 +2389,15 @@ procedure cartToPolar(const x: TInputArray; const y: TInputArray; const magnitud
                                         ?phase@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@_N@Z
                                         void cv::phase(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,bool)
                                         }
-procedure phase(const x: TInputArray; const y: TInputArray; const angle: TOutputArray; angleInDegrees: bool = false);
+                                        procedure phase(const x: TInputArray; const y: TInputArray; const angle: TOutputArray; angleInDegrees: bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?phase@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@_N@Z'
-//{$ELSE}
-//                                        name '?phase@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@_N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?phase@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@_N@Z'
+                                        // {$ELSE}
+                                        // name '?phase@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@_N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the magnitude of 2D vectors.
 
@@ -2465,15 +2417,15 @@ procedure phase(const x: TInputArray; const y: TInputArray; const angle: TOutput
                                         ?magnitude@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::magnitude(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure magnitude(const x: TInputArray; const y: TInputArray; const magnitude: TOutputArray);
+                                        procedure magnitude(const x: TInputArray; const y: TInputArray; const magnitude: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?magnitude@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?magnitude@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?magnitude@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?magnitude@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Checks every element of an input array for invalid values.
 
@@ -2498,15 +2450,15 @@ procedure magnitude(const x: TInputArray; const y: TInputArray; const magnitude:
                                         ?checkRange@cv@@YA_NAEBV_InputArray@1@_NPEAV?$Point_@H@1@NN@Z
                                         bool cv::checkRange(class cv::_InputArray const &,bool,class cv::Point_<int> *,double,double)
                                         }
-function checkRange(const a: TInputArray; quiet: bool = true; pos: pPoint = nil; minVal: double = -DBL_MAX; maxVal: double = DBL_MAX): bool;
+                                        function checkRange(const a: TInputArray; quiet: bool = true; pos: pPoint = nil; minVal: double = -DBL_MAX; maxVal: double = DBL_MAX): bool;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?checkRange@cv@@YA_NAEBV_InputArray@debug_build_guard@1@_NPEAV?$Point_@H@1@NN@Z'
-//{$ELSE}
-//                                        name '?checkRange@cv@@YA_NAEBV_InputArray@1@_NPEAV?$Point_@H@1@NN@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?checkRange@cv@@YA_NAEBV_InputArray@debug_build_guard@1@_NPEAV?$Point_@H@1@NN@Z'
+                                        // {$ELSE}
+                                        // name '?checkRange@cv@@YA_NAEBV_InputArray@1@_NPEAV?$Point_@H@1@NN@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief converts NaNs to the given number
                                         @param a input/output matrix (CV_32F type).
@@ -2519,15 +2471,15 @@ function checkRange(const a: TInputArray; quiet: bool = true; pos: pPoint = nil;
                                         ?patchNaNs@cv@@YAXAEBV_InputOutputArray@1@N@Z
                                         void cv::patchNaNs(class cv::_InputOutputArray const &,double)
                                         }
-procedure patchNaNs(const a: TInputOutputArray; val: double = 0);
+                                        procedure patchNaNs(const a: TInputOutputArray; val: double = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?patchNaNs@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@N@Z'
-//{$ELSE}
-//                                        name '?patchNaNs@cv@@YAXAEBV_InputOutputArray@1@N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?patchNaNs@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@N@Z'
+                                        // {$ELSE}
+                                        // name '?patchNaNs@cv@@YAXAEBV_InputOutputArray@1@N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Performs generalized matrix multiplication.
 
@@ -2565,16 +2517,15 @@ procedure patchNaNs(const a: TInputOutputArray; val: double = 0);
                                         ?gemm@cv@@YAXAEBV_InputArray@1@0N0NAEBV_OutputArray@1@H@Z
                                         void cv::gemm(class cv::_InputArray const &,class cv::_InputArray const &,double,class cv::_InputArray const &,double,class cv::_OutputArray const &,int)
                                         }
-procedure gemm(const src1: TInputArray; const src2: TInputArray; alpha: double; const src3: TInputArray;
-               beta: double; const dst: TOutputArray; flags: int = 0);
+                                        procedure gemm(const src1: TInputArray; const src2: TInputArray; alpha: double; const src3: TInputArray; beta: double; const dst: TOutputArray; flags: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?gemm@cv@@YAXAEBV_InputArray@debug_build_guard@1@0N0NAEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?gemm@cv@@YAXAEBV_InputArray@1@0N0NAEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?gemm@cv@@YAXAEBV_InputArray@debug_build_guard@1@0N0NAEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?gemm@cv@@YAXAEBV_InputArray@1@0N0NAEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the product of a matrix and its transposition.
 
@@ -2612,17 +2563,15 @@ procedure gemm(const src1: TInputArray; const src2: TInputArray; alpha: double; 
                                         ?mulTransposed@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@_N0NH@Z
                                         void cv::mulTransposed(class cv::_InputArray const &,class cv::_OutputArray const &,bool,class cv::_InputArray const &,double,int)
                                         }
-procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool; const delta: TInputArray { = noArray() };
-                        scale: double = 1; dtype: int = -1);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?mulTransposed@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@_N0NH@Z'
-//{$ELSE}
-//                                        name '?mulTransposed@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@_N0NH@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool; const delta: TInputArray { = noArray() }; scale: double = 1; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?mulTransposed@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@_N0NH@Z'
+                                        // {$ELSE}
+                                        // name '?mulTransposed@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@_N0NH@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Transposes a matrix.
 
                                         The function cv::transpose transposes the matrix src :
@@ -2639,15 +2588,15 @@ procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bo
                                         ?transpose@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::transpose(class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure transpose(const src: TInputArray; const dst: TOutputArray);
+                                        procedure transpose(const src: TInputArray; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?transpose@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?transpose@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?transpose@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?transpose@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Performs the matrix transformation of every array element.
 
@@ -2680,15 +2629,15 @@ procedure transpose(const src: TInputArray; const dst: TOutputArray);
                                         ?transform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z
                                         void cv::transform(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-procedure transform(const src: TInputArray; const dst: TOutputArray; const m: TInputArray);
+                                        procedure transform(const src: TInputArray; const dst: TOutputArray; const m: TInputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?transform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
-//{$ELSE}
-//                                        name '?transform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?transform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
+                                        // {$ELSE}
+                                        // name '?transform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Performs the perspective matrix transformation of vectors.
 
@@ -2722,15 +2671,15 @@ procedure transform(const src: TInputArray; const dst: TOutputArray; const m: TI
                                         ?perspectiveTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z
                                         void cv::perspectiveTransform(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-procedure perspectiveTransform(const src: TInputArray; const dst: TOutputArray; const m: TInputArray);
+                                        procedure perspectiveTransform(const src: TInputArray; const dst: TOutputArray; const m: TInputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?perspectiveTransform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
-//{$ELSE}
-//                                        name '?perspectiveTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?perspectiveTransform@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
+                                        // {$ELSE}
+                                        // name '?perspectiveTransform@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Copies the lower or the upper half of a square matrix to its another half.
 
@@ -2753,15 +2702,15 @@ procedure perspectiveTransform(const src: TInputArray; const dst: TOutputArray; 
                                         ?completeSymm@cv@@YAXAEBV_InputOutputArray@1@_N@Z
                                         void cv::completeSymm(class cv::_InputOutputArray const &,bool)
                                         }
-procedure completeSymm(const m: TInputOutputArray; lowerToUpper: bool = false);
+                                        procedure completeSymm(const m: TInputOutputArray; lowerToUpper: bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?completeSymm@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@_N@Z'
-//{$ELSE}
-//                                        name '?completeSymm@cv@@YAXAEBV_InputOutputArray@1@_N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?completeSymm@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@_N@Z'
+                                        // {$ELSE}
+                                        // name '?completeSymm@cv@@YAXAEBV_InputOutputArray@1@_N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Initializes a scaled identity matrix.
 
@@ -2785,16 +2734,15 @@ procedure completeSymm(const m: TInputOutputArray; lowerToUpper: bool = false);
                                         ?setIdentity@cv@@YAXAEBV_InputOutputArray@1@AEBV?$Scalar_@N@1@@Z
                                         void cv::setIdentity(class cv::_InputOutputArray const &,class cv::Scalar_<double> const &)
                                         }
-procedure setIdentity(const mtx: TInputOutputArray; const s: TScalar { = Scalar(1) } );
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?setIdentity@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV?$Scalar_@N@1@@Z'
-//{$ELSE}
-//                                        name '?setIdentity@cv@@YAXAEBV_InputOutputArray@1@AEBV?$Scalar_@N@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-procedure setIdentity(const mtx: TInputOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure setIdentity(const mtx: TInputOutputArray; const s: TScalar { = Scalar(1) } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?setIdentity@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV?$Scalar_@N@1@@Z'
+                                        // {$ELSE}
+                                        // name '?setIdentity@cv@@YAXAEBV_InputOutputArray@1@AEBV?$Scalar_@N@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure setIdentity(const mtx: TInputOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Returns the determinant of a square floating-point matrix.
 
                                         The function cv::determinant calculates and returns the determinant of the
@@ -2815,15 +2763,15 @@ procedure setIdentity(const mtx: TInputOutputArray); overload; {$IFDEF USE_INLIN
                                         ?determinant@cv@@YANAEBV_InputArray@1@@Z
                                         double cv::determinant(class cv::_InputArray const &)
                                         }
-function determinant(const mtx: TInputArray): double;
+                                        function determinant(const mtx: TInputArray): double;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?determinant@cv@@YANAEBV_InputArray@debug_build_guard@1@@Z'
-//{$ELSE}
-//                                        name '?determinant@cv@@YANAEBV_InputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?determinant@cv@@YANAEBV_InputArray@debug_build_guard@1@@Z'
+                                        // {$ELSE}
+                                        // name '?determinant@cv@@YANAEBV_InputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Returns the trace of a matrix.
 
@@ -2839,15 +2787,15 @@ function determinant(const mtx: TInputArray): double;
                                         ?trace@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@@Z
                                         class cv::Scalar_<double> cv::trace(class cv::_InputArray const &)
                                         }
-function trace(const mtx: TInputArray): TScalar;
+                                        function trace(const mtx: TInputArray): TScalar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?trace@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@@Z'
-//{$ELSE}
-//                                        name '?trace@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?trace@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@@Z'
+                                        // {$ELSE}
+                                        // name '?trace@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Finds the inverse or pseudo-inverse of a matrix.
 
@@ -2881,15 +2829,15 @@ function trace(const mtx: TInputArray): TScalar;
                                         ?invert@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
                                         double cv::invert(class cv::_InputArray const &,class cv::_OutputArray const &,int)
                                         }
-function invert(const src: TInputArray; const dst: TOutputArray; flags: int = int(DECOMP_LU)): double;
+                                        function invert(const src: TInputArray; const dst: TOutputArray; flags: int = DECOMP_LU): double;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?invert@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?invert@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?invert@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?invert@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Solves one or more linear systems or least-squares problems.
 
@@ -2921,15 +2869,15 @@ function invert(const src: TInputArray; const dst: TOutputArray; flags: int = in
                                         ?solve@cv@@YA_NAEBV_InputArray@1@0AEBV_OutputArray@1@H@Z
                                         bool cv::solve(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,int)
                                         }
-function solve(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; flags: int = int(DECOMP_LU)): bool;
+                                        function solve(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; flags: int = int(DECOMP_LU)): bool;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?solve@cv@@YA_NAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?solve@cv@@YA_NAEBV_InputArray@1@0AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?solve@cv@@YA_NAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?solve@cv@@YA_NAEBV_InputArray@1@0AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Sorts each row or each column of a matrix.
 
@@ -2951,15 +2899,15 @@ function solve(const src1: TInputArray; const src2: TInputArray; const dst: TOut
                                         ?sort@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
                                         void cv::sort(class cv::_InputArray const &,class cv::_OutputArray const &,int)
                                         }
-procedure sort(const src: TInputArray; const dst: TOutputArray; flags: int);
+                                        procedure sort(const src: TInputArray; const dst: TOutputArray; flags: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?sort@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?sort@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?sort@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?sort@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Sorts each row or each column of a matrix.
 
@@ -2986,15 +2934,15 @@ procedure sort(const src: TInputArray; const dst: TOutputArray; flags: int);
                                         ?sortIdx@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
                                         void cv::sortIdx(class cv::_InputArray const &,class cv::_OutputArray const &,int)
                                         }
-procedure sortIdx(const src: TInputArray; const dst: TOutputArray; flags: int);
+                                        procedure sortIdx(const src: TInputArray; const dst: TOutputArray; flags: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?sortIdx@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?sortIdx@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?sortIdx@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?sortIdx@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Finds the real roots of a cubic equation.
 
@@ -3016,15 +2964,15 @@ procedure sortIdx(const src: TInputArray; const dst: TOutputArray; flags: int);
                                         ?solveCubic@cv@@YAHAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         int cv::solveCubic(class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-function solveCubic(const coeffs: TInputArray; const roots: TOutputArray): int;
+                                        function solveCubic(const coeffs: TInputArray; const roots: TOutputArray): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?solveCubic@cv@@YAHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?solveCubic@cv@@YAHAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?solveCubic@cv@@YAHAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?solveCubic@cv@@YAHAEBV_InputArray@1@AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Finds the real or complex roots of a polynomial equation.
 
@@ -3041,15 +2989,15 @@ function solveCubic(const coeffs: TInputArray; const roots: TOutputArray): int;
                                         ?solvePoly@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
                                         double cv::solvePoly(class cv::_InputArray const &,class cv::_OutputArray const &,int)
                                         }
-function solvePoly(const coeffs: TInputArray; const roots: TOutputArray; maxIters: int = 300): double;
+                                        function solvePoly(const coeffs: TInputArray; const roots: TOutputArray; maxIters: int = 300): double;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?solvePoly@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?solvePoly@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?solvePoly@cv@@YANAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?solvePoly@cv@@YANAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates eigenvalues and eigenvectors of a symmetric matrix.
 
@@ -3078,16 +3026,15 @@ function solvePoly(const coeffs: TInputArray; const roots: TOutputArray; maxIter
                                         ?eigen@cv@@YA_NAEBV_InputArray@1@AEBV_OutputArray@1@1@Z
                                         bool cv::eigen(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
                                         }
-function eigen(const src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray { = noArray() } ): bool;
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?eigen@cv@@YA_NAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
-//{$ELSE}
-//                                        name '?eigen@cv@@YA_NAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function eigen(const src: TInputArray; const eigenvalues: TOutputArray): bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function eigen(const src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray { = noArray() } ): bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?eigen@cv@@YA_NAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
+                                        // {$ELSE}
+                                        // name '?eigen@cv@@YA_NAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        function eigen(const src: TInputArray; const eigenvalues: TOutputArray): bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Calculates eigenvalues and eigenvectors of a non-symmetric matrix (real eigenvalues only).
 
                                         @note Assumes real eigenvalues.
@@ -3110,15 +3057,15 @@ function eigen(const src: TInputArray; const eigenvalues: TOutputArray): bool; o
                                         ?eigenNonSymmetric@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z
                                         void cv::eigenNonSymmetric(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
                                         }
-procedure eigenNonSymmetric(const src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray);
+                                        procedure eigenNonSymmetric(const src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?eigenNonSymmetric@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
-//{$ELSE}
-//                                        name '?eigenNonSymmetric@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?eigenNonSymmetric@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
+                                        // {$ELSE}
+                                        // name '?eigenNonSymmetric@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the covariance matrix of a set of vectors.
 
@@ -3141,10 +3088,9 @@ procedure eigenNonSymmetric(const src: TInputArray; const eigenvalues: TOutputAr
                                         ?calcCovarMatrix@cv@@YAXPEBVMat@1@HAEAV21@1HH@Z
                                         void cv::calcCovarMatrix(class cv::Mat const *,int,class cv::Mat &,class cv::Mat &,int,int)
                                         }
-procedure calcCovarMatrix(const samples: pMat; nsamples: int; Var covar: TMat; Var mean: TMat; flags: int; ctype: int = CV_64F);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll name '?calcCovarMatrix@cv@@YAXPEBVMat@1@HAEAV21@1HH@Z'
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure calcCovarMatrix(const samples: pMat; nsamples: int; Var covar: TMat; Var mean: TMat; flags: int; ctype: int = CV_64F); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll name '?calcCovarMatrix@cv@@YAXPEBVMat@1@HAEAV21@1HH@Z'
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @overload
                                         @note use #COVAR_ROWS or #COVAR_COLS flag
@@ -3162,15 +3108,14 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?calcCovarMatrix@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV_InputOutputArray@1@HH@Z
                                         void cv::calcCovarMatrix(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputOutputArray const &,int,int)
                                         }
-procedure calcCovarMatrix(const samples: TInputArray; const covar: TOutputArray; const mean: TInputOutputArray; flags: int; ctype: int = CV_64F);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?calcCovarMatrix@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@AEBV_InputOutputArray@31@HH@Z'
-//{$ELSE}
-//                                        name '?calcCovarMatrix@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV_InputOutputArray@1@HH@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure calcCovarMatrix(const samples: TInputArray; const covar: TOutputArray; const mean: TInputOutputArray; flags: int; ctype: int = CV_64F); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?calcCovarMatrix@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@AEBV_InputOutputArray@31@HH@Z'
+                                        // {$ELSE}
+                                        // name '?calcCovarMatrix@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV_InputOutputArray@1@HH@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * wrap PCA::operator() *)
                                         // CV_EXPORTS_W void PCACompute(InputArray data, InputOutputArray mean,
@@ -3181,15 +3126,14 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@H@Z
                                         void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,int)
                                         }
-procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; maxComponents: int = 0);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; maxComponents: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * wrap PCA::operator() and add eigenvalues output parameter *)
                                         // CV_EXPORTS_AS(PCACompute2) void PCACompute(InputArray data, InputOutputArray mean,
@@ -3201,16 +3145,14 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2H@Z
                                         void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,int)
                                         }
-procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; const eigenvalues: TOutputArray;
-maxComponents: int = 0);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@2H@Z'
-//{$ELSE}
-//                                        name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; const eigenvalues: TOutputArray; maxComponents: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@2H@Z'
+                                        // {$ELSE}
+                                        // name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * wrap PCA::operator() *)
                                         // CV_EXPORTS_W void PCACompute(InputArray data, InputOutputArray mean,
@@ -3221,15 +3163,14 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@N@Z
                                         void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,double)
                                         }
-procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; retainedVariance: double);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@N@Z'
-//{$ELSE}
-//                                        name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; retainedVariance: double); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@N@Z'
+                                        // {$ELSE}
+                                        // name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * wrap PCA::operator() and add eigenvalues output parameter *)
                                         // CV_EXPORTS_AS(PCACompute2) void PCACompute(InputArray data, InputOutputArray mean,
@@ -3241,16 +3182,14 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2N@Z
                                         void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,double)
                                         }
-procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray;
-const eigenvalues: TOutputArray; retainedVariance: double);
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@2N@Z'
-//{$ELSE}
-//                                        name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; const eigenvalues: TOutputArray; retainedVariance: double); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@2N@Z'
+                                        // {$ELSE}
+                                        // name '?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
                                         (* * wrap PCA::project *)
                                         // CV_EXPORTS_W void PCAProject(InputArray data, InputArray mean,
                                         // InputArray eigenvectors, OutputArray result);
@@ -3260,15 +3199,15 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         ?PCAProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z
                                         void cv::PCAProject(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure PCAProject(const data: TInputArray; const mean: TInputArray; const eigenvectors: TInputArray; const res: TOutputArray);
+                                        procedure PCAProject(const data: TInputArray; const mean: TInputArray; const eigenvectors: TInputArray; const res: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?PCAProject@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?PCAProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?PCAProject@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?PCAProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * wrap PCA::backProject *)
                                         // CV_EXPORTS_W void PCABackProject(InputArray data, InputArray mean,
@@ -3279,15 +3218,15 @@ procedure PCAProject(const data: TInputArray; const mean: TInputArray; const eig
                                         ?PCABackProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z
                                         void cv::PCABackProject(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure PCABackProject(const data: TInputArray; const mean: TInputArray; const eigenvectors: TInputArray; const res: TOutputArray);
+                                        procedure PCABackProject(const data: TInputArray; const mean: TInputArray; const eigenvectors: TInputArray; const res: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?PCABackProject@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?PCABackProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?PCABackProject@cv@@YAXAEBV_InputArray@debug_build_guard@1@00AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?PCABackProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * wrap SVD::compute *)
                                         // CV_EXPORTS_W void SVDecomp( InputArray src, OutputArray w, OutputArray u, OutputArray vt, int flags = 0 );
@@ -3297,15 +3236,15 @@ procedure PCABackProject(const data: TInputArray; const mean: TInputArray; const
                                         ?SVDecomp@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@11H@Z
                                         void cv::SVDecomp(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,int)
                                         }
-procedure SVDecomp(const src: TInputArray; const w: TOutputArray; const u: TOutputArray; const vt: TOutputArray; flags: int = 0);
+                                        procedure SVDecomp(const src: TInputArray; const w: TOutputArray; const u: TOutputArray; const vt: TOutputArray; flags: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?SVDecomp@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@11H@Z'
-//{$ELSE}
-//                                        name '?SVDecomp@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@11H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?SVDecomp@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@11H@Z'
+                                        // {$ELSE}
+                                        // name '?SVDecomp@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@11H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * wrap SVD::backSubst *)
                                         // CV_EXPORTS_W void SVBackSubst( InputArray w, InputArray u, InputArray vt,
@@ -3316,15 +3255,15 @@ procedure SVDecomp(const src: TInputArray; const w: TOutputArray; const u: TOutp
                                         ?SVBackSubst@cv@@YAXAEBV_InputArray@1@000AEBV_OutputArray@1@@Z
                                         void cv::SVBackSubst(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-procedure SVBackSubst(const w: TInputArray; const u: TInputArray; const vt: TInputArray; const rhs: TInputArray; const dst: TOutputArray);
+                                        procedure SVBackSubst(const w: TInputArray; const u: TInputArray; const vt: TInputArray; const rhs: TInputArray; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?SVBackSubst@cv@@YAXAEBV_InputArray@debug_build_guard@1@000AEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?SVBackSubst@cv@@YAXAEBV_InputArray@1@000AEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?SVBackSubst@cv@@YAXAEBV_InputArray@debug_build_guard@1@000AEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?SVBackSubst@cv@@YAXAEBV_InputArray@1@000AEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the Mahalanobis distance between two vectors.
 
@@ -3343,15 +3282,15 @@ procedure SVBackSubst(const w: TInputArray; const u: TInputArray; const vt: TInp
                                         ?Mahalanobis@cv@@YANAEBV_InputArray@1@00@Z
                                         double cv::Mahalanobis(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &)
                                         }
-function Mahalanobis(const v1: TInputArray; const v2: TInputArray; const icovar: TInputArray): double;
+                                        function Mahalanobis(const v1: TInputArray; const v2: TInputArray; const icovar: TInputArray): double;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?Mahalanobis@cv@@YANAEBV_InputArray@debug_build_guard@1@00@Z'
-//{$ELSE}
-//                                        name '?Mahalanobis@cv@@YANAEBV_InputArray@1@00@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?Mahalanobis@cv@@YANAEBV_InputArray@debug_build_guard@1@00@Z'
+                                        // {$ELSE}
+                                        // name '?Mahalanobis@cv@@YANAEBV_InputArray@1@00@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Performs a forward or inverse Discrete Fourier transform of a 1D or 2D floating-point array.
 
@@ -3492,15 +3431,15 @@ function Mahalanobis(const v1: TInputArray; const v2: TInputArray; const icovar:
                                         ?dft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z
                                         void cv::dft(class cv::_InputArray const &,class cv::_OutputArray const &,int,int)
                                         }
-procedure dft(const src: TInputArray; const dst: TOutputArray; flags: int = 0; nonzeroRows: int = 0);
+                                        procedure dft(const src: TInputArray; const dst: TOutputArray; flags: int = 0; nonzeroRows: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?dft@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'
-//{$ELSE}
-//                                        name '?dft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?dft@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'
+                                        // {$ELSE}
+                                        // name '?dft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the inverse Discrete Fourier Transform of a 1D or 2D array.
 
@@ -3520,15 +3459,15 @@ procedure dft(const src: TInputArray; const dst: TOutputArray; flags: int = 0; n
                                         ?idft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z
                                         void cv::idft(class cv::_InputArray const &,class cv::_OutputArray const &,int,int)
                                         }
-procedure idft(const src: TInputArray; const dst: TOutputArray; flags: int = 0; nonzeroRows: int = 0);
+                                        procedure idft(const src: TInputArray; const dst: TOutputArray; flags: int = 0; nonzeroRows: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?idft@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'
-//{$ELSE}
-//                                        name '?idft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?idft@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HH@Z'
+                                        // {$ELSE}
+                                        // name '?idft@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HH@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Performs a forward or inverse discrete Cosine transform of 1D or 2D array.
 
@@ -3576,15 +3515,15 @@ procedure idft(const src: TInputArray; const dst: TOutputArray; flags: int = 0; 
                                         ?dct@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
                                         void cv::dct(class cv::_InputArray const &,class cv::_OutputArray const &,int)
                                         }
-procedure dct(const src: TInputArray; const dst: TOutputArray; flags: int = 0);
+                                        procedure dct(const src: TInputArray; const dst: TOutputArray; flags: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?dct@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?dct@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?dct@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?dct@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Calculates the inverse Discrete Cosine Transform of a 1D or 2D array.
 
@@ -3601,15 +3540,15 @@ procedure dct(const src: TInputArray; const dst: TOutputArray; flags: int = 0);
                                         ?idct@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
                                         void cv::idct(class cv::_InputArray const &,class cv::_OutputArray const &,int)
                                         }
-procedure idct(const src: TInputArray; const dst: TOutputArray; flags: int = 0);
+                                        procedure idct(const src: TInputArray; const dst: TOutputArray; flags: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?idct@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
-//{$ELSE}
-//                                        name '?idct@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?idct@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
+                                        // {$ELSE}
+                                        // name '?idct@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@H@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Performs the per-element multiplication of two Fourier spectrums.
 
@@ -3636,15 +3575,15 @@ procedure idct(const src: TInputArray; const dst: TOutputArray; flags: int = 0);
                                         ?mulSpectrums@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H_N@Z
                                         void cv::mulSpectrums(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,int,bool)
                                         }
-procedure mulSpectrums(const a: TInputArray; const b: TInputArray; const c: TOutputArray; flags: int; conjB: bool = false);
+                                        procedure mulSpectrums(const a: TInputArray; const b: TInputArray; const c: TOutputArray; flags: int; conjB: bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?mulSpectrums@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H_N@Z'
-//{$ELSE}
-//                                        name '?mulSpectrums@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H_N@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?mulSpectrums@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H_N@Z'
+                                        // {$ELSE}
+                                        // name '?mulSpectrums@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H_N@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Returns the optimal DFT size for a given vector size.
 
@@ -3674,15 +3613,15 @@ procedure mulSpectrums(const a: TInputArray; const b: TInputArray; const c: TOut
                                         ?getOptimalDFTSize@cv@@YAHH@Z
                                         int cv::getOptimalDFTSize(int)
                                         }
-function getOptimalDFTSize(vecsize: int): int;
+                                        function getOptimalDFTSize(vecsize: int): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?getOptimalDFTSize@cv@@YAHH@Z'
-//{$ELSE}
-//                                        name '?getOptimalDFTSize@cv@@YAHH@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?getOptimalDFTSize@cv@@YAHH@Z'
+                                        // {$ELSE}
+                                        // name '?getOptimalDFTSize@cv@@YAHH@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Returns the default random number generator.
 
@@ -3700,8 +3639,8 @@ function getOptimalDFTSize(vecsize: int): int;
                                         ?theRNG@cv@@YAAEAVRNG@1@XZ
                                         class cv::RNG & cv::theRNG(void)
                                         }
-Type
- pRNG = ^TRNG;
+                                        Type
+                                        pRNG = ^TRNG;
 
                                         TRNG = record // forward declaration
                                         public
@@ -3721,15 +3660,15 @@ Type
 {$HINTS ON}
                                         end;
 
-function theRNG: TRNG;
+                                        function theRNG: TRNG;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?theRNG@cv@@YAAEAVRNG@1@XZ'
-//{$ELSE}
-//                                        name '?theRNG@cv@@YAAEAVRNG@1@XZ'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?theRNG@cv@@YAAEAVRNG@1@XZ'
+                                        // {$ELSE}
+                                        // name '?theRNG@cv@@YAAEAVRNG@1@XZ'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Sets state of default random number generator.
 
@@ -3744,15 +3683,15 @@ function theRNG: TRNG;
                                         ?setRNGSeed@cv@@YAXH@Z
                                         void cv::setRNGSeed(int)
                                         }
-procedure setRNGSeed(seed: int);
+                                        procedure setRNGSeed(seed: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?setRNGSeed@cv@@YAXH@Z'
-//{$ELSE}
-//                                        name '?setRNGSeed@cv@@YAXH@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?setRNGSeed@cv@@YAXH@Z'
+                                        // {$ELSE}
+                                        // name '?setRNGSeed@cv@@YAXH@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Generates a single uniformly-distributed random number or an array of random numbers.
 
@@ -3771,15 +3710,15 @@ procedure setRNGSeed(seed: int);
                                         ?randu@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z
                                         void cv::randu(class cv::_InputOutputArray const &,class cv::_InputArray const &,class cv::_InputArray const &)
                                         }
-procedure randu(const dst: TInputOutputArray; const low: TInputArray; const high: TInputArray);
+                                        procedure randu(const dst: TInputOutputArray; const low: TInputArray; const high: TInputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?randu@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@1@Z'
-//{$ELSE}
-//                                        name '?randu@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?randu@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@1@Z'
+                                        // {$ELSE}
+                                        // name '?randu@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Fills the array with normally distributed random numbers.
 
@@ -3799,15 +3738,15 @@ procedure randu(const dst: TInputOutputArray; const low: TInputArray; const high
                                         ?randn@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z
                                         void cv::randn(class cv::_InputOutputArray const &,class cv::_InputArray const &,class cv::_InputArray const &)
                                         }
-procedure randn(const dst: TInputOutputArray; const mean: TInputArray; const stddev: TInputArray);
+                                        procedure randn(const dst: TInputOutputArray; const mean: TInputArray; const stddev: TInputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?randn@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@1@Z'
-//{$ELSE}
-//                                        name '?randn@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?randn@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV_InputArray@31@1@Z'
+                                        // {$ELSE}
+                                        // name '?randn@cv@@YAXAEBV_InputOutputArray@1@AEBV_InputArray@1@1@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Shuffles the array elements randomly.
 
@@ -3827,15 +3766,15 @@ procedure randn(const dst: TInputOutputArray; const mean: TInputArray; const std
                                         ?randShuffle@cv@@YAXAEBV_InputOutputArray@1@NPEAVRNG@1@@Z
                                         void cv::randShuffle(class cv::_InputOutputArray const &,double,class cv::RNG *)
                                         }
-procedure randShuffle(const dst: TInputOutputArray; iterFactor: double = 1; rng: pRNG = nil);
+                                        procedure randShuffle(const dst: TInputOutputArray; iterFactor: double = 1; rng: pRNG = nil);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//overload; external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?randShuffle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@NPEAVRNG@1@@Z'
-//{$ELSE}
-//                                        name '?randShuffle@cv@@YAXAEBV_InputOutputArray@1@NPEAVRNG@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        // overload; external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?randShuffle@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@NPEAVRNG@1@@Z'
+                                        // {$ELSE}
+                                        // name '?randShuffle@cv@@YAXAEBV_InputOutputArray@1@NPEAVRNG@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
                                         (* * @brief Principal Component Analysis
 
@@ -4267,7 +4206,7 @@ procedure randShuffle(const dst: TInputOutputArray; iterFactor: double = 1; rng:
                                         // Mat u, w, vt;
                                         // };
 
-Type
+                                        Type
                                         (* * @brief Random Number Generator
 
                                         Random number generator. It encapsulates the state (currently, a 64-bit
@@ -4283,7 +4222,7 @@ Type
                                         TRNGHelper = record helper for TRNG
                                         public const
                                         RNG_UNIFORM = 0;
-                                        RNG_NORMAL = 1;
+                                        RNG_NORMAL  = 1;
                                         public
                                         (* @overload
                                         @param state 64-bit value used to initialize the RNG.
@@ -4507,17 +4446,15 @@ Type
                                         ?kmeans@cv@@YANAEBV_InputArray@1@HAEBV_InputOutputArray@1@VTermCriteria@1@HHAEBV_OutputArray@1@@Z
                                         double cv::kmeans(class cv::_InputArray const &,int,class cv::_InputOutputArray const &,class cv::TermCriteria,int,int,class cv::_OutputArray const &)
                                         }
-function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int; const centers: TOutputArray { = noArray() } ): double;
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF USE_DEBUG_DLLS}
-//                                        name '?kmeans@cv@@YANAEBV_InputArray@debug_build_guard@1@HAEBV_InputOutputArray@31@VTermCriteria@1@HHAEBV_OutputArray@31@@Z'
-//{$ELSE}
-//                                        name '?kmeans@cv@@YANAEBV_InputArray@1@HAEBV_InputOutputArray@1@VTermCriteria@1@HHAEBV_OutputArray@1@@Z'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int): double;
-overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int; const centers: TOutputArray { = noArray() } ): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        // external opencv_world_dll
+                                        // {$IFDEF USE_DEBUG_DLLS}
+                                        // name '?kmeans@cv@@YANAEBV_InputArray@debug_build_guard@1@HAEBV_InputOutputArray@31@VTermCriteria@1@HHAEBV_OutputArray@31@@Z'
+                                        // {$ELSE}
+                                        // name '?kmeans@cv@@YANAEBV_InputArray@1@HAEBV_InputOutputArray@1@VTermCriteria@1@HHAEBV_OutputArray@1@@Z'
+                                        // {$ENDIF}
+                                        // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
+                                        function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
                                         // ! @} core_cluster
 
@@ -4577,7 +4514,7 @@ overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // }
 
                                         /// ///////////////////////////////////// Algorithm ////////////////////////////////////
-Type
+                                        Type
                                         // class CV_EXPORTS Algorithm;
 
                                         // template<typename _Tp, typename _EnumTp = void> struct ParamType {};
@@ -4804,13 +4741,14 @@ Type
                                         // static const Param type = Param::INT;
                                         // };
 
-{$IF not defined(OPENCV_CORE_OPERATIONS_HPP)}{$I 'core/operations.inc'}{$ifend}
-{$IF not defined(OPENCV_CORE_CVSTD_HPP_INL)}{$I 'core/cvstd.inl.inc'}{$ifend}
-{$IF not defined(OPENCV_CORE_UTILITY_H)}{$i 'core/utility.inc'}{$ifend}
-{$if not defined(OPENCV_OPTIM_HPP)}{$I 'core/optim.inc' }{$ifend}
-{$if not defined(OPENCV_OVX_HPP)}{$I 'core/ovx.inc' }{$ifend}
+{$IF not defined(OPENCV_CORE_OPERATIONS_HPP)}{$I 'core/operations.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_CVSTD_HPP_INL)}{$I 'core/cvstd.inl.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_UTILITY_H)}{$I 'core/utility.inc'}{$IFEND}
+{$IF not defined(OPENCV_OPTIM_HPP)}{$I 'core/optim.inc' }{$IFEND}
+{$IF not defined(OPENCV_OVX_HPP)}{$I 'core/ovx.inc' }{$IFEND}
 
 {$ELSE}
+
 {$MESSAGE FATAL 'Duplicate included file - core.inc'}
 
 {$IFEND OPENCV_CORE_HPP}
