@@ -43,7 +43,7 @@ begin
     Var
       deviceID: int := 0; // 0 = open default camera
     Var
-      apiID: VideoCaptureAPIs := CAP_ANY; // 0 = autodetect default API
+      apiID: TVideoCaptureAPIs := CAP_ANY; // 0 = autodetect default API
       // open selected camera using selected API
     cap.open(deviceID, apiID);
     // check if we succeeded

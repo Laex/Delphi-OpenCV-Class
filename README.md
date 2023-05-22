@@ -10,7 +10,7 @@
 1. Download the current state of the project as [zip][1] or as [git][2]
 2. Download [OpenCV 4.7.0][3], run and unpack to the selected directory.<br>
 The following DLLs are required to work properly<br>
-__From `<opencv>\build\x64\vc15\bin\`__
+__From `<opencv>\build\x64\vc16\bin\`__
 * opencv_videoio_ffmpeg470_64.dll - `release`<br>
 * opencv_videoio_msmf470_64.dll   - `release`<br>
 * opencv_world470.dll             - `release`<br>
