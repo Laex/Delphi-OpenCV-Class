@@ -50,4 +50,55 @@ begin
 {$IFEND}
 end;
 
+{ TSimpleBlobDetector }
+
+class function TSimpleBlobDetector.create(): TPtr<TSimpleBlobDetector>;
+begin
+  Result := Create(TSimpleBlobDetector.TParams.Params);
+end;
+
+class function TSimpleBlobDetector.create(const parameters: TSimpleBlobDetector.TParams): TPtr<TSimpleBlobDetector>;
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_SIMPLEBLOBDETECTOR_create(Result,parameters);
+{$IFEND}
+end;
+
+function TSimpleBlobDetector.getDefaultName():CppString;
+begin
+{$IF not defined(PACKAGE)}
+  Result := class_func_CV_SIMPLEBLOBDETECTOR_getDefaultName(Self);
+{$IFEND}
+end;
+
+{ TSimpleBlobDetector.TParams }
+
+class operator TSimpleBlobDetector.TParams.Initialize(out Dest: TParams);
+begin
+{$IF not defined(PACKAGE)}
+  constructor_CV_SIMPLEBLOBDETECTOR_PARAMS(Dest);
+{$IFEND}
+end;
+
+class function TSimpleBlobDetector.TParams.Params(): TParams;
+begin
+{$IF not defined(PACKAGE)}
+  constructor_CV_SIMPLEBLOBDETECTOR_PARAMS(Result);
+{$IFEND}
+end;
+
+procedure TSimpleBlobDetector.TParams.read(const fn: TFileNode);
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_SIMPLEBLOBDETECTOR_PARAMS_read(Self,fn);
+{$IFEND}
+end;
+
+procedure TSimpleBlobDetector.TParams.write(const fs: TFileStorage);
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_SIMPLEBLOBDETECTOR_PARAMS_write(Self,fs);
+{$IFEND}
+end;
+
 {$IFEND}

@@ -27,6 +27,8 @@ function depthToString(depth: int): pCVChar;
 begin
 {$IF not defined(PACKAGE)}
   Result := func_depthToString(depth);
+//{$ELSE}
+//  Result := nil;
 {$IFEND}
 end;
 

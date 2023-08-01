@@ -20,12 +20,11 @@
   limitations under the License.
 *)
 
-{$if defined(OPENCV_CORE_PERSISTENCE_HPP) and (not defined(OPENCV_CORE_PERSISTENCE_IMPL_HPP))}
-{$define OPENCV_CORE_PERSISTENCE_IMPL_HPP}
-
+{$IF defined(OPENCV_CORE_PERSISTENCE_HPP) and (not defined(OPENCV_CORE_PERSISTENCE_IMPL_HPP))}
+{$DEFINE OPENCV_CORE_PERSISTENCE_IMPL_HPP}
 
 { TFileNode }
-class operator TFileNode.Initialize (out Dest: TFileNode);
+class operator TFileNode.Initialize(out Dest: TFileNode);
 begin
 {$IF not defined(PACKAGE)}
   constructor_CV_FILENODE_3(Dest);
@@ -33,12 +32,48 @@ begin
 end;
 
 { TFileNodeIterator }
-class operator TFileNodeIterator.Initialize (out Dest: TFileNodeIterator);
+class operator TFileNodeIterator.Initialize(out Dest: TFileNodeIterator);
 begin
 {$IF not defined(PACKAGE)}
   constructor_CV_FILENODEITERATOR_2(Dest);
 {$IFEND}
 end;
 
+{ TFileStorage }
 
-{$ifend} // OPENCV_CORE_PERSISTENCE_IMPL_HPP
+class operator TFileStorage.Initialize(out Dest: TFileStorage);
+begin
+{$IF not defined(PACKAGE)}
+  constructor_CV_FILESTORAGE_2(Dest);
+{$IFEND}
+end;
+
+class operator TFileStorage.Finalize(var Dest: TFileStorage);
+begin
+{$IF not defined(PACKAGE)}
+  destructor_CV_FILESTORAGE(Dest);
+{$IFEND}
+end;
+
+class function TFileStorage.FileStorage(const filename: String; flags: TMode; const encoding: String = ''): TFileStorage;
+begin
+{$IF not defined(PACKAGE)}
+  constructor_CV_FILESTORAGE_1(Result, filename, Int(flags), encoding);
+{$IFEND}
+end;
+
+class function TFileStorage.FileStorage(): TFileStorage;
+begin
+{$IF not defined(PACKAGE)}
+  // called Initialize for Result
+{$IFEND}
+end;
+
+function TFileStorage.isOpened(): bool;
+begin
+{$IF not defined(PACKAGE)}
+  Result := class_func_CV_FILESTORAGE_isOpened(Self);
+{$IFEND}
+end;
+
+{$IFEND} // OPENCV_CORE_PERSISTENCE_IMPL_HPP

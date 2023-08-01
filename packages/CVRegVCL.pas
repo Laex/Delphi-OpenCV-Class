@@ -46,7 +46,7 @@ resourcestring
   resPackageName = PackageText + ' ' + CV_VERSION;
   resAboutDescription = PackageText;
   resAboutURL = 'https://github.com/Laex/Delphi-OpenCV-Class/';
-  resAboutCopyright = 'Copyright (c) 2021 Laentir Valetov';
+  resAboutCopyright = 'Copyright (c) 2023 Laentir Valetov';
   resLicense = 'Apache-2.0 License';
   //
   ResENoSplashServices = 'Unable to get Borland Splash Services';
@@ -54,8 +54,8 @@ resourcestring
 
 procedure Register;
 begin
-  RegisterComponents('OpenCV', [TCVView, TCVCaptureSource, TCVVideoWriter]);
   RegisterClasses([TCVWebCameraSource, TCVFileSource]);
+  RegisterComponents('OpenCV', [TCVView, TCVCaptureSource, TCVVideoWriter]);
 end;
 
 var

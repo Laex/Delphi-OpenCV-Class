@@ -390,7 +390,7 @@ Type
   CV_FEATURE2D                                           = type TEmptyRec;
   CV_FILENODE                                            = {$IF Declared(TFileNode)}TFileNode{$ELSE} type TEmptyRec{$IFEND};
   CV_FILENODEITERATOR                                    = {$IF Declared(TFileNodeIterator)}TFileNodeIterator{$ELSE} type TEmptyRec{$IFEND};
-  CV_FILESTORAGE                                         = type TEmptyRec;
+  CV_FILESTORAGE                                         = {$IF Declared(TFileStorage)}TFileStorage{$ELSE} type TEmptyRec{$IFEND};
   CV_FILESTORAGE_IMPL                                    = type TEmptyRec;
   CV_FISHEYE                                             = type TEmptyRec;
   CV_FISHEYEWARPER                                       = type TEmptyRec;
@@ -902,7 +902,7 @@ Type
   CV_PTR_OF_CV_POINTSETREGISTRATOR_CALLBACK              = type TEmptyRec;
   CV_PTR_OF_CV_QRCODEENCODER                             = type TEmptyRec;
   CV_PTR_OF_CV_SIFT                                      = {$IF Declared(TPtr_TFeature2D)}TPtr_TFeature2D{$ELSE} type TEmptyRec{$IFEND};
-  CV_PTR_OF_CV_SIMPLEBLOBDETECTOR                        = type TEmptyRec;
+  CV_PTR_OF_CV_SIMPLEBLOBDETECTOR                        = {$IF Declared(TSimpleBlobDetector)}TPtr<TSimpleBlobDetector>{$ELSE} type TEmptyRec{$IFEND};
   CV_PTR_OF_CV_SPARSEPYRLKOPTICALFLOW                    = type TEmptyRec;
   CV_PTR_OF_CV_STEREOBM                                  = type TEmptyRec;
   CV_PTR_OF_CV_STEREOSGBM                                = type TEmptyRec;
@@ -945,10 +945,10 @@ Type
   CV_SEGMENTATION_INTELLIGENTSCISSORSMB_IMPL             = type TEmptyRec;
   CV_SIFT                                                = type TEmptyRec;
   CV_SIMILARRECTS                                        = type TEmptyRec;
-  CV_SIMPLEBLOBDETECTOR                                  = type TEmptyRec;
+  CV_SIMPLEBLOBDETECTOR                                  = {$IF Declared(TSimpleBlobDetector)}TSimpleBlobDetector{$ELSE} type TEmptyRec{$IFEND};
   CV_SIMPLEBLOBDETECTORIMPL                              = type TEmptyRec;
   CV_SIMPLEBLOBDETECTORIMPL_CENTER                       = type TEmptyRec;
-  CV_SIMPLEBLOBDETECTOR_PARAMS                           = type TEmptyRec;
+  CV_SIMPLEBLOBDETECTOR_PARAMS                           = {$IF Declared(TSimpleBlobDetector)}TSimpleBlobDetector.TParams{$ELSE} type TEmptyRec{$IFEND};
   CV_SIZE__OF_DOUBLE                                     = type TEmptyRec;
   CV_SIZE__OF_FLOAT                                      = type TEmptyRec;
   CV_SIZE__OF_INT                                        = UInt64; // type TEmptyRec;

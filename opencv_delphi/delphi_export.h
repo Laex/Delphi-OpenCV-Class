@@ -554,3 +554,8 @@ BODY_API void StdSetItem(void* p, int vt, unsigned __int64 index, void* dst)
 		}
 	}
 }
+
+BODY_API void* dataStdVector(void* obj, int vt)
+{
+	return static_cast<vector<int>*>(obj)->data();
+}

@@ -47,39 +47,39 @@ const
   DBL_EPSILON = 2.2204460492503131E-16;
 
 Type
-  BOOL             = bytebool;
-  __INT64          = int64;
-  pVOID            = pointer;
-  UNSIGNED_CHAR    = byte;
-  FLOAT            = single;
-  SIGNED           = Integer;
-  SHORT            = int16;
-  INT              = Integer;
+  BOOL = bytebool;
+  __INT64 = int64;
+  pVOID = pointer;
+  UNSIGNED_CHAR = byte;
+  FLOAT = single;
+  SIGNED = Integer;
+  SHORT = int16;
+  INT = Integer;
   UNSIGNED___INT64 = uint64;
-  CVCHAR           = AnsiChar;
-  unsigned         = UInt32;
-  UNSIGNED_CVCHAR  = UNSIGNED_CHAR;
-  UNSIGNED_INT     = unsigned;
-  UNSIGNED_SHORT   = UInt16;
-  pSHORT           = ^SHORT;
-  pFLOAT           = ^FLOAT;
-  pINT             = ^INT;
-  pBOOL            = ^BOOL;
-  p__INT64         = ^__INT64;
-  pCVCHAR          = ^CVCHAR;
-  schar            = int8;
-  pschar           = ^schar;
-  punsigned        = ^unsigned;
-  size_t           = NativeUInt;
-  psize_t          = ^size_t;
-  uint             = Cardinal;
-  ushort           = UInt16;
-  ppAnsiChar       = ^pAnsiChar;
-  uchar            = byte;
-  pUChar           = type pByte;
-  pMatOp           = type pointer;
-  pUCharConst      = pUChar;
-  PointerConst     = type pointer;
+  CVCHAR = AnsiChar;
+  unsigned = UInt32;
+  UNSIGNED_CVCHAR = UNSIGNED_CHAR;
+  UNSIGNED_INT = unsigned;
+  UNSIGNED_SHORT = UInt16;
+  pSHORT = ^SHORT;
+  pFLOAT = ^FLOAT;
+  pINT = ^INT;
+  pBOOL = ^BOOL;
+  p__INT64 = ^__INT64;
+  pCVCHAR = ^CVCHAR;
+  schar = int8;
+  pschar = ^schar;
+  punsigned = ^unsigned;
+  size_t = NativeUInt;
+  psize_t = ^size_t;
+  uint = Cardinal;
+  ushort = UInt16;
+  ppAnsiChar = ^pAnsiChar;
+  uchar = byte;
+  pUChar = type pByte;
+  pMatOp = type pointer;
+  pUCharConst = pUChar;
+  PointerConst = type pointer;
 
   TVectorType = //
     (           //
@@ -91,6 +91,8 @@ Type
   TVector_Enumerator<T> = class;
 
   Vector<T> = record
+  public type
+    pType = ^T;
   private
 {$HINTS OFF}
     // release 24
@@ -120,6 +122,7 @@ Type
     //
     function pT(const index: uint64): pVector; {$IFDEF USE_INLINE}inline; {$ENDIF}
     property v[const index: uint64]: T read GetItems write setItems; default;
+    function data:pType; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const A: TArray<T>): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const size: Integer): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function noVector: Vector<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -196,7 +199,7 @@ Type
   end;
 
   vftable_func = type pointer;
-  pvftable     = ^vftable_func;
+  pvftable = ^vftable_func;
 
 function vftable(const vft: vftable_func; const index: Integer): pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
@@ -238,24 +241,24 @@ Type
   TCppEmptyRec = record
   end;
 
-  CLEARSTDVECTOR                                 = type TCppEmptyRec;
-  RESIZESTDVECTOR                                = type TCppEmptyRec;
-  COPYSTDVECTOR                                  = type TCppEmptyRec;
-  STD__STRING_CONSTRUCTOR_CONCAT_TAG             = type TCppEmptyRec;
-  STDITEM                                        = type TCppEmptyRec;
-  STDPUSHBACK                                    = type TCppEmptyRec;
-  STDSIZE                                        = type TCppEmptyRec;
-  EXPORTSTRING                                   = type TCppEmptyRec;
-  DESTROYSTDVECTOR                               = type TCppEmptyRec;
-  STD_INITIALIZER_LIST_OF_CVCHAR                 = type TCppEmptyRec;
-  STDEMPTY                                       = type TCppEmptyRec;
+  CLEARSTDVECTOR = type TCppEmptyRec;
+  RESIZESTDVECTOR = type TCppEmptyRec;
+  COPYSTDVECTOR = type TCppEmptyRec;
+  STD__STRING_CONSTRUCTOR_CONCAT_TAG = type TCppEmptyRec;
+  STDITEM = type TCppEmptyRec;
+  STDPUSHBACK = type TCppEmptyRec;
+  STDSIZE = type TCppEmptyRec;
+  EXPORTSTRING = type TCppEmptyRec;
+  DESTROYSTDVECTOR = type TCppEmptyRec;
+  STD_INITIALIZER_LIST_OF_CVCHAR = type TCppEmptyRec;
+  STDEMPTY = type TCppEmptyRec;
   STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TCppEmptyRec;
-  STD_ALLOCATOR_OF_CVCHAR                        = type TCppEmptyRec;
-  STD_BASIC_STRING_OF_CVCHAR                     = CppString; // type TEmptyRec;
-  STDSETITEM                                     = type TCppEmptyRec;
-  CREATESTDVECTOR                                = type TCppEmptyRec;
-  STDPITEM                                       = type TCppEmptyRec;
-  VOID                                           = type TCppEmptyRec;
+  STD_ALLOCATOR_OF_CVCHAR = type TCppEmptyRec;
+  STD_BASIC_STRING_OF_CVCHAR = CppString; // type TEmptyRec;
+  STDSETITEM = type TCppEmptyRec;
+  CREATESTDVECTOR = type TCppEmptyRec;
+  STDPITEM = type TCppEmptyRec;
+  VOID = type TCppEmptyRec;
   STD_REVERSE_ITERATOR_OF_STD__STRING_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TCppEmptyRec;
   STD_REVERSE_ITERATOR_OF_STD__STRING_CONST_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TCppEmptyRec;
   STD__STRING_CONST_ITERATOR_OF_STD__STRING_VAL_OF_STD__SIMPLE_TYPES_OF_CVCHAR = type TCppEmptyRec;
@@ -283,6 +286,13 @@ procedure Vector<T>.clear;
 begin
 {$IF not defined(PACKAGE)}
   proc_clearStdVector(@Self, vt);
+{$IFEND}
+end;
+
+function Vector<T>.data: pType;
+begin
+  {$IF not defined(PACKAGE)}
+  Result := dataStdVector(@Self, vt);
 {$IFEND}
 end;
 

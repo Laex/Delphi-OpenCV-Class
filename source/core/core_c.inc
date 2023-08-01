@@ -128,13 +128,6 @@ procedure cvReleaseImage(Var image:pIplImage);
 //CVAPI(IplImage*) cvCloneImage( const IplImage* image );
 function cvCloneImage( const image:pIplImage  ):pIplImage;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7669
-//{$ELSE}
-//  name 'cvCloneImage'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets the channel of interest in an IplImage.
 
@@ -149,13 +142,6 @@ etc. Note that the channel indices become 1-based.
 //CVAPI(void)  cvSetImageCOI( IplImage* image, int coi );
 procedure cvSetImageCOI(var image:TIplImage; coi:int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7956
-//{$ELSE}
-//  name 'cvSetImageCOI'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns the index of the channel of interest.
 
@@ -166,13 +152,6 @@ cvSetImageCOI.
 //CVAPI(int)  cvGetImageCOI( const IplImage* image );
 function cvGetImageCOI(const image:pIplImage):Int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7772
-//{$ELSE}
-//  name 'cvGetImageCOI'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Sets an image Region Of Interest (ROI) for a given rectangle.
 
@@ -188,13 +167,6 @@ ROI, not the original image.
 //CVAPI(void)  cvSetImageROI( IplImage* image, CvRect rect );
 procedure cvSetImageROI(var image:TIplImage; rect:TCvRect );
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7957
-//{$ELSE}
-//  name 'cvSetImageROI'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Resets the image ROI to include the entire image and releases the ROI structure.
 
@@ -208,13 +180,6 @@ This produces a similar result to the following, but in addition it releases the
 //CVAPI(void)  cvResetImageROI( IplImage* image );
 procedure cvResetImageROI(Var image:TIplImage);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7914
-//{$ELSE}
-//  name 'cvResetImageROI'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns the image ROI.
 
@@ -224,13 +189,6 @@ If there is no ROI set, cvRect(0,0,image-\>width,image-\>height) is returned.
 //CVAPI(CvRect) cvGetImageROI( const IplImage* image );
 function cvGetImageROI(const  image:pIplImage ):TCvRect;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7773
-//{$ELSE}
-//  name 'cvGetImageROI'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates a matrix header but does not allocate the matrix data.
 
@@ -243,13 +201,6 @@ allocated using cvCreateData or set explicitly to user-allocated data via cvSetD
 //CVAPI(CvMat*)  cvCreateMatHeader( int rows, int cols, int type );
 function cvCreateMatHeader( rows, cols, &type:int ):pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7702
-//{$ELSE}
-//  name 'cvCreateMatHeader'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 const
  CV_AUTOSTEP  =$7fffffff;
@@ -293,13 +244,6 @@ function cvInitMatHeader(var mat:TCvMat; rows, cols,
                               &type:int; data:pointer = nil;
                               step:int = CV_AUTOSTEP ):pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7821
-//{$ELSE}
-//  name 'cvInitMatHeader'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates a matrix header and allocates the matrix data.
 
@@ -318,13 +262,6 @@ example, CV _ 8UC1 means the elements are 8-bit unsigned and the there is 1 chan
 //CVAPI(CvMat*)  cvCreateMat( int rows, int cols, int type );
 function cvCreateMat( rows, cols, &type:int ):pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7701
-//{$ELSE}
-//  name 'cvCreateMat'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Deallocates a matrix.
 
@@ -340,13 +277,6 @@ reference counter is 0, it also deallocates the data. :
 //CVAPI(void)  cvReleaseMat( CvMat** mat );
 procedure cvReleaseMat(var mat:pCvMat);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7905
-//{$ELSE}
-//  name 'cvReleaseMat'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Decrements an array data reference counter.
 
@@ -409,14 +339,6 @@ function cvIncRefData( arr:pCvArr ):int;inline;
 //CVAPI(CvMat*) cvCloneMat( const CvMat* mat );
 function cvCloneMat( const mat:pCvMat ):pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7670
-//{$ELSE}
-//  name 'cvCloneMat'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-
 
 (** @brief Returns matrix header corresponding to the rectangular sub-array of input image or matrix.
 
@@ -431,23 +353,9 @@ taken into account by the function so the sub-array of ROI is actually extracted
 //CVAPI(CvMat*) cvGetSubRect( const CvArr* arr, CvMat* submat, CvRect rect );
 function cvGetSubRect( const arr:pCvArr; submat:pCvMat; rect:TCvRect ):pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7793
-//{$ELSE}
-//  name 'cvGetSubRect'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 function cvGetSubArr( const arr:pCvArr; submat:pCvMat; rect:TCvRect ):pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7793
-//{$ELSE}
-//  name 'cvGetSubRect'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns array row or row span.
 
@@ -467,13 +375,6 @@ function cvGetRows( const arr:pCvArr;  submat:pCvMat;
                         start_row, end_row:int;
                         delta_row:int= 1):pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7788
-//{$ELSE}
-//  name 'cvGetRows'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload
 @param arr Input array
@@ -504,13 +405,6 @@ cvGetCols(arr, submat, col, col+1).
 function cvGetCols( const arr:pCvArr; submat:pCvMat;
                         start_col, end_col:int ):pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7762
-//{$ELSE}
-//  name 'cvGetCols'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload
 @param arr Input array
@@ -537,13 +431,6 @@ forth.
 function cvGetDiag( const arr:pCvArr; submat:pCvMat;
                             diag:int=0):pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7763
-//{$ELSE}
-//  name 'cvGetDiag'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** low-level scalar <-> raw data conversion functions *)
 //CVAPI(void) cvScalarToRawData( const CvScalar* scalar, void* data, int type,
@@ -551,24 +438,10 @@ function cvGetDiag( const arr:pCvArr; submat:pCvMat;
 procedure cvScalarToRawData( const scalar:pCvScalar; data:Pointer; &type:int;
                               extend_to_12:int= 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7926
-//{$ELSE}
-//  name 'cvScalarToRawData'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 //CVAPI(void) cvRawDataToScalar( const void* data, int type, CvScalar* scalar );
 procedure cvRawDataToScalar( const data:Pointer; &type:int; scalar:pCvScalar );
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7892
-//{$ELSE}
-//  name 'cvRawDataToScalar'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates a new matrix header but does not allocate the matrix data.
 
@@ -581,13 +454,6 @@ allocated using cvCreateData or set explicitly to user-allocated data via cvSetD
 //CVAPI(CvMatND*)  cvCreateMatNDHeader( int dims, const int* sizes, int type );
 function cvCreateMatNDHeader( dims:int; const sizes:pint; &type:int ):pCvMatND;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7704
-//{$ELSE}
-//  name 'cvCreateMatNDHeader'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates the header and allocates the data for a multi-dimensional dense array.
 
@@ -604,13 +470,6 @@ changed at build time).
 //CVAPI(CvMatND*)  cvCreateMatND( int dims, const int* sizes, int type );
 function cvCreateMatND( dims:int; const sizes:pint; &type:int ):pCvMatND;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7703
-//{$ELSE}
-//  name 'cvCreateMatND'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Initializes a pre-allocated multi-dimensional array header.
 
@@ -625,13 +484,6 @@ function cvCreateMatND( dims:int; const sizes:pint; &type:int ):pCvMatND;
 function cvInitMatNDHeader( mat:pCvMatND; dims:int; const sizes:pint;
                                     &type:int; data:pointer =nil ):pCvMatND;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7822
-//{$ELSE}
-//  name 'cvInitMatNDHeader'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Deallocates a multi-dimensional array.
 
@@ -654,13 +506,6 @@ procedure cvReleaseMatND( var mat:pCvMatND );inline;
 //CVAPI(CvMatND*) cvCloneMatND( const CvMatND* mat );
 function cvCloneMatND( const mat:pCvMatND ):pCvMatND;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7671
-//{$ELSE}
-//  name 'cvCloneMatND'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Creates sparse array.
 
@@ -674,13 +519,6 @@ practically unlimited (up to \f$2^{16}\f$ ).
 //CVAPI(CvSparseMat*)  cvCreateSparseMat( int dims, const int* sizes, int type );
 function cvCreateSparseMat( dims:int; const sizes:pint; &type:int ):pCvSparseMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7710
-//{$ELSE}
-//  name 'cvCreateSparseMat'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Deallocates sparse array.
 
@@ -690,25 +528,11 @@ The function releases the sparse array and clears the array pointer upon exit.
 //CVAPI(void)  cvReleaseSparseMat( CvSparseMat** mat );
 procedure cvReleaseSparseMat( var mat:pCvSparseMat );
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7908
-//{$ELSE}
-//  name 'cvReleaseSparseMat'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** Creates a copy of CvSparseMat (except, may be, zero items) *)
 //CVAPI(CvSparseMat*) cvCloneSparseMat( const CvSparseMat* mat );
 function cvCloneSparseMat( const mat:pCvSparseMat ):pCvSparseMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7672
-//{$ELSE}
-//  name 'cvCloneSparseMat'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Initializes sparse array elements iterator.
 
@@ -721,13 +545,6 @@ or NULL if the array is empty.
 //                                              CvSparseMatIterator* mat_iterator );
 function cvInitSparseMatIterator( const mat:pCvSparseMat; mat_iterator:pCvSparseMatIterator ):pCvSparseNode;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7824
-//{$ELSE}
-//  name 'cvInitSparseMatIterator'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns the next sparse matrix element
 
@@ -813,25 +630,11 @@ function cvInitNArrayIterator( count:int; var arrs:pCvArr;
                                  array_iterator:pCvNArrayIterator;
                                  flags:int=0):int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7823
-//{$ELSE}
-//  name 'cvInitNArrayIterator'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** returns zero value if iteration is finished, non-zero (slice length) otherwise *)
 //CVAPI(int) cvNextNArraySlice( CvNArrayIterator* array_iterator );
 function cvNextNArraySlice( array_iterator:pCvNArrayIterator ):int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7862
-//{$ELSE}
-//  name 'cvNextNArraySlice'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns type of array elements.
 
@@ -846,13 +649,6 @@ The code cvGetElemType(img) will return CV_8UC3.
 //CVAPI(int) cvGetElemType( const CvArr* arr );
 function cvGetElemType( const arr:pCvArr ):int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7766
-//{$ELSE}
-//  name 'cvGetElemType'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Return number of array dimensions
 
@@ -873,13 +669,6 @@ following code calculates total number of array elements:
 //CVAPI(int) cvGetDims( const CvArr* arr, int* sizes CV_DEFAULT(NULL) );
 function cvGetDims( const arr:pCvArr; sizes:pint = nil ):int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7765
-//{$ELSE}
-//  name 'cvGetDims'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Returns array size along the specified dimension.
 
@@ -890,13 +679,6 @@ columns; for images 0 means height, 1 means width)
 //CVAPI(int) cvGetDimSize( const CvArr* arr, int index );
 function cvGetDimSize( const arr:pCvArr; index:int ):int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7764
-//{$ELSE}
-//  name 'cvGetDimSize'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Return pointer to a particular array element.
 
@@ -916,25 +698,11 @@ All these as well as other functions accessing array elements ( cvGetND , cvGetR
 //CVAPI(uchar*) cvPtr1D( const CvArr* arr, int idx0, int* type CV_DEFAULT(NULL));
 function cvPtr1D( const arr:pCvArr; idx0:int; &type:pint=nil):puchar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7880
-//{$ELSE}
-//  name 'cvPtr1D'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload *)
 //CVAPI(uchar*) cvPtr2D( const CvArr* arr, int idx0, int idx1, int* type CV_DEFAULT(NULL) );
 function cvPtr2D( const arr:pCvArr; idx0, idx1:int ; &type:pint =nil ):puchar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7881
-//{$ELSE}
-//  name 'cvPtr2D'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload *)
 //CVAPI(uchar*) cvPtr3D( const CvArr* arr, int idx0, int idx1, int idx2,
@@ -942,13 +710,6 @@ function cvPtr2D( const arr:pCvArr; idx0, idx1:int ; &type:pint =nil ):puchar;
 function cvPtr3D( const arr:pCvArr; idx0, idx1, idx2:int;
                       &type:pint=nil):puchar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7882
-//{$ELSE}
-//  name 'cvPtr3D'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload
 @param arr Input array
@@ -967,13 +728,6 @@ function cvPtrND( const arr:pCvArr; const idx:pint; &type:pint=nil;
                       create_node:int=1;
                       precalc_hashval:punsigned =nil):puchar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7883
-//{$ELSE}
-//  name 'cvPtrND'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @brief Return a specific array element.
 
@@ -985,25 +739,11 @@ if the requested node does not exist (no new node is created by the functions).
 //CVAPI(CvScalar) cvGet1D( const CvArr* arr, int idx0 );
 function cvGet1D( const arr:pCvArr; idx0:int ):TCvScalar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7755
-//{$ELSE}
-//  name 'cvGet1D'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload *)
 //CVAPI(CvScalar) cvGet2D( const CvArr* arr, int idx0, int idx1 );
 function cvGet2D( const arr:pCvArr; idx0, idx1:int ):TCvScalar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-//external opencv_world_dll
-//{$IFDEF CALL_BY_FNC_NUM}
-//  index 7756
-//{$ELSE}
-//  name 'cvGet2D'
-//{$ENDIF}
-//{$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 (** @overload *)
 //CVAPI(CvScalar) cvGet3D( const CvArr* arr, int idx0, int idx1, int idx2 );

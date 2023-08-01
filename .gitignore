@@ -76,3 +76,4 @@ modules/
 x64/
 .vs/
 *.pb
+opencv_delphi.tlog/

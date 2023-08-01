@@ -27,18 +27,13 @@ package rtlCVClass;
 {$DEFINE PACKAGE}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Run time Delphi-OpenCV for C++ classes'}
-{$LIBSUFFIX '280'}
+{$LIBSUFFIX AUTO}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
   vcl;
-
-contains
-  cpp.utils in '..\..\source\cpp.utils.pas',
-  cv.opencv in '..\..\source\cv.opencv.pas',
-  cv.external in '..\..\source\cv.external.pas';
 
 end.
 

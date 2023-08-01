@@ -319,11 +319,11 @@ Type
 (** @brief XML/YAML/JSON file storage class that encapsulates all the information necessary for writing or
 reading data to/from a file.
  *)
+{$SCOPEDENUMS ON}
   TFileStorage = record
   public
     //! file storage mode
     type
-{$SCOPEDENUMS ON}
     TMode =
     (
         READ        = 0, //!< value, open the file for reading
@@ -348,7 +348,6 @@ reading data to/from a file.
         NAME_EXPECTED  = 2,
         INSIDE_MAP     = 4
     );
-{$SCOPEDENUMS OFF}
 
     (** @brief The constructors.
 
@@ -356,18 +355,18 @@ reading data to/from a file.
      call FileStorage::open.
      *)
 //    CV_WRAP FileStorage();
-//    class function FileStorage():TFileStorage; overload; static;
-//    class operator Initialize (out Dest: TFileStorage);
+    class function FileStorage():TFileStorage; overload; static;
+    class operator Initialize (out Dest: TFileStorage);
 
     (** @overload
      @copydoc open()
      *)
 //    CV_WRAP FileStorage(const String& filename, int flags, const String& encoding=String());
-//    class function FileStorage(const filename:String; flags:TMode; const encoding:String=''):TFileStorage; overload; static;
+    class function FileStorage(const filename:String; flags:TMode; const encoding:String=''):TFileStorage; overload; static;
 
     //! the destructor. calls release()
 //    virtual ~FileStorage();
-//    class operator Finalize (var Dest: TFileStorage);
+    class operator Finalize (var Dest: TFileStorage);
 
     (** @brief Opens a file.
 
@@ -392,7 +391,7 @@ reading data to/from a file.
      good practice to call this method after you tried to open a file.
      *)
 //    CV_WRAP virtual bool isOpened() const;
-//     function isOpened():bool;
+     function isOpened():bool;
 
     (** @brief Closes the file and releases all the memory buffers.
 
@@ -494,6 +493,7 @@ reading data to/from a file.
    public
     p:TPtr<Impl>;
 end;
+{$SCOPEDENUMS OFF}
 
 (** @brief File Storage Node class.
 
