@@ -22,7 +22,7 @@ unit cv.resource;
 interface
 
 const
-  OpenCVRootPath = 'C:\OpenCV\opencv\';
+  OpenCVRootPath = 'C:\OpenCV\opencv-4.10.0\';
   OpenCVData     = OpenCVRootPath + 'sources\samples\data\';
   OprnCVHaar     = OpenCVRootPath + 'sources\data\haarcascades\';
 

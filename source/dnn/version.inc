@@ -25,8 +25,7 @@
 
 /// Use with major OpenCV version only.
 const
-  // {$define OPENCV_DNN_API_VERSION 20211220
-  OPENCV_DNN_API_VERSION = '20221220';
+  OPENCV_DNN_API_VERSION = '20230620';
 
   // {$if !defined CV_DOXYGEN && !defined CV_STATIC_ANALYSIS && !defined CV_DNN_DONT_ADD_INLINE_NS}
   // {$define CV__DNN_INLINE_NS __CV_CAT(dnn4_v, OPENCV_DNN_API_VERSION)}

@@ -73,10 +73,10 @@ Type
     // property FPS: double read GetFPS;
   end;
 
-  TCVReceiverList         = TThreadList<ICVDataReceiver>;
-  TOnCVNotify             = procedure(Sender: TObject; const AMat: TMat) of object;
-  TOnCVNotifyVar          = procedure(Sender: TObject; Var AMat: TMat) of object;
-  TOnCVAfterPaint         = TOnCVNotify;
+  TCVReceiverList = TThreadList<ICVDataReceiver>;
+  TOnCVNotify = procedure(Sender: TObject; const AMat: TMat) of object;
+  TOnCVNotifyVar = procedure(Sender: TObject; Var AMat: TMat) of object;
+  TOnCVAfterPaint = TOnCVNotify;
   TOnBeforeNotifyReceiver = TOnCVNotifyVar;
 
   TCVDataSource = class(TComponent, ICVDataSource)
@@ -183,7 +183,7 @@ Type
     property Enabled;
   end;
 
-  TOCVLock                   = TLightweightMREW;
+  TOCVLock = TLightweightMREW;
   TPersistentAccessProtected = class(TPersistent);
 
   TCVCaptureThread = class(TThread)
@@ -203,8 +203,10 @@ Type
     procedure TerminatedSet; override;
     procedure Execute; override;
   public
-    constructor Create(const AFileName: string; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: TVideoCaptureAPIs = CAP_ANY); overload;
-    constructor Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: TVideoCaptureAPIs = CAP_ANY); overload;
+    constructor Create(const AFileName: string; const AThreadDelay: Cardinal = 1000 div 25;
+      const VideoAPIs: TVideoCaptureAPIs = CAP_ANY); overload;
+    constructor Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal = 1000 div 25;
+      const VideoAPIs: TVideoCaptureAPIs = CAP_ANY); overload;
     procedure SetResolution(const Width, Height: Double);
     property OnNoData: TNotifyEvent Read FOnNoData write FOnNoData;
     property OnNotifyData: TOnCVNotify Read FOnNotifyData write FOnNotifyData;
@@ -288,7 +290,8 @@ Type
     property CaptureAPIs: TCVVideoCaptureAPIs read FCaptureAPIs write setCaptureAPIs default ANY;
   end;
 
-  TCVWebCameraResolution = (r160x120, r176x144, r320x240, r352x288, r424x240, r640x360, r640x480, r800x448, r800x600, r960x544, r1280x720, rCustom);
+  TCVWebCameraResolution = (r160x120, r176x144, r320x240, r352x288, r424x240, r640x360, r640x480, r800x448, r800x600, r960x544,
+    r1280x720, rCustom);
 
   TCVWebCameraResolutionValue = record
     W, H: Double;
@@ -460,7 +463,7 @@ implementation
 function ipDraw(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
 
 Type
-  pCOLORREF         = ^COLORREF;
+  pCOLORREF = ^COLORREF;
   pBITMAPINFOHEADER = ^BITMAPINFOHEADER;
 
 Var
@@ -485,11 +488,24 @@ begin
   // Exit(false);
 
   dibhdr := pBITMAPINFOHEADER(@buf);
-  _rgb := pCOLORREF(Integer(dibhdr) + SizeOf(BITMAPINFOHEADER));
+  _rgb := pCOLORREF(@buf[SizeOf(BITMAPINFOHEADER)]);
 
   if (isgray) then
+  begin
+{$IFDEF ONE}
+    const
+      _NumColors = 256;
     for i := 0 to 255 do
-      _rgb[i] := rgb(i, i, i);
+    begin
+      Var
+      Grey := i * 255 div (_NumColors - 1);
+      _rgb[i] := Rgb(Grey, Grey, Grey); // rgb(i, i, i);
+    end;
+{$ELSE}
+    for i := 0 to 255 do
+      _rgb[i] := Rgb(i, i, i);
+{$ENDIF}
+  end;
 
   dibhdr^.biSize := SizeOf(BITMAPINFOHEADER);
   dibhdr^.biWidth := img.cols;
@@ -513,7 +529,8 @@ begin
     SetStretchBltMode(dc, COLORONCOLOR);
     SetMapMode(dc, MM_TEXT);
     // Stretch the image to fit the rectangle
-    iResult := StretchDIBits(dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data, _dibhdr, DIB_RGB_COLORS, SRCCOPY);
+    iResult := StretchDIBits(dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data, _dibhdr,
+      DIB_RGB_COLORS, SRCCOPY);
     Result := (iResult > 0); // and (iResult <> GDI_ERROR);
   end
   else

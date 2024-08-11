@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{5CA214BC-3C54-4181-8E53-84B8B2985BA5}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="rtlCVClass.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="dclCVClass.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="rtlCVClass">
+        <MSBuild Projects="rtlCVClass.dproj"/>
+    </Target>
+    <Target Name="rtlCVClass:Clean">
+        <MSBuild Projects="rtlCVClass.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="rtlCVClass:Make">
+        <MSBuild Projects="rtlCVClass.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="dclCVClass">
+        <MSBuild Projects="dclCVClass.dproj"/>
+    </Target>
+    <Target Name="dclCVClass:Clean">
+        <MSBuild Projects="dclCVClass.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="dclCVClass:Make">
+        <MSBuild Projects="dclCVClass.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="rtlCVClass;dclCVClass"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="rtlCVClass:Clean;dclCVClass:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="rtlCVClass:Make;dclCVClass:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
