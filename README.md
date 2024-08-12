@@ -1,6 +1,6 @@
 # Delphi binding for OpenCV
-* Experimental Delphi binding for OpenCV 4.8.0
-* Development environment - Delphi 10.4, 11
+* Experimental Delphi binding for OpenCV 4.10.0
+* Development environment - Delphi 10.4, 11, 12
 * x64 platform only
 
 ![](https://tokei.rs/b1/github/Laex/Delphi-OpenCV-Class)
@@ -8,17 +8,17 @@
 + Laentir Valetov (email: laex@bk.ru)
 ## Usage:
 1. Download the current state of the project as [zip][1] or as [git][2]
-2. Download [OpenCV 4.8.0][3], run and unpack to the selected directory.<br>
+2. Download [OpenCV 4.10.0][3], run and unpack to the selected directory.<br>
 The following DLLs are required to work properly<br>
 __From `<opencv>\build\x64\vc16\bin\` or from `redist\OpenCV_4.8.DLL.zip`__
-* opencv_videoio_ffmpeg480_64.dll - `release`<br>
-* opencv_videoio_msmf480_64.dll   - `release`<br>
-* opencv_world480.dll             - `release`<br>
-* opencv_videoio_msmf480_64d.dll  - `debug`<br>
-* opencv_world480d.dll            - `debug`<br>
+* opencv_videoio_ffmpeg4100_64.dll - `release`<br>
+* opencv_videoio_msmf4100_64.dll   - `release`<br>
+* opencv_world4100.dll             - `release`<br>
+* opencv_videoio_msmf4100_64d.dll  - `debug`<br>
+* opencv_world4100d.dll            - `debug`<br>
 **From `<project>\bin\`**
-* opencv_delphi480.dll - `release`<br>
-* opencv_delphi480d.dll - `debug`<br>
+* opencv_delphi4100.dll - `release`<br>
+* opencv_delphi4100d.dll - `debug`<br>
                                                                                        
 __For the library to work properly, you need__
 - place next to the executable file of your program. To run examples - in `<project>\bin\`<br>

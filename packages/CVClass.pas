@@ -1,4 +1,4 @@
-(*
+п»ї(*
   This file is part of Delphi-OpenCV-Class project.
   https://github.com/Laex/Delphi-OpenCV-Class
 
@@ -226,7 +226,7 @@ Type
   end;
 
   {
-    Является родителем для источников внутри TCVCaptureSource
+    РЇРІР»СЏРµС‚СЃСЏ СЂРѕРґРёС‚РµР»РµРј РґР»СЏ РёСЃС‚РѕС‡РЅРёРєРѕРІ РІРЅСѓС‚СЂРё TCVCaptureSource
   }
   TCVVideoCaptureAPIs = ( //
     ANY,                  // !< Auto detect == 0
@@ -365,42 +365,42 @@ Type
 
     FEnabled: Boolean;
 
-    // Работа со встроенным свойством
+    // Р Р°Р±РѕС‚Р° СЃРѕ РІСЃС‚СЂРѕРµРЅРЅС‹Рј СЃРІРѕР№СЃС‚РІРѕРј
     function GetPropertiesClassName: string;
     procedure SetProperties(const Value: TCVCustomSource);
     procedure SetPropertiesClassName(const Value: string);
     function GetProperties: TCVCustomSource;
     function GetPropertiesClass: TCVSourceTypeClass;
     procedure SetPropertiesClass(Value: TCVSourceTypeClass);
-    // Создение/Уничтожение/Пересоздание встроенного свойства
+    // РЎРѕР·РґРµРЅРёРµ/РЈРЅРёС‡С‚РѕР¶РµРЅРёРµ/РџРµСЂРµСЃРѕР·РґР°РЅРёРµ РІСЃС‚СЂРѕРµРЅРЅРѕРіРѕ СЃРІРѕР№СЃС‚РІР°
     procedure CreateProperties;
     procedure DestroyProperties;
     procedure RecreateProperties;
 
-    // Вызывается после загрузки компонента
-    // Если Enabled=true - запуск потока
+    // Р’С‹Р·С‹РІР°РµС‚СЃСЏ РїРѕСЃР»Рµ Р·Р°РіСЂСѓР·РєРё РєРѕРјРїРѕРЅРµРЅС‚Р°
+    // Р•СЃР»Рё Enabled=true - Р·Р°РїСѓСЃРє РїРѕС‚РѕРєР°
     procedure Loaded; override;
 
-    // Зпуск и остановка потока
+    // Р—РїСѓСЃРє Рё РѕСЃС‚Р°РЅРѕРІРєР° РїРѕС‚РѕРєР°
     procedure setEnabled(const Value: Boolean); override;
     function getEnabled: Boolean; override;
 
-    // Пристыкуется к потоку для получения данных
+    // РџСЂРёСЃС‚С‹РєСѓРµС‚СЃСЏ Рє РїРѕС‚РѕРєСѓ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РґР°РЅРЅС‹С…
     procedure OnNotifyDataCaptureThread(Sender: TObject; const AMat: TMat);
     procedure OnNoDataCaptureThread(Sender: TObject);
     procedure OnTerminateCaptureThread(Sender: TObject);
 
-    // События от изменения параметров встроенного свойства
+    // РЎРѕР±С‹С‚РёСЏ РѕС‚ РёР·РјРµРЅРµРЅРёСЏ РїР°СЂР°РјРµС‚СЂРѕРІ РІСЃС‚СЂРѕРµРЅРЅРѕРіРѕ СЃРІРѕР№СЃС‚РІР°
     procedure OnNotifyChange(Sender: TObject);
 
-    // Для внутреннего свойства
+    // Р”Р»СЏ РІРЅСѓС‚СЂРµРЅРЅРµРіРѕ СЃРІРѕР№СЃС‚РІР°
     property SourceTypeClass: TCVSourceTypeClass read GetPropertiesClass write SetPropertiesClass;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    // Создает и запускает поток
+    // РЎРѕР·РґР°РµС‚ Рё Р·Р°РїСѓСЃРєР°РµС‚ РїРѕС‚РѕРє
     procedure StartCapture;
-    // Останавливает и уничтожает поток
+    // РћСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ Рё СѓРЅРёС‡С‚РѕР¶Р°РµС‚ РїРѕС‚РѕРє
     procedure StopCapture;
   published
     property SourceTypeClassName: string read GetPropertiesClassName write SetPropertiesClassName;
@@ -462,6 +462,23 @@ implementation
 
 function ipDraw(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
 
+(*
+// Y = 0.21 Г— R + 0.72 Г— G + 0.07 Г— B
+const
+  LuminanceMultR = 54;
+  LuminanceMultG = 184;
+  LuminanceMultB = 18;
+
+  function Desaturate(Color: TColor): TColor;
+  var
+    Luminance: byte;
+  begin
+    Luminance := (((Color and $00FF0000) shr 16 * LuminanceMultR) + ((Color and $0000FF00) shr 8 * LuminanceMultG) +
+      ((Color and $000000FF) * LuminanceMultB)) shr 8;
+    Result := (Color and $FF000000) or (Luminance shl 16) or (Luminance shl 8) or Luminance;
+  end;
+*)
+
 Type
   pCOLORREF = ^COLORREF;
   pBITMAPINFOHEADER = ^BITMAPINFOHEADER;
@@ -503,7 +520,10 @@ begin
     end;
 {$ELSE}
     for i := 0 to 255 do
-      _rgb[i] := Rgb(i, i, i);
+      _rgb[i] :=
+      // Desaturate(Rgb(i, i, i));
+      // Trunc(0.2126 * i + 0.7152 * i + 0.0722 * i);
+        Rgb(i, i, i);
 {$ENDIF}
   end;
 
