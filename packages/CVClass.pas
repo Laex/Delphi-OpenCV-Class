@@ -453,12 +453,42 @@ Type
   end;
 
 function GetRegisteredCaptureSource: TRegisteredCaptureSource;
-function CV_FOURCC(const c1, c2, c3, c4: AnsiChar): Integer; overload;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-function CV_FOURCC(const c: AnsiString): Integer; overload;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+function CV_FOURCC(const c1, c2, c3, c4: AnsiChar): Integer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function CV_FOURCC(const c: AnsiString): Integer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 implementation
+
+Uses
+  System.UITypes;
+
+(*
+function ipDraw1(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
+Var
+  B: TBitmap;
+begin
+  B := TBitmap.Create;
+  Result := False;
+  try
+    case img.channels of
+      1:
+        B.PixelFormat := pf8bit;
+      3:
+        B.PixelFormat := pf24bit;
+      4:
+        B.PixelFormat := pf32bit;
+    end;
+    B.SetSize(img.cols, img.rows);
+    for Var i := 0 to img.rows - 1 do
+      Move(pbyte(img.Data)[i * img.cols * img.channels], B.ScanLine[i]^, img.cols * img.channels);
+//    B.SaveToFile('1.bmp');
+//    StretchBlt(
+    BitBlt(dc, 0, 0, img.cols, img.rows, B.Canvas.Handle, 0, 0, SRCCOPY);
+    Result := True;
+  finally
+    B.Free;
+  end;
+end;
+*)
 
 function ipDraw(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
 
@@ -469,94 +499,88 @@ const
   LuminanceMultG = 184;
   LuminanceMultB = 18;
 
-  function Desaturate(Color: TColor): TColor;
+  function Desaturate(Color: UInt32): UInt32;
   var
     Luminance: byte;
   begin
-    Luminance := (((Color and $00FF0000) shr 16 * LuminanceMultR) + ((Color and $0000FF00) shr 8 * LuminanceMultG) +
+    Luminance :=                                         //
+      (((Color and $00FF0000) shr 16 * LuminanceMultR) + //
+      ((Color and $0000FF00) shr 8 * LuminanceMultG) +   //
       ((Color and $000000FF) * LuminanceMultB)) shr 8;
     Result := (Color and $FF000000) or (Luminance shl 16) or (Luminance shl 8) or Luminance;
   end;
 *)
 
 Type
-  pCOLORREF = ^COLORREF;
-  pBITMAPINFOHEADER = ^BITMAPINFOHEADER;
+  pColorRef = ^TColorRef;
+  pBitmapInfoHeader = ^TBitmapInfoHeader;
 
 Var
   // isrgb: Boolean;
-  isgray: Boolean;
-  buf: array [1 .. SizeOf(BITMAPINFOHEADER) + SizeOf(RGBQUAD) * 256] of byte;
-  dibhdr: pBITMAPINFOHEADER;
-  _dibhdr: TBitmapInfo ABSOLUTE buf;
-  _rgb: pCOLORREF;
-  i: Integer;
-  iResult: Integer;
+  // isgray: Boolean;
+  buf: array [1 .. SizeOf(TBitmapInfoHeader) + SizeOf(TRGBQuad) * 256] of byte;
+  BitmapInfo: TBitmapInfo ABSOLUTE buf;
+  pDIBHdr: pBitmapInfoHeader;
+  pCR: pColorRef;
+  i: UInt32;
 begin
   if img.empty then
     Exit(False);
 
-  // isrgb := ('R' = upcase(img^.colorModel[0])) and ('G' = upcase(img^.colorModel[1])) and ('B' = upcase(img^.colorModel[2]));
-  // isgray := 'G' = upcase(img^.colorModel[0]);
-  isgray := img.channels = 1;
-  // if (not isgray) and (not isrgb) then
-  // Exit(false);
-  // if (1 = img^.nChannels) and (not isgray) then
-  // Exit(false);
+  FillChar(buf, SizeOf(buf), 0);
+  pDIBHdr := pBitmapInfoHeader(@buf);
+  pCR := pColorRef(@buf[SizeOf(TBitmapInfoHeader)]);
 
-  dibhdr := pBITMAPINFOHEADER(@buf);
-  _rgb := pCOLORREF(@buf[SizeOf(BITMAPINFOHEADER)]);
-
-  if (isgray) then
+  if img.channels = 1 then
   begin
+    { .$DEFINE ONE }
 {$IFDEF ONE}
     const
       _NumColors = 256;
     for i := 0 to 255 do
     begin
       Var
-      Grey := i * 255 div (_NumColors - 1);
-      _rgb[i] := Rgb(Grey, Grey, Grey); // rgb(i, i, i);
+      Grey := (i * 255) div (_NumColors - 1);
+      pCR[i] := Rgb(Grey, Grey, Grey); // rgb(i, i, i);
     end;
 {$ELSE}
     for i := 0 to 255 do
-      _rgb[i] :=
+    begin
+      pCR[i] :=
       // Desaturate(Rgb(i, i, i));
       // Trunc(0.2126 * i + 0.7152 * i + 0.0722 * i);
-        Rgb(i, i, i);
+      // R,G,B
+      // Rgb(Trunc(0.2126 * i), Trunc(0.7152 * i), Trunc(0.0722 * i));
+       Rgb(0, i, i);
+//        i or (i shl 8) or (i shl 16) or (i shl 32);
+    end;
 {$ENDIF}
   end;
 
-  dibhdr^.biSize := SizeOf(BITMAPINFOHEADER);
-  dibhdr^.biWidth := img.cols;
-  // Check origin for display
-  // if img^.Origin = 0 then
-  dibhdr^.biHeight := -img.rows;
-  // else
-  // dibhdr^.biHeight := img^.Height;
-
-  dibhdr^.biPlanes := 1;
-  dibhdr^.biBitCount := 8 * img.channels;
-  dibhdr^.biCompression := BI_RGB;
-  dibhdr^.biSizeImage := 0; // img^.imageSize;
-  dibhdr^.biXPelsPerMeter := 0;
-  dibhdr^.biYPelsPerMeter := 0;
-  dibhdr^.biClrUsed := 0;
-  dibhdr^.biClrImportant := 0;
+  pDIBHdr^.biSize := SizeOf(TBitmapInfoHeader);
+  pDIBHdr^.biWidth := img.cols;
+  pDIBHdr^.biHeight := -img.rows;
+  pDIBHdr^.biPlanes := 1;
+  pDIBHdr^.biBitCount := 8 * img.channels;
+  pDIBHdr^.biCompression := BI_RGB;
+//  pDIBHdr^.biClrUsed := 256;
 
   if Stretch then
   begin
     SetStretchBltMode(dc, COLORONCOLOR);
     SetMapMode(dc, MM_TEXT);
     // Stretch the image to fit the rectangle
-    iResult := StretchDIBits(dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data, _dibhdr,
-      DIB_RGB_COLORS, SRCCOPY);
+    Var
+      iResult: Integer := StretchDIBits( //
+        dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data, BitmapInfo, DIB_RGB_COLORS, SRCCOPY);
     Result := (iResult > 0); // and (iResult <> GDI_ERROR);
   end
   else
   begin
     // Draw without scaling
-    iResult := SetDIBitsToDevice(dc, rect.Left, rect.Top, img.cols, img.rows, 0, 0, 0, img.rows, img.Data, _dibhdr, DIB_RGB_COLORS);
+    Var
+      iResult: Integer := SetDIBitsToDevice( //
+        dc, rect.Left, rect.Top, img.cols, img.rows, 0, 0, 0, img.rows, img.Data, BitmapInfo, DIB_RGB_COLORS);
     Result := (iResult > 0); // and (iResult <> GDI_ERROR);
   end;
 end;
