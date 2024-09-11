@@ -34,13 +34,15 @@ __For the library to work properly, you need__
 `<project>\packages\<Delphi Version>\CVClassGroup.groupproj`
 2. Run demo from `<project>\samples\Component\`
 #### If VCRUNTIME is missing ####
+
 Use the [advice](https://answers.microsoft.com/en-us/windows/forum/all/vcruntime140dll-and-msvcp140dll-missing-in-windows/caf454d1-49f4-4d2b-b74a-c83fb7c38625) ([Source](https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist))
 The lack of these DLLs can be fixed by installing "Microsoft Visual C++ 2015 - 2022 Redistributable"
 Probably the application that is showing this error depends on it installed
 Download and install both the [x86](https://aka.ms/vs/17/release/vc_redist.x86.exe) and [x64](https://aka.ms/vs/17/release/vc_redist.x64.exe) versions
+
 ---------------------------
 **Donate**<br>
-[Patreon](https://patreon.com/laentir)
+[Patreon](https://patreon.com/laentir)<br>
 BTC: 3MTXVtRgQnA22EtBxP97Nws6GS8autp38s
 
 [1]: https://github.com/Laex/Delphi-OpenCV-Class/archive/refs/heads/main.zip
