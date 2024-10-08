@@ -308,12 +308,14 @@ Type
   public
     class operator Initialize (out Dest: TFileNodeIterator);
   private
+  {$HINTS OFF}
     fs:Pointer; // FileStorage::Impl* fs;
     blockIdx      :size_t;
     ofs           :size_t;
     blockSize     :size_t;
     nodeNElems    :size_t;
     idx           :size_t;
+   {$HINTS ON}
   end;
 
 (** @brief XML/YAML/JSON file storage class that encapsulates all the information necessary for writing or

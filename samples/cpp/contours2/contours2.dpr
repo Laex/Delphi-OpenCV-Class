@@ -1,24 +1,24 @@
-  (*
-    This file is part of Delphi-OpenCV-Class project.
-    https://github.com/Laex/Delphi-OpenCV-Class
+(*
+  This file is part of Delphi-OpenCV-Class project.
+  https://github.com/Laex/Delphi-OpenCV-Class
 
-    It is subject to the license terms in the LICENSE file found in the top-level directory
-    of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
+  It is subject to the license terms in the LICENSE file found in the top-level directory
+  of this distribution and at https://www.apache.org/licenses/LICENSE-2.0.txt
 
-    Copyright 2021, Laentir Valetov, laex@bk.ru
+  Copyright 2021, Laentir Valetov, laex@bk.ru
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-  *)
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*)
 program contours2;
 
 {$APPTYPE CONSOLE}
@@ -37,7 +37,7 @@ begin
     + '\nThis program illustrates the use of findContours and drawContours\n' //
     + 'The original image is put up along with the image of drawn contours\n' //
     + 'Usage:\n';
-  cout        //
+  cout //
     + argv[0] //
     + '\nA trackbar is put up which controls the contour level from -3 to 3\n' //
     + endl;
@@ -70,7 +70,7 @@ begin
 
     Var
       img: TMat := TMat.zeros(w, w, CV_8UC1);
-        // Draw 6 faces
+      // Draw 6 faces
     for Var i: int := 0 to 5 do
     begin
       Var
@@ -88,8 +88,14 @@ begin
         begin
           Var
             angle: double := (j + 5) * CV_PI / 21;
-          line(img, Point(cvRound(dx + 100 + j * 10 - 80 * cos(angle)), cvRound(dy + 100 - 90 * sin(angle))), Point(cvRound(dx + 100 + j * 10 - 30 * cos(angle)), cvRound(dy + 100 - 30 * sin(angle))),
-            white, 1, 8, 0);
+          line( //
+            img, //
+            Point(cvRound(dx + 100 + j * 10 - 80 * cos(angle)), cvRound(dy + 100 - 90 * sin(angle))), //
+            Point(cvRound(dx + 100 + j * 10 - 30 * cos(angle)), cvRound(dy + 100 - 30 * sin(angle))), //
+            white, //
+            3, //
+            8, //
+            0);
         end;
       end;
 
@@ -105,10 +111,10 @@ begin
       ellipse(img, Point(dx + 27, dy + 100), Size(20, 35), 0, 0, 360, white, -1, 8, 0);
       ellipse(img, Point(dx + 273, dy + 100), Size(20, 35), 0, 0, 360, white, -1, 8, 0);
     end;
-      // show the faces
+    // show the faces
     namedWindow('image', 1);
     imshow('image', img);
-      // Extract the contours so that
+    // Extract the contours so that
     Var
       contours0: vector<vector<TPoint>>;
 

@@ -23,7 +23,10 @@
 {$if defined(OPENCV_VIDEO_HPP) and (not defined(OPENCV_VIDEO_HPP_IMPL))}
 {$DEFINE OPENCV_VIDEO_HPP_IMPL}
 
-{$IF defined(OPENCV_IMGPROC_HPP) and (not defined(OPENCV_IMGPROC_HPP_IMPL))}{$I 'imgproc.impl.inc'}{$ifend}
+{$IF defined(OPENCV_IMGPROC_HPP) and (not defined(OPENCV_IMGPROC_HPP_IMPL))}
+	{$I 'imgproc.impl.inc'}
+{$ifend}
+
 {$I 'video/tracking.impl.inc'}
 {$I 'video/background_segm.impl.inc'}
 

@@ -23,6 +23,8 @@
 {$IF defined(OPENCV_CORE_HPP) and defined(OPENCV_CORE_HPP_IMPL) and (not defined(OPENCV_CORE_HPP_INIT))}
 {$DEFINE OPENCV_CORE_HPP_INIT}
 
-{$IF not define(OPENCV_CORE_HAL_INTERFACE_H_INIT)}{$I core/hal/interface.init.inc}{$IFEND}
+{$IF not define(OPENCV_CORE_HAL_INTERFACE_H_INIT)}
+	{$I core/hal/interface.init.inc}
+{$IFEND}
 
 {$IFEND}

@@ -229,42 +229,42 @@ Type
     Является родителем для источников внутри TCVCaptureSource
   }
   TCVVideoCaptureAPIs = ( //
-    ANY,                  // !< Auto detect == 0
-    VFW,                  // !< Video For Windows (obsolete, removed)
-    V4L,                  // !< V4L/V4L2 capturing support
-    V4L2,                 // !< Same as CAP_V4L
-    FIREWIRE,             // !< IEEE 1394 drivers
-    FIREWARE,             // !< Same value as CAP_FIREWIRE
-    IEEE1394,             // !< Same value as CAP_FIREWIRE
-    DC1394,               // !< Same value as CAP_FIREWIRE
-    CMU1394,              // !< Same value as CAP_FIREWIRE
-    QT,                   // !< QuickTime (obsolete, removed)
-    UNICAP,               // !< Unicap drivers (obsolete, removed)
-    DSHOW,                // !< DirectShow (via videoInput)
-    PVAPI,                // !< PvAPI, Prosilica GigE SDK
-    OPENNI,               // !< OpenNI (for Kinect)
-    OPENNI_ASUS,          // !< OpenNI (for Asus Xtion)
-    ANDROID,              // !< Android - not used
-    XIAPI,                // !< XIMEA Camera API
+    ANY, // !< Auto detect == 0
+    VFW, // !< Video For Windows (obsolete, removed)
+    V4L, // !< V4L/V4L2 capturing support
+    V4L2, // !< Same as CAP_V4L
+    FIREWIRE, // !< IEEE 1394 drivers
+    FIREWARE, // !< Same value as CAP_FIREWIRE
+    IEEE1394, // !< Same value as CAP_FIREWIRE
+    DC1394, // !< Same value as CAP_FIREWIRE
+    CMU1394, // !< Same value as CAP_FIREWIRE
+    QT, // !< QuickTime (obsolete, removed)
+    UNICAP, // !< Unicap drivers (obsolete, removed)
+    DSHOW, // !< DirectShow (via videoInput)
+    PVAPI, // !< PvAPI, Prosilica GigE SDK
+    OPENNI, // !< OpenNI (for Kinect)
+    OPENNI_ASUS, // !< OpenNI (for Asus Xtion)
+    ANDROID, // !< Android - not used
+    XIAPI, // !< XIMEA Camera API
     AVFOUNDATION,
     // !< AVFoundation framework for iOS (OS X Lion will have the same API)
-    GIGANETIX,     // !< Smartek Giganetix GigEVisionSDK
-    MSMF,          // !< Microsoft Media Foundation (via videoInput)
-    WINRT,         // !< Microsoft Windows Runtime using Media Foundation
-    INTELPERC,     // !< RealSense (former Intel Perceptual Computing SDK)
-    REALSENSE,     // !< Synonym for CAP_INTELPERC
-    OPENNI2,       // !< OpenNI2 (for Kinect)
-    OPENNI2_ASUS,  // !< OpenNI2 (for Asus Xtion and Occipital Structure sensors)
+    GIGANETIX, // !< Smartek Giganetix GigEVisionSDK
+    MSMF, // !< Microsoft Media Foundation (via videoInput)
+    WINRT, // !< Microsoft Windows Runtime using Media Foundation
+    INTELPERC, // !< RealSense (former Intel Perceptual Computing SDK)
+    REALSENSE, // !< Synonym for CAP_INTELPERC
+    OPENNI2, // !< OpenNI2 (for Kinect)
+    OPENNI2_ASUS, // !< OpenNI2 (for Asus Xtion and Occipital Structure sensors)
     OPENNI2_ASTRA, // !< OpenNI2 (for Orbbec Astra)
-    GPHOTO2,       // !< gPhoto2 connection
-    GSTREAMER,     // !< GStreamer
-    FFMPEG,        // !< Open and record video file or stream using the FFMPEG library
-    IMAGES,        // !< OpenCV Image Sequence (e.g. img_%02d.jpg)
-    ARAVIS,        // !< Aravis SDK
-    OPENCV_MJPEG,  // !< Built-in OpenCV MotionJPEG codec
-    INTEL_MFX,     // !< Intel MediaSDK
-    XINE,          // !< XINE engine (Linux)
-    UEYE           // !< uEye Camera API
+    GPHOTO2, // !< gPhoto2 connection
+    GSTREAMER, // !< GStreamer
+    FFMPEG, // !< Open and record video file or stream using the FFMPEG library
+    IMAGES, // !< OpenCV Image Sequence (e.g. img_%02d.jpg)
+    ARAVIS, // !< Aravis SDK
+    OPENCV_MJPEG, // !< Built-in OpenCV MotionJPEG codec
+    INTEL_MFX, // !< Intel MediaSDK
+    XINE, // !< XINE engine (Linux)
+    UEYE // !< uEye Camera API
     );
 
   TCVCustomSource = class(TComponent)
@@ -300,18 +300,18 @@ Type
 const
   CVWebCameraResolutionValue: array [TCVWebCameraResolution] of TCVWebCameraResolutionValue = //
     ( //
-    (W: 160; H: 120),  //
-    (W: 176; H: 144),  //
-    (W: 320; H: 240),  //
-    (W: 352; H: 288),  //
-    (W: 424; H: 240),  //
-    (W: 640; H: 360),  //
-    (W: 640; H: 480),  //
-    (W: 800; H: 448),  //
-    (W: 800; H: 600),  //
-    (W: 960; H: 544),  //
+    (W: 160; H: 120), //
+    (W: 176; H: 144), //
+    (W: 320; H: 240), //
+    (W: 352; H: 288), //
+    (W: 424; H: 240), //
+    (W: 640; H: 360), //
+    (W: 640; H: 480), //
+    (W: 800; H: 448), //
+    (W: 800; H: 600), //
+    (W: 960; H: 544), //
     (W: 1280; H: 720), //
-    (W: 0; H: 0)       //
+    (W: 0; H: 0) //
     );
 
 Type
@@ -462,52 +462,52 @@ Uses
   System.UITypes;
 
 (*
-function ipDraw1(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
-Var
+  function ipDraw1(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
+  Var
   B: TBitmap;
-begin
+  begin
   B := TBitmap.Create;
   Result := False;
   try
-    case img.channels of
-      1:
-        B.PixelFormat := pf8bit;
-      3:
-        B.PixelFormat := pf24bit;
-      4:
-        B.PixelFormat := pf32bit;
-    end;
-    B.SetSize(img.cols, img.rows);
-    for Var i := 0 to img.rows - 1 do
-      Move(pbyte(img.Data)[i * img.cols * img.channels], B.ScanLine[i]^, img.cols * img.channels);
-//    B.SaveToFile('1.bmp');
-//    StretchBlt(
-    BitBlt(dc, 0, 0, img.cols, img.rows, B.Canvas.Handle, 0, 0, SRCCOPY);
-    Result := True;
-  finally
-    B.Free;
+  case img.channels of
+  1:
+  B.PixelFormat := pf8bit;
+  3:
+  B.PixelFormat := pf24bit;
+  4:
+  B.PixelFormat := pf32bit;
   end;
-end;
+  B.SetSize(img.cols, img.rows);
+  for Var i := 0 to img.rows - 1 do
+  Move(pbyte(img.Data)[i * img.cols * img.channels], B.ScanLine[i]^, img.cols * img.channels);
+  //    B.SaveToFile('1.bmp');
+  //    StretchBlt(
+  BitBlt(dc, 0, 0, img.cols, img.rows, B.Canvas.Handle, 0, 0, SRCCOPY);
+  Result := True;
+  finally
+  B.Free;
+  end;
+  end;
 *)
 
 function ipDraw(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
 
 (*
-// Y = 0.21 × R + 0.72 × G + 0.07 × B
-const
+  // Y = 0.21 × R + 0.72 × G + 0.07 × B
+  const
   LuminanceMultR = 54;
   LuminanceMultG = 184;
   LuminanceMultB = 18;
 
   function Desaturate(Color: UInt32): UInt32;
   var
-    Luminance: byte;
+  Luminance: byte;
   begin
-    Luminance :=                                         //
-      (((Color and $00FF0000) shr 16 * LuminanceMultR) + //
-      ((Color and $0000FF00) shr 8 * LuminanceMultG) +   //
-      ((Color and $000000FF) * LuminanceMultB)) shr 8;
-    Result := (Color and $FF000000) or (Luminance shl 16) or (Luminance shl 8) or Luminance;
+  Luminance :=                                         //
+  (((Color and $00FF0000) shr 16 * LuminanceMultR) + //
+  ((Color and $0000FF00) shr 8 * LuminanceMultG) +   //
+  ((Color and $000000FF) * LuminanceMultB)) shr 8;
+  Result := (Color and $FF000000) or (Luminance shl 16) or (Luminance shl 8) or Luminance;
   end;
 *)
 
@@ -551,8 +551,8 @@ begin
       // Trunc(0.2126 * i + 0.7152 * i + 0.0722 * i);
       // R,G,B
       // Rgb(Trunc(0.2126 * i), Trunc(0.7152 * i), Trunc(0.0722 * i));
-       Rgb(0, i, i);
-//        i or (i shl 8) or (i shl 16) or (i shl 32);
+        Rgb(0, i, i);
+      // i or (i shl 8) or (i shl 16) or (i shl 32);
     end;
 {$ENDIF}
   end;
@@ -563,7 +563,7 @@ begin
   pDIBHdr^.biPlanes := 1;
   pDIBHdr^.biBitCount := 8 * img.channels;
   pDIBHdr^.biCompression := BI_RGB;
-//  pDIBHdr^.biClrUsed := 256;
+  // pDIBHdr^.biClrUsed := 256;
 
   if Stretch then
   begin
@@ -572,7 +572,8 @@ begin
     // Stretch the image to fit the rectangle
     Var
       iResult: Integer := StretchDIBits( //
-        dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data, BitmapInfo, DIB_RGB_COLORS, SRCCOPY);
+        dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data, BitmapInfo, DIB_RGB_COLORS,
+        SRCCOPY);
     Result := (iResult > 0); // and (iResult <> GDI_ERROR);
   end
   else
@@ -799,6 +800,7 @@ var
 begin
   // Canvas.Lock;
   dc := BeginPaint(Handle, ps);
+  // try
   try
     if Assigned(OnBeforePaint) then
       OnBeforePaint(Self, FMat^);
@@ -809,6 +811,12 @@ begin
     EndPaint(Handle, ps);
     // Canvas.Unlock;
   end;
+  // except
+  // on E:Exception do
+  // begin
+  // Beep;
+  // end;
+  // end;
 end;
 
 function TCVView.PaintRect: System.Types.TRect;
@@ -922,44 +930,44 @@ end;
 Var
   CVVideoCaptureAPIs: array [TCVVideoCaptureAPIs] of TVideoCaptureAPIs = //
     ( //
-    CAP_ANY,         // !< Auto detect == 0
-    CAP_VFW,         // !< Video For Windows obsolete, removed)
-    CAP_V4L,         // !< V4L/V4L2 capturing support
-    CAP_V4L2,        // !< Same as CAP_V4L
-    CAP_FIREWIRE,    // !< IEEE 1394 drivers
-    CAP_FIREWARE,    // !< Same value as CAP_FIREWIRE
-    CAP_IEEE1394,    // !< Same value as CAP_FIREWIRE
-    CAP_DC1394,      // !< Same value as CAP_FIREWIRE
-    CAP_CMU1394,     // !< Same value as CAP_FIREWIRE
-    CAP_QT,          // !< QuickTime obsolete, removed)
-    CAP_UNICAP,      // !< Unicap drivers obsolete, removed)
-    CAP_DSHOW,       // !< DirectShow via videoInput)
-    CAP_PVAPI,       // !< PvAPI, Prosilica GigE SDK
-    CAP_OPENNI,      // !< OpenNI for Kinect)
+    CAP_ANY, // !< Auto detect == 0
+    CAP_VFW, // !< Video For Windows obsolete, removed)
+    CAP_V4L, // !< V4L/V4L2 capturing support
+    CAP_V4L2, // !< Same as CAP_V4L
+    CAP_FIREWIRE, // !< IEEE 1394 drivers
+    CAP_FIREWARE, // !< Same value as CAP_FIREWIRE
+    CAP_IEEE1394, // !< Same value as CAP_FIREWIRE
+    CAP_DC1394, // !< Same value as CAP_FIREWIRE
+    CAP_CMU1394, // !< Same value as CAP_FIREWIRE
+    CAP_QT, // !< QuickTime obsolete, removed)
+    CAP_UNICAP, // !< Unicap drivers obsolete, removed)
+    CAP_DSHOW, // !< DirectShow via videoInput)
+    CAP_PVAPI, // !< PvAPI, Prosilica GigE SDK
+    CAP_OPENNI, // !< OpenNI for Kinect)
     CAP_OPENNI_ASUS, // !< OpenNI for Asus Xtion)
-    CAP_ANDROID,     // !< Android - not used
-    CAP_XIAPI,       // !< XIMEA Camera API
+    CAP_ANDROID, // !< Android - not used
+    CAP_XIAPI, // !< XIMEA Camera API
     CAP_AVFOUNDATION,
     // !< AVFoundation framework for iOS OS X Lion will have the same API)
     CAP_GIGANETIX, // !< Smartek Giganetix GigEVisionSDK
-    CAP_MSMF,      // !< Microsoft Media Foundation via videoInput)
-    CAP_WINRT,     // !< Microsoft Windows Runtime using Media Foundation
+    CAP_MSMF, // !< Microsoft Media Foundation via videoInput)
+    CAP_WINRT, // !< Microsoft Windows Runtime using Media Foundation
     CAP_INTELPERC, // !< RealSense former Intel Perceptual Computing SDK)
     CAP_REALSENSE, // !< Synonym for CAP_INTELPERC
-    CAP_OPENNI2,   // !< OpenNI2 for Kinect)
+    CAP_OPENNI2, // !< OpenNI2 for Kinect)
     CAP_OPENNI2_ASUS,
     // !< OpenNI2 for Asus Xtion and Occipital Structure sensors)
     CAP_OPENNI2_ASTRA, // !< OpenNI2 for Orbbec Astra)
-    CAP_GPHOTO2,       // !< gPhoto2 connection
-    CAP_GSTREAMER,     // !< GStreamer
+    CAP_GPHOTO2, // !< gPhoto2 connection
+    CAP_GSTREAMER, // !< GStreamer
     CAP_FFMPEG,
     // !< Open and record video file or stream using the FFMPEG library
-    CAP_IMAGES,       // !< OpenCV Image Sequence e.g. img_%02d.jpg)
-    CAP_ARAVIS,       // !< Aravis SDK
+    CAP_IMAGES, // !< OpenCV Image Sequence e.g. img_%02d.jpg)
+    CAP_ARAVIS, // !< Aravis SDK
     CAP_OPENCV_MJPEG, // !< Built-in OpenCV MotionJPEG codec
-    CAP_INTEL_MFX,    // !< Intel MediaSDK
-    CAP_XINE,         // !< XINE engine Linux)
-    CAP_UEYE          // !< uEye Camera API
+    CAP_INTEL_MFX, // !< Intel MediaSDK
+    CAP_XINE, // !< XINE engine Linux)
+    CAP_UEYE // !< uEye Camera API
   );
 
 constructor TCVCaptureSource.Create(AOwner: TComponent);
@@ -1107,8 +1115,8 @@ begin
       WebCameraSource: TCVWebCameraSource := FOperation as TCVWebCameraSource;
 
     FSourceThread := TCVCaptureThread.Create( //
-      WebCameraSource.CameraIndex,            //
-      WebCameraSource.Delay,                  //
+      WebCameraSource.CameraIndex, //
+      WebCameraSource.Delay, //
       CVVideoCaptureAPIs[WebCameraSource.CaptureAPIs]);
 
     if WebCameraSource.Resolution <> rCustom then
@@ -1122,8 +1130,8 @@ begin
     Var
       FileSource: TCVFileSource := FOperation as TCVFileSource;
     FSourceThread := TCVCaptureThread.Create( //
-      FileSource.FileName,                    //
-      FileSource.Delay,                       //
+      FileSource.FileName, //
+      FileSource.Delay, //
       CVVideoCaptureAPIs[FileSource.CaptureAPIs]);
   end;
 
@@ -1322,7 +1330,8 @@ begin
   FVideoAPIs := VideoAPIs;
 end;
 
-constructor TCVCaptureThread.Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal; const VideoAPIs: TVideoCaptureAPIs);
+constructor TCVCaptureThread.Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal;
+  const VideoAPIs: TVideoCaptureAPIs);
 begin
   Inherited Create(True);
   FThreadDelay := AThreadDelay;

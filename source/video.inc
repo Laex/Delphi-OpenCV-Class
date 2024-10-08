@@ -23,7 +23,9 @@
 {$if not defined(OPENCV_VIDEO_HPP)}
 {$define OPENCV_VIDEO_HPP}
 
-{$IF not defined(OPENCV_IMGPROC_HPP)}{$I 'imgproc.inc'}{$ifend}
+{$IF not defined(OPENCV_IMGPROC_HPP)}
+	{$I 'imgproc.inc'}
+{$ifend}
 
 (**
   @defgroup video Video Analysis

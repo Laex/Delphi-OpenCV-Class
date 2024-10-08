@@ -31,8 +31,8 @@ Uses
   cpp.utils;
 
 {$IF not defined(PACKAGE)}
-{$I 'external/opencv.types.inc'}
-{$I 'external/opencv.external.inc'}
+  {$I 'external/opencv.types.inc'}
+  {$I 'external/opencv.external.inc'}
 {$IFEND}
 
 implementation

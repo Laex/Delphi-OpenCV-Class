@@ -37,13 +37,13 @@ Uses
 {$I core/version.inc}
 
 const
-  INT_MIN     = Pred(-MaxInt);
-  INT_MAX     = MaxInt;
-  DBL_MAX     = MaxDouble;
-  CHAR_BIT    = 8;
-  SCHAR_MIN   = (-128);
-  SCHAR_MAX   = 127;
-  UCHAR_MAX   = $FF;
+  INT_MIN = Pred(-MaxInt);
+  INT_MAX = MaxInt;
+  DBL_MAX = MaxDouble;
+  CHAR_BIT = 8;
+  SCHAR_MIN = (-128);
+  SCHAR_MAX = 127;
+  UCHAR_MAX = $FF;
   DBL_EPSILON = 2.2204460492503131E-16;
 
 Type
@@ -82,7 +82,7 @@ Type
   PointerConst = type pointer;
 
   TVectorType = //
-    (           //
+    ( //
 {$I vectortype.inc}
   );
 
@@ -122,7 +122,7 @@ Type
     //
     function pT(const index: uint64): pVector; {$IFDEF USE_INLINE}inline; {$ENDIF}
     property v[const index: uint64]: T read GetItems write setItems; default;
-    function data:pType; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function data: pType; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const A: TArray<T>): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const size: Integer): Vector<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class function noVector: Vector<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -291,7 +291,7 @@ end;
 
 function Vector<T>.data: pType;
 begin
-  {$IF not defined(PACKAGE)}
+{$IF not defined(PACKAGE)}
   Result := dataStdVector(@Self, vt);
 {$IFEND}
 end;

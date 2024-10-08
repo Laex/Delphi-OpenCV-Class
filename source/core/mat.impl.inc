@@ -210,7 +210,6 @@ class function TMatHelper.mat<T>(rows, cols: int; Data: TArray<TArray<T>>; step:
 Type
   pType = ^T;
 Var
-  d: TDataType<T>;
   p: pType;
 begin
   p := AllocMem(rows * cols * SizeOf(T));
@@ -218,17 +217,15 @@ begin
     for Var i := 0 to cols - 1 do
       for Var j := 0 to rows - 1 do
         p[j * cols + i] := Data[j, i];
-    Result := TMat.mat(rows, cols, d.&type, p, step);
+    Result := TMat.mat(rows, cols, TDataType<T>.&type, p, step);
   finally
     FreeMem(p);
   end;
 end;
 
 class function TMatHelper.mat<T>(rows, cols: int; Data: TArray<T>; step: size_t): TMat;
-Var
-  d: TDataType<T>;
 begin
-  Result := TMat.mat(rows, cols, d.&type, @Data[0], step);
+  Result := TMat.mat(rows, cols, TDataType<T>.&type, @Data[0], step);
 end;
 
 class function TMatHelper.mat(rows, cols, &type: int; Data: Pointer; step: size_t): TMat;

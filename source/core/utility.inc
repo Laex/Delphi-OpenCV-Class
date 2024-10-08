@@ -68,8 +68,10 @@
     class operator Initialize (out Dest: AutoBuffer<T>);
     class operator Finalize (var Dest: AutoBuffer<T>);
    private
+  {$HINTS OFF}
     ptr:Pointer;
     sz:size_t;
+  {$HINTS ON}
   end;
 
 // #ifdef OPENCV_ENABLE_MEMORY_SANITIZER

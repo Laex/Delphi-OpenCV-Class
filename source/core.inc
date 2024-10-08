@@ -24,7 +24,7 @@
 {$DEFINE OPENCV_CORE_HPP}
 //
 {$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
-# error core.inc header must be compiled as Delphi 10.4 Sydney WIN64
+  {$Message Fatal 'core.inc header must be compiled as Delphi 10.4 Sydney WIN64'}
 {$IFEND}
 //
 {$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$IFEND}

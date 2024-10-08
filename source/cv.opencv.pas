@@ -33,6 +33,8 @@ uses
 {$IFEND}
   cpp.utils;
 
+{$DEFINE INTERFACE}
+
 {$I cvconfig.inc}
 //
 { .$DEFINE OPENCV_ALL_HPP }
@@ -85,14 +87,20 @@ uses
 {$I 'videoio.inc'}
 {$IFEND}
 
+{$UNDEF INTERFACE}
+
 implementation
 
 uses
   cv.external;
 
+{$DEFINE IMPLEMENTATION}
+
 // Then the list of defines is checked to include the correct headers
 // Core library is always included --> without no OpenCV functionality available
-{$IF not defined(OPENCV_CORE_HPP_IMPL)} {$I 'core.impl.inc'} {$IFEND}
+{$IF not defined(OPENCV_CORE_HPP_IMPL)}
+  {$I 'core.impl.inc'}
+{$IFEND}
 //
 // Then the optional modules are checked
 {$IF DEFINED(HAVE_OPENCV_CALIB3D) or DEFINED(OPENCV_ALL_HPP)}
@@ -113,9 +121,9 @@ uses
 {$IF DEFINED(HAVE_OPENCV_IMGCODECS) or DEFINED(OPENCV_ALL_HPP)}
 {$I 'imgcodecs.impl.inc'}
 {$IFEND}
-{$IF DEFINED(HAVE_OPENCV_IMGPROC) or DEFINED(OPENCV_ALL_HPP)}
-{$I 'imgproc.impl.inc'}
-{$IFEND}
+//{$IF DEFINED(HAVE_OPENCV_IMGPROC) or DEFINED(OPENCV_ALL_HPP)}
+{$I 'imgproc.inc'}
+//{$IFEND}
 {$IF DEFINED(HAVE_OPENCV_ML) or DEFINED(OPENCV_ALL_HPP)}
 {$I 'ml.impl.inc'}
 {$IFEND}
@@ -138,7 +146,9 @@ uses
 initialization
 
 {$I 'core.init.inc'}
-{$IF defined(OPENCV_CORE_HAL_INTERFACE_H) and defined(OPENCV_CORE_HAL_INTERFACE_H_IMPL)}{$I 'core/hal/interface.init.inc'}{$ifend}
+{$IF defined(OPENCV_CORE_HAL_INTERFACE_H) and defined(OPENCV_CORE_HAL_INTERFACE_H_IMPL)}
+  {$I 'core/hal/interface.init.inc'}
+{$ifend}
 
 end.
 
