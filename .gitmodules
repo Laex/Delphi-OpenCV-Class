@@ -1,3 +1,0 @@
-[submodule "source/jedi"]
-	path = source/jedi
-	url = https://github.com/project-jedi/jedi.git

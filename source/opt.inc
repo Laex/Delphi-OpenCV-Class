@@ -6,13 +6,7 @@
 {$IFEND}
 //
 // Define version of OpenCV
-{ .$DEFINE OPENCV_455 }
-{ .$DEFINE OPENCV_460 }
-{ .$DEFINE OPENCV_470 }
-{. $DEFINE OPENCV_480}
 {$DEFINE OPENCV_4100}
-//
-{ .$I jedi\jedi.inc }
 //
 {$IFDEF DEBUG}
 { }{$DEFINE USE_DEBUG_DLLS} // Use debug OpenCV and VisualStudio's DLLs.

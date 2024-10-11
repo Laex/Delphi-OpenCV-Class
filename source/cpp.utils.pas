@@ -1,4 +1,4 @@
-(*
+﻿(*
   This file is part of Delphi-OpenCV-Class project.
   https://github.com/Laex/Delphi-OpenCV-Class
 
@@ -37,13 +37,13 @@ Uses
 {$I core/version.inc}
 
 const
-  INT_MIN = Pred(-MaxInt);
-  INT_MAX = MaxInt;
-  DBL_MAX = MaxDouble;
-  CHAR_BIT = 8;
-  SCHAR_MIN = (-128);
-  SCHAR_MAX = 127;
-  UCHAR_MAX = $FF;
+  INT_MIN     = Pred(-MaxInt);
+  INT_MAX     = MaxInt;
+  DBL_MAX     = MaxDouble;
+  CHAR_BIT    = 8;
+  SCHAR_MIN   = (-128);
+  SCHAR_MAX   = 127;
+  UCHAR_MAX   = $FF;
   DBL_EPSILON = 2.2204460492503131E-16;
 
 Type
@@ -54,7 +54,7 @@ Type
   FLOAT = single;
   SIGNED = Integer;
   SHORT = int16;
-  INT = Integer;
+  Int = Integer;
   UNSIGNED___INT64 = uint64;
   CVCHAR = AnsiChar;
   unsigned = UInt32;
@@ -63,26 +63,26 @@ Type
   UNSIGNED_SHORT = UInt16;
   pSHORT = ^SHORT;
   pFLOAT = ^FLOAT;
-  pINT = ^INT;
-  pBOOL = ^BOOL;
+  pINT = ^Int;
+  pBool = ^BOOL;
   p__INT64 = ^__INT64;
-  pCVCHAR = ^CVCHAR;
-  schar = int8;
-  pschar = ^schar;
-  punsigned = ^unsigned;
+  pCVChar = ^CVCHAR;
+  SChar = int8;
+  pSChar = ^SChar;
+  pUnsigned = ^unsigned;
   size_t = NativeUInt;
   psize_t = ^size_t;
-  uint = Cardinal;
-  ushort = UInt16;
+  uInt = Cardinal;
+  UShort = UInt16;
   ppAnsiChar = ^pAnsiChar;
-  uchar = byte;
+  UChar = byte;
   pUChar = type pByte;
   pMatOp = type pointer;
   pUCharConst = pUChar;
   PointerConst = type pointer;
 
   TVectorType = //
-    ( //
+    (           //
 {$I vectortype.inc}
   );
 
@@ -95,13 +95,13 @@ Type
     pType = ^T;
   private
 {$HINTS OFF}
-    // release 24
+    // release - size 24
     // Data: array [0 .. 24 - 1] of Byte;
     A: uint64;
     B: uint64;
     C: uint64;
 {$IFDEF DEBUG}
-    // debug 32
+    // debug - size 32
     // Data: array [0 .. 32 - 1] of Byte;
     D: uint64;
 {$ENDIF}
@@ -155,9 +155,9 @@ Type
     function length: uint64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     function size: uint64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     procedure erase(const _Off: uint64 = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    procedure assign(const p: pCVCHAR); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure assign(const p: pCVChar); {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator assign(var Dest: CppString; const [ref] Src: CppString);
-    class operator Implicit(const p: pCVCHAR): CppString; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const p: pCVChar): CppString; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: string): CppString; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const s: CppString): string; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // class operator Explicit(const s: CppString): string; {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -210,7 +210,7 @@ type
   Tcout = record
     class operator Add(const C: Tcout; const B: pAnsiChar): Tcout; inline;
     class operator Add(const C: Tcout; const B: pChar): Tcout; inline;
-    class operator Add(const C: Tcout; const B: pCVCHAR): Tcout; inline;
+    class operator Add(const C: Tcout; const B: pCVChar): Tcout; inline;
     class operator Add(const C: Tcout; const B: String): Tcout; inline;
     class operator Add(const C: Tcout; const B: DOUBLE): Tcout; inline;
   end;
@@ -267,6 +267,12 @@ Type
 {$IF not defined(PACKAGE)}
 {$IF not defined(EXTERNAL_TYPES)}{$I 'external/std.external.inc'}{$IFEND}
 {$IFEND}
+
+Type
+  TVectorTypes = array [Low(TVectorType) .. High(TVectorType)] of pointer;
+
+Var
+  VectorTypes: TVectorTypes;
 
 implementation
 
@@ -390,49 +396,57 @@ end;
 
 class function Vector<T>.vt: TVectorType;
 begin
-  if TypeInfo(T) = TypeInfo(TMat) then
+  for Var i: TVectorType := Low(TVectorType) to High(TVectorType) do
+    if TypeInfo(T) = VectorTypes[i] then
+      Exit(i);
+  Raise Exception.Create('VectorType - not defined type' {$IFDEF USE_TYPEINFO} + ' "' + GetTypeName(TypeInfo(T)) + '"' {$ENDIF});
+
+  (*
+    vt := TVectorType.vtNone;
+    if TypeInfo(T) = TypeInfo(TMat) then
     vt := TVectorType.vtMat
-  else if TypeInfo(T) = TypeInfo(TRect) then
+    else if TypeInfo(T) = TypeInfo(TRect) then
     vt := TVectorType.vtRect
-  else if TypeInfo(T) = TypeInfo(TPoint) then
+    else if TypeInfo(T) = TypeInfo(TPoint) then
     vt := TVectorType.vtPoint
-  else if TypeInfo(T) = TypeInfo(Vector<TPoint>) then
+    else if TypeInfo(T) = TypeInfo(Vector<TPoint>) then
     vt := TVectorType.vtVectorPoint
-  else if TypeInfo(T) = TypeInfo(TPoint2f) then
+    else if TypeInfo(T) = TypeInfo(TPoint2f) then
     vt := TVectorType.vtPoint2f
-  else if TypeInfo(T) = TypeInfo(TScalar) then
+    else if TypeInfo(T) = TypeInfo(TScalar) then
     vt := TVectorType.vtScalar
-  else if TypeInfo(T) = TypeInfo(uchar) then // vector<uchar>
+    else if TypeInfo(T) = TypeInfo(uchar) then // vector<uchar>
     vt := TVectorType.vtUchar
-  else if TypeInfo(T) = TypeInfo(FLOAT) then // vector<float>
+    else if TypeInfo(T) = TypeInfo(FLOAT) then // vector<float>
     vt := TVectorType.vtFloat
-  else if TypeInfo(T) = TypeInfo(INT) then // vector<float>
+    else if TypeInfo(T) = TypeInfo(INT) then // vector<float>
     vt := TVectorType.vtInt
-  else if TypeInfo(T) = TypeInfo(TVec4i) then // vector<float>
+    else if TypeInfo(T) = TypeInfo(TVec4i) then // vector<float>
     vt := TVectorType.vtVec4i
-  else if TypeInfo(T) = TypeInfo(TVec6f) then // vector<float>
+    else if TypeInfo(T) = TypeInfo(TVec6f) then // vector<float>
     vt := TVectorType.vtVec6f
-  else if TypeInfo(T) = TypeInfo(Vector<TPoint2f>) then // vector<float>
+    else if TypeInfo(T) = TypeInfo(Vector<TPoint2f>) then // vector<float>
     vt := TVectorType.vtVectorPoint2f
-  else if TypeInfo(T) = TypeInfo(Vector<TMat>) then // vector<float>
+    else if TypeInfo(T) = TypeInfo(Vector<TMat>) then // vector<float>
     vt := TVectorType.vtVectorMat
-  else if TypeInfo(T) = TypeInfo(CppString) then // vector<CppString>
+    else if TypeInfo(T) = TypeInfo(CppString) then // vector<CppString>
     vt := TVectorType.vtString
-  else
-  begin
+    else
+    begin
     Var
     AssertMsg := 'VectorType - not defined type'
-{$IFDEF USE_TYPEINFO}
-      + ' "' + GetTypeName(TypeInfo(T)) + '"'
-{$ENDIF}
-      ;
+    {$IFDEF USE_TYPEINFO}
+    + ' "' + GetTypeName(TypeInfo(T)) + '"'
+    {$ENDIF}
+    ;
     Assert(false, AssertMsg);
-  end;
+    end;
+  *)
 end;
 
 { CppString }
 
-procedure CppString.assign(const p: pCVCHAR);
+procedure CppString.assign(const p: pCVChar);
 begin
 {$IF not defined(PACKAGE)}
   if Assigned(p) then
@@ -472,10 +486,10 @@ end;
 
 class operator CppString.Implicit(const s: string): CppString;
 begin
-  Result.assign(pCVCHAR(AnsiString(s)));
+  Result.assign(pCVChar(AnsiString(s)));
 end;
 
-class operator CppString.Implicit(const p: pCVCHAR): CppString;
+class operator CppString.Implicit(const p: pCVChar): CppString;
 begin
   Result.assign(p);
 end;
@@ -568,7 +582,7 @@ begin
   Result := C;
 end;
 
-class operator Tcout.Add(const C: Tcout; const B: pCVCHAR): Tcout;
+class operator Tcout.Add(const C: Tcout; const B: pCVChar): Tcout;
 begin
   write(CppReplace(String(B)));
   Result := C;
@@ -657,7 +671,7 @@ Var
   cs: size_t;
 begin
   cs := SizeOf(A);
-  C := AllocMem(cs);
+  C  := AllocMem(cs);
   try
     Move(A, C^, cs);
     Move(B, A, cs);
@@ -688,7 +702,7 @@ constructor TVector_Enumerator<T>.Create(AParent: Vector<T>);
 begin
   inherited Create;
   Position := -1;
-  Parent := AParent;
+  Parent   := AParent;
 end;
 
 function TVector_Enumerator<T>.GetCurrent: T;
@@ -703,11 +717,35 @@ begin
     Inc(Position);
 end;
 
+procedure InitVectorTypesArray;
+begin
+  VectorTypes[vtNone]          := nil;
+  VectorTypes[vtMat]           := TypeInfo(TMat);           // = 1,   // vector<Mat>
+  VectorTypes[vtRect]          := TypeInfo(TRect);          // = 2,   // vector<Rect>
+  VectorTypes[vtPoint]         := TypeInfo(TPoint);         // = 3,   // vector<Point>
+  VectorTypes[vtVectorMat]     := TypeInfo(Vector<TMat>);   // = 4,   // vector<vector<Mat>>
+  VectorTypes[vtVectorRect]    := TypeInfo(Vector<TRect>);  // = 5,   // vector<vector<Rect>>
+  VectorTypes[vtVectorPoint]   := TypeInfo(Vector<TPoint>); // = 6,   // vector<vector<Point>>
+  VectorTypes[vtPoint2f]       := TypeInfo(TPoint2f);       // = 7,   // vector<Point2f>
+  VectorTypes[vtScalar]        := TypeInfo(TScalar);        // = 8,   // vector<Scalar>
+  VectorTypes[vtUchar]         := TypeInfo(UChar);          // = 9,   // vector<uchar>
+  VectorTypes[vtFloat]         := TypeInfo(FLOAT);          // = 10,  // vector<float>
+  VectorTypes[vtInt]           := TypeInfo(Int);            // = 11,  // vector<int>
+  VectorTypes[vtVec4i]         := TypeInfo(TVec4i);         // = 12,  // vector<Vec4i>
+  VectorTypes[vtGMat]          := nil;                      // TypeInfo(TGMat); // = 13,  // vector<GMat>
+  VectorTypes[vtGCompileArg]   := nil;                      // TypeInfo(TGCompileArg); // = 14,  // vector<GCompileArg>
+  VectorTypes[vtVec6f]         := TypeInfo(TVec6f);         // = 15,  // vector<Vec6f>
+  VectorTypes[vtVectorPoint2f] := TypeInfo(Vector<TPoint2f>); // = 16, // vector<vector<Point2f>>
+  VectorTypes[vtString]        := TypeInfo(CppString);      // = 17   // vector<std::String>
+end;
+
 initialization
 
-argv := [ExtractFileName(ParamStr(0))];
+InitVectorTypesArray;
+
+argv      := [ExtractFileName(ParamStr(0))];
 for Var i := 1 to ParamCount do
-  argv := argv + [ParamStr(i)];
+  argv    := argv + [ParamStr(i)];
 
 argc := 1 + ParamCount;
 

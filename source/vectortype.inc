@@ -1,3 +1,4 @@
+vtNone = 0,
 vtMat = 1,            // vector<Mat>
 vtRect = 2,           // vector<Rect>
 vtPoint = 3,          // vector<Point>
