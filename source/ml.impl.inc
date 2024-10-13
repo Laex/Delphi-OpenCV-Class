@@ -35,7 +35,9 @@ class operator TSVM.Finalize(var Dest: TSVM);
 Type
   TVirtualDestructor = procedure(const Obj: TSVM);
 begin
+{$IF not defined(PACKAGE)}
   TVirtualDestructor(vftable(Dest.vft, 0))(Dest);
+{$IFEND}
 end;
 
 function TSVM.getType: Int;

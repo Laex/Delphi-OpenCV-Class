@@ -21,12 +21,11 @@
 *)
 
 {$IFDEF INTERFACE}
-
 {$IF not defined(OPENCV_CORE_HPP)}
 {$DEFINE OPENCV_CORE_HPP}
 //
 {$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
-  {$Message Fatal 'core.inc header must be compiled as Delphi 10.4 Sydney WIN64'}
+{$MESSAGE Fatal 'core.inc header must be compiled as Delphi 10.4 Sydney WIN64'}
 {$IFEND}
 //
 {$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$IFEND}
@@ -95,68 +94,68 @@
 // //!< mutually exclusive.
 // };
 
-  Type
-// ! Covariation flags
+Type
+  // ! Covariation flags
   CovarFlags = ( //
-  (* * The output covariance matrix is calculated as:
-    \f[\texttt{scale}   \cdot  [  \texttt{vects}  [0]-  \texttt{mean}  , \texttt{vects}  [1]-  \texttt{mean}  ,...]^T  \cdot  [ \texttt{vects}  [0]- \texttt{mean}  , \texttt{vects}  [1]- \texttt{mean}  ,...],\f]
-    The covariance matrix will be nsamples x nsamples. Such an unusual covariance matrix is used
-    for fast PCA of a set of very large vectors (see, for example, the EigenFaces technique for
-    face recognition). Eigenvalues of this "scrambled" matrix match the eigenvalues of the true
-    covariance matrix. The "true" eigenvectors can be easily calculated from the eigenvectors of
-    the "scrambled" covariance matrix. *)
-  COVAR_SCRAMBLED = 0,
-  (* *The output covariance matrix is calculated as:
-    \f[\texttt{scale}   \cdot  [  \texttt{vects}  [0]-  \texttt{mean}  , \texttt{vects}  [1]-  \texttt{mean}  ,...]  \cdot  [ \texttt{vects}  [0]- \texttt{mean}  , \texttt{vects}  [1]- \texttt{mean}  ,...]^T,\f]
-    covar will be a square matrix of the same size as the total number of elements in each input
-    vector. One and only one of #COVAR_SCRAMBLED and #COVAR_NORMAL must be specified. *)
-  COVAR_NORMAL = 1,
-  (* * If the flag is specified, the function does not calculate mean from
-    the input vectors but, instead, uses the passed mean vector. This is useful if mean has been
-    pre-calculated or known in advance, or if the covariance matrix is calculated by parts. In
-    this case, mean is not a mean vector of the input sub-set of vectors but rather the mean
-    vector of the whole set. *)
-  COVAR_USE_AVG = 2,
-  (* * If the flag is specified, the covariance matrix is scaled. In the
-    "normal" mode, scale is 1./nsamples . In the "scrambled" mode, scale is the reciprocal of the
-    total number of elements in each input vector. By default (if the flag is not specified), the
-    covariance matrix is not scaled ( scale=1 ). *)
-  COVAR_SCALE = 4,
-  (* * If the flag is
-    specified, all the input vectors are stored as rows of the samples matrix. mean should be a
-    single-row vector in this case. *)
-  COVAR_ROWS = 8,
-  (* * If the flag is
-    specified, all the input vectors are stored as columns of the samples matrix. mean should be a
-    single-column vector in this case. *)
-  COVAR_COLS = 16);
+    (* * The output covariance matrix is calculated as:
+      \f[\texttt{scale}   \cdot  [  \texttt{vects}  [0]-  \texttt{mean}  , \texttt{vects}  [1]-  \texttt{mean}  ,...]^T  \cdot  [ \texttt{vects}  [0]- \texttt{mean}  , \texttt{vects}  [1]- \texttt{mean}  ,...],\f]
+      The covariance matrix will be nsamples x nsamples. Such an unusual covariance matrix is used
+      for fast PCA of a set of very large vectors (see, for example, the EigenFaces technique for
+      face recognition). Eigenvalues of this "scrambled" matrix match the eigenvalues of the true
+      covariance matrix. The "true" eigenvectors can be easily calculated from the eigenvectors of
+      the "scrambled" covariance matrix. *)
+    COVAR_SCRAMBLED = 0,
+    (* *The output covariance matrix is calculated as:
+      \f[\texttt{scale}   \cdot  [  \texttt{vects}  [0]-  \texttt{mean}  , \texttt{vects}  [1]-  \texttt{mean}  ,...]  \cdot  [ \texttt{vects}  [0]- \texttt{mean}  , \texttt{vects}  [1]- \texttt{mean}  ,...]^T,\f]
+      covar will be a square matrix of the same size as the total number of elements in each input
+      vector. One and only one of #COVAR_SCRAMBLED and #COVAR_NORMAL must be specified. *)
+    COVAR_NORMAL = 1,
+    (* * If the flag is specified, the function does not calculate mean from
+      the input vectors but, instead, uses the passed mean vector. This is useful if mean has been
+      pre-calculated or known in advance, or if the covariance matrix is calculated by parts. In
+      this case, mean is not a mean vector of the input sub-set of vectors but rather the mean
+      vector of the whole set. *)
+    COVAR_USE_AVG = 2,
+    (* * If the flag is specified, the covariance matrix is scaled. In the
+      "normal" mode, scale is 1./nsamples . In the "scrambled" mode, scale is the reciprocal of the
+      total number of elements in each input vector. By default (if the flag is not specified), the
+      covariance matrix is not scaled ( scale=1 ). *)
+    COVAR_SCALE = 4,
+    (* * If the flag is
+      specified, all the input vectors are stored as rows of the samples matrix. mean should be a
+      single-row vector in this case. *)
+    COVAR_ROWS = 8,
+    (* * If the flag is
+      specified, all the input vectors are stored as columns of the samples matrix. mean should be a
+      single-column vector in this case. *)
+    COVAR_COLS = 16);
 
-// ! k-Means flags
-KmeansFlags = ( //
-  (* * Select random initial centers in each attempt. *)
-  KMEANS_RANDOM_CENTERS = 0,
-  (* * Use kmeans++ center initialization by Arthur and Vassilvitskii [Arthur2007]. *)
-  KMEANS_PP_CENTERS = 2,
-  (* * During the first (and possibly the only) attempt, use the
-    user-supplied labels instead of computing them from the initial centers. For the second and
-    further attempts, use the random or semi-random centers. Use one of KMEANS_\*_CENTERS flag
-    to specify the exact method. *)
-  KMEANS_USE_INITIAL_LABELS = 1);
+  // ! k-Means flags
+  KmeansFlags = ( //
+    (* * Select random initial centers in each attempt. *)
+    KMEANS_RANDOM_CENTERS = 0,
+    (* * Use kmeans++ center initialization by Arthur and Vassilvitskii [Arthur2007]. *)
+    KMEANS_PP_CENTERS = 2,
+    (* * During the first (and possibly the only) attempt, use the
+      user-supplied labels instead of computing them from the initial centers. For the second and
+      further attempts, use the random or semi-random centers. Use one of KMEANS_\*_CENTERS flag
+      to specify the exact method. *)
+    KMEANS_USE_INITIAL_LABELS = 1);
 
-ReduceTypes = (   //
-  REDUCE_SUM = 0, // !< the output is the sum of all rows/columns of the matrix.
-  REDUCE_AVG = 1, // !< the output is the mean vector of all rows/columns of the matrix.
-  REDUCE_MAX = 2, // !< the output is the maximum (column/row-wise) of all rows/columns of the matrix.
-  REDUCE_MIN = 3  // !< the output is the minimum (column/row-wise) of all rows/columns of the matrix.
-  );
+  ReduceTypes = (   //
+    REDUCE_SUM = 0, // !< the output is the sum of all rows/columns of the matrix.
+    REDUCE_AVG = 1, // !< the output is the mean vector of all rows/columns of the matrix.
+    REDUCE_MAX = 2, // !< the output is the maximum (column/row-wise) of all rows/columns of the matrix.
+    REDUCE_MIN = 3  // !< the output is the minimum (column/row-wise) of all rows/columns of the matrix.
+    );
 
-(* * @brief Swaps two matrices *)
-// CV_EXPORTS void swap(Mat& a, Mat& b);
-{
-  6587
-  ?swap@cv@@YAXAEAVMat@1@0@Z
-  void cv::swap(class cv::Mat &,class cv::Mat &)
-}
+  (* * @brief Swaps two matrices *)
+  // CV_EXPORTS void swap(Mat& a, Mat& b);
+  {
+    6587
+    ?swap@cv@@YAXAEAVMat@1@0@Z
+    void cv::swap(class cv::Mat &,class cv::Mat &)
+  }
 procedure swap(var a, b: TMat); inline;
 // external opencv_world_dll name '?swap@cv@@YAXAEAVMat@1@0@Z' {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -253,7 +252,8 @@ procedure swap(var a, b: TMat); inline;
     ?copyMakeBorder@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@HHHHHAEBV?$Scalar_@N@1@@Z
     void cv::copyMakeBorder(class cv::_InputArray const &,class cv::_OutputArray const &,int,int,int,int,int,class cv::Scalar_<double> const &)
   }
-    procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes; const value: TScalar { = Scalar() } ); overload; inline;
+    procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes;
+      const value: TScalar { = Scalar() } ); overload; inline;
     // external opencv_world_dll
     // {$IFDEF USE_DEBUG_DLLS}
     // name '?copyMakeBorder@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@HHHHHAEBV?$Scalar_@N@1@@Z'
@@ -262,7 +262,8 @@ procedure swap(var a, b: TMat); inline;
     // {$ENDIF}
     // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-      procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes); overload; inline;
+      procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes);
+        overload; inline;
       (* * @brief Calculates the per-element sum of two arrays or an array and a scalar.
 
         The function add calculates:
@@ -307,7 +308,8 @@ procedure swap(var a, b: TMat); inline;
         ?add@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z
         void cv::add(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
       }
-        procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() }; dtype: int { = -1 } ); overload; inline;
+        procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() };
+          dtype: int { = -1 } ); overload; inline;
         // external opencv_world_dll
         // {$IFDEF USE_DEBUG_DLLS}
         // name '?add@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z'
@@ -362,7 +364,8 @@ procedure swap(var a, b: TMat); inline;
               ?subtract@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z
               void cv::subtract(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &,int)
             }
-              procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() }; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+              procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() };
+                dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
               // overload; external opencv_world_dll
               // {$IFDEF USE_DEBUG_DLLS}
               // name '?subtract@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0H@Z'
@@ -370,7 +373,8 @@ procedure swap(var a, b: TMat); inline;
               // name '?subtract@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0H@Z'
               // {$ENDIF}
               // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline;
+                {$ENDIF}
                 (*
                   (** @brief Calculates the per-element scaled product of two arrays.
 
@@ -444,7 +448,8 @@ procedure swap(var a, b: TMat); inline;
                     ?divide@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@NH@Z
                     void cv::divide(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,double,int)
                   }
-                    procedure divide(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; scale: double = 1; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                    procedure divide(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; scale: double = 1; dtype: int = -1);
+                      overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                     // overload; external opencv_world_dll
                     // {$IFDEF USE_DEBUG_DLLS}
                     // name '?divide@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@NH@Z'
@@ -462,7 +467,8 @@ procedure swap(var a, b: TMat); inline;
                       ?divide@cv@@YAXNAEBV_InputArray@1@AEBV_OutputArray@1@H@Z
                       void cv::divide(double,class cv::_InputArray const &,class cv::_OutputArray const &,int)
                     }
-                      procedure divide(scale: double; const src2: TInputArray; const dst: TOutputArray; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                      procedure divide(scale: double; const src2: TInputArray; const dst: TOutputArray; dtype: int = -1); overload;
+                      {$IFDEF USE_INLINE}inline; {$ENDIF}
                       // overload; external opencv_world_dll
                       // {$IFDEF USE_DEBUG_DLLS}
                       // name '?divide@cv@@YAXNAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@H@Z'
@@ -539,7 +545,8 @@ procedure swap(var a, b: TMat); inline;
                           ?addWeighted@cv@@YAXAEBV_InputArray@debug_build_guard@1@N0NNAEBV_OutputArray@31@H@Z
                           void cv::addWeighted(class cv::_InputArray const &,double,class cv::_InputArray const &,double,double,class cv::_OutputArray const &,int)
                         }
-                          procedure addWeighted(const src1: TInputArray; alpha: double; const src2: TInputArray; beta, gamma: double; const dst: TOutputArray; dtype: int = -1);
+                          procedure addWeighted(const src1: TInputArray; alpha: double; const src2: TInputArray; beta, gamma: double;
+                            const dst: TOutputArray; dtype: int = -1);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                           // overload; external opencv_world_dll
                           // {$IFDEF USE_DEBUG_DLLS}
@@ -759,7 +766,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z
                                         class cv::Scalar_<double> cv::mean(class cv::_InputArray const &,class cv::_InputArray const &)
                                       }
-                                        function mean(const src: TInputArray; const mask: TInputArray { = noArray() } ): TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function mean(const src: TInputArray; const mask: TInputArray { = noArray() } ): TScalar; overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z'
@@ -796,7 +804,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?meanStdDev@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@10@Z
                                         void cv::meanStdDev(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-                                        procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray; const mask: TInputArray { =noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray;
+                                        const mask: TInputArray { =noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@debug_build_guard@1@0@Z'
@@ -804,7 +813,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?mean@cv@@YA?AV?$Scalar_@N@1@AEBV_InputArray@1@0@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Calculates the  absolute norm of an array.
 
                                         This version of #norm calculates the absolute norm of src1. The type of norm to calculate is specified using #NormTypes.
@@ -848,7 +858,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?norm@cv@@YANAEBV_InputArray@1@H0@Z
                                         double cv::norm(class cv::_InputArray const &,int,class cv::_InputArray const &)
                                         }
-                                        function norm(const src1: TInputArray; normType: int { = int(NORM_L2) }; const mask: TInputArray { = noArray() } ): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function norm(const src1: TInputArray; normType: int { = int(NORM_L2) };
+                                        const mask: TInputArray { = noArray() } ): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@H0@Z'
@@ -856,7 +867,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?norm@cv@@YANAEBV_InputArray@1@H0@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        function norm(const src1: TInputArray; normType: NormTypes = NORM_L2): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function norm(const src1: TInputArray; normType: NormTypes = NORM_L2): double; overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Calculates an absolute difference norm or a relative difference norm.
 
                                         This version of cv::norm calculates the absolute difference norm
@@ -876,7 +888,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?norm@cv@@YANAEBV_InputArray@1@0H0@Z
                                         double cv::norm(class cv::_InputArray const &,class cv::_InputArray const &,int,class cv::_InputArray const &)
                                         }
-                                        function norm(const src1: TInputArray; const src2: TInputArray; normType: int { = int(NORM_L2) }; const mask: TInputArray { = noArray() } ): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function norm(const src1: TInputArray; const src2: TInputArray; normType: int { = int(NORM_L2) };
+                                        const mask: TInputArray { = noArray() } ): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?norm@cv@@YANAEBV_InputArray@debug_build_guard@1@0H0@Z'
@@ -884,7 +897,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?norm@cv@@YANAEBV_InputArray@1@0H0@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        function norm(const src1: TInputArray; const src2: TInputArray; normType: NormTypes = NORM_L2): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function norm(const src1: TInputArray; const src2: TInputArray; normType: NormTypes = NORM_L2): double;
+                                        overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @overload
                                         @param src first input array.
                                         @param normType type of the norm (see #NormTypes).
@@ -943,7 +957,10 @@ procedure swap(var a, b: TMat); inline;
                                         ?batchDistance@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H1HH0H_N@Z
                                         void cv::batchDistance(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,int,class cv::_OutputArray const &,int,int,class cv::_InputArray const &,int,bool)
                                         }
-                                        procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray; normType: int { = int(NORM_L2) }; K: int { = 0 }; const mask: TInputArray { = noArray() }; update: int = 0; crosscheck: bool = false); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray;
+                                        dtype: int; const nidx: TOutputArray; normType: int { = int(NORM_L2) }; K: int { = 0 };
+                                        const mask: TInputArray { = noArray() }; update: int = 0; crosscheck: bool = false); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?batchDistance@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@H1HH0H_N@Z'
@@ -952,7 +969,9 @@ procedure swap(var a, b: TMat); inline;
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-                                        procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray; normType: NormTypes = NORM_L2; K: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray;
+                                        dtype: int; const nidx: TOutputArray; normType: NormTypes = NORM_L2; K: int = 0); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Normalizes the norm or value range of an array.
 
                                         The function cv::normalize normalizes scale and shift the input array elements so that
@@ -1019,7 +1038,9 @@ procedure swap(var a, b: TMat); inline;
                                         ?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z
                                         void cv::normalize(class cv::_InputArray const &,class cv::_InputOutputArray const &,double,double,int,int,class cv::_InputArray const &)
                                         }
-                                        procedure normalize(const src: TInputArray; const dst: TInputOutputArray; alpha: double { = 1 }; beta: double { = 0 }; norm_type: int { = int(NORM_L2) }; dtype: int { = -1 }; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure normalize(const src: TInputArray; const dst: TInputOutputArray; alpha: double { = 1 };
+                                        beta: double { = 0 }; norm_type: int { = int(NORM_L2) }; dtype: int { = -1 };
+                                        const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?normalize@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@NNHH0@Z'
@@ -1027,7 +1048,9 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?normalize@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@NNHH0@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        procedure normalize(const src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure normalize(const src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1;
+                                        beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline;
+                                        {$ENDIF}
                                         (*
                                         (** @overload
                                         @param src input array.
@@ -1065,7 +1088,9 @@ procedure swap(var a, b: TMat); inline;
                                         ?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z
                                         void cv::minMaxLoc(class cv::_InputArray const &,double *,double *,class cv::Point_<int> *,class cv::Point_<int> *,class cv::_InputArray const &)
                                         }
-                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil }; const minLoc: pPoint { = nil }; const maxLoc: pPoint { = nil }; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil };
+                                        const minLoc: pPoint { = nil }; const maxLoc: pPoint { = nil }; const mask: TInputArray { = noArray() } );
+                                        overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?minMaxLoc@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAV?$Point_@H@1@20@Z'
@@ -1073,10 +1098,15 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?minMaxLoc@cv@@YAXAEBV_InputArray@1@PEAN1PEAV?$Point_@H@1@20@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil }; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil };
+                                        var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil }; const mask: TInputArray { = noArray() } );
+                                        overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil };
+                                        var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil };
+                                        var minLoc: TPoint { = nil } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil } ); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         procedure minMaxLoc(const src: TInputArray; Var minVal: double); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Finds the global minimum and maximum in an array
 
@@ -1109,7 +1139,9 @@ procedure swap(var a, b: TMat); inline;
                                         ?minMaxIdx@cv@@YAXAEBV_InputArray@1@PEAN1PEAH20@Z
                                         void cv::minMaxIdx(class cv::_InputArray const &,double *,double *,int *,int *,class cv::_InputArray const &)
                                         }
-                                        procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble { = nil }; minIdx: Pointer { = nil }; maxIdx: pInt { = nil }; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble { = nil };
+                                        minIdx: Pointer { = nil }; maxIdx: pInt { = nil }; const mask: TInputArray { = noArray() } ); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?minMaxIdx@cv@@YAXAEBV_InputArray@debug_build_guard@1@PEAN1PEAH20@Z'
@@ -1117,7 +1149,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?minMaxIdx@cv@@YAXAEBV_InputArray@1@PEAN1PEAH20@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble = nil; minIdx: Pointer = nil; maxIdx: pInt = nil); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble = nil; minIdx: Pointer = nil;
+                                        maxIdx: pInt = nil); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @overload
                                         @param a input single-channel array.
                                         @param minVal pointer to the returned minimum value; NULL is used if not required.
@@ -1197,7 +1230,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z
                                         void cv::merge(class cv::Mat const *,unsigned __int64,class cv::_OutputArray const &)
                                         }
-                                        procedure merge(const mv: pMat; COUNT: size_t; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure merge(const mv: pMat; COUNT: size_t; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline;
+                                        {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?merge@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z'
@@ -1219,7 +1253,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?merge@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::merge(class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure merge(const mv: TInputArrayOfArrays; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure merge(const mv: TInputArrayOfArrays; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline;
+                                        {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?merge@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
@@ -1266,7 +1301,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?split@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::split(class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure split(const m: TInputArray; const mv: TOutputArrayOfArrays); overload; {$IFDEF USE_INLINE}inline;
+                                        {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?split@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
@@ -1323,7 +1359,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?mixChannels@cv@@YAXPEBVMat@1@_KPEAV21@1PEBH1@Z
                                         void cv::mixChannels(class cv::Mat const *,unsigned __int64,class cv::Mat *,unsigned __int64,int const *,unsigned __int64)
                                         }
-                                        procedure mixChannels(Var src: TMat; nsrcs: size_t; Var dst: TMat; ndsts: size_t; const fromTo: pInt; npairs: size_t); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure mixChannels(Var src: TMat; nsrcs: size_t; Var dst: TMat; ndsts: size_t; const fromTo: pInt;
+                                        npairs: size_t); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll name '?mixChannels@cv@@YAXPEBVMat@1@_KPEAV21@1PEBH1@Z'
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -1349,7 +1386,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@PEBH_K@Z
                                         void cv::mixChannels(class cv::_InputArray const &,class cv::_InputOutputArray const &,int const *,unsigned __int64)
                                         }
-                                        procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: pInt; npairs: size_t); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays;
+                                        const fromTo: pInt; npairs: size_t); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@PEBH_K@Z'
@@ -1379,7 +1417,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?mixChannels@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z
                                         void cv::mixChannels(class cv::_InputArray const &,class cv::_InputOutputArray const &,class std::vector<int,class std::allocator<int> > const &)
                                         }
-                                        procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: vector<int>); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays;
+                                        const fromTo: vector<int>); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?mixChannels@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV?$vector@HV?$allocator@H@std@@@std@@@Z'
@@ -1424,7 +1463,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?insertChannel@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@H@Z
                                         void cv::insertChannel(class cv::_InputArray const &,class cv::_InputOutputArray const &,int)
                                         }
-                                        procedure insertChannel(const src: TInputArray; const dst: TInputOutputArray; coi: int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure insertChannel(const src: TInputArray; const dst: TInputOutputArray; coi: int); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?insertChannel@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@H@Z'
@@ -1538,7 +1578,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?repeat@cv@@YAXAEBV_InputArray@1@HHAEBV_OutputArray@1@@Z
                                         void cv::repeat(class cv::_InputArray const &,int,int,class cv::_OutputArray const &)
                                         }
-                                        procedure &repeat(const src: TInputArray; ny, nx: int; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure &repeat(const src: TInputArray; ny, nx: int; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?repeat@cv@@YAXAEBV_InputArray@debug_build_guard@1@HHAEBV_OutputArray@31@@Z'
@@ -1593,7 +1634,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@1@@Z
                                         void cv::hconcat(class cv::Mat const *,unsigned __int64,class cv::_OutputArray const &)
                                         }
-                                        procedure hconcat(const src: pMat; nsrc: size_t; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure hconcat(const src: pMat; nsrc: size_t; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?hconcat@cv@@YAXPEBVMat@1@_KAEBV_OutputArray@debug_build_guard@1@@Z'
@@ -1629,7 +1671,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?hconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::hconcat(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure hconcat(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure hconcat(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
@@ -1663,7 +1706,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?hconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::hconcat(class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure hconcat(const src: TInputArrayOfArrays; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure hconcat(const src: TInputArrayOfArrays; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?hconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
@@ -1724,7 +1768,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?vconcat@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::vconcat(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure vconcat(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure vconcat(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
@@ -1757,7 +1802,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?vconcat@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@@Z
                                         void cv::vconcat(class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure vconcat(const src: TInputArrayOfArrays; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure vconcat(const src: TInputArrayOfArrays; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?vconcat@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@@Z'
@@ -1800,7 +1846,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?bitwise_and@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z
                                         void cv::bitwise_and(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-                                        procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray;
+                                        const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?bitwise_and@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
@@ -1808,7 +1855,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?bitwise_and@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure bitwise_and(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Calculates the per-element bit-wise disjunction of two arrays or an
                                         array and a scalar.
 
@@ -1841,7 +1889,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?bitwise_or@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z
                                         void cv::bitwise_or(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-                                        procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray;
+                                        const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?bitwise_or@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
@@ -1849,7 +1898,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?bitwise_or@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Calculates the per-element bit-wise "exclusive or" operation on two
                                         arrays or an array and a scalar.
 
@@ -1883,7 +1933,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?bitwise_xor@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z
                                         void cv::bitwise_xor(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-                                        procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray;
+                                        const mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?bitwise_xor@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@0@Z'
@@ -1891,7 +1942,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?bitwise_xor@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@0@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure bitwise_xor(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief  Inverts every bit of an array.
 
                                         The function cv::bitwise_not calculates per-element bit-wise inversion of the input
@@ -1914,7 +1966,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z
                                         void cv::bitwise_not(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputArray const &)
                                         }
-                                        procedure bitwise_not(const src: TInputArray; const dst: TOutputArray; mask: TInputArray { = noArray() } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure bitwise_not(const src: TInputArray; const dst: TOutputArray; mask: TInputArray { = noArray() } );
+                                        overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?bitwise_not@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@0@Z'
@@ -1922,7 +1975,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?bitwise_not@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@0@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        procedure bitwise_not(const src: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF} overload;
+                                        procedure bitwise_not(const src: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline;
+                                        {$ENDIF} overload;
 
                                         (* * @brief Calculates the per-element absolute difference between two arrays or between an array and a scalar.
 
@@ -2018,7 +2072,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?inRange@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z
                                         void cv::inRange(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure inRange(const src: TInputArray; const lowerb: TInputArray; const upperb: TInputArray; const dst: TOutputArray);
+                                        procedure inRange(const src: TInputArray; const lowerb: TInputArray; const upperb: TInputArray;
+                                        const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // overload; external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -2056,7 +2111,8 @@ procedure swap(var a, b: TMat); inline;
                                         *)
 
                                         // CV_EXPORTS_W void compare(InputArray src1, InputArray src2, OutputArray dst, int cmpop);
-                                        procedure compare(const src1, src2: TInputArray; const dst: TOutputArray; cmpop: CmpTypes); {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure compare(const src1, src2: TInputArray; const dst: TOutputArray; cmpop: CmpTypes);
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (*
                                         // moved to "opencv.external.inc"
                                         {
@@ -2093,7 +2149,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?min@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::min(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure min(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure min(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?min@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
@@ -2112,7 +2169,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?min@cv@@YAXAEBVMat@1@0AEAV21@@Z
                                         void cv::min(class cv::Mat const &,class cv::Mat const &,class cv::Mat &)
                                         }
-                                        procedure min(const src1: TMat; const src2: TMat; Var dst: TMat); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure min(const src1: TMat; const src2: TMat; Var dst: TMat); overload; {$IFDEF USE_INLINE}inline;
+                                        {$ENDIF}
                                         // external opencv_world_dll name '?min@cv@@YAXAEBVMat@1@0AEAV21@@Z'
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -2139,7 +2197,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?max@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@@Z
                                         void cv::max(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure max(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure max(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?max@cv@@YAXAEBV_InputArray@debug_build_guard@1@0AEBV_OutputArray@31@@Z'
@@ -2158,7 +2217,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?max@cv@@YAXAEBVMat@1@0AEAV21@@Z
                                         void cv::max(class cv::Mat const &,class cv::Mat const &,class cv::Mat &)
                                         }
-                                        procedure max(const src1: TMat; const src2: TMat; Var dst: TMat); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure max(const src1: TMat; const src2: TMat; Var dst: TMat); overload; {$IFDEF USE_INLINE}inline;
+                                        {$ENDIF}
                                         // external opencv_world_dll name '?max@cv@@YAXAEBVMat@1@0AEAV21@@Z'
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -2320,7 +2380,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?polarToCart@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z
                                         void cv::polarToCart(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,bool)
                                         }
-                                        procedure polarToCart(const magnitude: TInputArray; const angle: TInputArray; const x: TOutputArray; const y: TOutputArray; angleInDegrees: bool = false);
+                                        procedure polarToCart(const magnitude: TInputArray; const angle: TInputArray; const x: TOutputArray;
+                                        const y: TOutputArray; angleInDegrees: bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // overload; external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -2357,7 +2418,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?cartToPolar@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@1_N@Z
                                         void cv::cartToPolar(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,bool)
                                         }
-                                        procedure cartToPolar(const x: TInputArray; const y: TInputArray; const magnitude: TOutputArray; const angle: TOutputArray; angleInDegrees: bool = false);
+                                        procedure cartToPolar(const x: TInputArray; const y: TInputArray; const magnitude: TOutputArray;
+                                        const angle: TOutputArray; angleInDegrees: bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -2391,7 +2453,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?phase@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@_N@Z
                                         void cv::phase(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,bool)
                                         }
-                                        procedure phase(const x: TInputArray; const y: TInputArray; const angle: TOutputArray; angleInDegrees: bool = false);
+                                        procedure phase(const x: TInputArray; const y: TInputArray; const angle: TOutputArray;
+                                        angleInDegrees: bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -2452,7 +2515,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?checkRange@cv@@YA_NAEBV_InputArray@1@_NPEAV?$Point_@H@1@NN@Z
                                         bool cv::checkRange(class cv::_InputArray const &,bool,class cv::Point_<int> *,double,double)
                                         }
-                                        function checkRange(const a: TInputArray; quiet: bool = true; pos: pPoint = nil; minVal: double = -DBL_MAX; maxVal: double = DBL_MAX): bool;
+                                        function checkRange(const a: TInputArray; quiet: bool = true; pos: pPoint = nil; minVal: double = -DBL_MAX;
+                                        maxVal: double = DBL_MAX): bool;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -2519,7 +2583,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?gemm@cv@@YAXAEBV_InputArray@1@0N0NAEBV_OutputArray@1@H@Z
                                         void cv::gemm(class cv::_InputArray const &,class cv::_InputArray const &,double,class cv::_InputArray const &,double,class cv::_OutputArray const &,int)
                                         }
-                                        procedure gemm(const src1: TInputArray; const src2: TInputArray; alpha: double; const src3: TInputArray; beta: double; const dst: TOutputArray; flags: int = 0);
+                                        procedure gemm(const src1: TInputArray; const src2: TInputArray; alpha: double; const src3: TInputArray;
+                                        beta: double; const dst: TOutputArray; flags: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -2565,7 +2630,9 @@ procedure swap(var a, b: TMat); inline;
                                         ?mulTransposed@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@_N0NH@Z
                                         void cv::mulTransposed(class cv::_InputArray const &,class cv::_OutputArray const &,bool,class cv::_InputArray const &,double,int)
                                         }
-                                        procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool; const delta: TInputArray { = noArray() }; scale: double = 1; dtype: int = -1); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool;
+                                        const delta: TInputArray { = noArray() }; scale: double = 1; dtype: int = -1); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?mulTransposed@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@_N0NH@Z'
@@ -2573,7 +2640,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?mulTransposed@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@_N0NH@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Transposes a matrix.
 
                                         The function cv::transpose transposes the matrix src :
@@ -2736,7 +2804,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?setIdentity@cv@@YAXAEBV_InputOutputArray@1@AEBV?$Scalar_@N@1@@Z
                                         void cv::setIdentity(class cv::_InputOutputArray const &,class cv::Scalar_<double> const &)
                                         }
-                                        procedure setIdentity(const mtx: TInputOutputArray; const s: TScalar { = Scalar(1) } ); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure setIdentity(const mtx: TInputOutputArray; const s: TScalar { = Scalar(1) } ); overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?setIdentity@cv@@YAXAEBV_InputOutputArray@debug_build_guard@1@AEBV?$Scalar_@N@1@@Z'
@@ -2871,7 +2940,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?solve@cv@@YA_NAEBV_InputArray@1@0AEBV_OutputArray@1@H@Z
                                         bool cv::solve(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,int)
                                         }
-                                        function solve(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; flags: int = int(DECOMP_LU)): bool;
+                                        function solve(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray;
+                                        flags: int = int(DECOMP_LU)): bool;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // overload; external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -3028,7 +3098,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?eigen@cv@@YA_NAEBV_InputArray@1@AEBV_OutputArray@1@1@Z
                                         bool cv::eigen(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
                                         }
-                                        function eigen(const src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray { = noArray() } ): bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function eigen(const src: TInputArray; const eigenvalues: TOutputArray;
+                                        const eigenvectors: TOutputArray { = noArray() } ): bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?eigen@cv@@YA_NAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@1@Z'
@@ -3036,7 +3107,8 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?eigen@cv@@YA_NAEBV_InputArray@1@AEBV_OutputArray@1@1@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        function eigen(const src: TInputArray; const eigenvalues: TOutputArray): bool; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function eigen(const src: TInputArray; const eigenvalues: TOutputArray): bool; overload;
+                                        {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         (* * @brief Calculates eigenvalues and eigenvectors of a non-symmetric matrix (real eigenvalues only).
 
                                         @note Assumes real eigenvalues.
@@ -3059,7 +3131,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?eigenNonSymmetric@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@1@Z
                                         void cv::eigenNonSymmetric(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure eigenNonSymmetric(const src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray);
+                                        procedure eigenNonSymmetric(const src: TInputArray; const eigenvalues: TOutputArray;
+                                        const eigenvectors: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // overload; external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -3090,7 +3163,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?calcCovarMatrix@cv@@YAXPEBVMat@1@HAEAV21@1HH@Z
                                         void cv::calcCovarMatrix(class cv::Mat const *,int,class cv::Mat &,class cv::Mat &,int,int)
                                         }
-                                        procedure calcCovarMatrix(const samples: pMat; nsamples: int; Var covar: TMat; Var mean: TMat; flags: int; ctype: int = CV_64F); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure calcCovarMatrix(const samples: pMat; nsamples: int; Var covar: TMat; Var mean: TMat; flags: int;
+                                        ctype: int = CV_64F); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll name '?calcCovarMatrix@cv@@YAXPEBVMat@1@HAEAV21@1HH@Z'
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
@@ -3110,7 +3184,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?calcCovarMatrix@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@AEBV_InputOutputArray@1@HH@Z
                                         void cv::calcCovarMatrix(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_InputOutputArray const &,int,int)
                                         }
-                                        procedure calcCovarMatrix(const samples: TInputArray; const covar: TOutputArray; const mean: TInputOutputArray; flags: int; ctype: int = CV_64F); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure calcCovarMatrix(const samples: TInputArray; const covar: TOutputArray;
+                                        const mean: TInputOutputArray; flags: int; ctype: int = CV_64F); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?calcCovarMatrix@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_OutputArray@31@AEBV_InputOutputArray@31@HH@Z'
@@ -3128,7 +3203,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@H@Z
                                         void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,int)
                                         }
-                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; maxComponents: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray;
+                                        maxComponents: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@H@Z'
@@ -3147,7 +3223,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2H@Z
                                         void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,int)
                                         }
-                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; const eigenvalues: TOutputArray; maxComponents: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray;
+                                        const eigenvalues: TOutputArray; maxComponents: int = 0); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@2H@Z'
@@ -3165,7 +3242,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@N@Z
                                         void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,double)
                                         }
-                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; retainedVariance: double); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray;
+                                        retainedVariance: double); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@N@Z'
@@ -3184,7 +3262,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?PCACompute@cv@@YAXAEBV_InputArray@1@AEBV_InputOutputArray@1@AEBV_OutputArray@1@2N@Z
                                         void cv::PCACompute(class cv::_InputArray const &,class cv::_InputOutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,double)
                                         }
-                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; const eigenvalues: TOutputArray; retainedVariance: double); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray;
+                                        const eigenvalues: TOutputArray; retainedVariance: double); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?PCACompute@cv@@YAXAEBV_InputArray@debug_build_guard@1@AEBV_InputOutputArray@31@AEBV_OutputArray@31@2N@Z'
@@ -3201,7 +3280,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?PCAProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z
                                         void cv::PCAProject(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure PCAProject(const data: TInputArray; const mean: TInputArray; const eigenvectors: TInputArray; const res: TOutputArray);
+                                        procedure PCAProject(const data: TInputArray; const mean: TInputArray; const eigenvectors: TInputArray;
+                                        const res: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // overload; external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -3220,7 +3300,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?PCABackProject@cv@@YAXAEBV_InputArray@1@00AEBV_OutputArray@1@@Z
                                         void cv::PCABackProject(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure PCABackProject(const data: TInputArray; const mean: TInputArray; const eigenvectors: TInputArray; const res: TOutputArray);
+                                        procedure PCABackProject(const data: TInputArray; const mean: TInputArray; const eigenvectors: TInputArray;
+                                        const res: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // overload; external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -3238,7 +3319,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?SVDecomp@cv@@YAXAEBV_InputArray@1@AEBV_OutputArray@1@11H@Z
                                         void cv::SVDecomp(class cv::_InputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,class cv::_OutputArray const &,int)
                                         }
-                                        procedure SVDecomp(const src: TInputArray; const w: TOutputArray; const u: TOutputArray; const vt: TOutputArray; flags: int = 0);
+                                        procedure SVDecomp(const src: TInputArray; const w: TOutputArray; const u: TOutputArray;
+                                        const vt: TOutputArray; flags: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // overload; external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -3257,7 +3339,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?SVBackSubst@cv@@YAXAEBV_InputArray@1@000AEBV_OutputArray@1@@Z
                                         void cv::SVBackSubst(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &)
                                         }
-                                        procedure SVBackSubst(const w: TInputArray; const u: TInputArray; const vt: TInputArray; const rhs: TInputArray; const dst: TOutputArray);
+                                        procedure SVBackSubst(const w: TInputArray; const u: TInputArray; const vt: TInputArray;
+                                        const rhs: TInputArray; const dst: TOutputArray);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // overload; external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -3577,7 +3660,8 @@ procedure swap(var a, b: TMat); inline;
                                         ?mulSpectrums@cv@@YAXAEBV_InputArray@1@0AEBV_OutputArray@1@H_N@Z
                                         void cv::mulSpectrums(class cv::_InputArray const &,class cv::_InputArray const &,class cv::_OutputArray const &,int,bool)
                                         }
-                                        procedure mulSpectrums(const a: TInputArray; const b: TInputArray; const c: TOutputArray; flags: int; conjB: bool = false);
+                                        procedure mulSpectrums(const a: TInputArray; const b: TInputArray; const c: TOutputArray; flags: int;
+                                        conjB: bool = false);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // overload; external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
@@ -4448,7 +4532,9 @@ procedure swap(var a, b: TMat); inline;
                                         ?kmeans@cv@@YANAEBV_InputArray@1@HAEBV_InputOutputArray@1@VTermCriteria@1@HHAEBV_OutputArray@1@@Z
                                         double cv::kmeans(class cv::_InputArray const &,int,class cv::_InputOutputArray const &,class cv::TermCriteria,int,int,class cv::_OutputArray const &)
                                         }
-                                        function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int; const centers: TOutputArray { = noArray() } ): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray;
+                                        const criteria: TTermCriteria; attempts: int; flags: int; const centers: TOutputArray { = noArray() } )
+                                        : double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
                                         // external opencv_world_dll
                                         // {$IFDEF USE_DEBUG_DLLS}
                                         // name '?kmeans@cv@@YANAEBV_InputArray@debug_build_guard@1@HAEBV_InputOutputArray@31@VTermCriteria@1@HHAEBV_OutputArray@31@@Z'
@@ -4456,7 +4542,9 @@ procedure swap(var a, b: TMat); inline;
                                         // name '?kmeans@cv@@YANAEBV_InputArray@1@HAEBV_InputOutputArray@1@VTermCriteria@1@HHAEBV_OutputArray@1@@Z'
                                         // {$ENDIF}
                                         // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
-                                        function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                        function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray;
+                                        const criteria: TTermCriteria; attempts: int; flags: int): double; overload; {$IFDEF USE_INLINE}inline;
+                                        {$ENDIF}
 
                                         // ! @} core_cluster
 
@@ -4635,7 +4723,9 @@ procedure swap(var a, b: TMat); inline;
                                         end;
 
                                         Param = ( //
-                                        Param_INT = 0, Param_BOOLEAN = 1, Param_REAL = 2, Param_STRING = 3, Param_MAT = 4, Param_MAT_VECTOR = 5, Param_ALGORITHM = 6, Param_FLOAT = 7, Param_UNSIGNED_INT = 8, Param_UINT64 = 9, Param_UCHAR = 11, Param_SCALAR = 12);
+                                        Param_INT = 0, Param_BOOLEAN = 1, Param_REAL = 2, Param_STRING = 3, Param_MAT = 4, Param_MAT_VECTOR = 5,
+                                        Param_ALGORITHM = 6, Param_FLOAT = 7, Param_UNSIGNED_INT = 8, Param_UINT64 = 9, Param_UCHAR = 11,
+                                        Param_SCALAR = 12);
 
 
                                         // template<> struct ParamType<bool>
@@ -4748,19 +4838,13 @@ procedure swap(var a, b: TMat); inline;
 {$IF not defined(OPENCV_CORE_UTILITY_H)}{$I 'core/utility.inc'}{$IFEND}
 {$IF not defined(OPENCV_OPTIM_HPP)}{$I 'core/optim.inc' }{$IFEND}
 {$IF not defined(OPENCV_OVX_HPP)}{$I 'core/ovx.inc' }{$IFEND}
-
 {$ELSE}
-
 {$MESSAGE FATAL 'Duplicate included file - core.inc'}
-
 {$IFEND OPENCV_CORE_HPP}
-
 {$ENDIF INTERFACE}
-
 // ============================================================================
 
 {$IFDEF IMPLEMENTATION}
-
 {$IF defined(OPENCV_CORE_HPP) and (not defined(OPENCV_CORE_HPP_IMPL))}
 {$DEFINE OPENCV_CORE_HPP_IMPL}
 {$I 'core/cvdef.impl.inc'}
@@ -4778,9 +4862,9 @@ begin
   bitwise_and(src1, src2, dst, TInputArray.noArray());
 end;
 
-procedure bitwise_not(const Src: TInputArray; const dst: TOutputArray);
+procedure bitwise_not(const src: TInputArray; const dst: TOutputArray);
 begin
-  bitwise_not(Src, dst, TInputArray.noArray());
+  bitwise_not(src, dst, TInputArray.noArray());
 end;
 
 { TRNG }
@@ -4825,40 +4909,44 @@ begin
 {$IFEND}
 end;
 
-procedure minMaxLoc(const Src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil }; const minLoc: pPoint { = nil }; const maxLoc: pPoint { = nil }; const mask: TInputArray { = noArray() }
+procedure minMaxLoc(const src: TInputArray; Var minVal: double; const maxVal: pDouble { = nil }; const minLoc: pPoint { = nil };
+  const maxLoc: pPoint { = nil }; const mask: TInputArray { = noArray() }
   );
 begin
 {$IF not defined(PACKAGE)}
-  proc_minMaxLoc_1(Src, @minVal, maxVal, minLoc, maxLoc, mask);
+  proc_minMaxLoc_1(src, @minVal, maxVal, minLoc, maxLoc, mask);
 {$IFEND}
 end;
 
-procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil }; const mask: TInputArray { = noArray() } ); overload;
+procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil };
+  var maxLoc: TPoint { = nil }; const mask: TInputArray { = noArray() } ); overload;
 begin
-  minMaxLoc(Src, minVal, @maxVal, @minLoc, @maxLoc, mask);
+  minMaxLoc(src, minVal, @maxVal, @minLoc, @maxLoc, mask);
 end;
 
-procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil }; var maxLoc: TPoint { = nil } ); overload;
+procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil };
+  var maxLoc: TPoint { = nil } ); overload;
 begin
-  minMaxLoc(Src, minVal, @maxVal, @minLoc, @maxLoc, TInputArray.noArray);
+  minMaxLoc(src, minVal, @maxVal, @minLoc, @maxLoc, TInputArray.noArray);
 end;
 
-procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil } ); overload;
+procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil }; var minLoc: TPoint { = nil } ); overload;
 begin
-  minMaxLoc(Src, minVal, @maxVal, @minLoc, nil, TInputArray.noArray);
+  minMaxLoc(src, minVal, @maxVal, @minLoc, nil, TInputArray.noArray);
 end;
 
-procedure minMaxLoc(const Src: TInputArray; Var minVal: double; Var maxVal: double { = nil } ); overload;
+procedure minMaxLoc(const src: TInputArray; Var minVal: double; Var maxVal: double { = nil } ); overload;
 begin
-  minMaxLoc(Src, minVal, @maxVal, nil, nil, TInputArray.noArray);
+  minMaxLoc(src, minVal, @maxVal, nil, nil, TInputArray.noArray);
 end;
 
-procedure minMaxLoc(const Src: TInputArray; Var minVal: double); overload;
+procedure minMaxLoc(const src: TInputArray; Var minVal: double); overload;
 begin
-  minMaxLoc(Src, minVal, nil, nil, nil, TInputArray.noArray);
+  minMaxLoc(src, minVal, nil, nil, nil, TInputArray.noArray);
 end;
 
-procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() }; dtype: int { = -1 } );
+procedure Add(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() };
+  dtype: int { = -1 } );
 begin
 {$IF not defined(PACKAGE)}
   proc_add(src1, src2, dst, mask, dtype);
@@ -4913,19 +5001,21 @@ begin
   merge(@mv[0], length(mv), dst);
 end;
 
-procedure copyMakeBorder(const Src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes; const value: TScalar { = Scalar() } );
+procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes;
+  const value: TScalar { = Scalar() } );
 begin
 {$IF not defined(PACKAGE)}
-  proc_copyMakeBorder(Src, dst, top, bottom, left, right, borderType, value);
+  proc_copyMakeBorder(src, dst, top, bottom, left, right, borderType, value);
 {$IFEND}
 end;
 
-procedure copyMakeBorder(const Src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes);
+procedure copyMakeBorder(const src: TInputArray; const dst: TOutputArray; top, bottom, left, right: int; borderType: borderTypes);
 begin
-  copyMakeBorder(Src, dst, top, bottom, left, right, borderType, TScalar.Scalar());
+  copyMakeBorder(src, dst, top, bottom, left, right, borderType, TScalar.Scalar());
 end;
 
-procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() }; dtype: int = -1);
+procedure subtract(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray; const mask: TInputArray { = noArray() };
+  dtype: int = -1);
 begin
 {$IF not defined(PACKAGE)}
   proc_subtract(src1, src2, dst, mask, dtype);
@@ -4972,70 +5062,70 @@ begin
 {$IFEND}
 end;
 
-procedure convertScaleAbs(const Src: TInputArray; const dst: TOutputArray; alpha: double = 1; beta: double = 0);
+procedure convertScaleAbs(const src: TInputArray; const dst: TOutputArray; alpha: double = 1; beta: double = 0);
 begin
 {$IF not defined(PACKAGE)}
-  proc_convertScaleAbs(Src, dst, alpha, beta);
+  proc_convertScaleAbs(src, dst, alpha, beta);
 {$IFEND}
 end;
 
-procedure convertFp16(const Src: TInputArray; const dst: TOutputArray);
+procedure convertFp16(const src: TInputArray; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_convertFp16(Src, dst);
+  proc_convertFp16(src, dst);
 {$IFEND}
 end;
 
-procedure LUT(const Src: TInputArray; const LUT: TInputArray; const dst: TOutputArray);
+procedure LUT(const src: TInputArray; const LUT: TInputArray; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_LUT(Src, LUT, dst);
+  proc_LUT(src, LUT, dst);
 {$IFEND}
 end;
 
-function sum(const Src: TInputArray): TScalar;
+function sum(const src: TInputArray): TScalar;
 begin
 {$IF not defined(PACKAGE)}
-  Result := func_sum(Src);
+  Result := func_sum(src);
 {$IFEND}
 end;
 
-function countNonZero(const Src: TInputArray): int;
+function countNonZero(const src: TInputArray): int;
 begin
 {$IF not defined(PACKAGE)}
-  Result := func_countNonZero(Src);
+  Result := func_countNonZero(src);
 {$IFEND}
 end;
 
-procedure findNonZero(const Src: TInputArray; const idx: TOutputArray);
+procedure findNonZero(const src: TInputArray; const idx: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_findNonZero(Src, idx);
+  proc_findNonZero(src, idx);
 {$IFEND}
 end;
 
-function mean(const Src: TInputArray; const mask: TInputArray { = noArray() } ): TScalar;
+function mean(const src: TInputArray; const mask: TInputArray { = noArray() } ): TScalar;
 begin
 {$IF not defined(PACKAGE)}
-  Result := func_mean(Src, mask);
+  Result := func_mean(src, mask);
 {$IFEND}
 end;
 
-function mean(const Src: TInputArray): TScalar;
+function mean(const src: TInputArray): TScalar;
 begin
-  Result := mean(Src, TInputArray.noArray());
+  Result := mean(src, TInputArray.noArray());
 end;
 
-procedure meanStdDev(const Src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray; const mask: TInputArray { =noArray() } );
+procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray; const mask: TInputArray { =noArray() } );
 begin
 {$IF not defined(PACKAGE)}
-  proc_meanStdDev(Src, mean, stddev, mask);
+  proc_meanStdDev(src, mean, stddev, mask);
 {$IFEND}
 end;
 
-procedure meanStdDev(const Src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray);
+procedure meanStdDev(const src: TInputArray; const mean: TOutputArray; const stddev: TOutputArray);
 begin
-  meanStdDev(Src, mean, stddev, TInputArray.noArray());
+  meanStdDev(src, mean, stddev, TInputArray.noArray());
 end;
 
 function norm(const src1: TInputArray; normType: int { = int(NORM_L2) }; const mask: TInputArray { = noArray() } ): double;
@@ -5069,21 +5159,23 @@ begin
 {$IFEND}
 end;
 
-procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray; normType: int { = int(NORM_L2) }; K: int { = 0 }; const mask: TInputArray { = noArray() }; update: int = 0; crosscheck: bool = false);
+procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray;
+  normType: int { = int(NORM_L2) }; K: int { = 0 }; const mask: TInputArray { = noArray() }; update: int = 0; crosscheck: bool = false);
 begin
 {$IF not defined(PACKAGE)}
   proc_batchDistance(src1, src2, dist, dtype, nidx, normType, K, mask, update, crosscheck);
 {$IFEND}
 end;
 
-procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray; normType: NormTypes = NORM_L2; K: int = 0);
+procedure batchDistance(const src1: TInputArray; const src2: TInputArray; const dist: TOutputArray; dtype: int; const nidx: TOutputArray;
+  normType: NormTypes = NORM_L2; K: int = 0);
 begin
   batchDistance(src1, src2, dist, dtype, nidx, int(normType), K, TInputArray.noArray());
 end;
 
-procedure minMaxIdx(const Src: TInputArray; minVal: pDouble; maxVal: pDouble = nil; minIdx: Pointer = nil; maxIdx: pInt = nil);
+procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble = nil; minIdx: Pointer = nil; maxIdx: pInt = nil);
 begin
-  minMaxIdx(Src, minVal, maxVal, minIdx, maxIdx, TInputArray.noArray());
+  minMaxIdx(src, minVal, maxVal, minIdx, maxIdx, TInputArray.noArray());
 end;
 
 procedure bitwise_or(const src1: TInputArray; const src2: TInputArray; const dst: TOutputArray);
@@ -5096,9 +5188,9 @@ begin
   bitwise_xor(src1, src2, dst, TInputArray.noArray());
 end;
 
-procedure mulTransposed(const Src: TInputArray; const dst: TOutputArray; aTa: bool);
+procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool);
 begin
-  mulTransposed(Src, dst, aTa, TInputArray.noArray());
+  mulTransposed(src, dst, aTa, TInputArray.noArray());
 end;
 
 procedure setIdentity(const mtx: TInputOutputArray);
@@ -5106,29 +5198,29 @@ begin
   setIdentity(mtx, Scalar(1));
 end;
 
-function eigen(const Src: TInputArray; const eigenvalues: TOutputArray): bool;
+function eigen(const src: TInputArray; const eigenvalues: TOutputArray): bool;
 begin
-  Result := eigen(Src, eigenvalues, TOutputArray.noArray());
+  Result := eigen(src, eigenvalues, TOutputArray.noArray());
 end;
 
-function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int): double;
+function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int;
+  flags: int): double;
 begin
   Result := kmeans(data, K, bestLabels, criteria, attempts, flags, TOutputArray.noArray());
 end;
 
-procedure normalize( const Src: TInputArray; const dst: TInputOutputArray; alpha: double { = 1 };
-                     beta: double { = 0 }; norm_type: int { = int(NORM_L2) }; dtype: int { = -1 };
-                     const mask: TInputArray { = noArray() } );
+procedure normalize(const src: TInputArray; const dst: TInputOutputArray; alpha: double { = 1 }; beta: double { = 0 };
+  norm_type: int { = int(NORM_L2) }; dtype: int { = -1 }; const mask: TInputArray { = noArray() } );
 begin
 {$IF not defined(PACKAGE)}
-  proc_normalize_1(Src, dst, alpha, beta, norm_type, dtype, mask);
+  proc_normalize_1(src, dst, alpha, beta, norm_type, dtype, mask);
 {$IFEND}
 end;
 
-procedure normalize( const Src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1;
-                     beta: double = 0; norm_type: NormTypes = NORM_L2; dtype: int = -1);
+procedure normalize(const src: TInputArray; const dst: TInputOutputArray; const alpha: double = 1; beta: double = 0; norm_type: NormTypes = NORM_L2;
+  dtype: int = -1);
 begin
-  normalize(Src, dst, alpha, beta, norm_type, dtype, TInputArray.noArray);
+  normalize(src, dst, alpha, beta, norm_type, dtype, TInputArray.noArray);
 end;
 
 procedure compare(const src1, src2: TInputArray; const dst: TOutputArray; cmpop: CmpTypes);
@@ -5161,87 +5253,88 @@ begin
 {$IFEND}
 end;
 
-procedure minMaxIdx(const Src: TInputArray; minVal: pDouble; maxVal: pDouble { = nil }; minIdx: Pointer { = nil }; maxIdx: pInt { = nil }; const mask: TInputArray { = noArray() } );
+procedure minMaxIdx(const src: TInputArray; minVal: pDouble; maxVal: pDouble { = nil }; minIdx: Pointer { = nil }; maxIdx: pInt { = nil };
+  const mask: TInputArray { = noArray() } );
 begin
 {$IF not defined(PACKAGE)}
-  proc_minMaxIdx(Src, minVal, maxVal, minIdx, maxIdx, mask);
+  proc_minMaxIdx(src, minVal, maxVal, minIdx, maxIdx, mask);
 {$IFEND}
 end;
 
-procedure reduce(const Src: TInputArray; const dst: TOutputArray; dim, rtype: int; dtype: int = -1);
+procedure reduce(const src: TInputArray; const dst: TOutputArray; dim, rtype: int; dtype: int = -1);
 begin
 {$IF not defined(PACKAGE)}
-  proc_reduce(Src, dst, dim, rtype, dtype);
+  proc_reduce(src, dst, dim, rtype, dtype);
 {$IFEND}
 end;
 
-procedure mixChannels(Var Src: TMat; nsrcs: size_t; Var dst: TMat; ndsts: size_t; const fromTo: pInt; npairs: size_t);
+procedure mixChannels(Var src: TMat; nsrcs: size_t; Var dst: TMat; ndsts: size_t; const fromTo: pInt; npairs: size_t);
 begin
 {$IF not defined(PACKAGE)}
-  proc_mixChannels_2(@Src, nsrcs, @dst, ndsts, fromTo, npairs);
+  proc_mixChannels_2(@src, nsrcs, @dst, ndsts, fromTo, npairs);
 {$IFEND}
 end;
 
-procedure mixChannels(const Src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: pInt; npairs: size_t);
+procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: pInt; npairs: size_t);
 begin
 {$IF not defined(PACKAGE)}
-  proc_mixChannels_1(Src, dst, fromTo, npairs);
+  proc_mixChannels_1(src, dst, fromTo, npairs);
 {$IFEND}
 end;
 
-procedure mixChannels(const Src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: vector<int>);
+procedure mixChannels(const src: TInputArrayOfArrays; const dst: TInputOutputArrayOfArrays; const fromTo: vector<int>);
 begin
 {$IF not defined(PACKAGE)}
-  proc_mixChannels(Src, dst, fromTo);
+  proc_mixChannels(src, dst, fromTo);
 {$IFEND}
 end;
 
-procedure extractChannel(const Src: TInputArray; const dst: TOutputArray; coi: int);
+procedure extractChannel(const src: TInputArray; const dst: TOutputArray; coi: int);
 begin
 {$IF not defined(PACKAGE)}
-  proc_extractChannel(Src, dst, coi);
+  proc_extractChannel(src, dst, coi);
 {$IFEND}
 end;
 
-procedure insertChannel(const Src: TInputArray; const dst: TInputOutputArray; coi: int);
+procedure insertChannel(const src: TInputArray; const dst: TInputOutputArray; coi: int);
 begin
 {$IF not defined(PACKAGE)}
-  proc_insertChannel(Src, dst, coi);
+  proc_insertChannel(src, dst, coi);
 {$IFEND}
 end;
 
-procedure flip(const Src: TInputArray; const dst: TOutputArray; flipCode: int);
+procedure flip(const src: TInputArray; const dst: TOutputArray; flipCode: int);
 begin
 {$IF not defined(PACKAGE)}
-  proc_flip(Src, dst, flipCode);
+  proc_flip(src, dst, flipCode);
 {$IFEND}
 end;
 
-procedure rotate(const Src: TInputArray; const dst: TOutputArray; rotateCode: int);
+procedure rotate(const src: TInputArray; const dst: TOutputArray; rotateCode: int);
 begin
 {$IF not defined(PACKAGE)}
-  proc_rotate(Src, dst, rotateCode);
+  proc_rotate(src, dst, rotateCode);
 {$IFEND}
 end;
 
-procedure &repeat(const Src: TInputArray; ny, nx: int; const dst: TOutputArray);
+procedure &repeat(const src: TInputArray; ny, nx: int; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_repeat(Src, ny, nx, dst);
+  proc_repeat(src, ny, nx, dst);
 {$IFEND}
 end;
 
-function &repeat(const Src: TMat; ny, nx: int): TMat;
+function &repeat(const src: TMat; ny, nx: int): TMat;
 begin
 {$IF not defined(PACKAGE)}
-  Result := func_repeat(Src, ny, nx);
+  Result := func_repeat(src, ny, nx);
 {$IFEND}
 end;
 
-procedure hconcat(const Src: pMat; nsrc: size_t; const dst: TOutputArray);
+procedure hconcat(const src: pMat; nsrc: size_t; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_hconcat_2(Src, nsrc, dst);
+  proc_hconcat_2(src, nsrc, dst);
 {$IFEND}
 end;
 
@@ -5252,10 +5345,10 @@ begin
 {$IFEND}
 end;
 
-procedure hconcat(const Src: TInputArrayOfArrays; const dst: TOutputArray);
+procedure hconcat(const src: TInputArrayOfArrays; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_hconcat_1(Src, dst);
+  proc_hconcat_1(src, dst);
 {$IFEND}
 end;
 
@@ -5266,10 +5359,10 @@ begin
 {$IFEND}
 end;
 
-procedure vconcat(const Src: TInputArrayOfArrays; const dst: TOutputArray);
+procedure vconcat(const src: TInputArrayOfArrays; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_vconcat_1(Src, dst);
+  proc_vconcat_1(src, dst);
 {$IFEND}
 end;
 
@@ -5294,10 +5387,10 @@ begin
 {$IFEND}
 end;
 
-procedure bitwise_not(const Src: TInputArray; const dst: TOutputArray; mask: TInputArray { = noArray() } );
+procedure bitwise_not(const src: TInputArray; const dst: TOutputArray; mask: TInputArray { = noArray() } );
 begin
 {$IF not defined(PACKAGE)}
-  proc_bitwise_not(Src, dst, mask);
+  proc_bitwise_not(src, dst, mask);
 {$IFEND}
 end;
 
@@ -5308,17 +5401,17 @@ begin
 {$IFEND}
 end;
 
-procedure copyTo(const Src: TInputArray; const dst: TOutputArray; const mask: TInputArray);
+procedure copyTo(const src: TInputArray; const dst: TOutputArray; const mask: TInputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_copyTo(Src, dst, mask);
+  proc_copyTo(src, dst, mask);
 {$IFEND}
 end;
 
-procedure inRange(const Src: TInputArray; const lowerb: TInputArray; const upperb: TInputArray; const dst: TOutputArray);
+procedure inRange(const src: TInputArray; const lowerb: TInputArray; const upperb: TInputArray; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_inRange(Src, lowerb, upperb, dst);
+  proc_inRange(src, lowerb, upperb, dst);
 {$IFEND}
 end;
 
@@ -5350,42 +5443,44 @@ begin
 {$IFEND}
 end;
 
-procedure sqrt(const Src: TInputArray; const dst: TOutputArray);
+procedure sqrt(const src: TInputArray; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_sqrt(Src, dst);
+  proc_sqrt(src, dst);
 {$IFEND}
 end;
 
-procedure pow(const Src: TInputArray; power: double; const dst: TOutputArray);
+procedure pow(const src: TInputArray; power: double; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_pow(Src, power, dst);
+  proc_pow(src, power, dst);
 {$IFEND}
 end;
 
-procedure exp(const Src: TInputArray; const dst: TOutputArray);
+procedure exp(const src: TInputArray; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_exp(Src, dst);
+  proc_exp(src, dst);
 {$IFEND}
 end;
 
-procedure log(const Src: TInputArray; const dst: TOutputArray);
+procedure log(const src: TInputArray; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_log_2(Src, dst);
+  proc_log_2(src, dst);
 {$IFEND}
 end;
 
-procedure polarToCart(const magnitude: TInputArray; const angle: TInputArray; const x: TOutputArray; const y: TOutputArray; angleInDegrees: bool = false);
+procedure polarToCart(const magnitude: TInputArray; const angle: TInputArray; const x: TOutputArray; const y: TOutputArray;
+  angleInDegrees: bool = false);
 begin
 {$IF not defined(PACKAGE)}
   proc_polarToCart(magnitude, angle, x, y, angleInDegrees);
 {$IFEND}
 end;
 
-procedure cartToPolar(const x: TInputArray; const y: TInputArray; const magnitude: TOutputArray; const angle: TOutputArray; angleInDegrees: bool = false);
+procedure cartToPolar(const x: TInputArray; const y: TInputArray; const magnitude: TOutputArray; const angle: TOutputArray;
+  angleInDegrees: bool = false);
 begin
 {$IF not defined(PACKAGE)}
   proc_cartToPolar(x, y, magnitude, angle, angleInDegrees);
@@ -5420,38 +5515,40 @@ begin
 {$IFEND}
 end;
 
-procedure gemm(const src1: TInputArray; const src2: TInputArray; alpha: double; const src3: TInputArray; beta: double; const dst: TOutputArray; flags: int = 0);
+procedure gemm(const src1: TInputArray; const src2: TInputArray; alpha: double; const src3: TInputArray; beta: double; const dst: TOutputArray;
+  flags: int = 0);
 begin
 {$IF not defined(PACKAGE)}
   proc_gemm(src1, src2, alpha, src3, beta, dst, flags);
 {$IFEND}
 end;
 
-procedure mulTransposed(const Src: TInputArray; const dst: TOutputArray; aTa: bool; const delta: TInputArray { = noArray() }; scale: double = 1; dtype: int = -1);
+procedure mulTransposed(const src: TInputArray; const dst: TOutputArray; aTa: bool; const delta: TInputArray { = noArray() }; scale: double = 1;
+  dtype: int = -1);
 begin
 {$IF not defined(PACKAGE)}
-  proc_mulTransposed(Src, dst, aTa, delta, scale, dtype);
+  proc_mulTransposed(src, dst, aTa, delta, scale, dtype);
 {$IFEND}
 end;
 
-procedure transpose(const Src: TInputArray; const dst: TOutputArray);
+procedure transpose(const src: TInputArray; const dst: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_transpose(Src, dst);
+  proc_transpose(src, dst);
 {$IFEND}
 end;
 
-procedure transform(const Src: TInputArray; const dst: TOutputArray; const m: TInputArray);
+procedure transform(const src: TInputArray; const dst: TOutputArray; const m: TInputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_transform(Src, dst, m);
+  proc_transform(src, dst, m);
 {$IFEND}
 end;
 
-procedure perspectiveTransform(const Src: TInputArray; const dst: TOutputArray; const m: TInputArray);
+procedure perspectiveTransform(const src: TInputArray; const dst: TOutputArray; const m: TInputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_perspectiveTransform(Src, dst, m);
+  proc_perspectiveTransform(src, dst, m);
 {$IFEND}
 end;
 
@@ -5483,10 +5580,10 @@ begin
 {$IFEND}
 end;
 
-function invert(const Src: TInputArray; const dst: TOutputArray; flags: int = int(DECOMP_LU)): double;
+function invert(const src: TInputArray; const dst: TOutputArray; flags: int = int(DECOMP_LU)): double;
 begin
 {$IF not defined(PACKAGE)}
-  Result := func_invert(Src, dst, flags);
+  Result := func_invert(src, dst, flags);
 {$IFEND}
 end;
 
@@ -5497,17 +5594,17 @@ begin
 {$IFEND}
 end;
 
-procedure sort(const Src: TInputArray; const dst: TOutputArray; flags: int);
+procedure sort(const src: TInputArray; const dst: TOutputArray; flags: int);
 begin
 {$IF not defined(PACKAGE)}
-  proc_sort(Src, dst, flags);
+  proc_sort(src, dst, flags);
 {$IFEND}
 end;
 
-procedure sortIdx(const Src: TInputArray; const dst: TOutputArray; flags: int);
+procedure sortIdx(const src: TInputArray; const dst: TOutputArray; flags: int);
 begin
 {$IF not defined(PACKAGE)}
-  proc_sortIdx(Src, dst, flags);
+  proc_sortIdx(src, dst, flags);
 {$IFEND}
 end;
 
@@ -5525,17 +5622,17 @@ begin
 {$IFEND}
 end;
 
-function eigen(const Src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray { = noArray() } ): bool;
+function eigen(const src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray { = noArray() } ): bool;
 begin
 {$IF not defined(PACKAGE)}
-  Result := func_eigen(Src, eigenvalues, eigenvectors);
+  Result := func_eigen(src, eigenvalues, eigenvectors);
 {$IFEND}
 end;
 
-procedure eigenNonSymmetric(const Src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray);
+procedure eigenNonSymmetric(const src: TInputArray; const eigenvalues: TOutputArray; const eigenvectors: TOutputArray);
 begin
 {$IF not defined(PACKAGE)}
-  proc_eigenNonSymmetric(Src, eigenvalues, eigenvectors);
+  proc_eigenNonSymmetric(src, eigenvalues, eigenvectors);
 {$IFEND}
 end;
 
@@ -5560,7 +5657,8 @@ begin
 {$IFEND}
 end;
 
-procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; const eigenvalues: TOutputArray; maxComponents: int = 0);
+procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; const eigenvalues: TOutputArray;
+  maxComponents: int = 0);
 begin
 {$IF not defined(PACKAGE)}
   proc_PCACompute(data, mean, eigenvectors, eigenvalues, maxComponents);
@@ -5574,7 +5672,8 @@ begin
 {$IFEND}
 end;
 
-procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; const eigenvalues: TOutputArray; retainedVariance: double);
+procedure PCACompute(const data: TInputArray; const mean: TInputOutputArray; const eigenvectors: TOutputArray; const eigenvalues: TOutputArray;
+  retainedVariance: double);
 begin
 {$IF not defined(PACKAGE)}
   proc_PCACompute_1(data, mean, eigenvectors, eigenvalues, retainedVariance);
@@ -5595,10 +5694,10 @@ begin
 {$IFEND}
 end;
 
-procedure SVDecomp(const Src: TInputArray; const w: TOutputArray; const u: TOutputArray; const vt: TOutputArray; flags: int = 0);
+procedure SVDecomp(const src: TInputArray; const w: TOutputArray; const u: TOutputArray; const vt: TOutputArray; flags: int = 0);
 begin
 {$IF not defined(PACKAGE)}
-  proc_SVDecomp(Src, w, u, vt, flags);
+  proc_SVDecomp(src, w, u, vt, flags);
 {$IFEND}
 end;
 
@@ -5616,31 +5715,31 @@ begin
 {$IFEND}
 end;
 
-procedure dft(const Src: TInputArray; const dst: TOutputArray; flags: int = 0; nonzeroRows: int = 0);
+procedure dft(const src: TInputArray; const dst: TOutputArray; flags: int = 0; nonzeroRows: int = 0);
 begin
 {$IF not defined(PACKAGE)}
-  proc_dft(Src, dst, flags, nonzeroRows);
+  proc_dft(src, dst, flags, nonzeroRows);
 {$IFEND}
 end;
 
-procedure idft(const Src: TInputArray; const dst: TOutputArray; flags: int = 0; nonzeroRows: int = 0);
+procedure idft(const src: TInputArray; const dst: TOutputArray; flags: int = 0; nonzeroRows: int = 0);
 begin
 {$IF not defined(PACKAGE)}
-  proc_idft(Src, dst, flags, nonzeroRows);
+  proc_idft(src, dst, flags, nonzeroRows);
 {$IFEND}
 end;
 
-procedure dct(const Src: TInputArray; const dst: TOutputArray; flags: int = 0);
+procedure dct(const src: TInputArray; const dst: TOutputArray; flags: int = 0);
 begin
 {$IF not defined(PACKAGE)}
-  proc_dct(Src, dst, flags);
+  proc_dct(src, dst, flags);
 {$IFEND}
 end;
 
-procedure idct(const Src: TInputArray; const dst: TOutputArray; flags: int = 0);
+procedure idct(const src: TInputArray; const dst: TOutputArray; flags: int = 0);
 begin
 {$IF not defined(PACKAGE)}
-  proc_idct(Src, dst, flags);
+  proc_idct(src, dst, flags);
 {$IFEND}
 end;
 
@@ -5693,7 +5792,8 @@ begin
 {$IFEND}
 end;
 
-function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int; const centers: TOutputArray { = noArray() } ): double;
+function kmeans(const data: TInputArray; K: int; const bestLabels: TInputOutputArray; const criteria: TTermCriteria; attempts: int; flags: int;
+  const centers: TOutputArray { = noArray() } ): double;
 begin
 {$IF not defined(PACKAGE)}
   Result := func_kmeans(data, K, bestLabels, criteria, attempts, flags, centers);
@@ -5701,21 +5801,14 @@ begin
 end;
 
 {$IFEND OPENCV_CORE_HPP}
-
-
 {$ENDIF IMPLEMENTATION}
-
 // ============================================================================
 
 {$IFDEF INITIALIZATION}
-
 {$IF defined(OPENCV_CORE_HPP) and defined(OPENCV_CORE_HPP_IMPL) and (not defined(OPENCV_CORE_HPP_INIT))}
 {$DEFINE OPENCV_CORE_HPP_INIT}
-
 {$IF not define(OPENCV_CORE_HAL_INTERFACE_H_INIT)}
-	{$I core/hal/interface.init.inc}
+{$I core/hal/interface.init.inc}
 {$IFEND}
-
 {$IFEND}
-
 {$ENDIF IINITIALIZATION}

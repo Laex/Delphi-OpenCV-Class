@@ -107,7 +107,7 @@ uses
   {$I 'calib3d.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_FEATURES2D)}
-  {$I 'features2d.impl.inc'}
+  {$I 'features2d.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_DNN)}
   {$I 'dnn.impl.inc'}
@@ -116,10 +116,10 @@ uses
   {$I 'flann.impl.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_HIGHGUI)}
-  {$I 'highgui.impl.inc'}
+  {$I 'highgui.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_IMGCODECS)}
-  {$I 'imgcodecs.impl.inc'}
+  {$I 'imgcodecs.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_IMGPROC)}
   {$I 'imgproc.inc'}
@@ -157,4 +157,3 @@ initialization
 {$ifend}
 
 end.
-

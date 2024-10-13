@@ -98,7 +98,7 @@ Type
   CV_CALIBRATEROBERTSON                            = type TEmptyRec;
   CV_CASCADECLASSIFIER                             = {$IF Declared(TCascadeClassifier)}TCascadeClassifier{$ELSE} type TEmptyRec{$IFEND};
   CV_CIRCLESGRIDFINDERPARAMETERS                   = type TEmptyRec;
-  CV_CLAHE                                         = type TEmptyRec;
+  CV_CLAHE                                         = {$IF Declared(TCLAHE)}TCLAHE{$ELSE} type TEmptyRec{$IFEND};
   CV_CODECS                                        = type TEmptyRec;
   CV_COMMANDLINEPARSER                             = type TEmptyRec;
   CV_COMPRESSEDRECTILINEARPORTRAITWARPER           = type TEmptyRec;
@@ -738,7 +738,7 @@ Type
   CV_PTR_OF_CV_BRISK                                     = type TEmptyRec;
   CV_PTR_OF_CV_CALIBRATEDEBEVEC                          = type TEmptyRec;
   CV_PTR_OF_CV_CALIBRATEROBERTSON                        = type TEmptyRec;
-  CV_PTR_OF_CV_CLAHE                                     = type TEmptyRec;
+  CV_PTR_OF_CV_CLAHE                                     = {$IF Declared(TCLAHE)}TPtr_CLAHE{$ELSE} type TEmptyRec{$IFEND};
   CV_PTR_OF_CV_CONJGRADSOLVER                            = type TEmptyRec;
   CV_PTR_OF_CV_CUDA_EVENT_IMPL                           = type TEmptyRec;
   CV_PTR_OF_CV_CUDA_GPUMAT_ALLOCATOR                     = type TEmptyRec;

@@ -27,7 +27,7 @@
 # error mat.inc header must be compiled as Delphi 10.4 Sydney WIN64
 {$IFEND}
 
-{$if not defined(OPENCV_CORE_MATX_HPP)}{$I 'core/matx.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_MATX_HPP)}{$I 'core/matx.inc'}{$IFEND}
 
 //
 { .$I 'core/types.inc' }
@@ -38,20 +38,20 @@
 // namespace cv
 // {
 
-  Type
-// ! @addtogroup core_basic
-// ! @{
-  AccessFlag = (           //
-  ACCESS_READ = 1 shl 24,  //
-  ACCESS_WRITE = 1 shl 25, //
-  ACCESS_RW = 3 shl 24,    //
-  ACCESS_MASK = ACCESS_RW, //
-  ACCESS_FAST = 1 shl 26   //
-  );
-// CV_ENUM_FLAGS = TSet<AccessFlag>; // CV_ENUM_FLAGS(AccessFlag)
-// __CV_ENUM_FLAGS_BITWISE_AND(AccessFlag, int, AccessFlag)
+type
+  // ! @addtogroup core_basic
+  // ! @{
+  AccessFlag = (//
+    ACCESS_READ = 1 shl 24, //
+    ACCESS_WRITE = 1 shl 25, //
+    ACCESS_RW = 3 shl 24, //
+    ACCESS_MASK = ACCESS_RW, //
+    ACCESS_FAST = 1 shl 26 //
+    );
+  // CV_ENUM_FLAGS = TSet<AccessFlag>; // CV_ENUM_FLAGS(AccessFlag)
+  // __CV_ENUM_FLAGS_BITWISE_AND(AccessFlag, int, AccessFlag)
 
-// CV__DEBUG_NS_BEGIN
+  // CV__DEBUG_NS_BEGIN
 
 type
   pMatAllocator = ^TMatAllocator;
@@ -62,34 +62,34 @@ type
   pUMatData = ^TUMatData;
 
   TUMatData = record // forward declaration
-  public Type
-    TMemoryFlag = (             //
-      COPY_ON_MAP = 1,          //
-      HOST_COPY_OBSOLETE = 2,   //
-      DEVICE_COPY_OBSOLETE = 4, //
-      TEMP_UMAT = 8,            //
-      TEMP_COPIED_UMAT = 24,    //
-      USER_ALLOCATED = 32,      //
-      DEVICE_MEM_MAPPED = 64,   //
-      ASYNC_CLEANUP = 128       //
-      );
+  public type
+      TMemoryFlag = (//
+        COPY_ON_MAP = 1, //
+        HOST_COPY_OBSOLETE = 2, //
+        DEVICE_COPY_OBSOLETE = 4, //
+        TEMP_UMAT = 8, //
+        TEMP_COPIED_UMAT = 24, //
+        USER_ALLOCATED = 32, //
+        DEVICE_MEM_MAPPED = 64, //
+        ASYNC_CLEANUP = 128 //
+        );
   private
 {$HINTS OFF}
     prevAllocator: pMatAllocator; // const MatAllocator* prevAllocator;
     currAllocator: pMatAllocator; // const MatAllocator* currAllocator;
     urefcount: Int;
     refcount: Int;
-    Data: pUChar;     // uchar* data;
+    Data: pUChar; // uchar* data;
     origdata: pUChar; // uchar* origdata;
-    size: size_t;     // size_t size;
+    size: size_t; // size_t size;
 
     flags: TMemoryFlag; // UMatData::MemoryFlag flags;
-    handle: Pointer;    // void* handle;
-    userdata: Pointer;  // void* userdata;
+    handle: Pointer; // void* handle;
+    userdata: Pointer; // void* userdata;
     allocatorFlags_: Int;
     mapcount: Int;
     originalUMatData: ^TUMatData; // UMatData* originalUMatData;
-    allocatorContext: Pointer;    // std::shared_ptr<void> allocatorContext;
+    allocatorContext: Pointer; // std::shared_ptr<void> allocatorContext;
 {$HINTS ON}
   end;
 
@@ -98,7 +98,9 @@ type
 {$HINTS OFF}
     p: pInt; // pInt; // int* p;
 {$HINTS ON}
-    function getValues(const Index: Integer): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function getValues(const Index: Integer): Int;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   public
     property Values[const Index: Integer]: Int read getValues; default;
   end;
@@ -106,8 +108,8 @@ type
   TMatStep = record // forward declaration
     // private
 {$HINTS OFF}
-    p: psize_t;                    // size_t* p;
-    buf: array [0 .. 1] of size_t; // size_t buf[2];
+    p: psize_t; // size_t* p;
+    buf: array[0..1] of size_t; // size_t buf[2];
 {$HINTS ON}
   end;
 
@@ -115,18 +117,20 @@ type
 
   TMat = record // forward declaration
   public const
-    MAGIC_VAL = $42FF0000;
-    AUTO_STEP = 0;
-    CONTINUOUS_FLAG = CV_MAT_CONT_FLAG;
-    SUBMATRIX_FLAG = CV_SUBMAT_FLAG;
+      MAGIC_VAL = $42FF0000;
+      AUTO_STEP = 0;
+      CONTINUOUS_FLAG = CV_MAT_CONT_FLAG;
+      SUBMATRIX_FLAG = CV_SUBMAT_FLAG;
 
-    MAGIC_MASK = $FFFF0000;
-    TYPE_MASK = $00000FFF;
-    DEPTH_MASK = 7;
+      MAGIC_MASK = $FFFF0000;
+      TYPE_MASK = $00000FFF;
+      DEPTH_MASK = 7;
   public
     class operator Initialize(out Dest: TMat); // Mat();
-    class operator Finalize(var Dest: TMat);   // ~Mat();
-    class operator assign(var Dest: TMat; const [ref] Src: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Finalize(var Dest: TMat); // ~Mat();
+    class operator assign(var Dest: TMat; const [ref]Src: TMat);
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   public
     // CVMat: TCVMat;
     (* ! includes several bit-fields:
@@ -146,7 +150,7 @@ type
     //
     // ! helper fields used in locateROI and adjustROI
     datastart: pUChar; // const uchar* datastart;
-    dataend: pUChar;   // const uchar* dataend;
+    dataend: pUChar; // const uchar* dataend;
     datalimit: pUChar; // const uchar* datalimit;
     //
     // ! custom allocator
@@ -172,16 +176,20 @@ type
   public
     class operator Initialize(out Dest: TMatExpr); // MatExpr();
     class operator Finalize(var Dest: TMatExpr); // ~MatExpr();
-    class operator assign(var Dest: TMatExpr; const [ref] Src: TMatExpr); {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Multiply(const a: TMatExpr; const b: double): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator assign(var Dest: TMatExpr; const [ref]Src: TMatExpr);
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Multiply(const a: TMatExpr; const b: double): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   private
 {$HINTS OFF}
     op: pMatOp; // pMatOp; // const MatOp* op;
     flags: Int; // int flags;
     //
-    a, b, c: TMat;       // Mat a, b, c;
+    a, b, c: TMat; // Mat a, b, c;
     alpha, beta: double; // double alpha, beta;
-    s: TScalar;          // Scalar s;
+    s: TScalar; // Scalar s;
 {$HINTS ON}
   end;
 
@@ -275,41 +283,45 @@ type
 
   TInputArray = record
   public type
-    KindFlag = (                         //
-      KIND_SHIFT = 16,                   //
-      FIXED_TYPE = $8000 shl KIND_SHIFT, //
-      FIXED_SIZE = $4000 shl KIND_SHIFT, //
-      KIND_MASK = 31 shl KIND_SHIFT,     //
+      KindFlag = (//
+        KIND_SHIFT = 16, //
+        FIXED_TYPE = $8000 shl KIND_SHIFT, //
+        FIXED_SIZE = $4000 shl KIND_SHIFT, //
+        KIND_MASK = 31 shl KIND_SHIFT, //
 
-      NONE = 0 shl KIND_SHIFT,              //
-      mat = 1 shl KIND_SHIFT,               //
-      MATX = 2 shl KIND_SHIFT,              //
-      STD_VECTOR = 3 shl KIND_SHIFT,        //
-      STD_VECTOR_VECTOR = 4 shl KIND_SHIFT, //
-      STD_VECTOR_MAT = 5 shl KIND_SHIFT,    //
+        NONE = 0 shl KIND_SHIFT, //
+        mat = 1 shl KIND_SHIFT, //
+        MATX = 2 shl KIND_SHIFT, //
+        STD_VECTOR = 3 shl KIND_SHIFT, //
+        STD_VECTOR_VECTOR = 4 shl KIND_SHIFT, //
+        STD_VECTOR_MAT = 5 shl KIND_SHIFT, //
 {$IF OPENCV_ABI_COMPATIBILITY < 500}
-      expr = 6 shl KIND_SHIFT,
-      // !< removed: https://github.com/opencv/opencv/pull/17046
+        expr = 6 shl KIND_SHIFT,
+        // !< removed: https://github.com/opencv/opencv/pull/17046
 {$IFEND}
-      OPENGL_BUFFER = 7 shl KIND_SHIFT,            //
-      CUDA_HOST_MEM = 8 shl KIND_SHIFT,            //
-      CUDA_GPU_MAT = 9 shl KIND_SHIFT,             //
-      UMAT = 10 shl KIND_SHIFT,                    //
-      STD_VECTOR_UMAT = 11 shl KIND_SHIFT,         //
-      STD_BOOL_VECTOR = 12 shl KIND_SHIFT,         //
-      STD_VECTOR_CUDA_GPU_MAT = 13 shl KIND_SHIFT, //
+        OPENGL_BUFFER = 7 shl KIND_SHIFT, //
+        CUDA_HOST_MEM = 8 shl KIND_SHIFT, //
+        CUDA_GPU_MAT = 9 shl KIND_SHIFT, //
+        UMAT = 10 shl KIND_SHIFT, //
+        STD_VECTOR_UMAT = 11 shl KIND_SHIFT, //
+        STD_BOOL_VECTOR = 12 shl KIND_SHIFT, //
+        STD_VECTOR_CUDA_GPU_MAT = 13 shl KIND_SHIFT, //
 {$IF OPENCV_ABI_COMPATIBILITY < 500}
-      STD_ARRAY = 14 shl KIND_SHIFT,
-      // !< removed: https://github.com/opencv/opencv/issues/18897
+        STD_ARRAY = 14 shl KIND_SHIFT,
+        // !< removed: https://github.com/opencv/opencv/issues/18897
 {$IFEND}
-      STD_ARRAY_MAT = 15 shl KIND_SHIFT);
+        STD_ARRAY_MAT = 15 shl KIND_SHIFT);
   public
     class operator Initialize(out Dest: TInputArray); // _InputArray();
     // _InputArray(int _flags, void* _obj);
     // _InputArray(const Mat& m);
-    class function InputArray(const m: TMat): TInputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function InputArray(const m: TMat): TInputArray; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // _InputArray(const MatExpr& expr);
-    class function InputArray(const m: TMatExpr): TInputArray; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function InputArray(const m: TMatExpr): TInputArray; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // _InputArray(const std::vector<Mat>& vec);
     // _InputArray(const std::vector<bool>& vec);
     // _InputArray(const std::vector<std::vector<bool> >&) = delete;  // not supported
@@ -321,7 +333,9 @@ type
     // _InputArray(const UMat& um);
     // _InputArray(const std::vector<UMat>& umv);
     //
-    function getMat(idx: Int = -1): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}     // Mat getMat(int idx=-1) const;
+    function getMat(idx: Int = -1): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // Mat getMat(int idx=-1) const;
     // Mat getMat_(int idx=-1) const;
     // UMat getUMat(int idx=-1) const;
     // void getMatVector(std::vector<Mat>& mv) const;
@@ -331,7 +345,9 @@ type
     // ogl::Buffer getOGlBuffer() const;
     //
     // int getFlags() const;
-    function getObj: Pointer; {$IFDEF USE_INLINE}inline; {$ENDIF} // void* getObj() const;
+    function getObj: Pointer;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // void* getObj() const;
     // Size getSz() const;
     //
     // _InputArray::KindFlag kind() const;
@@ -352,7 +368,9 @@ type
     // void copyTo(const _OutputArray& arr, const _InputArray & mask) const;
     // size_t offset(int i=-1) const;
     // size_t step(int i=-1) const;
-    function isMat: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF} // bool isMat() const;
+    function isMat: BOOL;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // bool isMat() const;
     // bool isUMat() const;
     // bool isMatVector() const;
     // bool isUMatVector() const;
@@ -362,27 +380,52 @@ type
     // bool isGpuMatVector() const;
     class operator Finalize(var Dest: TInputArray); // ~_InputArray();
     //
-    class function noArray: TInputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMat): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMatExpr): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint2f>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<uchar>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: double): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TVec4i>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TMat>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: TScalar): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<float>): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: TVec3b): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function noArray: TInputArray; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const m: TMat): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const m: TMatExpr): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector < Vector<TPoint> > ): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<uchar>): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: double): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TVec4i>): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TMat>): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: TScalar): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<float>): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: TVec3b): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   public
 {$HINTS OFF}
-    flags: Int;   // int flags;
+    flags: Int; // int flags;
     Obj: Pointer; // void* obj;
-    sz: TSize;    // Size sz;
+    sz: TSize; // Size sz;
 {$HINTS ON}
   end;
-
 
   // CV_ENUM_FLAGS(_InputArray::KindFlag)
   // __CV_ENUM_FLAGS_BITWISE_AND(_InputArray::KindFlag, int, _InputArray::KindFlag)
@@ -416,26 +459,29 @@ type
 
   TOutputArrayHelper = record helper for TOutputArray
   public type
-    DepthMask = (                                  //
-      DEPTH_MASK_8U = 1 shl CV_8U,                 //
-      DEPTH_MASK_8S = 1 shl CV_8S,                 //
-      DEPTH_MASK_16U = 1 shl CV_16U,               //
-      DEPTH_MASK_16S = 1 shl CV_16S,               //
-      DEPTH_MASK_32S = 1 shl CV_32S,               //
-      DEPTH_MASK_32F = 1 shl CV_32F,               //
-      DEPTH_MASK_64F = 1 shl CV_64F,               //
-      DEPTH_MASK_16F = 1 shl CV_16F,               //
-      DEPTH_MASK_ALL = (DEPTH_MASK_64F shl 1) - 1, //
-      DEPTH_MASK_ALL_BUT_8S = DEPTH_MASK_ALL and (not DEPTH_MASK_8S), //
-      DEPTH_MASK_ALL_16F = (DEPTH_MASK_16F shl 1) - 1, //
-      DEPTH_MASK_FLT = DEPTH_MASK_32F + DEPTH_MASK_64F);
+      DepthMask = (//
+        DEPTH_MASK_8U = 1 shl CV_8U, //
+        DEPTH_MASK_8S = 1 shl CV_8S, //
+        DEPTH_MASK_16U = 1 shl CV_16U, //
+        DEPTH_MASK_16S = 1 shl CV_16S, //
+        DEPTH_MASK_32S = 1 shl CV_32S, //
+        DEPTH_MASK_32F = 1 shl CV_32F, //
+        DEPTH_MASK_64F = 1 shl CV_64F, //
+        DEPTH_MASK_16F = 1 shl CV_16F, //
+        DEPTH_MASK_ALL = (DEPTH_MASK_64F shl 1) - 1, //
+        DEPTH_MASK_ALL_BUT_8S = DEPTH_MASK_ALL and (not DEPTH_MASK_8S), //
+        DEPTH_MASK_ALL_16F = (DEPTH_MASK_16F shl 1) - 1, //
+        DEPTH_MASK_FLT = DEPTH_MASK_32F + DEPTH_MASK_64F);
   public
     // _OutputArray();
     // _OutputArray(int _flags, void* _obj);
     class function OutputArray(const m: TMat): TOutputArray; overload; static;
-{$IFDEF USE_INLINE}inline; {$ENDIF} // _OutputArray(Mat& m);
-    class function OutputArray(const vec: Vector<TMat>): TOutputArray; overload; static; {$IFDEF USE_INLINE}inline;
-{$ENDIF}// _OutputArray(std::vector<Mat>& vec);
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // _OutputArray(Mat& m);
+    class function OutputArray(const vec: Vector<TMat>): TOutputArray; overload;
+      static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // _OutputArray(std::vector<Mat>& vec);
     // _OutputArray(cuda::GpuMat& d_mat);
     // _OutputArray(std::vector<cuda::GpuMat>& d_mat);
     // _OutputArray(ogl::Buffer& buf);
@@ -472,16 +518,36 @@ type
     // void move(UMat& u) const;
     // void move(Mat& m) const;
 
-    class function noArray: TOutputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMat): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: Vector<TMat>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const OA: TOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint2f>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<uchar>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<float>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TVec4i>): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector < Vector < TPoint >> ): TOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function noArray: TOutputArray; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const m: TMat): TOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const m: Vector<TMat>): TOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const OA: TOutputArray): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<uchar>): TOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<float>): TOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TVec4i>): TOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector < Vector<TPoint> > ): TOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   end;
 
   TInputOutputArray = type TOutputArray;
@@ -504,15 +570,22 @@ type
 
   // CV_EXPORTS InputOutputArray noArray();
 
-  TOutputArrayOfArrays      = TOutputArray;
+  TOutputArrayOfArrays = TOutputArray;
   TInputOutputArrayOfArrays = TInputOutputArray;
-  TInputArrayOfArrays       = { type } TInputArray;
+  TInputArrayOfArrays = { type }TInputArray;
 
   TInputArrayOfArraysHelper = record helper for TInputArrayOfArrays
   public
-    class operator Implicit(const v: Vector < Vector < TPoint >> ): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TMat>): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint>): TInputArrayOfArrays; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: Vector < Vector<TPoint> > ):
+      TInputArrayOfArrays;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TMat>): TInputArrayOfArrays;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TInputArrayOfArrays;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   end;
 
   /// //////////////////////////////// MatAllocator //////////////////////////////////////
@@ -629,7 +702,8 @@ type
     // explicit MatSize(int* _p) CV_NOEXCEPT;
     // int dims() const CV_NOEXCEPT;
     class operator Implicit(const m: TMatSize): TSize;
-{$IFDEF USE_INLINE}inline; {$ENDIF}// Size operator()() const;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // Size operator()() const;
     // class operator Implicit(const m: TMatSize): String; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // const int& operator[](int i) const;
     // int& operator[](int i);
@@ -851,39 +925,71 @@ type
   TMatHelper = record helper for TMat
   public
     // Empty matrix = Initialize
-    class function mat(): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(): TMat; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat(Size size, int type);
-    class function mat(const size: TSize; &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(const size: TSize; &type: Int): TMat; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat(int rows, int cols, int type, const Scalar& s);
-    class function mat(rows, cols, &type: Int): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(rows, cols, &type: Int): TMat; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat(Size size, int type, const Scalar& s);
-    class function mat(const size: TSize; &type: Int; const s: TScalar): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(const size: TSize; &type: Int; const s: TScalar): TMat;
+      overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat(int ndims, const int* sizes, int type);
     // Mat(const std::vector<int>& sizes, int type);
     // Mat(int ndims, const int* sizes, int type, const Scalar& s);
     // Mat(const std::vector<int>& sizes, int type, const Scalar& s);
     // Mat(const Mat& m);
-    class function mat(const m: TMat): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class function mat(rows, cols: Int; &type: Int; Data: Pointer; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline;
+    class function mat(const m: TMat): TMat; overload; static;
+{$IFDEF USE_INLINE} inline;
 {$ENDIF}
-    class function mat<T>(rows, cols: Int; Data: TArray<T>; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline;
+    class function mat(rows, cols: Int; &type: Int; Data: Pointer; step: size_t
+      = TMat.AUTO_STEP): TMat; overload; static;
+{$IFDEF USE_INLINE} inline;
 {$ENDIF}
-    class function mat<T>(rows, cols: Int; Data: TArray<TArray<T>>; step: size_t = TMat.AUTO_STEP): TMat; overload; static; {$IFDEF USE_INLINE}inline;
+    class function mat<T>(rows, cols: Int; Data: TArray<T>; step: size_t =
+      TMat.AUTO_STEP): TMat; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class function mat<T>(rows, cols: Int; Data: TArray < TArray<T> > ; step:
+      size_t = TMat.AUTO_STEP): TMat; overload; static;
+{$IFDEF USE_INLINE} inline;
 {$ENDIF}
     // Mat(int rows, int cols, int type, void* data, size_t step=AUTO_STEP);
-    class function mat<T>(const vec: Vector<T>; copyData: BOOL = false): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat<T>(const vec: Vector<T>; copyData: BOOL = false): TMat;
+      overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat(int rows, int cols, int type, const Scalar& s);
-    class function mat(rows, cols, &type: Int; const s: TScalar): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(rows, cols, &type: Int; const s: TScalar): TMat; overload;
+      static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat(Size size, int type, void* data, size_t step=AUTO_STEP);
     // Mat(int ndims, const int* sizes, int type, void* data, const size_t* steps=0);
     // Mat(const std::vector<int>& sizes, int type, void* data, const size_t* steps=0);
     // Mat(const Mat& m, const Range& rowRange, const Range& colRange=Range::all());
-    class function mat(const m: TMat; const rowRange: TRange; const colRange: TRange { =Range::all() } ): TMat; overload; static;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class function mat(const m: TMat; const rowRange: TRange): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(const m: TMat; const rowRange: TRange; const colRange:
+      TRange { =Range::all() }): TMat; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class function mat(const m: TMat; const rowRange: TRange): TMat; overload;
+      static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat(const Mat& m, const Rect& roi);
-    class function mat(const m: TMat; const roi: TRect): TMat; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function mat(const roi: TRect): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(const m: TMat; const roi: TRect): TMat; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    function mat(const roi: TRect): TMat; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat(const Mat& m, const Range* ranges);
     // Mat(const Mat& m, const std::vector<Range>& ranges);
     // Mat& operator = (const Mat& m);
@@ -896,27 +1002,43 @@ type
     // Mat colRange(int startcol, int endcol) const;
     // Mat colRange(const Range& r) const;
     // Mat diag(int d=0) const;
-    function diag(d: Int = 0): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function diag(d: Int = 0): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // CV_NODISCARD_STD static Mat diag(const Mat& d);
     // CV_NODISCARD_STD Mat clone() const;
-    function clone: TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function clone: TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // void copyTo( OutputArray m ) const;
     // void copyTo( OutputArray m, InputArray mask ) const;
     // void convertTo( OutputArray m, int rtype, double alpha=1, double beta=0 ) const;
-    procedure convertTo(const m: TOutputArray; rtype: Int; alpha: double = 1; beta: double = 0); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure convertTo(const m: TOutputArray; rtype: Int; alpha: double = 1;
+      beta: double = 0);
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // void assignTo( Mat& m, int type=-1 ) const;
     // ----------- Use Assign(const s: TScalar) or setTo() --------------
     // Mat& operator = (const Scalar& s);
     // class operator Implicit(const s: TScalar): TMat; {$IFDEF USE_INLINE } inline; {$ENDIF}
     // assign all values to s
-    procedure assign(const s: TScalar); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure assign(const s: TScalar); overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat& setTo(InputArray value, InputArray mask=noArray());
-    function setTo(const Value: TInputArray; const mask: TInputArray { =noArray() } ): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function setTo(const Value: TInputArray): TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function setTo(const Value: TInputArray; const mask: TInputArray
+      { =noArray() }): TMat; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    function setTo(const Value: TInputArray): TMat; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // -------------------------
     // Mat reshape(int cn, int rows=0) const;
     // Mat reshape(int cn, int newndims, const int* newsz) const;
-    function reshape(cn: Int; newndims: Int; const newsz: pInt): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function reshape(cn: Int; newndims: Int; const newsz: pInt): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat reshape(int cn, const std::vector<int>& newshape) const;
     // MatExpr t() const;
     // MatExpr inv(int method=DECOMP_LU) const;
@@ -932,15 +1054,23 @@ type
     // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
     // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
     // void create(int rows, int cols, int type);
-    procedure Create(rows, cols, &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure Create(rows, cols, &type: Int); overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // void create(Size size, int type);
-    procedure Create(const size: TSize; &type: Int); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure Create(const size: TSize; &type: Int); overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // void create(int ndims, const int* sizes, int type);
     // void create(const std::vector<int>& sizes, int type);
     // void addref();
-    procedure addref; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure addref;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // void release();
-    procedure release; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure release;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // ! internal use function, consider to use 'release' method instead; deallocates the matrix data
     // void deallocate();
     // ! internal use function; properly re-allocates _size, _step arrays
@@ -960,69 +1090,162 @@ type
     // Mat operator()( const Range* ranges ) const;
     // Mat operator()(const std::vector<Range>& ranges) const;
     // bool isContinuous() const;
-    function isContinuous: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function isContinuous: BOOL;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // ! returns true if the matrix is a submatrix of another matrix
-    function isSubmatrix: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}         // bool isSubmatrix() const;
-    function elemSize: size_t; {$IFDEF USE_INLINE}inline; {$ENDIF}          // size_t elemSize() const;
-    function elemSize1: size_t; {$IFDEF USE_INLINE}inline; {$ENDIF}         // size_t elemSize1() const;
-    function &type: Int; {$IFDEF USE_INLINE}inline; {$ENDIF}                // int type() const;
-    function depth: Int; {$IFDEF USE_INLINE}inline; {$ENDIF}                // int depth() const;
-    function channels: Int; {$IFDEF USE_INLINE}inline; {$ENDIF}             // int channels() const;
-    function step1(i: Int = 0): size_t; {$IFDEF USE_INLINE}inline; {$ENDIF} // size_t step1(int i=0) const;
-    function empty: BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}               // bool empty() const;
-    function total: size_t; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}   // size_t total() const;
+    function isSubmatrix: BOOL;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // bool isSubmatrix() const;
+    function elemSize: size_t;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // size_t elemSize() const;
+    function elemSize1: size_t;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // size_t elemSize1() const;
+    function &type: Int;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // int type() const;
+    function depth: Int;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // int depth() const;
+    function channels: Int;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // int channels() const;
+    function step1(i: Int = 0): size_t;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // size_t step1(int i=0) const;
+    function empty: BOOL;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // bool empty() const;
+    function total: size_t; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // size_t total() const;
     // size_t total(int startDim, int endDim=INT_MAX) const;
-    function total(startDim: Int; endDim: Int = INT_MAX): size_t; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function total(startDim: Int; endDim: Int = INT_MAX): size_t; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // int checkVector(int elemChannels, int depth=-1, bool requireContinuous=true) const;
-    function checkVector(elemChannels: Int; depth: Int = -1; requireContinuous: BOOL = true): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function checkVector(elemChannels: Int; depth: Int = -1; requireContinuous:
+      BOOL = true): Int;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // uchar* ptr(int i0=0);
     // const uchar* ptr(int i0=0) const;
-    function ptr(const i0: Int = 0): pUChar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function ptr(const i0: Int = 0): pUChar; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // uchar* ptr(int row, int col);
     // const uchar* ptr(int row, int col) const;
-    function ptr(const row, col: Int): pUChar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function ptr(const row, col: Int): pUChar; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // uchar* ptr(int i0, int i1, int i2);
     // const uchar* ptr(int i0, int i1, int i2) const;
-    function ptr(const i0, i1, i2: Int): pUChar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function ptr(const i0, i1, i2: Int): pUChar; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // uchar* ptr(const int* idx);
     // const uchar* ptr(const int* idx) const;
-    function ptr(const idx: pInt): pUChar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function ptr(const idx: pInt): pUChar; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat(Mat&& m);
     // Mat& operator = (Mat&& m);
     //
     // at - return value type T
-    function at<T>(const i0: Int): T; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function at<T>(const i0, i1: Int): T; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function at<T>(const i0: Int): T; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    function at<T>(const i0, i1: Int): T; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // pT - return pointer to value type T
-    function pT<T>(const i0: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function pT<T>(const i0, i1: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    function pT<T>(const i0, i1, i2: Int): Pointer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function pT<T>(const i0: Int): Pointer; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    function pT<T>(const i0, i1: Int): Pointer; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    function pT<T>(const i0, i1, i2: Int): Pointer; overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // st - set value type T
-    procedure st<T>(const i0: Int; const v: T); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure st<T>(const i0: Int; const v: T); overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     procedure st<T>(const i0, i1: Int; const v: T); overload;
 
-    procedure copyTo(m: TOutputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}         // void copyTo( OutputArray m ) const;
-    procedure copyTo(m: TOutputArray; mask: TInputArray); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}// void copyTo( OutputArray m, InputArray mask ) const;
-    class operator Subtract(const m: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMatExpr): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} // Mat& operator = (const MatExpr& expr);
-    class operator Implicit(const v: Vector<TPoint>): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF} //
-    class function zeros(const rows, cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}   // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
-    class function zeros(const size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
-    class function ones(rows: Int; cols: Int; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
-    class function ones(ndims: Int; const sz: pInt; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
-    class function ones(size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
-    class function eye(rows, cols, &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
-    class function eye(size: TSize; &type: Int): TMatExpr; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
-    class operator LogicalNot(const m: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator BitwiseAnd(const a: TMat; const b: TMat): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator BitwiseAnd(const a: TMat; const b: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator GreaterThanOrEqual(const a: TMat; const b: Int): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Multiply(const a: TMat; const b: double): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Multiply(const a: TMat; const b: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Add(const a: TMat; const s: TScalar): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Add(const a: TMat; const s: TMatExpr): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Add(const a: TMatExpr; const s: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Add(const a, b: TMat): TMatExpr; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure copyTo(m: TOutputArray); overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // void copyTo( OutputArray m ) const;
+    procedure copyTo(m: TOutputArray; mask: TInputArray); overload;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // void copyTo( OutputArray m, InputArray mask ) const;
+    class operator Subtract(const m: TMat; const s: TScalar): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const m: TMatExpr): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // Mat& operator = (const MatExpr& expr);
+    class operator Implicit(const v: Vector<TPoint>): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} //
+    class function zeros(const rows, cols: Int; &type: Int): TMatExpr; overload;
+      static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // CV_NODISCARD_STD static MatExpr zeros(int rows, int cols, int type);
+    class function zeros(const size: TSize; &type: Int): TMatExpr; overload;
+      static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // CV_NODISCARD_STD static MatExpr zeros(Size size, int type);
+    class function ones(rows: Int; cols: Int; &type: Int): TMatExpr; overload;
+      static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // CV_NODISCARD_STD static MatExpr ones(int rows, int cols, int type);
+    class function ones(ndims: Int; const sz: pInt; &type: Int): TMatExpr;
+      overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // CV_NODISCARD_STD static MatExpr ones(int ndims, const int* sz, int type);
+    class function ones(size: TSize; &type: Int): TMatExpr; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // CV_NODISCARD_STD static MatExpr ones(Size size, int type);
+    class function eye(rows, cols, &type: Int): TMatExpr; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // CV_NODISCARD_STD static MatExpr eye(int rows, int cols, int type);
+    class function eye(size: TSize; &type: Int): TMatExpr; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // CV_NODISCARD_STD static MatExpr eye(Size size, int type);
+    class operator LogicalNot(const m: TMat): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator BitwiseAnd(const a: TMat; const b: TMat): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator BitwiseAnd(const a: TMat; const b: TScalar): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator GreaterThanOrEqual(const a: TMat; const b: Int): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Multiply(const a: TMat; const b: double): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Multiply(const a: TMat; const b: TMat): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Add(const a: TMat; const s: TScalar): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Add(const a: TMat; const s: TMatExpr): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Add(const a: TMatExpr; const s: TMat): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Add(const a, b: TMat): TMatExpr;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   end;
 
   // Move comment to TMat
@@ -1111,7 +1334,6 @@ type
     Mat::operator=(const Scalar& value) .
     */
     Mat(const std::vector<int>& sizes, int type, const Scalar& s);
-
 
     /** @overload
     @param m Array that (as a whole or partly) is assigned to the constructed matrix. No data is copied
@@ -2258,7 +2480,6 @@ type
     template<typename _Tp> std::reverse_iterator< MatIterator_<_Tp>> rend();
     template<typename _Tp> std::reverse_iterator< MatConstIterator_<_Tp>> rend() const;
 
-
     /** @brief Runs the given functor over all matrix elements in parallel.
 
     The operation passed as argument has to be a function pointer, a function object or a lambda(C++11).
@@ -2426,7 +2647,7 @@ type
   *)
   TMat_<T: record > = record
   private type
-    pType = ^T;
+      pType = ^T;
   private
     FMat: TMat;
   public
@@ -2437,7 +2658,9 @@ type
     class operator Finalize(var Dest: TMat_<T>);
     // ! equivalent to Mat(_rows, _cols, DataType<_Tp>::type)
     // Mat_(int _rows, int _cols);
-    class function mat(_rows: Int; _cols: Int): TMat_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(_rows: Int; _cols: Int): TMat_<T>; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // ! constructor that sets each matrix element to specified value
     // Mat_(int _rows, int _cols, const _Tp& value);
     // ! equivalent to Mat(_size, DataType<_Tp>::type)
@@ -2450,7 +2673,9 @@ type
     // Mat_(int _ndims, const int* _sizes, const _Tp& value);
     // ! copy/conversion constructor. If m is of different type, it's converted
     // Mat_(const Mat& m);
-    class function mat(const m: TMat): TMat_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(const m: TMat): TMat_<T>; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // ! copy constructor
     // Mat_(const Mat_& m);
     // ! constructs a matrix on top of user-allocated data. step is in bytes(!!!), regardless of the type
@@ -2459,9 +2684,14 @@ type
     // Mat_(int _ndims, const int* _sizes, _Tp* _data, const size_t* _steps=0);
     // ! selects a submatrix
     // Mat_(const Mat_& m, const Range& rowRange, const Range& colRange=Range::all());
-    class function mat(const m: TMat_<T>; const rowRange: TRange; const colRange: TRange { = Range::all() } ): TMat_<T>; overload; static;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
-    class function mat(const m: TMat_<T>; const rowRange: TRange): TMat_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function mat(const m: TMat_<T>; const rowRange: TRange; const
+      colRange: TRange { = Range::all() }): TMat_<T>; overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class function mat(const m: TMat_<T>; const rowRange: TRange): TMat_<T>;
+      overload; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // ! selects a submatrix
     // Mat_(const Mat_& m, const Rect& roi);
     // ! selects a submatrix, n-dim version
@@ -2484,9 +2714,13 @@ type
     // template <std::size_t _Nm> explicit Mat_(const std::array<_Tp, _Nm>& arr, bool copyData=false);
 
     // Mat_& operator = (const Mat& m);
-    procedure assign(const m: TMat); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    procedure assign(const m: TMat);
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat_& operator = (const Mat_& m);
-    class operator assign(var Dest: TMat_<T>; const [ref] Src: TMat_<T>); {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator assign(var Dest: TMat_<T>; const [ref]Src: TMat_<T>);
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // ! set all the elements to s.
     // Mat_& operator = (const _Tp& s);
     // ! assign a matrix expression
@@ -2523,7 +2757,9 @@ type
     // template<typename T2> operator Mat_<T2>() const;
     // ! overridden forms of Mat::row() etc.
     // Mat_ row(int y) const;
-    function row(y: Int): TMat_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function row(y: Int): TMat_<T>;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // Mat_ col(int x) const;
     // Mat_ diag(int d=0) const;
     // CV_NODISCARD_STD Mat_ clone() const;
@@ -2532,7 +2768,9 @@ type
     // size_t elemSize() const;
     // size_t elemSize1() const;
     // int type() const;
-    function &type(): Int; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function &type(): Int;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // int depth() const;
     // int channels() const;
     // size_t step1(int i=0) const;
@@ -2578,7 +2816,9 @@ type
     // _Tp& operator ()(int row, int col);
     // ! returns read-only reference to the specified element (2D case)
     // const _Tp& operator ()(int row, int col) const;
-    function pT(row: Int; col: Int): pType; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    function pT(row: Int; col: Int): pType;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
     // ! returns reference to the specified element (3D case)
     // _Tp& operator ()(int idx0, int idx1, int idx2);
     // ! returns read-only reference to the specified element (3D case)
@@ -2611,8 +2851,12 @@ type
     property dims: Int read FMat.dims;
     property Data: pUChar read FMat.Data;
   public
-    class operator LeftShift(const a: TMat_<T>; const b: TArray<T>): TMat_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const a: TMat_<T>): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator LeftShift(const a: TMat_<T>; const b: TArray<T>): TMat_<T>;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const a: TMat_<T>): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   end;
 
   TMat1b = TMat_<uchar>;
@@ -2647,8 +2891,12 @@ type
 
   TInputArrayHelper = record helper for TInputArray
   public
-    class operator Implicit(const v: TMat1i): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: TMat1f): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class operator Implicit(const v: TMat1i): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: TMat1f): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   end;
 
   TInputOutputArrayHelper = record helper for TInputOutputArray
@@ -2659,8 +2907,9 @@ type
   public
     // class operator Initialize(out Dest: TInputOutputArray); // _InputOutputArray();
     // _InputOutputArray(int _flags, void* _obj);
-    procedure InputOutputArray(const m: TMat); {$IFDEF USE_INLINE}inline;
-{$ENDIF}// _InputOutputArray(Mat& m);
+    procedure InputOutputArray(const m: TMat);
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // _InputOutputArray(Mat& m);
     // _InputOutputArray(std::vector<Mat>& vec);
     // _InputOutputArray(cuda::GpuMat& d_mat);
     // _InputOutputArray(ogl::Buffer& buf);
@@ -2701,13 +2950,27 @@ type
     // template<typename _Tp> static _InputOutputArray rawInOut(std::vector<_Tp>& vec);
     // template<typename _Tp, std::size_t _Nm> _InputOutputArray rawInOut(std::array<_Tp, _Nm>& arr);
 
-    class function noArray: TInputOutputArray; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMat): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const IOA: TInputOutputArray): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const IOA: TInputOutputArray): TInputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint2f>): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const v: Vector<TPoint>): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: TMat1f): TInputOutputArray; {$IFDEF USE_INLINE}inline; {$ENDIF}
+    class function noArray: TInputOutputArray; static;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const m: TMat): TInputOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const IOA: TInputOutputArray): TMat;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const IOA: TInputOutputArray): TInputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TPoint2f>): TInputOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const v: Vector<TPoint>): TInputOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
+    class operator Implicit(const m: TMat1f): TInputOutputArray;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF}
   end;
 
   (* * @todo document *)
@@ -3872,7 +4135,9 @@ type
     //
     // operator Mat() const;
     //
-    function size: TSize; {$IFDEF USE_INLINE}inline; {$ENDIF} // Size size() const;
+    function size: TSize;
+{$IFDEF USE_INLINE} inline;
+{$ENDIF} // Size size() const;
     // int type() const;
     //
     // MatExpr row(int y) const;
@@ -4067,3 +4332,4 @@ type
 {$MESSAGE FATAL 'Duplicate included file - core/mat.inc'}
 
 {$IFEND} // OPENCV_CORE_MAT_HPP
+

@@ -26,7 +26,7 @@ unit CVClass;
 
 interface
 
-Uses
+uses
   WinApi.Windows,
   WinApi.Messages,
   System.Types,
@@ -40,7 +40,7 @@ Uses
   cpp.utils,
   cv.opencv;
 
-Type
+type
 
   TMat = cv.opencv.TMat;
 
@@ -58,14 +58,14 @@ Type
     function getEnabled: Boolean;
     procedure setEnabled(const Value: Boolean);
 
-    function getObjectName: String;
+    function getObjectName: string;
     // function getMat: TMat;
     // function GetName: string;
     // function getHeight: Integer;
     // function getWidth: Integer;
     // function GetFPS: double;
 
-    property Enabled: Boolean Read getEnabled write setEnabled;
+    property Enabled: Boolean read getEnabled write setEnabled;
     // property Mat: TMat read getMat;
     // property Name: String read GetName;
     // property Width: Integer Read getWidth;
@@ -75,7 +75,7 @@ Type
 
   TCVReceiverList = TThreadList<ICVDataReceiver>;
   TOnCVNotify = procedure(Sender: TObject; const AMat: TMat) of object;
-  TOnCVNotifyVar = procedure(Sender: TObject; Var AMat: TMat) of object;
+  TOnCVNotifyVar = procedure(Sender: TObject; var AMat: TMat) of object;
   TOnCVAfterPaint = TOnCVNotify;
   TOnBeforeNotifyReceiver = TOnCVNotifyVar;
 
@@ -88,7 +88,7 @@ Type
 
     function getEnabled: Boolean; virtual; abstract;
     procedure setEnabled(const Value: Boolean); virtual; abstract;
-    function getObjectName: String;
+    function getObjectName: string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -96,7 +96,7 @@ Type
     procedure RemoveReceiver(const CVReceiver: ICVDataReceiver); virtual;
     function getMat: TMat; virtual; abstract;
   published
-    property Enabled: Boolean Read getEnabled write setEnabled default False;
+    property Enabled: Boolean read getEnabled write setEnabled default False;
     property OnBeforeNotifyReceiver: TOnBeforeNotifyReceiver read FOnBeforeNotifyReceiver write FOnBeforeNotifyReceiver;
     property OnCVNotify: TOnCVNotifyVar read FOnCVNotify write FOnCVNotify;
   end;
@@ -113,7 +113,7 @@ Type
     destructor Destroy; override;
     function isSourceEnabled: Boolean; virtual;
   published
-    property Source: ICVDataSource Read FCVSource write SetCVSource;
+    property Source: ICVDataSource read FCVSource write SetCVSource;
   end;
 
   TCVDataProxy = class(TCVDataSource, ICVDataReceiver)
@@ -127,7 +127,7 @@ Type
     procedure TakeMat(const AMat: TMat); virtual; abstract;
     destructor Destroy; override;
   published
-    property Source: ICVDataSource Read FCVSource write SetCVSource;
+    property Source: ICVDataSource read FCVSource write SetCVSource;
   end;
 
   [ComponentPlatformsAttribute(pidWin64)]
@@ -159,7 +159,7 @@ Type
     function MatIsEmpty: Boolean;
     procedure DrawMat(const AMat: TMat);
   published
-    property Source: ICVDataSource Read FCVSource write SetCVSource;
+    property Source: ICVDataSource read FCVSource write SetCVSource;
     property Mat: TMat read getMat write setMat;
     property Proportional: Boolean read FProportional write FProportional default False;
     property Stretch: Boolean read FStretch write FStretch default True;
@@ -188,10 +188,10 @@ Type
 
   TCVCaptureThread = class(TThread)
   private type
-    TSourceType = (stStream, stFile);
+      TSourceType = (stStream, stFile);
   private
     FSourceType: TSourceType;
-    FFileName: String;
+    FFileName: string;
     FVideoAPIs: TVideoCaptureAPIs;
     FCameraIndex: Integer;
   private
@@ -203,14 +203,13 @@ Type
     procedure TerminatedSet; override;
     procedure Execute; override;
   public
-    constructor Create(const AFileName: string; const AThreadDelay: Cardinal = 1000 div 25;
-      const VideoAPIs: TVideoCaptureAPIs = CAP_ANY); overload;
+    constructor Create(const AFileName: string; const AThreadDelay: Cardinal = 1000 div 25; const VideoAPIs: TVideoCaptureAPIs = CAP_ANY); overload;
     constructor Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal = 1000 div 25;
       const VideoAPIs: TVideoCaptureAPIs = CAP_ANY); overload;
     procedure SetResolution(const Width, Height: Double);
-    property OnNoData: TNotifyEvent Read FOnNoData write FOnNoData;
-    property OnNotifyData: TOnCVNotify Read FOnNotifyData write FOnNotifyData;
-    property ThreadDelay: Cardinal read FThreadDelay Write FThreadDelay;
+    property OnNoData: TNotifyEvent read FOnNoData write FOnNoData;
+    property OnNotifyData: TOnCVNotify read FOnNotifyData write FOnNotifyData;
+    property ThreadDelay: Cardinal read FThreadDelay write FThreadDelay;
   end;
 
   TCVCustomResolution = class(TPersistent)
@@ -228,7 +227,7 @@ Type
   {
     Является родителем для источников внутри TCVCaptureSource
   }
-  TCVVideoCaptureAPIs = ( //
+  TCVVideoCaptureAPIs = (//
     ANY, // !< Auto detect == 0
     VFW, // !< Video For Windows (obsolete, removed)
     V4L, // !< V4L/V4L2 capturing support
@@ -286,20 +285,19 @@ Type
     function GetNamePath: string; override;
     property Name;
   published
-    property Delay: Cardinal read FThreadDelay Write setThreadDelay default 0;
+    property Delay: Cardinal read FThreadDelay write setThreadDelay default 0;
     property CaptureAPIs: TCVVideoCaptureAPIs read FCaptureAPIs write setCaptureAPIs default ANY;
   end;
 
-  TCVWebCameraResolution = (r160x120, r176x144, r320x240, r352x288, r424x240, r640x360, r640x480, r800x448, r800x600, r960x544,
-    r1280x720, rCustom);
+  TCVWebCameraResolution = (r160x120, r176x144, r320x240, r352x288, r424x240, r640x360, r640x480, r800x448, r800x600, r960x544, r1280x720, rCustom);
 
   TCVWebCameraResolutionValue = record
     W, H: Double;
   end;
 
 const
-  CVWebCameraResolutionValue: array [TCVWebCameraResolution] of TCVWebCameraResolutionValue = //
-    ( //
+  CVWebCameraResolutionValue: array[TCVWebCameraResolution] of TCVWebCameraResolutionValue = //
+  (//
     (W: 160; H: 120), //
     (W: 176; H: 144), //
     (W: 320; H: 240), //
@@ -314,7 +312,7 @@ const
     (W: 0; H: 0) //
     );
 
-Type
+type
 
   [ComponentPlatformsAttribute(pidWin64)]
   TCVWebCameraSource = class(TCVCustomSource)
@@ -434,7 +432,7 @@ Type
     destructor Destroy; override;
     procedure TakeMat(const AMat: TMat); override;
   published
-    property Enabled: Boolean Read FEnabled write setEnabled default False;
+    property Enabled: Boolean read FEnabled write setEnabled default False;
     property OutputFileName: TFileName read FFileName write SetFileName;
     property FourCC: AnsiString read FFourCC write SetFourCC;
     property FPS: Cardinal read FFPS write setFPS default 24;
@@ -446,147 +444,101 @@ Type
   [ComponentPlatformsAttribute(pidWin64)]
   TRegisteredCaptureSource = class(TStringList)
   public
-    function FindByClassName(const ClassName: String): TCVSourceTypeClass;
-    function FindByName(const Name: String): TCVSourceTypeClass;
-    function GetNameByClass(const IOClass: TClass): String;
-    procedure RegisterIOClass(const IOClass: TClass; const ClassName: String);
+    function FindByClassName(const ClassName: string): TCVSourceTypeClass;
+    function FindByName(const Name: string): TCVSourceTypeClass;
+    function GetNameByClass(const IOClass: TClass): string;
+    procedure RegisterIOClass(const IOClass: TClass; const ClassName: string);
   end;
 
 function GetRegisteredCaptureSource: TRegisteredCaptureSource;
-function CV_FOURCC(const c1, c2, c3, c4: AnsiChar): Integer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-function CV_FOURCC(const c: AnsiString): Integer; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function CV_FOURCC(const c1, c2, c3, c4: AnsiChar): Integer; overload;
+{$IFDEF USE_INLINE}inline;
+{$ENDIF}
+function CV_FOURCC(const c: AnsiString): Integer; overload;
+{$IFDEF USE_INLINE}inline;
+{$ENDIF}
 
 implementation
 
-Uses
+uses
   System.UITypes;
 
-(*
-  function ipDraw1(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
-  Var
-  B: TBitmap;
-  begin
-  B := TBitmap.Create;
-  Result := False;
-  try
-  case img.channels of
-  1:
-  B.PixelFormat := pf8bit;
-  3:
-  B.PixelFormat := pf24bit;
-  4:
-  B.PixelFormat := pf32bit;
-  end;
-  B.SetSize(img.cols, img.rows);
-  for Var i := 0 to img.rows - 1 do
-  Move(pbyte(img.Data)[i * img.cols * img.channels], B.ScanLine[i]^, img.cols * img.channels);
-  //    B.SaveToFile('1.bmp');
-  //    StretchBlt(
-  BitBlt(dc, 0, 0, img.cols, img.rows, B.Canvas.Handle, 0, 0, SRCCOPY);
-  Result := True;
-  finally
-  B.Free;
-  end;
-  end;
-*)
+const
+  DefaultVGA256Palette: array[0..255] of TColorRef = //
+  ( $000000, $800000, $008000, $808000, $000080, $800080, $008080, $C0C0C0, $808080, $FF0000, $00FF00, $FFFF00, $0000FF, $FF00FF, $00FFFF, $FFFFFF,
+    $000000, $00005F, $000087, $0000AF, $0000D7, $0000FF, $005F00, $005F5F, $005F87, $005FAF, $005FD7, $005FFF, $008700, $00875F, $008787, $0087AF,
+    $0087D7, $0087FF, $00AF00, $00AF5F, $00AF87, $00AFAF, $00AFD7, $00AFFF, $00D700, $00D75F, $00D787, $00D7AF, $00D7D7, $00D7FF, $00FF00, $00FF5F,
+    $00FF87, $00FFAF, $00FFD7, $00FFFF, $5F0000, $5F005F, $5F0087, $5F00AF, $5F00D7, $5F00FF, $5F5F00, $5F5F5F, $5F5F87, $5F5FAF, $5F5FD7, $5F5FFF,
+    $5F8700, $5F875F, $5F8787, $5F87AF, $5F87D7, $5F87FF, $5FAF00, $5FAF5F, $5FAF87, $5FAFAF, $5FAFD7, $5FAFFF, $5FD700, $5FD75F, $5FD787, $5FD7AF,
+    $5FD7D7, $5FD7FF, $5FFF00, $5FFF5F, $5FFF87, $5FFFAF, $5FFFD7, $5FFFFF, $870000, $87005F, $870087, $8700AF, $8700D7, $8700FF, $875F00, $875F5F,
+    $875F87, $875FAF, $875FD7, $875FFF, $878700, $87875F, $878787, $8787AF, $8787D7, $8787FF, $87AF00, $87AF5F, $87AF87, $87AFAF, $87AFD7, $87AFFF,
+    $87D700, $87D75F, $87D787, $87D7AF, $87D7D7, $87D7FF, $87FF00, $87FF5F, $87FF87, $87FFAF, $87FFD7, $87FFFF, $AF0000, $AF005F, $AF0087, $AF00AF,
+    $AF00D7, $AF00FF, $AF5F00, $AF5F5F, $AF5F87, $AF5FAF, $AF5FD7, $AF5FFF, $AF8700, $AF875F, $AF8787, $AF87AF, $AF87D7, $AF87FF, $AFAF00, $AFAF5F,
+    $AFAF87, $AFAFAF, $AFAFD7, $AFAFFF, $AFD700, $AFD75F, $AFD787, $AFD7AF, $AFD7D7, $AFD7FF, $AFFF00, $AFFF5F, $AFFF87, $AFFFAF, $AFFFD7, $AFFFFF,
+    $D70000, $D7005F, $D70087, $D700AF, $D700D7, $D700FF, $D75F00, $D75F5F, $D75F87, $D75FAF, $D75FD7, $D75FFF, $D78700, $D7875F, $D78787, $D787AF,
+    $D787D7, $D787FF, $D7AF00, $D7AF5F, $D7AF87, $D7AFAF, $D7AFD7, $D7AFFF, $D7D700, $D7D75F, $D7D787, $D7D7AF, $D7D7D7, $D7D7FF, $D7FF00, $D7FF5F,
+    $D7FF87, $D7FFAF, $D7FFD7, $D7FFFF, $FF0000, $FF005F, $FF0087, $FF00AF, $FF00D7, $FF00FF, $FF5F00, $FF5F5F, $FF5F87, $FF5FAF, $FF5FD7, $FF5FFF,
+    $FF8700, $FF875F, $FF8787, $FF87AF, $FF87D7, $FF87FF, $FFAF00, $FFAF5F, $FFAF87, $FFAFAF, $FFAFD7, $FFAFFF, $FFD700, $FFD75F, $FFD787, $FFD7AF,
+    $FFD7D7, $FFD7FF, $FFFF00, $FFFF5F, $FFFF87, $FFFFAF, $FFFFD7, $FFFFFF, $080808, $121212, $1C1C1C, $262626, $303030, $3A3A3A, $444444, $4E4E4E,
+    $585858, $626262, $6C6C6C, $767676, $808080, $8A8A8A, $949494, $9E9E9E, $A8A8A8, $B2B2B2, $BCBCBC, $C6C6C6, $D0D0D0, $DADADA, $E4E4E4, $EEEEEE);
+
+var
+  Default256Palette: array[0..255] of TRGBQuad;
 
 function ipDraw(dc: HDC; img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
-
-(*
-  // Y = 0.21 × R + 0.72 × G + 0.07 × B
-  const
-  LuminanceMultR = 54;
-  LuminanceMultG = 184;
-  LuminanceMultB = 18;
-
-  function Desaturate(Color: UInt32): UInt32;
-  var
-  Luminance: byte;
-  begin
-  Luminance :=                                         //
-  (((Color and $00FF0000) shr 16 * LuminanceMultR) + //
-  ((Color and $0000FF00) shr 8 * LuminanceMultG) +   //
-  ((Color and $000000FF) * LuminanceMultB)) shr 8;
-  Result := (Color and $FF000000) or (Luminance shl 16) or (Luminance shl 8) or Luminance;
-  end;
-*)
-
 Type
-  pColorRef = ^TColorRef;
   pBitmapInfoHeader = ^TBitmapInfoHeader;
-
-Var
-  // isrgb: Boolean;
-  // isgray: Boolean;
-  buf: array [1 .. SizeOf(TBitmapInfoHeader) + SizeOf(TRGBQuad) * 256] of byte;
-  BitmapInfo: TBitmapInfo ABSOLUTE buf;
-  pDIBHdr: pBitmapInfoHeader;
-  pCR: pColorRef;
-  i: UInt32;
+  pBitmapInfo = ^TBitmapInfo;
+var
+  BitmapInfo: pBitmapInfo;
+  DIBHdr: pBitmapInfoHeader;
 begin
   if img.empty then
     Exit(False);
 
-  FillChar(buf, SizeOf(buf), 0);
-  pDIBHdr := pBitmapInfoHeader(@buf);
-  pCR := pColorRef(@buf[SizeOf(TBitmapInfoHeader)]);
-
   if img.channels = 1 then
   begin
-    { .$DEFINE ONE }
-{$IFDEF ONE}
-    const
-      _NumColors = 256;
-    for i := 0 to 255 do
-    begin
-      Var
-      Grey := (i * 255) div (_NumColors - 1);
-      pCR[i] := Rgb(Grey, Grey, Grey); // rgb(i, i, i);
-    end;
-{$ELSE}
-    for i := 0 to 255 do
-    begin
-      pCR[i] :=
-      // Desaturate(Rgb(i, i, i));
-      // Trunc(0.2126 * i + 0.7152 * i + 0.0722 * i);
-      // R,G,B
-      // Rgb(Trunc(0.2126 * i), Trunc(0.7152 * i), Trunc(0.0722 * i));
-        Rgb(0, i, i);
-      // i or (i shl 8) or (i shl 16) or (i shl 32);
-    end;
-{$ENDIF}
-  end;
-
-  pDIBHdr^.biSize := SizeOf(TBitmapInfoHeader);
-  pDIBHdr^.biWidth := img.cols;
-  pDIBHdr^.biHeight := -img.rows;
-  pDIBHdr^.biPlanes := 1;
-  pDIBHdr^.biBitCount := 8 * img.channels;
-  pDIBHdr^.biCompression := BI_RGB;
-  // pDIBHdr^.biClrUsed := 256;
-
-  if Stretch then
-  begin
-    SetStretchBltMode(dc, COLORONCOLOR);
-    SetMapMode(dc, MM_TEXT);
-    // Stretch the image to fit the rectangle
-    Var
-      iResult: Integer := StretchDIBits( //
-        dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data, BitmapInfo, DIB_RGB_COLORS,
-        SRCCOPY);
-    Result := (iResult > 0); // and (iResult <> GDI_ERROR);
+    BitmapInfo := AllocMem(SizeOf(TBitmapInfoHeader) + SizeOf(TRGBQuad) * 256);
+    Move(Default256Palette, BitmapInfo^.bmiColors[0], SizeOf(Default256Palette));
   end
   else
   begin
-    // Draw without scaling
-    Var
-      iResult: Integer := SetDIBitsToDevice( //
-        dc, rect.Left, rect.Top, img.cols, img.rows, 0, 0, 0, img.rows, img.Data, BitmapInfo, DIB_RGB_COLORS);
-    Result := (iResult > 0); // and (iResult <> GDI_ERROR);
+    BitmapInfo := AllocMem(SizeOf(TBitmapInfoHeader) + SizeOf(TRGBQuad));
+    BitmapInfo^.bmiHeader.biCompression := BI_RGB; // Имеет значение для img.channels>1
+  end;
+
+  try
+    DIBHdr := @BitmapInfo^.bmiHeader;
+    DIBHdr^.biSize := SizeOf(TBitmapInfoHeader);
+    DIBHdr^.biWidth := img.cols;
+    DIBHdr^.biHeight := -img.rows;
+    DIBHdr^.biPlanes := 1;
+    DIBHdr^.biBitCount := 8 * img.channels;
+
+    if Stretch then
+    begin
+      SetStretchBltMode(dc, COLORONCOLOR);
+      SetMapMode(dc, MM_TEXT);
+      // Stretch the image to fit the rectangle
+      var
+      iResult: Integer := StretchDIBits(//
+        dc, rect.Left, rect.Top, rect.Width, rect.Height, 0, 0, img.cols, img.rows, img.Data, BitmapInfo^, DIB_RGB_COLORS, SRCCOPY);
+      Result := (iResult > 0); // and (iResult <> GDI_ERROR);
+    end
+    else
+    begin
+      // Draw without scaling
+      var
+      iResult: Integer := SetDIBitsToDevice(//
+        dc, rect.Left, rect.Top, img.cols, img.rows, 0, 0, 0, img.rows, img.Data, BitmapInfo^, DIB_RGB_COLORS);
+      Result := (iResult > 0); // and (iResult <> GDI_ERROR);
+    end;
+  finally
+    FreeMem(BitmapInfo);
   end;
 end;
 
-Var
+var
   _RegisteredCaptureSource: TRegisteredCaptureSource = nil;
 
 function GetRegisteredCaptureSource: TRegisteredCaptureSource;
@@ -615,13 +567,13 @@ begin
   inherited;
 end;
 
-function TCVDataSource.getObjectName: String;
+function TCVDataSource.getObjectName: string;
 begin
   Result := Name;
 end;
 
 procedure TCVDataSource.NotifyReceiver(const AMat: TMat);
-Var
+var
   R: ICVDataReceiver;
   LockList: TList<ICVDataReceiver>;
   M: TMat;
@@ -757,18 +709,18 @@ begin
   try
     Canvas.Font.Color := clWindowText;
     var
-      Text: string := Name + ': ' + ClassName;
+    Text: string := Name + ': ' + ClassName;
     var
-      TextOneHeight: Integer := Canvas.TextHeight(Text) + 5;
+    TextOneHeight: Integer := Canvas.TextHeight(Text) + 5;
     var
-      TextHeight: Integer := TextOneHeight * 2 - 5;
+    TextHeight: Integer := TextOneHeight * 2 - 5;
     if not Assigned(Source) then
       TextHeight := TextHeight + TextOneHeight;
 
-    Var
-      x: Integer := (ClientWidth - Canvas.TextWidth(Text)) div 2;
-    Var
-      y: Integer := (ClientHeight - TextHeight) div 2;
+    var
+    x: Integer := (ClientWidth - Canvas.TextWidth(Text)) div 2;
+    var
+    y: Integer := (ClientHeight - TextHeight) div 2;
     Canvas.TextOut(x, y, Text);
 
     Text := '(' + ClientWidth.ToString + ',' + ClientHeight.ToString + ')';
@@ -804,7 +756,7 @@ begin
   try
     if Assigned(OnBeforePaint) then
       OnBeforePaint(Self, FMat^);
-    if ipDraw(dc { Canvas.Handle } , FMat^, PaintRect) then
+    if ipDraw(dc { Canvas.Handle }, FMat^, PaintRect) then
       if Assigned(OnAfterPaint) then
         OnAfterPaint(Self, FMat^);
   finally
@@ -880,10 +832,10 @@ procedure TCVView.SetCVSource(const Value: ICVDataSource);
 begin
   if FCVSource <> Value then
   begin
-    if Assigned(FCVSource) and (not(csDesigning in ComponentState)) then
+    if Assigned(FCVSource) and (not (csDesigning in ComponentState)) then
       FCVSource.RemoveReceiver(Self);
     FCVSource := Value;
-    if Assigned(FCVSource) and (not(csDesigning in ComponentState)) then
+    if Assigned(FCVSource) and (not (csDesigning in ComponentState)) then
       FCVSource.AddReceiver(Self);
   end;
 end;
@@ -927,9 +879,9 @@ end;
 
 { TCVCaptureSource }
 
-Var
-  CVVideoCaptureAPIs: array [TCVVideoCaptureAPIs] of TVideoCaptureAPIs = //
-    ( //
+var
+  CVVideoCaptureAPIs: array[TCVVideoCaptureAPIs] of TVideoCaptureAPIs = //
+  (//
     CAP_ANY, // !< Auto detect == 0
     CAP_VFW, // !< Video For Windows obsolete, removed)
     CAP_V4L, // !< V4L/V4L2 capturing support
@@ -968,7 +920,7 @@ Var
     CAP_INTEL_MFX, // !< Intel MediaSDK
     CAP_XINE, // !< XINE engine Linux)
     CAP_UEYE // !< uEye Camera API
-  );
+    );
 
 constructor TCVCaptureSource.Create(AOwner: TComponent);
 begin
@@ -1039,7 +991,7 @@ end;
 procedure TCVCaptureSource.Loaded;
 begin
   inherited;
-  if not(csDesigning in ComponentState) then
+  if not (csDesigning in ComponentState) then
   begin
     if Enabled then
       StartCapture;
@@ -1050,8 +1002,8 @@ procedure TCVCaptureSource.OnNoDataCaptureThread(Sender: TObject);
 begin
   if FOperationClass = TCVFileSource then
   begin
-    Var
-      FileSource: TCVFileSource := FOperation as TCVFileSource;
+    var
+    FileSource: TCVFileSource := FOperation as TCVFileSource;
     if FileSource.Loop then
       FSourceThread.FCapture.&set(CAP_PROP_POS_FRAMES, 0);
   end;
@@ -1111,10 +1063,10 @@ begin
 
   if FOperationClass = TCVWebCameraSource then
   begin
-    Var
-      WebCameraSource: TCVWebCameraSource := FOperation as TCVWebCameraSource;
+    var
+    WebCameraSource: TCVWebCameraSource := FOperation as TCVWebCameraSource;
 
-    FSourceThread := TCVCaptureThread.Create( //
+    FSourceThread := TCVCaptureThread.Create(//
       WebCameraSource.CameraIndex, //
       WebCameraSource.Delay, //
       CVVideoCaptureAPIs[WebCameraSource.CaptureAPIs]);
@@ -1127,9 +1079,9 @@ begin
   end
   else if FOperationClass = TCVFileSource then
   begin
-    Var
-      FileSource: TCVFileSource := FOperation as TCVFileSource;
-    FSourceThread := TCVCaptureThread.Create( //
+    var
+    FileSource: TCVFileSource := FOperation as TCVFileSource;
+    FSourceThread := TCVCaptureThread.Create(//
       FileSource.FileName, //
       FileSource.Delay, //
       CVVideoCaptureAPIs[FileSource.CaptureAPIs]);
@@ -1161,8 +1113,8 @@ end;
 
 { TRegisteredCaptureSource }
 
-function TRegisteredCaptureSource.FindByClassName(const ClassName: String): TCVSourceTypeClass;
-Var
+function TRegisteredCaptureSource.FindByClassName(const ClassName: string): TCVSourceTypeClass;
+var
   i: Integer;
 begin
   Result := nil;
@@ -1171,19 +1123,19 @@ begin
       Exit(TCVSourceTypeClass(Objects[i]));
 end;
 
-function TRegisteredCaptureSource.FindByName(const Name: String): TCVSourceTypeClass;
-Var
+function TRegisteredCaptureSource.FindByName(const Name: string): TCVSourceTypeClass;
+var
   i: Integer;
 begin
   i := IndexOf(Name);
   if i <> -1 then
     Result := TCVSourceTypeClass(Objects[i])
   else
-    Result := Nil;
+    Result := nil;
 end;
 
-function TRegisteredCaptureSource.GetNameByClass(const IOClass: TClass): String;
-Var
+function TRegisteredCaptureSource.GetNameByClass(const IOClass: TClass): string;
+var
   i: Integer;
 begin
   Result := '';
@@ -1195,7 +1147,7 @@ begin
     end;
 end;
 
-procedure TRegisteredCaptureSource.RegisterIOClass(const IOClass: TClass; const ClassName: String);
+procedure TRegisteredCaptureSource.RegisterIOClass(const IOClass: TClass; const ClassName: string);
 begin
   AddObject(ClassName, TObject(IOClass));
   RegisterClass(TPersistentClass(IOClass));
@@ -1250,11 +1202,11 @@ begin
   Result := inherited GetNamePath;
   lOwner := GetOwner;
   if
-  { } (lOwner <> nil) and
-  { } (
-    { } (csSubComponent in TComponent(lOwner).ComponentStyle) or
-    { } (TPersistentAccessProtected(lOwner).GetOwner <> nil)
-    { } ) then
+    { }(lOwner <> nil) and
+    { }(
+    { }(csSubComponent in TComponent(lOwner).ComponentStyle) or
+    { }(TPersistentAccessProtected(lOwner).GetOwner <> nil)
+    { }) then
   begin
     S := lOwner.GetNamePath;
     if S <> '' then
@@ -1323,17 +1275,16 @@ end;
 
 constructor TCVCaptureThread.Create(const AFileName: string; const AThreadDelay: Cardinal; const VideoAPIs: TVideoCaptureAPIs);
 begin
-  Inherited Create(True);
+  inherited Create(True);
   FThreadDelay := AThreadDelay;
   FSourceType := stFile;
   FFileName := AFileName;
   FVideoAPIs := VideoAPIs;
 end;
 
-constructor TCVCaptureThread.Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal;
-  const VideoAPIs: TVideoCaptureAPIs);
+constructor TCVCaptureThread.Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal; const VideoAPIs: TVideoCaptureAPIs);
 begin
-  Inherited Create(True);
+  inherited Create(True);
   FThreadDelay := AThreadDelay;
   FSourceType := stStream;
   FCameraIndex := ACameraIndex;
@@ -1341,7 +1292,7 @@ begin
 end;
 
 procedure TCVCaptureThread.Execute;
-Var
+var
   frame: TMat;
 begin
   if FSourceType = stFile then
@@ -1486,7 +1437,7 @@ begin
 end;
 
 procedure TCVVideoWriter.SetFourCC(const Value: AnsiString);
-Var
+var
   V: AnsiString;
 begin
   if (not FEnabled) or (csDesigning in ComponentState) or (csLoading in ComponentState) then
@@ -1519,7 +1470,7 @@ end;
 
 procedure TCVVideoWriter.TakeMat(const AMat: TMat);
 begin
-  if not(csDesigning in ComponentState) or (csLoading in ComponentState) then
+  if not (csDesigning in ComponentState) or (csLoading in ComponentState) then
   begin
     if FEnabled then
     begin
@@ -1557,12 +1508,23 @@ end;
 
 initialization
 
-GetRegisteredCaptureSource.RegisterIOClass(TCVWebCameraSource, 'Web camera');
-GetRegisteredCaptureSource.RegisterIOClass(TCVFileSource, 'From file or stream');
+  GetRegisteredCaptureSource.RegisterIOClass(TCVWebCameraSource, 'Web camera');
+  GetRegisteredCaptureSource.RegisterIOClass(TCVFileSource, 'From file or stream');
+
+  { TODO : Convert to constant array }
+  for var i := 0 to 255 do
+    with Default256Palette[i] do
+    begin
+      rgbRed := i;
+      rgbGreen := i;
+      rgbBlue := i;
+      rgbReserved := 0;
+    end;
 
 finalization
 
-if Assigned(_RegisteredCaptureSource) then
-  FreeAndNil(_RegisteredCaptureSource);
+  if Assigned(_RegisteredCaptureSource) then
+    FreeAndNil(_RegisteredCaptureSource);
 
 end.
+

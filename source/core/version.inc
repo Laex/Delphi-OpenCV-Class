@@ -23,7 +23,9 @@
 {$IF not defined(OPENCV_VERSION_HPP)}
 {$DEFINE OPENCV_VERSION_HPP}
 
-{$IF not defined(CVOPT)}{$I opt.inc}{$IFEND}
+{$IF not defined(CVOPT)}
+  {$I opt.inc}
+{$IFEND}
 
 const
 {$IFDEF OPENCV_455}

@@ -20,10 +20,14 @@
   limitations under the License.
 *)
 
+{$IFDEF INTERFACE}
+
 {$IF not defined(OPENCV_IMGCODECS_HPP)}
 {$DEFINE OPENCV_IMGCODECS_HPP}
 
-{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_HPP)}
+  {$I 'core.inc'}
+{$IFEND}
 (* *
   @defgroup imgcodecs Image file reading and writing
   @{
@@ -207,7 +211,7 @@ const
     @param flags Flag that can take values of cv::ImreadModes
   *)
   // CV_EXPORTS_W Mat imread( const String& filename, int flags = IMREAD_COLOR );
-function imread(const filename: String; flag: ImreadModes = IMREAD_COLOR): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function imread(const filename: String; flag: ImreadModes = IMREAD_UNCHANGED): TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 (* * @brief Loads a multi-page image from a file.
 
@@ -346,3 +350,114 @@ function haveImageReader(const filename:string):bool; {$IFDEF USE_INLINE}inline;
 function haveImageWriter(const filename:string):bool; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
 {$IFEND OPENCV_IMGCODECS_HPP}
+
+{$ENDIF INTERFACE}
+
+// ============================================================================
+
+{$IFDEF IMPLEMENTATION}
+
+{$IF defined(OPENCV_IMGCODECS_HPP) and (not defined(OPENCV_IMGCODECS_HPP_IMPL))}
+{$DEFINE OPENCV_IMGCODECS_HPP_IMPL}
+
+function imread(const filename: String; flag: ImreadModes = IMREAD_UNCHANGED): TMat;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_imread(CppString(filename), flag);
+{$IFEND}
+end;
+
+function imreadmulti(const filename: String; Var mats: vector<TMat>; flags: int = IMREAD_ANYCOLOR): bool;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_imreadmulti(CppString(filename), mats, flags);
+{$IFEND}
+end;
+
+function imreadmulti(const filename: String; Var mats: vector<TMat>; start, count: int; flags: int = IMREAD_ANYCOLOR): bool;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_imreadmulti_1(CppString(filename), mats, start, count, flags);
+{$IFEND}
+end;
+
+function imcount(const filename: String; flags: int = IMREAD_ANYCOLOR): size_t;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_imcount(CppString(filename), flags);
+{$IFEND}
+end;
+
+function imwrite(const filename: String; const img: TInputArray; const params: vector<int>): bool;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_imwrite(CppString(filename), img, params);
+{$IFEND}
+end;
+
+function imwrite(const filename: String; const img: TInputArray): bool;
+begin
+  Var
+    a: vector<int>;
+  Result := imwrite(filename, img, a);
+end;
+
+function imwritemulti(const filename: String; const img: TInputArrayOfArrays; const params: vector<int>): bool;
+begin
+  Result := imwrite(filename, img, params);
+end;
+
+function imwritemulti(const filename: String; const img: TInputArrayOfArrays): bool;
+begin
+  Var
+    params: vector<int>;
+  Result := imwrite(filename, img, params);
+end;
+
+function imdecode(const buf: TInputArray; const flags: Integer): TMat;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_imdecode(buf, flags);
+{$IFEND}
+end;
+
+function imdecode(const buf: TInputArray; const flags: int; const dst: pMat): TMat;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_imdecode_1(buf, flags, dst);
+{$IFEND}
+end;
+
+function imencode(const ext: string; const img: TInputArray; Var buf: vector<uchar>; const params: vector<int>): bool;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_imencode(CppString(ext), img, buf, params);
+{$IFEND}
+end;
+
+function imencode(const ext: string; const img: TInputArray; Var buf: vector<uchar>): bool;
+begin
+{$IF not defined(PACKAGE)}
+  Var
+    V: vector<int>;
+  Result := func_imencode(CppString(ext), img, buf, V);
+{$IFEND}
+end;
+
+function haveImageReader(const filename: string): bool;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_haveImageReader(CppString(filename));
+{$IFEND}
+end;
+
+function haveImageWriter(const filename: string): bool;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_haveImageWriter(CppString(filename));
+{$IFEND}
+end;
+
+{$IFEND}
+
+{$ENDIF IMPLEMENTATION}

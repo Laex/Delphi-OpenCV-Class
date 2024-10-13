@@ -20,11 +20,20 @@
   limitations under the License.
 *)
 
+{$IFDEF INTERFACE}
+
 {$IF not defined(OPENCV_FEATURES_2D_HPP)}
 {$DEFINE OPENCV_FEATURES_2D_HPP}
-{$IF not defined(OPENCV_OPENCV_MODULES_HPP)}{$I 'opencv_modules.inc'}{$IFEND}
-{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$IFEND}
-{$IF defined(HAVE_OPENCV_FLANN)}{$I 'flann/miniflann.inc'}{$ENDIF}
+
+{$IF not defined(OPENCV_OPENCV_MODULES_HPP)}
+  {$I 'opencv_modules.inc'}
+{$IFEND}
+{$IF not defined(OPENCV_CORE_HPP)}
+  {$I 'core.inc'}
+{$IFEND}
+{$IF defined(HAVE_OPENCV_FLANN)}
+  {$I 'flann/miniflann.inc'}
+{$ENDIF}
 (* *
   @defgroup features2d 2D Features Framework
   @{
@@ -1540,3 +1549,94 @@ Type
   // } (* namespace cv *)
 
 {$IFEND}
+
+{$ENDIF INTERFACE}
+
+// ============================================================================
+
+{$IFDEF IMPLEMENTATION}
+
+{$IF defined(OPENCV_FEATURES_2D_HPP) and (not defined(OPENCV_FEATURES_2D_HPP_IMPL))}
+{$DEFINE OPENCV_FEATURES_2D_HPP_IMPL}
+{ TSIFT }
+
+class function TSIFT.create(nfeatures: int = 0; nOctaveLayers: int = 3; contrastThreshold: double = 0.04; //
+  edgeThreshold: double = 10; sigma: double = 1.6): TPtr<TFeature2D>;
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_SIFT_create(Result, nfeatures, nOctaveLayers, contrastThreshold, edgeThreshold, sigma);
+{$IFEND}
+end;
+
+{ TDescriptorMatcher }
+
+class function TDescriptorMatcher.create(const descriptorMatcherType: String): TPtr<TDescriptorMatcher>;
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_DESCRIPTORMATCHER_create(Result, descriptorMatcherType);
+{$IFEND}
+end;
+
+{ TORB }
+
+class function TORB.create(nfeatures: int = 500; scaleFactor: float = 1.2; nlevels: int = 8; edgeThreshold: int = 31; firstLevel: int = 0; WTA_K: int = 2; scoreType: TScoreTypes = HARRIS_SCORE; patchSize: int = 31; fastThreshold: int = 20): TPtr<TFeature2D>;
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_ORB_create(Result, nfeatures, scaleFactor, nlevels, edgeThreshold, firstLevel, WTA_K, int(scoreType), patchSize, fastThreshold);
+{$IFEND}
+end;
+
+{ TSimpleBlobDetector }
+
+class function TSimpleBlobDetector.create(): TPtr<TSimpleBlobDetector>;
+begin
+  Result := Create(TSimpleBlobDetector.TParams.Params);
+end;
+
+class function TSimpleBlobDetector.create(const parameters: TSimpleBlobDetector.TParams): TPtr<TSimpleBlobDetector>;
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_SIMPLEBLOBDETECTOR_create(Result,parameters);
+{$IFEND}
+end;
+
+function TSimpleBlobDetector.getDefaultName():CppString;
+begin
+{$IF not defined(PACKAGE)}
+  Result := class_func_CV_SIMPLEBLOBDETECTOR_getDefaultName(Self);
+{$IFEND}
+end;
+
+{ TSimpleBlobDetector.TParams }
+
+class operator TSimpleBlobDetector.TParams.Initialize(out Dest: TParams);
+begin
+{$IF not defined(PACKAGE)}
+  constructor_CV_SIMPLEBLOBDETECTOR_PARAMS(Dest);
+{$IFEND}
+end;
+
+class function TSimpleBlobDetector.TParams.Params(): TParams;
+begin
+{$IF not defined(PACKAGE)}
+  constructor_CV_SIMPLEBLOBDETECTOR_PARAMS(Result);
+{$IFEND}
+end;
+
+procedure TSimpleBlobDetector.TParams.read(const fn: TFileNode);
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_SIMPLEBLOBDETECTOR_PARAMS_read(Self,fn);
+{$IFEND}
+end;
+
+procedure TSimpleBlobDetector.TParams.write(const fs: TFileStorage);
+begin
+{$IF not defined(PACKAGE)}
+  class_proc_CV_SIMPLEBLOBDETECTOR_PARAMS_write(Self,fs);
+{$IFEND}
+end;
+
+{$IFEND}
+
+{$ENDIF IMPLEMENTATION}

@@ -720,23 +720,23 @@ end;
 procedure InitVectorTypesArray;
 begin
   VectorTypes[vtNone]          := nil;
-  VectorTypes[vtMat]           := TypeInfo(TMat);           // = 1,   // vector<Mat>
-  VectorTypes[vtRect]          := TypeInfo(TRect);          // = 2,   // vector<Rect>
-  VectorTypes[vtPoint]         := TypeInfo(TPoint);         // = 3,   // vector<Point>
-  VectorTypes[vtVectorMat]     := TypeInfo(Vector<TMat>);   // = 4,   // vector<vector<Mat>>
-  VectorTypes[vtVectorRect]    := TypeInfo(Vector<TRect>);  // = 5,   // vector<vector<Rect>>
+  VectorTypes[vtMat]           := TypeInfo(TMat);          // = 1,   // vector<Mat>
+  VectorTypes[vtRect]          := TypeInfo(TRect);         // = 2,   // vector<Rect>
+  VectorTypes[vtPoint]         := TypeInfo(TPoint);        // = 3,   // vector<Point>
+  VectorTypes[vtVectorMat]     := TypeInfo(Vector<TMat>);  // = 4,   // vector<vector<Mat>>
+  VectorTypes[vtVectorRect]    := TypeInfo(Vector<TRect>); // = 5,   // vector<vector<Rect>>
   VectorTypes[vtVectorPoint]   := TypeInfo(Vector<TPoint>); // = 6,   // vector<vector<Point>>
-  VectorTypes[vtPoint2f]       := TypeInfo(TPoint2f);       // = 7,   // vector<Point2f>
-  VectorTypes[vtScalar]        := TypeInfo(TScalar);        // = 8,   // vector<Scalar>
-  VectorTypes[vtUchar]         := TypeInfo(UChar);          // = 9,   // vector<uchar>
-  VectorTypes[vtFloat]         := TypeInfo(FLOAT);          // = 10,  // vector<float>
-  VectorTypes[vtInt]           := TypeInfo(Int);            // = 11,  // vector<int>
-  VectorTypes[vtVec4i]         := TypeInfo(TVec4i);         // = 12,  // vector<Vec4i>
-  VectorTypes[vtGMat]          := nil;                      // TypeInfo(TGMat); // = 13,  // vector<GMat>
-  VectorTypes[vtGCompileArg]   := nil;                      // TypeInfo(TGCompileArg); // = 14,  // vector<GCompileArg>
-  VectorTypes[vtVec6f]         := TypeInfo(TVec6f);         // = 15,  // vector<Vec6f>
+  VectorTypes[vtPoint2f]       := TypeInfo(TPoint2f); // = 7,   // vector<Point2f>
+  VectorTypes[vtScalar]        := TypeInfo(TScalar);  // = 8,   // vector<Scalar>
+  VectorTypes[vtUchar]         := TypeInfo(UChar);    // = 9,   // vector<uchar>
+  VectorTypes[vtFloat]         := TypeInfo(FLOAT);    // = 10,  // vector<float>
+  VectorTypes[vtInt]           := TypeInfo(Int);      // = 11,  // vector<int>
+  VectorTypes[vtVec4i]         := TypeInfo(TVec4i);   // = 12,  // vector<Vec4i>
+  VectorTypes[vtGMat]          := nil;                // TypeInfo(TGMat); // = 13,  // vector<GMat>
+  VectorTypes[vtGCompileArg]   := nil;                // TypeInfo(TGCompileArg); // = 14,  // vector<GCompileArg>
+  VectorTypes[vtVec6f]         := TypeInfo(TVec6f);   // = 15,  // vector<Vec6f>
   VectorTypes[vtVectorPoint2f] := TypeInfo(Vector<TPoint2f>); // = 16, // vector<vector<Point2f>>
-  VectorTypes[vtString]        := TypeInfo(CppString);      // = 17   // vector<std::String>
+  VectorTypes[vtString]        := TypeInfo(CppString); // = 17   // vector<std::String>
 end;
 
 initialization
