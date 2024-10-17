@@ -6441,9 +6441,7 @@ function morphologyDefaultBorderValue(): TScalar; {$IFDEF USE_INLINE}inline; {$E
 
                                         function createCLAHE(clipLimit: double; tileGridSize: TSize): TPtr_CLAHE;
                                         begin
-{$IF defined(PACKAGE)}
-                                        Result := nil;
-{$ELSE}
+{$IF not defined(PACKAGE)}
                                         Result := func_createCLAHE(clipLimit, tileGridSize);
 {$IFEND}
                                         end;
