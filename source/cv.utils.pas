@@ -34,8 +34,9 @@ uses
 
 function ipDraw(const dc: HDC; const img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
 function BmpToMat(const Bitmap: TBitmap; out M: TMat): Boolean;
-function GetDIBits(const Bitmap: TBitmap; Var Bits: Pointer; Var BitsSize: DWord): Boolean;
-function MatToBmp(const M: TMat; out Bitmap: TBitmap; const PixelFormat:TPixelFormat = pfDevice): Boolean;
+function GetDIBits(const Bitmap: TBitmap; out Bits: Pointer; out BitsSize, _Width: DWord): Boolean; overload;
+function GetDIBits(const Bitmap: TBitmap; out Bits: Pointer; out _Width: DWord): Boolean; overload;
+function MatToBmp(const M: TMat; out Bitmap: TBitmap; const PixelFormat: TPixelFormat = pfDevice): Boolean;
 
 implementation
 
@@ -120,7 +121,14 @@ begin
   end;
 end;
 
-function GetDIBits(const Bitmap: TBitmap; Var Bits: Pointer; Var BitsSize: DWord): Boolean;
+function GetDIBits(const Bitmap: TBitmap; out Bits: Pointer; out _Width: DWord): Boolean;
+Var
+  BitsSize: DWord;
+begin
+  Result := GetDIBits(Bitmap, Bits, BitsSize, _Width);
+end;
+
+function GetDIBits(const Bitmap: TBitmap; out Bits: Pointer; out BitsSize, _Width: DWord): Boolean;
 Var
   BitmapInfo: pBitmapInfo;
   InfoSize: DWord;
@@ -128,7 +136,7 @@ begin
   if Bitmap.empty then
     Exit(False);
   BitmapInfo := nil;
-  Result := True;
+  Result     := True;
   try
     GetDIBSizes(Bitmap.Handle, InfoSize, BitsSize);
     BitmapInfo := AllocMem(InfoSize);
@@ -139,6 +147,12 @@ begin
       Exit(False);
     if not GetDIB(Bitmap.Handle, Bitmap.Palette, BitmapInfo^, Bits^) then
       Exit(False);
+
+    if (BitmapInfo.bmiHeader.biBitCount <> 32) and ((Bitmap.Width mod 4) <> 0) then
+      _Width := ((Bitmap.Width div 4) + 1) * 4
+    else
+      _Width := Bitmap.Width;
+
   finally
     if BitmapInfo <> nil then
       FreeMem(BitmapInfo, InfoSize);
@@ -153,7 +167,7 @@ Var
   InfoSize: DWord;
   Bits: Pointer;
   BitsSize: DWord;
-  img_type: Integer;
+  img_type, new_width: Integer;
 begin
 
   if Bitmap.empty then
@@ -163,7 +177,7 @@ begin
   InfoSize   := 0;
   Bits       := nil;
   BitsSize   := 0;
-  Result := True;
+  Result     := True;
   try
     GetDIBSizes(Bitmap.Handle, InfoSize, BitsSize);
     BitmapInfo := AllocMem(InfoSize);
@@ -190,9 +204,12 @@ begin
         Exit(False);
     end;
 
-    M := TMat.Mat(Bitmap.Height, Bitmap.Width, img_type, Bits, TMat.AUTO_STEP);
-    imshow('M',M);
-    Readln;
+    if (BitmapInfo.bmiHeader.biBitCount <> 32) and ((Bitmap.Width mod 4) <> 0) then
+      new_width := ((Bitmap.Width div 4) + 1) * 4
+    else
+      new_width := Bitmap.Width;
+
+    M := TMat.Mat(Bitmap.Height, new_width, img_type, Bits, TMat.AUTO_STEP);
     flip(M, M, 0);
 
   finally
@@ -203,10 +220,10 @@ begin
   end;
 end;
 
-function MatToBmp(const M: TMat; out Bitmap: TBitmap; const PixelFormat:TPixelFormat): Boolean;
+function MatToBmp(const M: TMat; out Bitmap: TBitmap; const PixelFormat: TPixelFormat): Boolean;
 begin
-  Bitmap := TBitmap.Create(M.cols, M.rows);
-//  Bitmap.PixelFormat:=PixelFormat;
+  Bitmap             := TBitmap.Create(M.cols, M.rows);
+  Bitmap.PixelFormat := PixelFormat;
   ipDraw(Bitmap.Canvas.Handle, M, System.Types.rect(0, 0, M.cols, M.rows), False);
   Result := True;
 end;

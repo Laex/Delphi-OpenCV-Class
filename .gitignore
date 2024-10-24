@@ -32,6 +32,8 @@
 *.exe
 *.dll
 !opencv_delphi*.dll
+!/cvCheckDep/CheckCVDep.exe
+*.dsv
 *.bpl
 *.bpi
 *.dcp
