@@ -20,6 +20,8 @@
   limitations under the License.
 *)
 
+{$IFDEF INTERFACE}
+
 {$if not defined(OPENCV_DNN_HPP)}
 {$define OPENCV_DNN_HPP}
 
@@ -57,3 +59,25 @@ Check @ref tutorial_dnn_yolo "the corresponding tutorial" for more details
 {$if not defined(OPENCV_DNN_DNN_HPP)}{$i 'dnn/dnn.inc'}{$ifend}
 
 {$ifend OPENCV_DNN_HPP}
+
+{$ENDIF INTERFACE}
+
+// ===========================================================================
+
+{$IFDEF IMPLEMENTATION}
+
+{$if defined(OPENCV_DNN_HPP) and (not defined(OPENCV_DNN_HPP_IMPL))}
+{$define OPENCV_DNN_HPP_IMPL}
+
+{$include 'dnn/dnn.impl.inc'}
+
+{$ifend}
+
+{$ENDIF IMPLEMENTATION}
+
+// ============================================================================
+
+{$IFDEF INITIALIZATION}
+
+
+{$ENDIF IINITIALIZATION}

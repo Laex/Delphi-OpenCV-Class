@@ -34,7 +34,6 @@ uses
   cpp.utils;
 
 {$DEFINE INTERFACE}
-
 {$I cvconfig.inc}
 //
 { .$DEFINE OPENCV_ALL_HPP }
@@ -86,7 +85,6 @@ uses
 {$IF DEFINED(HAVE_OPENCV_VIDEOIO) or DEFINED(OPENCV_ALL_HPP)}
 {$I 'videoio.inc'}
 {$IFEND}
-
 {$UNDEF INTERFACE}
 
 implementation
@@ -95,65 +93,61 @@ uses
   cv.external;
 
 {$DEFINE IMPLEMENTATION}
-
 // Then the list of defines is checked to include the correct headers
 // Core library is always included --> without no OpenCV functionality available
 {$IF not defined(OPENCV_CORE_HPP_IMPL)}
-  {$I 'core.inc'}
+     {$I 'core.inc'}
 {$IFEND}
 //
 // Then the optional modules are checked
 {$IF DEFINED(HAVE_OPENCV_CALIB3D)}
-  {$I 'calib3d.inc'}
+{$I 'calib3d.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_FEATURES2D)}
-  {$I 'features2d.inc'}
+{$I 'features2d.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_DNN)}
-  {$I 'dnn.impl.inc'}
+{$I 'dnn.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_FLANN)}
-  {$I 'flann.impl.inc'}
+{$I 'flann.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_HIGHGUI)}
-  {$I 'highgui.inc'}
+{$I 'highgui.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_IMGCODECS)}
-  {$I 'imgcodecs.inc'}
+{$I 'imgcodecs.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_IMGPROC)}
-  {$I 'imgproc.inc'}
+{$I 'imgproc.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_ML)}
-  {$I 'ml.impl.inc'}
+{$I 'ml.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_OBJDETECT)}
-  {$I 'objdetect.impl.inc'}
+{$I 'objdetect.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_PHOTO)}
-  {$I 'photo.impl.inc'}
+{$I 'photo.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_STITCHING)}
-  {$I 'stitching.impl.inc'}
+{$I 'stitching.impl.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_VIDEO)}
-  {$I 'video.impl.inc'}
+{$I 'video.impl.inc'}
 {$IFEND}
 {$IF DEFINED(HAVE_OPENCV_VIDEOIO)}
-  {$I 'videoio.impl.inc'}
+{$I 'videoio.impl.inc'}
 {$IFEND}
 
 initialization
 
 {$UNDEF INTERFACE}
 {$UNDEF IMPLEMENTATION}
-
 {$DEFINE INITIALIZATION}
-
 {$I 'core.inc'}
-
 {$IF defined(OPENCV_CORE_HAL_INTERFACE_H) and defined(OPENCV_CORE_HAL_INTERFACE_H_IMPL)}
-  {$I 'core/hal/interface.init.inc'}
-{$ifend}
+{$I 'core/hal/interface.init.inc'}
+{$IFEND}
 
 end.

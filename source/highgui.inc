@@ -888,7 +888,8 @@ function createButton(const bar_name: String; on_change: TButtonCallback;
 {$IF defined(OPENCV_HIGHGUI_HPP) and (not defined(OPENCV_HIGHGUI_HPP_IMPL))}
 {$DEFINE OPENCV_HIGHGUI_HPP_IMPL}
 
-function createTrackbar(const trackbarname: String; const winname: String; Value: pInt; COUNT: Int; onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
+function createTrackbar(const trackbarname: String; const winname: String; Value: pInt; COUNT: Int;
+                              onChange: TTrackbarCallback = nil; userdata: Pointer = nil): Int;
 begin
 {$IF not defined(PACKAGE)}
   Result := func_createTrackbar(CppString(trackbarname), CppString(winname), Value, COUNT, onChange, userdata);

@@ -20,11 +20,17 @@
   limitations under the License.
 *)
 
+{$IFDEF INTERFACE}
+
 {$if not defined(OPENCV_FLANN_HPP)}
 {$define OPENCV_FLANN_HPP}
 
-{$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$ifend}
-{$if not defined(OPENCV_MINIFLANN_HPP)}{$I 'flann/miniflann.inc'}{$ifend}
+{$IF not defined(OPENCV_CORE_HPP)}
+     {$I 'core.inc'}
+{$ifend}
+{$if not defined(OPENCV_MINIFLANN_HPP)}
+     {$I 'flann/miniflann.inc'}
+{$ifend}
 {$I 'flann/flann_base.inc'}
 
 (**
@@ -610,3 +616,23 @@ generic metric distances.
 //} } // namespace cv::flann
 
 {$ifend}
+
+{$ENDIF INTERFACE}
+
+// ===========================================================================
+
+{$IFDEF IMPLEMENTATION}
+
+
+{$ENDIF IMPLEMENTATION}
+
+// ============================================================================
+
+{$IFDEF INITIALIZATION}
+
+{$if defined(OPENCV_FLANN_HPP) and (not defined(OPENCV_FLANN_HPP_IMPL))}
+{$define OPENCV_FLANN_HPP_IMPL}
+
+{$ifend}
+
+{$ENDIF IINITIALIZATION}

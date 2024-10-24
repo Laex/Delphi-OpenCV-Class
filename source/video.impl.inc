@@ -24,7 +24,7 @@
 {$DEFINE OPENCV_VIDEO_HPP_IMPL}
 
 {$IF defined(OPENCV_IMGPROC_HPP) and (not defined(OPENCV_IMGPROC_HPP_IMPL))}
-	{$I 'imgproc.impl.inc'}
+	{$I 'imgproc.inc'}
 {$ifend}
 
 {$I 'video/tracking.impl.inc'}

@@ -5802,6 +5802,7 @@ end;
 
 {$IFEND OPENCV_CORE_HPP}
 {$ENDIF IMPLEMENTATION}
+
 // ============================================================================
 
 {$IFDEF INITIALIZATION}

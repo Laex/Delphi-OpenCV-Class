@@ -23,8 +23,8 @@
 {$IF defined(OPENCV_STITCHING_STITCHER_HPP) and (not defined(OPENCV_STITCHING_STITCHER_HPP_IMPL))}
 {$DEFINE OPENCV_STITCHING_STITCHER_HPP_IMPL}
 
-{$IF defined(OPENCV_FEATURES_2D_HPP) and (not defined(OPENCV_FEATURES_2D_HPP_IMPL))}{$i 'features2d.impl.inc'}{$ifend}
-{$IF defined(OPENCV_IMGPROC_HPP) and (not defined(OPENCV_IMGPROC_HPP_IMPL))}{$I 'imgproc.impl.inc'}{$ifend}
+{$IF defined(OPENCV_FEATURES_2D_HPP) and (not defined(OPENCV_FEATURES_2D_HPP_IMPL))}{$i 'features2d.inc'}{$ifend}
+{$IF defined(OPENCV_IMGPROC_HPP) and (not defined(OPENCV_IMGPROC_HPP_IMPL))}{$I 'imgproc.inc'}{$ifend}
 
 { TStitcher }
 

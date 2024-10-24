@@ -24,14 +24,16 @@
 {$DEFINE OPENCV_DNN_DNN_HPP_IMPL}
 { TNet }
 
-class operator TNet.Initialize(out Dest: TNet); // CV_WRAP Net();  //!< Default constructor.
+// CV_WRAP Net();  //!< Default constructor.
+class operator TNet.Initialize(out Dest: TNet);
 begin
 {$IF not defined(PACKAGE)}
   constructor_CV_DNN_DNN_NET_1(Dest);
 {$IFEND}
 end;
 
-class operator TNet.Finalize(var Dest: TNet); // CV_WRAP ~Net(); //!< Destructor frees the net only if there aren't references to the net anymore.
+// CV_WRAP ~Net(); //!< Destructor frees the net only if there aren't references to the net anymore.
+class operator TNet.Finalize(var Dest: TNet);
 begin
 {$IF not defined(PACKAGE)}
   destructor_CV_DNN_DNN_NET(Dest);
