@@ -6,6 +6,25 @@
 
 ###### Contributors:
 * Laentir Valetov (email: laex@bk.ru)
+<<<<<<< HEAD
+### What is completed (approximately)
+- [ ] **10%** - core. [Core functionality](https://docs.opencv.org/4.x/d0/de1/group__core.html)
+- [ ] **50%** - imgproc. [Image Processing](https://docs.opencv.org/4.x/d7/dbd/group__imgproc.html)
+- [x] **100%** - imgcodecs. [Image file reading and writing](https://docs.opencv.org/4.x/d4/da8/group__imgcodecs.html) ✅ 2024-10-26
+- [ ] videoio. [Video I/O](https://docs.opencv.org/4.x/dd/de7/group__videoio.html)
+- [x] **100%** - highgui. [High-level GUI](https://docs.opencv.org/4.x/d7/dfc/group__highgui.html) 
+- [ ] **10%** - video. [Video Analysis](https://docs.opencv.org/4.x/d7/de9/group__video.html)
+- [ ] **0%** - calib3d. [Camera Calibration and 3D Reconstruction](https://docs.opencv.org/4.x/d9/d0c/group__calib3d.html)
+- [ ] **1%** - features2d. [2D Features Framework](https://docs.opencv.org/4.x/da/d9b/group__features2d.html)
+- [ ] **10%** - objdetect. [Object Detection](https://docs.opencv.org/4.x/d5/d54/group__objdetect.html)
+- [ ] **1%** - dnn. [Deep Neural Network module](https://docs.opencv.org/4.x/d6/d0f/group__dnn.html)
+- [ ] **0%** - ml. [Machine Learning](https://docs.opencv.org/4.x/dd/ded/group__ml.html)
+- [ ] **5%** - flann. [Clustering and Search in Multi-Dimensional Spaces](https://docs.opencv.org/4.x/dc/de5/group__flann.html)
+- [ ] **10%** - photo. [Computational Photography](https://docs.opencv.org/4.x/d1/d0d/group__photo.html)
+- [ ] **30%** - stitching. [Images stitching](https://docs.opencv.org/4.x/d1/d46/group__stitching.html)
+- [ ] **0%** - gapi. [Graph API](https://docs.opencv.org/4.x/d0/d1e/gapi.html)
+=======
+>>>>>>> cd8b5f1aa83720e25c2adea0bbccef7bea3080ff
 ### Usage:
 1. Download the current state of the project in [zip][1] format or via [git][2]
 2. Download [OpenCV 4.10.0][3], run and unpack to the selected directory \(for example in `<opencv>`).

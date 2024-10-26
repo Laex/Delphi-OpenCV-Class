@@ -20,6 +20,8 @@
   limitations under the License.
 *)
 
+{$IFDEF INTERFACE}
+
 {$IF not defined(OPENCV_CORE_TYPES_H)}
 {$DEFINE OPENCV_CORE_TYPES_H}
 {$IF not defined(OPENCV_CORE_HPP)}{$I 'core.inc'}{$IFEND}
@@ -38,67 +40,67 @@
 const
   (* * @see cv::Error::Code *)
   // enum {
-  CV_StsOk                     = 0;    (* *< everything is ok *)
-  CV_StsBackTrace              = -1;   (* *< pseudo error for back trace *)
-  CV_StsError                  = -2;   (* *< unknown /unspecified error *)
-  CV_StsInternal               = -3;   (* *< internal error (bad state) *)
-  CV_StsNoMem                  = -4;   (* *< insufficient memory *)
-  CV_StsBadArg                 = -5;   (* *< function arg/param is bad *)
-  CV_StsBadFunc                = -6;   (* *< unsupported function *)
-  CV_StsNoConv                 = -7;   (* *< iter. didn't converge *)
-  CV_StsAutoTrace              = -8;   (* *< tracing *)
-  CV_HeaderIsNull              = -9;   (* *< image header is NULL *)
-  CV_BadImageSize              = -10;  (* *< image size is invalid *)
-  CV_BadOffset                 = -11;  (* *< offset is invalid *)
-  CV_BadDataPtr                = -12;  (* *)
-  CV_BadStep                   = -13;  (* *< image step is wrong, this may happen for a non-continuous matrix *)
-  CV_BadModelOrChSeq           = -14;  (* *)
-  CV_BadNumChannels            = -15;  (* *< bad number of channels, for example, some functions accept only single channel matrices *)
-  CV_BadNumChannel1U           = -16;  (* *)
-  CV_BadDepth                  = -17;  (* *< input image depth is not supported by the function *)
-  CV_BadAlphaChannel           = -18;  (* *)
-  CV_BadOrder                  = -19;  (* *< number of dimensions is out of range *)
-  CV_BadOrigin                 = -20;  (* *< incorrect input origin *)
-  CV_BadAlign                  = -21;  (* *< incorrect input align *)
-  CV_BadCallBack               = -22;  (* *)
-  CV_BadTileSize               = -23;  (* *)
-  CV_BadCOI                    = -24;  (* *< input COI is not supported *)
-  CV_BadROISize                = -25;  (* *< incorrect input roi *)
-  CV_MaskIsTiled               = -26;  (* *)
-  CV_StsNullPtr                = -27;  (* *< null pointer *)
-  CV_StsVecLengthErr           = -28;  (* *< incorrect vector length *)
+  CV_StsOk = 0;    (* *< everything is ok *)
+  CV_StsBackTrace    = -1;   (* *< pseudo error for back trace *)
+  CV_StsError        = -2;   (* *< unknown /unspecified error *)
+  CV_StsInternal     = -3;   (* *< internal error (bad state) *)
+  CV_StsNoMem        = -4;   (* *< insufficient memory *)
+  CV_StsBadArg       = -5;   (* *< function arg/param is bad *)
+  CV_StsBadFunc      = -6;   (* *< unsupported function *)
+  CV_StsNoConv       = -7;   (* *< iter. didn't converge *)
+  CV_StsAutoTrace    = -8;   (* *< tracing *)
+  CV_HeaderIsNull    = -9;   (* *< image header is NULL *)
+  CV_BadImageSize    = -10;  (* *< image size is invalid *)
+  CV_BadOffset       = -11;  (* *< offset is invalid *)
+  CV_BadDataPtr      = -12;  (* *)
+  CV_BadStep         = -13;  (* *< image step is wrong, this may happen for a non-continuous matrix *)
+  CV_BadModelOrChSeq = -14;  (* *)
+  CV_BadNumChannels  = -15;  (* *< bad number of channels, for example, some functions accept only single channel matrices *)
+  CV_BadNumChannel1U = -16;  (* *)
+  CV_BadDepth        = -17;  (* *< input image depth is not supported by the function *)
+  CV_BadAlphaChannel = -18;  (* *)
+  CV_BadOrder        = -19;  (* *< number of dimensions is out of range *)
+  CV_BadOrigin       = -20;  (* *< incorrect input origin *)
+  CV_BadAlign        = -21;  (* *< incorrect input align *)
+  CV_BadCallBack     = -22;  (* *)
+  CV_BadTileSize     = -23;  (* *)
+  CV_BadCOI= -24;  (* *< input COI is not supported *)
+  CV_BadROISize      = -25;  (* *< incorrect input roi *)
+  CV_MaskIsTiled     = -26;  (* *)
+  CV_StsNullPtr      = -27;  (* *< null pointer *)
+  CV_StsVecLengthErr = -28;  (* *< incorrect vector length *)
   CV_StsFilterStructContentErr = -29;  (* *< incorrect filter structure content *)
   CV_StsKernelStructContentErr = -30;  (* *< incorrect transform kernel content *)
   CV_StsFilterOffsetErr        = -31;  (* *< incorrect filter offset value *)
-  CV_StsBadSize                = -201; (* *< the input/output structure size is incorrect *)
-  CV_StsDivByZero              = -202; (* *< division by zero *)
+  CV_StsBadSize      = -201; (* *< the input/output structure size is incorrect *)
+  CV_StsDivByZero    = -202; (* *< division by zero *)
   CV_StsInplaceNotSupported    = -203; (* *< in-place operation is not supported *)
   CV_StsObjectNotFound         = -204; (* *< request can't be completed *)
   CV_StsUnmatchedFormats       = -205; (* *< formats of input/output arrays differ *)
-  CV_StsBadFlag                = -206; (* *< flag is wrong or not supported *)
-  CV_StsBadPoint               = -207; (* *< bad CvPoint *)
-  CV_StsBadMask                = -208; (* *< bad format of mask (neither 8uC1 nor 8sC1) *)
+  CV_StsBadFlag      = -206; (* *< flag is wrong or not supported *)
+  CV_StsBadPoint     = -207; (* *< bad CvPoint *)
+  CV_StsBadMask      = -208; (* *< bad format of mask (neither 8uC1 nor 8sC1) *)
   CV_StsUnmatchedSizes         = -209; (* *< sizes of input/output structures do not match *)
   CV_StsUnsupportedFormat      = -210; (* *< the data format/type is not supported by the function *)
-  CV_StsOutOfRange             = -211; (* *< some of parameters are out of range *)
-  CV_StsParseError             = -212; (* *< invalid syntax/structure of the parsed file *)
+  CV_StsOutOfRange   = -211; (* *< some of parameters are out of range *)
+  CV_StsParseError   = -212; (* *< invalid syntax/structure of the parsed file *)
   CV_StsNotImplemented         = -213; (* *< the requested function/feature is not implemented *)
-  CV_StsBadMemBlock            = -214; (* *< an allocated block has been corrupted *)
-  CV_StsAssert                 = -215; (* *< assertion failed *)
-  CV_GpuNotSupported           = -216; (* *< no CUDA support *)
-  CV_GpuApiCallError           = -217; (* *< GPU API call error *)
+  CV_StsBadMemBlock  = -214; (* *< an allocated block has been corrupted *)
+  CV_StsAssert       = -215; (* *< assertion failed *)
+  CV_GpuNotSupported = -216; (* *< no CUDA support *)
+  CV_GpuApiCallError = -217; (* *< GPU API call error *)
   CV_OpenGlNotSupported        = -218; (* *< no OpenGL support *)
   CV_OpenGlApiCallError        = -219; (* *< OpenGL API call error *)
   CV_OpenCLApiCallError        = -220; (* *< OpenCL API call error *)
   CV_OpenCLDoubleNotSupported  = -221;
-  CV_OpenCLInitError           = -222; (* *< OpenCL initialization error *)
+  CV_OpenCLInitError = -222; (* *< OpenCL initialization error *)
   CV_OpenCLNoAMDBlasFft        = -223;
 
   (* ************** Random number generation ****************** *)
   CV_RNG_COEFF = 4164903690;
 
   (* ***************************************************************************************\
-    *                                  Image type (IplImage)                                 *
+    *    Image type (IplImage)   *
     \*************************************************************************************** *)
 
   (*
@@ -156,7 +158,7 @@ const
   IPL_DEPTH_64F = 64;
 
   (* ***************************************************************************************\
-    *                                  Matrix type (CvMat)                                   *
+    *    Matrix type (CvMat)     *
     \*************************************************************************************** *)
 const
   CV_AUTO_STEP = $7FFFFFFF;
@@ -167,7 +169,7 @@ const
   CV_TYPE_NAME_MAT = 'opencv-matrix';
 
   (* ***************************************************************************************\
-    *                       Multi-dimensional dense array (CvMatND)                          *
+    *   Multi-dimensional dense array (CvMatND)      *
     \*************************************************************************************** *)
 
 const
@@ -177,7 +179,7 @@ const
   CV_MAX_DIM = 32;
 
   (* ***************************************************************************************\
-    *                      Multi-dimensional sparse array (CvSparseMat)                      *
+    *  Multi-dimensional sparse array (CvSparseMat)  *
     \*************************************************************************************** *)
 
 const
@@ -185,7 +187,7 @@ const
   CV_TYPE_NAME_SPARSE_MAT = 'opencv-sparse-matrix';
 
   (* ***************************************************************************************\
-    *                                         Histogram                                      *
+    * Histogram*
     \*************************************************************************************** *)
 const
   CV_HIST_MAGIC_VAL    = $42450000;
@@ -214,7 +216,7 @@ const
   // CV_WHOLE_SEQ  =cvSlice(0, CV_WHOLE_SEQ_END_INDEX);//moved
 
   (* ***************************************************************************************\
-    *                                   Dynamic Data structures                              *
+    *     Dynamic Data structures*
     \*************************************************************************************** *)
 
   (* ******************************* Memory storage *************************************** *)
@@ -231,7 +233,7 @@ const
   CV_TYPE_NAME_GRAPH = 'opencv-graph';
 
   (* ***************************************************************************************\
-    *                                    Sequence types                                      *
+    *      Sequence types*
     \*************************************************************************************** *)
   CV_SEQ_MAGIC_VAL = $42990000;
 
@@ -267,7 +269,7 @@ const
   (* * flags for graphs *)
   CV_GRAPH_FLAG_ORIENTED = (1 shl CV_SEQ_FLAG_SHIFT);
 
-  CV_GRAPH          = CV_SEQ_KIND_GRAPH;
+  CV_GRAPH= CV_SEQ_KIND_GRAPH;
   CV_ORIENTED_GRAPH = (CV_SEQ_KIND_GRAPH or CV_GRAPH_FLAG_ORIENTED);
 
   (* * binary tree for the contour *)
@@ -277,7 +279,7 @@ const
   CV_SEQ_CONNECTED_COMP = (CV_SEQ_KIND_GENERIC or CV_SEQ_ELTYPE_CONNECTED_COMP);
 
   (* ***************************************************************************************\
-    *             Data structures for persistence (a.k.a serialization) functionality        *
+    *   Data structures for persistence (a.k.a serialization) functionality        *
     \*************************************************************************************** *)
 
   (* * Storage flags: *)
@@ -329,7 +331,7 @@ type
   TCvRNG = uint64;
 
   (* ***************************************************************************************\
-    *                                  Image type (IplImage)                                 *
+    *    Image type (IplImage)   *
     \*************************************************************************************** *)
 
   (* * The IplImage is taken from the Intel Image Processing Library, in which the format is native. OpenCV
@@ -346,7 +348,7 @@ type
 
   _IplImage = record
     nSize: int;        (* *< sizeof(IplImage) *)
-    ID: int;           (* *< version (=0) *)
+    ID: int; (* *< version (=0) *)
     nChannels: int;    (* *< Most of OpenCV functions support 1,2,3 or 4 channels *)
     alphaChannel: int; (* *< Ignored by OpenCV *)
     depth: int; (* *< Pixel depth in bits: IPL_DEPTH_8U, IPL_DEPTH_8S, IPL_DEPTH_16S,
@@ -359,17 +361,17 @@ type
       1 - bottom-left origin (Windows bitmaps style). *)
     align: int; (* *< Alignment of image rows (4 or 8).
       OpenCV ignores it and uses widthStep instead. *)
-    width: int;             (* *< Image width in pixels. *)
-    height: int;            (* *< Image height in pixels. *)
-    roi: pIplROI;           (* *< Image ROI. If NULL, the whole image is selected. *)
+    width: int;   (* *< Image width in pixels. *)
+    height: int;  (* *< Image height in pixels. *)
+    roi: pIplROI; (* *< Image ROI. If NULL, the whole image is selected. *)
     maskROI: pIplImage;     (* *< Must be NULL. *)
-    imageId: pointer;       (* *< "           " *)
-    tileInfo: pIplTileInfo; (* *< "           " *)
+    imageId: pointer;       (* *< " " *)
+    tileInfo: pIplTileInfo; (* *< " " *)
     imageSize: int; (* *< Image data size in bytes
       (==image->height*image->widthStep
       in case of interleaved data) *)
-    imageData: pcvchar;                 (* *< Pointer to aligned image data. *)
-    widthStep: int;                     (* *< Size of aligned image row in bytes. *)
+    imageData: pcvchar;       (* *< Pointer to aligned image data. *)
+    widthStep: int; (* *< Size of aligned image row in bytes. *)
     BorderMode: array [0 .. 3] of int;  (* *< Ignored by OpenCV. *)
     BorderConst: array [0 .. 3] of int; (* *< Ditto. *)
     imageDataOrigin: pcvchar; (* *< Pointer to very origin of image data
@@ -422,7 +424,7 @@ type
   TIplTileInfo = _IplTileInfo;
 
   (* ***************************************************************************************\
-    *                                  Matrix type (CvMat)                                   *
+    *    Matrix type (CvMat)     *
     \*************************************************************************************** *)
 
   (* * Matrix elements are stored row by row. Element (i, j) (i - 0-based row index, j - 0-based column
@@ -501,7 +503,7 @@ type
   TCvMat = _CvMat;
 
   (* ***************************************************************************************\
-    *                       Multi-dimensional dense array (CvMatND)                          *
+    *   Multi-dimensional dense array (CvMatND)      *
     \*************************************************************************************** *)
 
   (* *
@@ -530,7 +532,7 @@ type
   {
     type
     pCV_TREE_NODE_FIELDS < T >= record
-    flags: int;                      (* *< Miscellaneous flags. *)
+    flags: int;  (* *< Miscellaneous flags. *)
     header_size: int; (* *< Size of sequence header. *)
     h_prev: T; (* *< Previous sequence. *)
     h_next:T; (* *< Next sequence. *)
@@ -544,7 +546,7 @@ type
     end;
   }
   (* ***************************************************************************************\
-    *                      Multi-dimensional sparse array (CvSparseMat)                      *
+    *  Multi-dimensional sparse array (CvSparseMat)  *
     \*************************************************************************************** *)
 Type
   pCvSet = ^_CvSet;
@@ -596,7 +598,7 @@ Type
   // #define CV_NODE_IDX(mat,node)   ((int*)((uchar*)(node) + (mat)->idxoffset))
 
   (* ***************************************************************************************\
-    *                                         Histogram                                      *
+    * Histogram*
     \*************************************************************************************** *)
 
   _CvHistType  = int;
@@ -607,14 +609,14 @@ Type
     &type: int;
     bins: pCvArr;
     thresh: array [0 .. CV_MAX_DIM - 1, 0 .. 2 - 1] of float; (* *< For uniform histograms. *)
-    thresh2: pfloat; // float** thresh2;                (**< For non-uniform histograms.                  *)
+    thresh2: pfloat; // float** thresh2;      (**< For non-uniform histograms.        *)
     mat: TCvMatND; (* *< Embedded matrix header for array histograms. *)
   end;
 
   TCvHistogram = _CvHistogram;
 
   (* ***************************************************************************************\
-    *                      Other supplementary data type definitions                         *
+    *  Other supplementary data type definitions     *
     \*************************************************************************************** *)
 
   (* ************************************** CvRect **************************************** *)
@@ -757,7 +759,7 @@ Type
   _CvBox2D = record
     center: TCvPoint2D32f; (* *< Center of the box. *)
     size: TCvSize2D32f;    (* *< Box width and length. *)
-    angle: float;          (* *< Angle between the horizontal axis *)
+    angle: float;(* *< Angle between the horizontal axis *)
     (* *< and the first side (i.e. length) in degrees *)
     { TODO:CvBox2D }
     // CvBox2D(CvPoint2D32f c = CvPoint2D32f(), CvSize2D32f s = CvSize2D32f(), float a = 0) : center(c), size(s), angle(a) {}
@@ -828,7 +830,7 @@ Type
   TCvScalar = _CvScalar;
 
   (* ***************************************************************************************\
-    *                                   Dynamic Data structures                              *
+    *     Dynamic Data structures*
     \*************************************************************************************** *)
 
   (* ******************************* Memory storage *************************************** *)
@@ -897,10 +899,10 @@ Type
 
   CV_SEQUENCE_FIELDS = record
     CV_TREE_NODE: pCV_TREE_NODE_FIELDS_pCvSeq;
-    total: int;               (* *< Total number of elements. *)
-    elem_size: int;           (* *< Size of sequence element in bytes. *)
+    total: int;     (* *< Total number of elements. *)
+    elem_size: int; (* *< Size of sequence element in bytes. *)
     block_max: pschar;        (* *< Maximal bound of the last block. *)
-    ptr: pschar;              (* *< Current write pointer. *)
+    ptr: pschar;    (* *< Current write pointer. *)
     delta_elems: int;         (* *< Grow seq this many at a time. *)
     storage: pCvMemStorage;   (* *< Where the seq is stored. *)
     free_blocks: pCvSeqBlock; (* *< Free blocks list. *)
@@ -1061,7 +1063,7 @@ Type
   TCvSeqReader = _CvSeqReader;
 
   (* ***************************************************************************************\
-    *             Data structures for persistence (a.k.a serialization) functionality        *
+    *   Data structures for persistence (a.k.a serialization) functionality        *
     \*************************************************************************************** *)
 type
   (* * "black box" file storage *)
@@ -1161,16 +1163,16 @@ type
     specialized types from generic standard types and override the basic methods.
   *)
   _CvTypeInfo = record
-    flags: int;                     (* *< not used *)
-    header_size: int;               (* *< sizeof(CvTypeInfo) *)
-    prev: pCvTypeInfo;              (* *< previous registered type in the list *)
-    next: pCvTypeInfo;              (* *< next registered type in the list *)
-    type_name: pcvchar;             (* *< type name, written to file storage *)
+    flags: int; (* *< not used *)
+    header_size: int;     (* *< sizeof(CvTypeInfo) *)
+    prev: pCvTypeInfo;    (* *< previous registered type in the list *)
+    next: pCvTypeInfo;    (* *< next registered type in the list *)
+    type_name: pcvchar;   (* *< type name, written to file storage *)
     is_instance: TCvIsInstanceFunc; (* *< checks if the passed object belongs to the type *)
     release: TCvReleaseFunc;        (* *< releases object (memory etc.) *)
-    read: TCvReadFunc;              (* *< reads object from file storage *)
-    write: TCvWriteFunc;            (* *< writes object to file storage *)
-    clone: TCvCloneFunc;            (* *< creates a copy of the object *)
+    read: TCvReadFunc;    (* *< reads object from file storage *)
+    write: TCvWriteFunc;  (* *< writes object to file storage *)
+    clone: TCvCloneFunc;  (* *< creates a copy of the object *)
   end;
 
   TCvTypeInfo = _CvTypeInfo;
@@ -1178,13 +1180,13 @@ type
   // **************************** initizlized const *****************************************
 
   (* ***************************************************************************************\
-    *                                  Image type (IplImage)                                 *
+    *    Image type (IplImage)   *
     \*************************************************************************************** *)
 const
   IPL_IMAGE_MAGIC_VAL = sizeof(TIplImage);
 
   (* ***************************************************************************************\
-    *                                  Matrix type (CvMat)                                   *
+    *    Matrix type (CvMat)     *
     \*************************************************************************************** *)
   CV_WHOLE_ARR: TCvSlice = (start_index: 0; end_index: $3FFFFFFF); // cvSlice( 0, $3fffffff );
 
@@ -1192,11 +1194,11 @@ const
   CV_WHOLE_SEQ: TCvSlice = (start_index: 0; end_index: CV_WHOLE_SEQ_END_INDEX);
 
   (* ***************************************************************************************\
-    *                                    Sequence types                                      *
+    *      Sequence types*
     \*************************************************************************************** *)
 
   // CV_SEQ_ELTYPE_POINT         = CV_32SC2 ; (**< (x,y) *)
-  // CV_SEQ_ELTYPE_CODE          = CV_8UC1  ; (**< freeman code: 0..7 *)
+  // CV_SEQ_ELTYPE_CODE= CV_8UC1  ; (**< freeman code: 0..7 *)
   // CV_SEQ_ELTYPE_INDEX         = CV_32SC1 ; (**< #(x,y) *)
   // CV_SEQ_ELTYPE_POINT3D       = CV_32FC3 ; (**< (x,y,z)  *)
   (* * point sets *)
@@ -1207,13 +1209,13 @@ const
   // CV_SEQ_CONTOUR        = CV_SEQ_POLYGON;
   // CV_SEQ_SIMPLE_POLYGON = (CV_SEQ_FLAG_SIMPLE or CV_SEQ_POLYGON  );
   (* * chain-coded curves *)
-  // CV_SEQ_CHAIN          = (CV_SEQ_KIND_CURVE  or CV_SEQ_ELTYPE_CODE);
+  // CV_SEQ_CHAIN= (CV_SEQ_KIND_CURVE  or CV_SEQ_ELTYPE_CODE);
   // CV_SEQ_CHAIN_CONTOUR  = (CV_SEQ_FLAG_CLOSED or CV_SEQ_CHAIN);
   (* * sequence of the integer numbers *)
-  // CV_SEQ_INDEX          = (CV_SEQ_KIND_GENERIC  or CV_SEQ_ELTYPE_INDEX);
+  // CV_SEQ_INDEX= (CV_SEQ_KIND_GENERIC  or CV_SEQ_ELTYPE_INDEX);
 
   (* ***************************************************************************************\
-    *             Data structures for persistence (a.k.a serialization) functionality        *
+    *   Data structures for persistence (a.k.a serialization) functionality        *
     \*************************************************************************************** *)
 
   // #define CV_NODE_TYPE(flags)  ((flags) & CV_NODE_TYPE_MASK)
@@ -1233,7 +1235,7 @@ const
   // ****************************** function **********************************************
 
   (* ***************************************************************************************\
-    *                             Common macros and inline functions                         *
+    *         Common macros and inline functions     *
     \*************************************************************************************** *)
 
   { TODO : Common macros and inline functions }
@@ -1303,7 +1305,7 @@ function cvRNG(const seed: Int64 = -1): TCvRNG; inline;
     function cvRandReal(Var rng: TCvRNG): double; inline;
 
     (* ***************************************************************************************
-      *                                  Image type (IplImage)                                 *
+      *    Image type (IplImage)   *
       *************************************************************************************** *)
 
     // CV_EXPORTS _IplImage cvIplImage(const cv::Mat& m);
@@ -1320,737 +1322,1123 @@ function cvRNG(const seed: Int64 = -1): TCvRNG; inline;
 
         // #define CV_IS_IMAGE_HDR(img) \
         // ((img) != NULL && ((const IplImage*)(img))->nSize == sizeof(IplImage))
-          function CV_IS_IMAGE_HDR(const img: pCvArr): boolean; inline;
+function CV_IS_IMAGE_HDR(const img: pCvArr): boolean; inline;
 
-          // #define CV_IS_IMAGE(img) \
-          // (CV_IS_IMAGE_HDR(img) && ((IplImage*)img)->imageData != NULL)
-            function CV_IS_IMAGE(const img: pCvArr): boolean; inline;
+// #define CV_IS_IMAGE(img) \
+// (CV_IS_IMAGE_HDR(img) && ((IplImage*)img)->imageData != NULL)
+  function CV_IS_IMAGE(const img: pCvArr): boolean; inline;
 
-            (* * get reference to pixel at (col,row),
-              for multi-channel images (col) should be multiplied by number of channels *)
+  (* * get reference to pixel at (col,row),
+    for multi-channel images (col) should be multiplied by number of channels *)
 
-            { TODO : CV_IMAGE_ELEM }
-            // #define CV_IMAGE_ELEM( image, elemtype, row, col )       \
-            // (((elemtype*)((image)->imageData + (image)->widthStep*(row)))[(col)])
-            // function CV_IMAGE_ELEM<T>(image, elemtype, row, col)
+  { TODO : CV_IMAGE_ELEM }
+  // #define CV_IMAGE_ELEM( image, elemtype, row, col )       \
+  // (((elemtype*)((image)->imageData + (image)->widthStep*(row)))[(col)])
+  // function CV_IMAGE_ELEM<T>(image, elemtype, row, col)
 
-            (* ***************************************************************************************\
-              *                                  Matrix type (CvMat)                                   *
-              \*************************************************************************************** *)
+  (* ***************************************************************************************\
+    *    Matrix type (CvMat)     *
+    \*************************************************************************************** *)
 
-            { TODO : CV_IS_MAT_HDR }
+  { TODO : CV_IS_MAT_HDR }
 
-            // #define CV_IS_MAT_HDR(mat) \
-            // ((mat) != NULL && \
-            // (((const CvMat*)(mat))->type & CV_MAGIC_MASK) == CV_MAT_MAGIC_VAL && \
-            // ((const CvMat*)(mat))->cols > 0 && ((const CvMat*)(mat))->rows > 0)
-              function CV_IS_MAT_HDR(const mat: pCvArr): boolean; inline;
-              //
-              // #define CV_IS_MAT_HDR_Z(mat) \
-              // ((mat) != NULL && \
-              // (((const CvMat*)(mat))->type & CV_MAGIC_MASK) == CV_MAT_MAGIC_VAL && \
-              // ((const CvMat*)(mat))->cols >= 0 && ((const CvMat*)(mat))->rows >= 0)
-              //
-              // #define CV_IS_MAT(mat) \
-              // (CV_IS_MAT_HDR(mat) && ((const CvMat*)(mat))->data.ptr != NULL)
-                function CV_IS_MAT(const mat: pCvArr): boolean; inline;
-                //
-                // #define CV_IS_MASK_ARR(mat) \
-                // (((mat)->type & (CV_MAT_TYPE_MASK & ~CV_8SC1)) == 0)
-                //
-                // #define CV_ARE_TYPES_EQ(mat1, mat2) \
-                // ((((mat1)->type ^ (mat2)->type) & CV_MAT_TYPE_MASK) == 0)
-                //
-                // #define CV_ARE_CNS_EQ(mat1, mat2) \
-                // ((((mat1)->type ^ (mat2)->type) & CV_MAT_CN_MASK) == 0)
-                //
-                // #define CV_ARE_DEPTHS_EQ(mat1, mat2) \
-                // ((((mat1)->type ^ (mat2)->type) & CV_MAT_DEPTH_MASK) == 0)
-                //
-                // #define CV_ARE_SIZES_EQ(mat1, mat2) \
-                // ((mat1)->rows == (mat2)->rows && (mat1)->cols == (mat2)->cols)
-                //
-                // #define CV_IS_MAT_CONST(mat)  \
-                // (((mat)->rows|(mat)->cols) == 1)
-                //
-                // #define IPL2CV_DEPTH(depth) \
-                // ((((CV_8U)+(CV_16U<<4)+(CV_32F<<8)+(CV_64F<<16)+(CV_8S<<20)+ \
-                // (CV_16S<<24)+(CV_32S<<28)) >> ((((depth) & $F0) >> 2) + \
-                // (((depth) & IPL_DEPTH_SIGN) ? 20 : 0))) & 15)
+  // #define CV_IS_MAT_HDR(mat) \
+  // ((mat) != NULL && \
+  // (((const CvMat*)(mat))->type & CV_MAGIC_MASK) == CV_MAT_MAGIC_VAL && \
+  // ((const CvMat*)(mat))->cols > 0 && ((const CvMat*)(mat))->rows > 0)
+    function CV_IS_MAT_HDR(const mat: pCvArr): boolean; inline;
+    //
+    // #define CV_IS_MAT_HDR_Z(mat) \
+    // ((mat) != NULL && \
+    // (((const CvMat*)(mat))->type & CV_MAGIC_MASK) == CV_MAT_MAGIC_VAL && \
+    // ((const CvMat*)(mat))->cols >= 0 && ((const CvMat*)(mat))->rows >= 0)
+    //
+    // #define CV_IS_MAT(mat) \
+    // (CV_IS_MAT_HDR(mat) && ((const CvMat*)(mat))->data.ptr != NULL)
+      function CV_IS_MAT(const mat: pCvArr): boolean; inline;
+      //
+      // #define CV_IS_MASK_ARR(mat) \
+      // (((mat)->type & (CV_MAT_TYPE_MASK & ~CV_8SC1)) == 0)
+      //
+      // #define CV_ARE_TYPES_EQ(mat1, mat2) \
+      // ((((mat1)->type ^ (mat2)->type) & CV_MAT_TYPE_MASK) == 0)
+      //
+      // #define CV_ARE_CNS_EQ(mat1, mat2) \
+      // ((((mat1)->type ^ (mat2)->type) & CV_MAT_CN_MASK) == 0)
+      //
+      // #define CV_ARE_DEPTHS_EQ(mat1, mat2) \
+      // ((((mat1)->type ^ (mat2)->type) & CV_MAT_DEPTH_MASK) == 0)
+      //
+      // #define CV_ARE_SIZES_EQ(mat1, mat2) \
+      // ((mat1)->rows == (mat2)->rows && (mat1)->cols == (mat2)->cols)
+      //
+      // #define CV_IS_MAT_CONST(mat)  \
+      // (((mat)->rows|(mat)->cols) == 1)
+      //
+      // #define IPL2CV_DEPTH(depth) \
+      // ((((CV_8U)+(CV_16U<<4)+(CV_32F<<8)+(CV_64F<<16)+(CV_8S<<20)+ \
+      // (CV_16S<<24)+(CV_32S<<28)) >> ((((depth) & $F0) >> 2) + \
+      // (((depth) & IPL_DEPTH_SIGN) ? 20 : 0))) & 15)
 
-                (* * Inline constructor. No data is allocated internally!!!
-                  * (Use together with cvCreateData, or use cvCreateMat instead to
-                  * get a matrix with allocated data):
-                *)
-                // CV_INLINE CvMat cvMat( int rows, int cols, int type, void* data CV_DEFAULT(NULL))
-                // {
-                // CvMat m;
-                //
-                // assert( (unsigned)CV_MAT_DEPTH(type) <= CV_64F );
-                // type = CV_MAT_TYPE(type);
-                // m.type = CV_MAT_MAGIC_VAL | CV_MAT_CONT_FLAG | type;
-                // m.cols = cols;
-                // m.rows = rows;
-                // m.step = m.cols*CV_ELEM_SIZE(type);
-                // m.data.ptr = (uchar*)data;
-                // m.refcount = NULL;
-                // m.hdr_refcount = 0;
-                //
-                // return m;
-                // }
-                  function cvMat(rows, cols, &type: int; const data: pointer = nil): TCvMat; inline; overload;
+      (* * Inline constructor. No data is allocated internally!!!
+        * (Use together with cvCreateData, or use cvCreateMat instead to
+        * get a matrix with allocated data):
+      *)
+      // CV_INLINE CvMat cvMat( int rows, int cols, int type, void* data CV_DEFAULT(NULL))
+      // {
+      // CvMat m;
+      //
+      // assert( (unsigned)CV_MAT_DEPTH(type) <= CV_64F );
+      // type = CV_MAT_TYPE(type);
+      // m.type = CV_MAT_MAGIC_VAL | CV_MAT_CONT_FLAG | type;
+      // m.cols = cols;
+      // m.rows = rows;
+      // m.step = m.cols*CV_ELEM_SIZE(type);
+      // m.data.ptr = (uchar*)data;
+      // m.refcount = NULL;
+      // m.hdr_refcount = 0;
+      //
+      // return m;
+      // }
+        function cvMat(rows, cols, &type: int; const data: pointer = nil): TCvMat; inline; overload;
 
-                  // CV_INLINE CvMat cvMat(const cv::Mat& m);
-                  // function cvMat(const m:TMat):TCvMat; overload;
-                  // CV_INLINE CvMat cvMat(const cv::Mat& m)
-                  // {
-                  // CvMat self;
-                  // CV_DbgAssert(m.dims <= 2);
-                  // self = cvMat(m.rows, m.dims == 1 ? 1 : m.cols, m.type(), m.data);
-                  // self.step = (int)m.step[0];
-                  // self.type = (self.type & ~cv::Mat::CONTINUOUS_FLAG) | (m.flags & cv::Mat::CONTINUOUS_FLAG);
-                  // return self;
-                  // }
-                    function cvMat(const m: TMat): TCvMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                    // CV_INLINE CvMat cvMat()
-                    // {
-                    // #if !defined(CV__ENABLE_C_API_CTORS)
-                    // CvMat self = CV_STRUCT_INITIALIZER; return self;
-                    // {$else}
-                    // return CvMat();
-                    // {$endif}
-                    // }
-                      function cvMat(): TCvMat; overload; inline;
+        // CV_INLINE CvMat cvMat(const cv::Mat& m);
+        // function cvMat(const m:TMat):TCvMat; overload;
+        // CV_INLINE CvMat cvMat(const cv::Mat& m)
+        // {
+        // CvMat self;
+        // CV_DbgAssert(m.dims <= 2);
+        // self = cvMat(m.rows, m.dims == 1 ? 1 : m.cols, m.type(), m.data);
+        // self.step = (int)m.step[0];
+        // self.type = (self.type & ~cv::Mat::CONTINUOUS_FLAG) | (m.flags & cv::Mat::CONTINUOUS_FLAG);
+        // return self;
+        // }
+function cvMat(const m: TMat): TCvMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+// CV_INLINE CvMat cvMat()
+// {
+// #if !defined(CV__ENABLE_C_API_CTORS)
+// CvMat self = CV_STRUCT_INITIALIZER; return self;
+// {$else}
+// return CvMat();
+// {$endif}
+// }
+  function cvMat(): TCvMat; overload; inline;
 
-                      // CV_INLINE CvMat cvMat(const CvMat& m)
-                      // {
-                      // #if !defined(CV__ENABLE_C_API_CTORS)
-                      // CvMat self = CV_STRUCT_INITIALIZER; memcpy(&self, &m, sizeof(self)); return self;
-                      // {$else}
-                      // return CvMat(m);
-                      // {$endif}
-                      // }
-                        function cvMat(const m: TCvMat): TCvMat; inline; overload;
+  // CV_INLINE CvMat cvMat(const CvMat& m)
+  // {
+  // #if !defined(CV__ENABLE_C_API_CTORS)
+  // CvMat self = CV_STRUCT_INITIALIZER; memcpy(&self, &m, sizeof(self)); return self;
+  // {$else}
+  // return CvMat(m);
+  // {$endif}
+  // }
+    function cvMat(const m: TCvMat): TCvMat; inline; overload;
 
-                        { TODO : CV_MAT_ELEM_PTR_FAST }
+    { TODO : CV_MAT_ELEM_PTR_FAST }
 
-                        // #define CV_MAT_ELEM_PTR_FAST( mat, row, col, pix_size )  \
-                        // (assert( (unsigned)(row) < (unsigned)(mat).rows &&   \
-                        // (unsigned)(col) < (unsigned)(mat).cols ),   \
-                        // (mat).data.ptr + (size_t)(mat).step*(row) + (pix_size)*(col))
-                        //
-                        // #define CV_MAT_ELEM_PTR( mat, row, col )                 \
-                        // CV_MAT_ELEM_PTR_FAST( mat, row, col, CV_ELEM_SIZE((mat).type) )
-                        //
-                        // #define CV_MAT_ELEM( mat, elemtype, row, col )           \
-                        // (*(elemtype*)CV_MAT_ELEM_PTR_FAST( mat, row, col, sizeof(elemtype)))
+    // #define CV_MAT_ELEM_PTR_FAST( mat, row, col, pix_size )  \
+    // (assert( (unsigned)(row) < (unsigned)(mat).rows &&   \
+    // (unsigned)(col) < (unsigned)(mat).cols ),   \
+    // (mat).data.ptr + (size_t)(mat).step*(row) + (pix_size)*(col))
+    //
+    // #define CV_MAT_ELEM_PTR( mat, row, col )       \
+    // CV_MAT_ELEM_PTR_FAST( mat, row, col, CV_ELEM_SIZE((mat).type) )
+    //
+    // #define CV_MAT_ELEM( mat, elemtype, row, col ) \
+    // (*(elemtype*)CV_MAT_ELEM_PTR_FAST( mat, row, col, sizeof(elemtype)))
 
-                        (* * @brief Returns the particular element of single-channel floating-point matrix.
+    (* * @brief Returns the particular element of single-channel floating-point matrix.
 
-                          The function is a fast replacement for cvGetReal2D in the case of single-channel floating-point
-                          matrices. It is faster because it is inline, it does fewer checks for array type and array element
-                          type, and it checks for the row and column ranges only in debug mode.
-                          @param mat Input matrix
-                          @param row The zero-based index of row
-                          @param col The zero-based index of column
-                        *)
-                        // CV_INLINE  double  cvmGet( const CvMat* mat, int row, int col )
-                        // {
-                        // int type;
-                        //
-                        // type = CV_MAT_TYPE(mat->type);
-                        // assert( (unsigned)row < (unsigned)mat->rows &&
-                        // (unsigned)col < (unsigned)mat->cols );
-                        //
-                        // if( type == CV_32FC1 )
-                        // return ((float*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col];
-                        // else
-                        // {
-                        // assert( type == CV_64FC1 );
-                        // return ((double*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col];
-                        // }
-                        // }
-                          function cvmGet(const mat: pCvMat; row, col: int): double; inline; overload;
+      The function is a fast replacement for cvGetReal2D in the case of single-channel floating-point
+      matrices. It is faster because it is inline, it does fewer checks for array type and array element
+      type, and it checks for the row and column ranges only in debug mode.
+      @param mat Input matrix
+      @param row The zero-based index of row
+      @param col The zero-based index of column
+    *)
+    // CV_INLINE  double  cvmGet( const CvMat* mat, int row, int col )
+    // {
+    // int type;
+    //
+    // type = CV_MAT_TYPE(mat->type);
+    // assert( (unsigned)row < (unsigned)mat->rows &&
+    // (unsigned)col < (unsigned)mat->cols );
+    //
+    // if( type == CV_32FC1 )
+    // return ((float*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col];
+    // else
+    // {
+    // assert( type == CV_64FC1 );
+    // return ((double*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col];
+    // }
+    // }
+      function cvmGet(const mat: pCvMat; row, col: int): double; inline; overload;
 
-                          (* * @brief Sets a specific element of a single-channel floating-point matrix.
+      (* * @brief Sets a specific element of a single-channel floating-point matrix.
 
-                            The function is a fast replacement for cvSetReal2D in the case of single-channel floating-point
-                            matrices. It is faster because it is inline, it does fewer checks for array type and array element
-                            type, and it checks for the row and column ranges only in debug mode.
-                            @param mat The matrix
-                            @param row The zero-based index of row
-                            @param col The zero-based index of column
-                            @param value The new value of the matrix element
-                          *)
-                          // CV_INLINE  void  cvmSet( CvMat* mat, int row, int col, double value )
-                          // {
-                          // int type;
-                          // type = CV_MAT_TYPE(mat->type);
-                          // assert( (unsigned)row < (unsigned)mat->rows &&
-                          // (unsigned)col < (unsigned)mat->cols );
-                          //
-                          // if( type == CV_32FC1 )
-                          // ((float*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col] = (float)value;
-                          // else
-                          // {
-                          // assert( type == CV_64FC1 );
-                          // ((double*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col] = value;
-                          // }
-                          // }
-                            procedure cvmSet(Var mat: TCvMat; row, col: int; Value: double); inline;
+        The function is a fast replacement for cvSetReal2D in the case of single-channel floating-point
+        matrices. It is faster because it is inline, it does fewer checks for array type and array element
+        type, and it checks for the row and column ranges only in debug mode.
+        @param mat The matrix
+        @param row The zero-based index of row
+        @param col The zero-based index of column
+        @param value The new value of the matrix element
+      *)
+      // CV_INLINE  void  cvmSet( CvMat* mat, int row, int col, double value )
+      // {
+      // int type;
+      // type = CV_MAT_TYPE(mat->type);
+      // assert( (unsigned)row < (unsigned)mat->rows &&
+      // (unsigned)col < (unsigned)mat->cols );
+      //
+      // if( type == CV_32FC1 )
+      // ((float*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col] = (float)value;
+      // else
+      // {
+      // assert( type == CV_64FC1 );
+      // ((double*)(void*)(mat->data.ptr + (size_t)mat->step*row))[col] = value;
+      // }
+      // }
+        procedure cvmSet(Var mat: TCvMat; row, col: int; Value: double); inline;
 
-                            // CV_INLINE int cvIplDepth( int type )
-                            // {
-                            // int depth = CV_MAT_DEPTH(type);
-                            // return CV_ELEM_SIZE1(depth)*8 | (depth == CV_8S || depth == CV_16S ||
-                            // depth == CV_32S ? IPL_DEPTH_SIGN : 0);
-                            // }
-                              function cvIplDepth(&type: int): int; inline;
+        // CV_INLINE int cvIplDepth( int type )
+        // {
+        // int depth = CV_MAT_DEPTH(type);
+        // return CV_ELEM_SIZE1(depth)*8 | (depth == CV_8S || depth == CV_16S ||
+        // depth == CV_32S ? IPL_DEPTH_SIGN : 0);
+        // }
+function cvIplDepth(&type: int): int; inline;
 
-                              (* ***************************************************************************************\
-                                *                       Multi-dimensional dense array (CvMatND)                          *
-                                \*************************************************************************************** *)
+(* ***************************************************************************************\
+  *   Multi-dimensional dense array (CvMatND)      *
+  \*************************************************************************************** *)
 
-                              // CV_EXPORTS CvMatND cvMatND(const cv::Mat& m);
-                                function cvMatND(const m: TMat): TCvMatND; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-                                // CV_INLINE CvMatND cvMatND()
-                                // {
-                                // {$if not (defined(CV__ENABLE_C_API_CTORS) and defined(__cplusplus))}
-                                // CvMatND self = CV_STRUCT_INITIALIZER; return self;
-                                // {$else}
-                                // return CvMatND();
-                                // {$endif}
-                                // }
-                                  function cvMatND(): TCvMatND; inline; overload;
+// CV_EXPORTS CvMatND cvMatND(const cv::Mat& m);
+  function cvMatND(const m: TMat): TCvMatND; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  // CV_INLINE CvMatND cvMatND()
+  // {
+  // {$if not (defined(CV__ENABLE_C_API_CTORS) and defined(__cplusplus))}
+  // CvMatND self = CV_STRUCT_INITIALIZER; return self;
+  // {$else}
+  // return CvMatND();
+  // {$endif}
+  // }
+    function cvMatND(): TCvMatND; inline; overload;
 
-                                  // #define CV_IS_MATND_HDR(mat) \
-                                  // ((mat) != NULL && (((const CvMatND*)(mat))->type & CV_MAGIC_MASK) == CV_MATND_MAGIC_VAL)
-                                    function CV_IS_MATND_HDR(const mat: pCvArr): boolean; inline;
-                                    //
-                                    // #define CV_IS_MATND(mat) \
-                                    // (CV_IS_MATND_HDR(mat) && ((const CvMatND*)(mat))->data.ptr != NULL)
-                                      function CV_IS_MATND(const mat: pCvArr): boolean; inline;
+    // #define CV_IS_MATND_HDR(mat) \
+    // ((mat) != NULL && (((const CvMatND*)(mat))->type & CV_MAGIC_MASK) == CV_MATND_MAGIC_VAL)
+      function CV_IS_MATND_HDR(const mat: pCvArr): boolean; inline;
+      //
+      // #define CV_IS_MATND(mat) \
+      // (CV_IS_MATND_HDR(mat) && ((const CvMatND*)(mat))->data.ptr != NULL)
+function CV_IS_MATND(const mat: pCvArr): boolean; inline;
 
-                                      (* ***************************************************************************************\
-                                        *                      Multi-dimensional sparse array (CvSparseMat)                      *
-                                        \*************************************************************************************** *)
+(* ***************************************************************************************\
+*  Multi-dimensional sparse array (CvSparseMat)  *
+\*************************************************************************************** *)
 
-                                      // CV_EXPORTS CvSparseMat* cvCreateSparseMat(const cv::SparseMat& m);
-                                      { TODO:TSparseMat }
-                                      // function cvCreateSparseMat(const m:TSparseMat):pCvSparseMat;
+// CV_EXPORTS CvSparseMat* cvCreateSparseMat(const cv::SparseMat& m);
+{ TODO:TSparseMat }
+// function cvCreateSparseMat(const m:TSparseMat):pCvSparseMat;
 
-                                      { TODO:CV_IS_SPARSE_MAT_HDR }
-                                      // #define CV_IS_SPARSE_MAT_HDR(mat) \
-                                      // ((mat) != NULL && \
-                                      // (((const CvSparseMat*)(mat))->type & CV_MAGIC_MASK) == CV_SPARSE_MAT_MAGIC_VAL)
-                                      //
-                                      // #define CV_IS_SPARSE_MAT(mat) \
-                                      // CV_IS_SPARSE_MAT_HDR(mat)
+{ TODO:CV_IS_SPARSE_MAT_HDR }
+// #define CV_IS_SPARSE_MAT_HDR(mat) \
+// ((mat) != NULL && \
+// (((const CvSparseMat*)(mat))->type & CV_MAGIC_MASK) == CV_SPARSE_MAT_MAGIC_VAL)
+//
+// #define CV_IS_SPARSE_MAT(mat) \
+// CV_IS_SPARSE_MAT_HDR(mat)
 
-                                      (* ***************************************************************************************\
-                                        *                                         Histogram                                      *
-                                        \*************************************************************************************** *)
+(* ***************************************************************************************\
+* Histogram*
+\*************************************************************************************** *)
 
-                                      { TODO: CV_IS_HIST }
-                                      // #define CV_IS_HIST( hist ) \
-                                      // ((hist) != NULL  && \
-                                      // (((CvHistogram*)(hist))->type & CV_MAGIC_MASK) == CV_HIST_MAGIC_VAL && \
-                                      // (hist)->bins != NULL)
-                                      //
-                                      // #define CV_IS_UNIFORM_HIST( hist ) \
-                                      // (((hist)->type & CV_HIST_UNIFORM_FLAG) != 0)
-                                      //
-                                      // #define CV_IS_SPARSE_HIST( hist ) \
-                                      // CV_IS_SPARSE_MAT((hist)->bins)
-                                      //
-                                      // #define CV_HIST_HAS_RANGES( hist ) \
-                                      // (((hist)->type & CV_HIST_RANGES_FLAG) != 0)
+{ TODO: CV_IS_HIST }
+// #define CV_IS_HIST( hist ) \
+// ((hist) != NULL  && \
+// (((CvHistogram*)(hist))->type & CV_MAGIC_MASK) == CV_HIST_MAGIC_VAL && \
+// (hist)->bins != NULL)
+//
+// #define CV_IS_UNIFORM_HIST( hist ) \
+// (((hist)->type & CV_HIST_UNIFORM_FLAG) != 0)
+//
+// #define CV_IS_SPARSE_HIST( hist ) \
+// CV_IS_SPARSE_MAT((hist)->bins)
+//
+// #define CV_HIST_HAS_RANGES( hist ) \
+// (((hist)->type & CV_HIST_RANGES_FLAG) != 0)
 
-                                      (* ************************************** CvRect **************************************** *)
+(* ************************************** CvRect **************************************** *)
 
-                                      (* * constructs CvRect structure. *)
-                                      // CV_INLINE  CvRect  cvRect( int x, int y, int width, int height )
-                                      // {
-                                      // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                      // CvRect r = {x, y, width, height};
-                                      // {$else}
-                                      // CvRect r(x, y , width, height);
-                                      // {$endif}
-                                      // return r;
-                                      // }
-                                      // {$ifdef __cplusplus
-                                      // CV_INLINE CvRect cvRect(const cv::Rect& rc) { return cvRect(rc.x, rc.y, rc.width, rc.height); }
-                                      // {$endif}
-                                      //
-                                      // CV_INLINE  IplROI  cvRectToROI( CvRect rect, int coi )
-                                      // {
-                                      // IplROI roi;
-                                      // roi.xOffset = rect.x;
-                                      // roi.yOffset = rect.y;
-                                      // roi.width = rect.width;
-                                      // roi.height = rect.height;
-                                      // roi.coi = coi;
-                                      //
-                                      // return roi;
-                                      // }
-                                      //
-                                      //
-                                      // CV_INLINE  CvRect  cvROIToRect( IplROI roi )
-                                      // {
-                                      // return cvRect( roi.xOffset, roi.yOffset, roi.width, roi.height );
-                                      // }
+(* * constructs CvRect structure. *)
+// CV_INLINE  CvRect  cvRect( int x, int y, int width, int height )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvRect r = {x, y, width, height};
+// {$else}
+// CvRect r(x, y , width, height);
+// {$endif}
+// return r;
+// }
+// {$ifdef __cplusplus
+// CV_INLINE CvRect cvRect(const cv::Rect& rc) { return cvRect(rc.x, rc.y, rc.width, rc.height); }
+// {$endif}
+//
+// CV_INLINE  IplROI  cvRectToROI( CvRect rect, int coi )
+// {
+// IplROI roi;
+// roi.xOffset = rect.x;
+// roi.yOffset = rect.y;
+// roi.width = rect.width;
+// roi.height = rect.height;
+// roi.coi = coi;
+//
+// return roi;
+// }
+//
+//
+// CV_INLINE  CvRect  cvROIToRect( IplROI roi )
+// {
+// return cvRect( roi.xOffset, roi.yOffset, roi.width, roi.height );
+// }
 
-                                      (* ********************************** CvTermCriteria ************************************ *)
+(* ********************************** CvTermCriteria ************************************ *)
 
-                                      // CV_INLINE  CvTermCriteria  cvTermCriteria( int type, int max_iter, double epsilon )
-                                      // {
-                                      // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                      // CvTermCriteria t = { type, max_iter, (float)epsilon};
-                                      // {$else}
-                                      // CvTermCriteria t(type, max_iter, epsilon);
-                                      // {$endif}
-                                      // return t;
-                                      // }
-                                        function CvTermCriteria(&type: int; max_iter: int; epsilon: double): TCvTermCriteria; inline; overload;
-                                        // {$ifdef __cplusplus
-                                        // CV_INLINE CvTermCriteria cvTermCriteria(const cv::TermCriteria& t) { return cvTermCriteria(t.type, t.maxCount, t.epsilon); }
-                                        function CvTermCriteria(const T: TTermCriteria): TCvTermCriteria; inline; overload;
-                                        // {$endif}
+// CV_INLINE  CvTermCriteria  cvTermCriteria( int type, int max_iter, double epsilon )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvTermCriteria t = { type, max_iter, (float)epsilon};
+// {$else}
+// CvTermCriteria t(type, max_iter, epsilon);
+// {$endif}
+// return t;
+// }
+function CvTermCriteria(&type: int; max_iter: int; epsilon: double): TCvTermCriteria; inline; overload;
+// {$ifdef __cplusplus
+// CV_INLINE CvTermCriteria cvTermCriteria(const cv::TermCriteria& t) { return cvTermCriteria(t.type, t.maxCount, t.epsilon); }
+function CvTermCriteria(const T: TTermCriteria): TCvTermCriteria; inline; overload;
+// {$endif}
 
-                                        (* ****************************** CvPoint and variants ********************************** *)
+(* ****************************** CvPoint and variants ********************************** *)
 
-                                        (* * constructs CvPoint structure. *)
-                                        // CV_INLINE  CvPoint  cvPoint( int x, int y )
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvPoint p = {x, y};
-                                        // {$else}
-                                        // CvPoint p(x, y);
-                                        // {$endif}
-                                        // return p;
-                                        // }
-                                        function CvPoint(x, y: int): TCvPoint; inline; overload;
-                                        // {$ifdef __cplusplus
-                                        // CV_INLINE CvPoint cvPoint(const cv::Point& pt) { return cvPoint(pt.x, pt.y); }
-                                        function CvPoint(const pt: TPoint): TCvPoint; inline; overload;
-                                        // {$endif}
-                                        //
-                                        //
-                                        // (** constructs CvPoint2D32f structure. *)
-                                        // CV_INLINE  CvPoint2D32f  cvPoint2D32f( double x, double y )
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvPoint2D32f p = { (float)x, (float)y };
-                                        // {$else}
-                                        // CvPoint2D32f p((float)x, (float)y);
-                                        // {$endif}
-                                        // return p;
-                                        // }
-                                        //
-                                        // {$ifdef __cplusplus
-                                        // template<typename _Tp>
-                                        // CvPoint2D32f cvPoint2D32f(const cv::Point_<_Tp>& pt)
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvPoint2D32f p = { (float)pt.x, (float)pt.y };
-                                        // {$else}
-                                        // CvPoint2D32f p((float)pt.x, (float)pt.y);
-                                        // {$endif}
-                                        // return p;
-                                        // }
-                                        // {$endif}
-                                        //
-                                        // (** converts CvPoint to CvPoint2D32f. *)
-                                        // CV_INLINE  CvPoint2D32f  cvPointTo32f( CvPoint point )
-                                        // {
-                                        // return cvPoint2D32f( (float)point.x, (float)point.y );
-                                        // }
-                                        //
-                                        // (** converts CvPoint2D32f to CvPoint. *)
-                                        // CV_INLINE  CvPoint  cvPointFrom32f( CvPoint2D32f point )
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvPoint ipt = { cvRound(point.x), cvRound(point.y) };
-                                        // {$else}
-                                        // CvPoint ipt(cvRound(point.x), cvRound(point.y));
-                                        // {$endif}
-                                        // return ipt;
-                                        // }
-                                        function cvPointFrom32f(const point: TCvPoint2D32f): TCvPoint; inline;
+(* * constructs CvPoint structure. *)
+// CV_INLINE  CvPoint  cvPoint( int x, int y )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvPoint p = {x, y};
+// {$else}
+// CvPoint p(x, y);
+// {$endif}
+// return p;
+// }
+function CvPoint(x, y: int): TCvPoint; inline; overload;
+// {$ifdef __cplusplus
+// CV_INLINE CvPoint cvPoint(const cv::Point& pt) { return cvPoint(pt.x, pt.y); }
+function CvPoint(const pt: TPoint): TCvPoint; inline; overload;
+// {$endif}
+//
+//
+// (** constructs CvPoint2D32f structure. *)
+// CV_INLINE  CvPoint2D32f  cvPoint2D32f( double x, double y )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvPoint2D32f p = { (float)x, (float)y };
+// {$else}
+// CvPoint2D32f p((float)x, (float)y);
+// {$endif}
+// return p;
+// }
+//
+// {$ifdef __cplusplus
+// template<typename _Tp>
+// CvPoint2D32f cvPoint2D32f(const cv::Point_<_Tp>& pt)
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvPoint2D32f p = { (float)pt.x, (float)pt.y };
+// {$else}
+// CvPoint2D32f p((float)pt.x, (float)pt.y);
+// {$endif}
+// return p;
+// }
+// {$endif}
+//
+// (** converts CvPoint to CvPoint2D32f. *)
+// CV_INLINE  CvPoint2D32f  cvPointTo32f( CvPoint point )
+// {
+// return cvPoint2D32f( (float)point.x, (float)point.y );
+// }
+//
+// (** converts CvPoint2D32f to CvPoint. *)
+// CV_INLINE  CvPoint  cvPointFrom32f( CvPoint2D32f point )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvPoint ipt = { cvRound(point.x), cvRound(point.y) };
+// {$else}
+// CvPoint ipt(cvRound(point.x), cvRound(point.y));
+// {$endif}
+// return ipt;
+// }
+function cvPointFrom32f(const point: TCvPoint2D32f): TCvPoint; inline;
 
-                                        //
-                                        // (** constructs CvPoint3D32f structure. *)
-                                        // CV_INLINE  CvPoint3D32f  cvPoint3D32f( double x, double y, double z )
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvPoint3D32f p = { (float)x, (float)y, (float)z };
-                                        // {$else}
-                                        // CvPoint3D32f p((float)x, (float)y, (float)z);
-                                        // {$endif}
-                                        // return p;
-                                        // }
-                                        //
-                                        // {$ifdef __cplusplus
-                                        // template<typename _Tp>
-                                        // CvPoint3D32f cvPoint3D32f(const cv::Point3_<_Tp>& pt)
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvPoint3D32f p  = { (float)pt.x, (float)pt.y, (float)pt.z };
-                                        // {$else}
-                                        // CvPoint3D32f p((float)pt.x, (float)pt.y, (float)pt.z);
-                                        // {$endif}
-                                        // return p;
-                                        // }
-                                        // {$endif}
-                                        //
-                                        //
-                                        // (** constructs CvPoint2D64f structure.*)
-                                        // CV_INLINE  CvPoint2D64f  cvPoint2D64f( double x, double y )
-                                        // {
-                                        // CvPoint2D64f p = { x, y };
-                                        // return p;
-                                        // }
-                                        //
-                                        // (** constructs CvPoint3D64f structure. *)
-                                        // CV_INLINE  CvPoint3D64f  cvPoint3D64f( double x, double y, double z )
-                                        // {
-                                        // CvPoint3D64f p = { x, y, z };
-                                        // return p;
-                                        // }
+//
+// (** constructs CvPoint3D32f structure. *)
+// CV_INLINE  CvPoint3D32f  cvPoint3D32f( double x, double y, double z )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvPoint3D32f p = { (float)x, (float)y, (float)z };
+// {$else}
+// CvPoint3D32f p((float)x, (float)y, (float)z);
+// {$endif}
+// return p;
+// }
+//
+// {$ifdef __cplusplus
+// template<typename _Tp>
+// CvPoint3D32f cvPoint3D32f(const cv::Point3_<_Tp>& pt)
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvPoint3D32f p  = { (float)pt.x, (float)pt.y, (float)pt.z };
+// {$else}
+// CvPoint3D32f p((float)pt.x, (float)pt.y, (float)pt.z);
+// {$endif}
+// return p;
+// }
+// {$endif}
+//
+//
+// (** constructs CvPoint2D64f structure.*)
+// CV_INLINE  CvPoint2D64f  cvPoint2D64f( double x, double y )
+// {
+// CvPoint2D64f p = { x, y };
+// return p;
+// }
+//
+// (** constructs CvPoint3D64f structure. *)
+// CV_INLINE  CvPoint3D64f  cvPoint3D64f( double x, double y, double z )
+// {
+// CvPoint3D64f p = { x, y, z };
+// return p;
+// }
 
-                                        (* ******************************* CvSize's & CvBox ************************************* *)
+(* ******************************* CvSize's & CvBox ************************************* *)
 
-                                        function CvSize(const w: int = 0; const h: int = 0): _CvSize; inline;
+function CvSize(const w: int = 0; const h: int = 0): _CvSize; inline;
 
-                                        (* * constructs CvSize2D32f structure. *)
-                                        // CV_INLINE  CvSize2D32f  cvSize2D32f( double width, double height )
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvSize2D32f s = { (float)width, (float)height };
-                                        // {$else}
-                                        // CvSize2D32f s((float)width, (float)height);
-                                        // {$endif}
-                                        // return s;
-                                        // }
-                                        // {$ifdef __cplusplus
-                                        // template<typename _Tp>
-                                        // CvSize2D32f cvSize2D32f(const cv::Size_<_Tp>& sz)
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvSize2D32f s = { (float)sz.width, (float)sz.height };
-                                        // {$else}
-                                        // CvSize2D32f s((float)sz.width, (float)sz.height);
-                                        // {$endif}
-                                        // return s;
-                                        // }
-                                        // {$endif}
-                                        //
-                                        // {$ifdef __cplusplus
-                                        // CV_INLINE CvBox2D cvBox2D(CvPoint2D32f c = CvPoint2D32f(), CvSize2D32f s = CvSize2D32f(), float a = 0)
-                                        // {
-                                        // CvBox2D self;
-                                        // self.center = c;
-                                        // self.size = s;
-                                        // self.angle = a;
-                                        // return self;
-                                        // }
-                                        // CV_INLINE CvBox2D cvBox2D(const cv::RotatedRect& rr)
-                                        // {
-                                        // CvBox2D self;
-                                        // self.center = cvPoint2D32f(rr.center);
-                                        // self.size = cvSize2D32f(rr.size);
-                                        // self.angle = rr.angle;
-                                        // return self;
-                                        // }
-                                        // {$endif}
+(* * constructs CvSize2D32f structure. *)
+// CV_INLINE  CvSize2D32f  cvSize2D32f( double width, double height )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvSize2D32f s = { (float)width, (float)height };
+// {$else}
+// CvSize2D32f s((float)width, (float)height);
+// {$endif}
+// return s;
+// }
+// {$ifdef __cplusplus
+// template<typename _Tp>
+// CvSize2D32f cvSize2D32f(const cv::Size_<_Tp>& sz)
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvSize2D32f s = { (float)sz.width, (float)sz.height };
+// {$else}
+// CvSize2D32f s((float)sz.width, (float)sz.height);
+// {$endif}
+// return s;
+// }
+// {$endif}
+//
+// {$ifdef __cplusplus
+// CV_INLINE CvBox2D cvBox2D(CvPoint2D32f c = CvPoint2D32f(), CvSize2D32f s = CvSize2D32f(), float a = 0)
+// {
+// CvBox2D self;
+// self.center = c;
+// self.size = s;
+// self.angle = a;
+// return self;
+// }
+// CV_INLINE CvBox2D cvBox2D(const cv::RotatedRect& rr)
+// {
+// CvBox2D self;
+// self.center = cvPoint2D32f(rr.center);
+// self.size = cvSize2D32f(rr.size);
+// self.angle = rr.angle;
+// return self;
+// }
+// {$endif}
 
-                                        (* ************************************ CvSlice ***************************************** *)
+(* ************************************ CvSlice ***************************************** *)
 
-                                        // CV_INLINE  CvSlice  cvSlice( int start, int end )
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus) && !defined(__CUDACC__))
-                                        // CvSlice slice = { start, end };
-                                        // {$else}
-                                        // CvSlice slice(start, end);
-                                        // {$endif}
-                                        // return slice;
-                                        // }
-                                        function CvSlice(start: int = 0; &end: int = 0): TCvSlice; inline;
+// CV_INLINE  CvSlice  cvSlice( int start, int end )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus) && !defined(__CUDACC__))
+// CvSlice slice = { start, end };
+// {$else}
+// CvSlice slice(start, end);
+// {$endif}
+// return slice;
+// }
+function CvSlice(start: int = 0; &end: int = 0): TCvSlice; inline;
 
-                                        // #if defined(__cplusplus)
-                                        // CV_INLINE  CvSlice  cvSlice(const cv::Range& r)
-                                        // {
-                                        // CvSlice slice = (r.start != INT_MIN && r.end != INT_MAX) ? cvSlice(r.start, r.end) : cvSlice(0, CV_WHOLE_SEQ_END_INDEX);
-                                        // return slice;
-                                        // }
-                                        // {$endif}
+// #if defined(__cplusplus)
+// CV_INLINE  CvSlice  cvSlice(const cv::Range& r)
+// {
+// CvSlice slice = (r.start != INT_MIN && r.end != INT_MAX) ? cvSlice(r.start, r.end) : cvSlice(0, CV_WHOLE_SEQ_END_INDEX);
+// return slice;
+// }
+// {$endif}
 
-                                        (* ************************************ CvScalar **************************************** *)
+(* ************************************ CvScalar **************************************** *)
 
-                                        // CV_INLINE  CvScalar  cvScalar( double val0, double val1 CV_DEFAULT(0),
-                                        // double val2 CV_DEFAULT(0), double val3 CV_DEFAULT(0))
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvScalar scalar = CV_STRUCT_INITIALIZER;
-                                        // {$else}
-                                        // CvScalar scalar;
-                                        // {$endif}
-                                        // scalar.val[0] = val0; scalar.val[1] = val1;
-                                        // scalar.val[2] = val2; scalar.val[3] = val3;
-                                        // return scalar;
-                                        // }
-                                        function CvScalar(val0: double; val1: double = 0; val2: double = 0; val3: double = 0): TCvScalar; inline;
+// CV_INLINE  CvScalar  cvScalar( double val0, double val1 CV_DEFAULT(0),
+// double val2 CV_DEFAULT(0), double val3 CV_DEFAULT(0))
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvScalar scalar = CV_STRUCT_INITIALIZER;
+// {$else}
+// CvScalar scalar;
+// {$endif}
+// scalar.val[0] = val0; scalar.val[1] = val1;
+// scalar.val[2] = val2; scalar.val[3] = val3;
+// return scalar;
+// }
+function CvScalar(val0: double; val1: double = 0; val2: double = 0; val3: double = 0): TCvScalar; inline;
 
-                                        // {$ifdef __cplusplus
-                                        // CV_INLINE CvScalar cvScalar()
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvScalar scalar = CV_STRUCT_INITIALIZER;
-                                        // {$else}
-                                        // CvScalar scalar;
-                                        // {$endif}
-                                        // scalar.val[0] = scalar.val[1] = scalar.val[2] = scalar.val[3] = 0;
-                                        // return scalar;
-                                        // }
-                                        // CV_INLINE CvScalar cvScalar(const cv::Scalar& s)
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvScalar scalar = CV_STRUCT_INITIALIZER;
-                                        // {$else}
-                                        // CvScalar scalar;
-                                        // {$endif}
-                                        // scalar.val[0] = s.val[0];
-                                        // scalar.val[1] = s.val[1];
-                                        // scalar.val[2] = s.val[2];
-                                        // scalar.val[3] = s.val[3];
-                                        // return scalar;
-                                        // }
-                                        // {$endif}
-                                        //
-                                        // CV_INLINE  CvScalar  cvRealScalar( double val0 )
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvScalar scalar = CV_STRUCT_INITIALIZER;
-                                        // {$else}
-                                        // CvScalar scalar;
-                                        // {$endif}
-                                        // scalar.val[0] = val0;
-                                        // scalar.val[1] = scalar.val[2] = scalar.val[3] = 0;
-                                        // return scalar;
-                                        // }
-                                        function cvRealScalar(val0: double): TCvScalar; inline;
+// {$ifdef __cplusplus
+// CV_INLINE CvScalar cvScalar()
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvScalar scalar = CV_STRUCT_INITIALIZER;
+// {$else}
+// CvScalar scalar;
+// {$endif}
+// scalar.val[0] = scalar.val[1] = scalar.val[2] = scalar.val[3] = 0;
+// return scalar;
+// }
+// CV_INLINE CvScalar cvScalar(const cv::Scalar& s)
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvScalar scalar = CV_STRUCT_INITIALIZER;
+// {$else}
+// CvScalar scalar;
+// {$endif}
+// scalar.val[0] = s.val[0];
+// scalar.val[1] = s.val[1];
+// scalar.val[2] = s.val[2];
+// scalar.val[3] = s.val[3];
+// return scalar;
+// }
+// {$endif}
+//
+// CV_INLINE  CvScalar  cvRealScalar( double val0 )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvScalar scalar = CV_STRUCT_INITIALIZER;
+// {$else}
+// CvScalar scalar;
+// {$endif}
+// scalar.val[0] = val0;
+// scalar.val[1] = scalar.val[2] = scalar.val[3] = 0;
+// return scalar;
+// }
+function cvRealScalar(val0: double): TCvScalar; inline;
 
-                                        // CV_INLINE  CvScalar  cvScalarAll( double val0123 )
-                                        // {
-                                        // #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
-                                        // CvScalar scalar = CV_STRUCT_INITIALIZER;
-                                        // {$else}
-                                        // CvScalar scalar;
-                                        // {$endif}
-                                        // scalar.val[0] = val0123;
-                                        // scalar.val[1] = val0123;
-                                        // scalar.val[2] = val0123;
-                                        // scalar.val[3] = val0123;
-                                        // return scalar;
-                                        // }
-                                        function cvScalarAll(val0123: double): TCvScalar; inline;
+// CV_INLINE  CvScalar  cvScalarAll( double val0123 )
+// {
+// #if !(defined(CV__ENABLE_C_API_CTORS) && defined(__cplusplus))
+// CvScalar scalar = CV_STRUCT_INITIALIZER;
+// {$else}
+// CvScalar scalar;
+// {$endif}
+// scalar.val[0] = val0123;
+// scalar.val[1] = val0123;
+// scalar.val[2] = val0123;
+// scalar.val[3] = val0123;
+// return scalar;
+// }
+function cvScalarAll(val0123: double): TCvScalar; inline;
 
-                                        (* ***************************************************************************************\
-                                        *                                   Dynamic Data structures                              *
-                                        \*************************************************************************************** *)
+(* ***************************************************************************************\
+*     Dynamic Data structures*
+\*************************************************************************************** *)
 
-                                        (* ******************************* Memory storage *************************************** *)
+(* ******************************* Memory storage *************************************** *)
 
-                                        // #define CV_IS_STORAGE(storage)  \
-                                        // ((storage) != NULL &&       \
-                                        // (((CvMemStorage*)(storage))->signature & CV_MAGIC_MASK) == CV_STORAGE_MAGIC_VAL)
+// #define CV_IS_STORAGE(storage)  \
+// ((storage) != NULL &&       \
+// (((CvMemStorage*)(storage))->signature & CV_MAGIC_MASK) == CV_STORAGE_MAGIC_VAL)
 
-                                        (* ************************************** Set ******************************************* *)
-                                        (* * Checks whether the element pointed by ptr belongs to a set or not *)
-                                        // #define CV_IS_SET_ELEM( ptr )  (((CvSetElem*)(ptr))->flags >= 0)
-                                        function CV_IS_SET_ELEM(const ptr: pCvArr): boolean; inline;
+(* ************************************** Set ******************************************* *)
+(* * Checks whether the element pointed by ptr belongs to a set or not *)
+// #define CV_IS_SET_ELEM( ptr )  (((CvSetElem*)(ptr))->flags >= 0)
+function CV_IS_SET_ELEM(const ptr: pCvArr): boolean; inline;
 
-                                        (* ***************************************************************************************\
-                                        *                                    Sequence types                                      *
-                                        \*************************************************************************************** *)
+(* ***************************************************************************************\
+*      Sequence types*
+\*************************************************************************************** *)
 
-                                        // #define CV_IS_SEQ(seq) \
-                                        // ((seq) != NULL && (((CvSeq*)(seq))->flags & CV_MAGIC_MASK) == CV_SEQ_MAGIC_VAL)
-                                        // #define CV_IS_SET(set) \
-                                        // ((set) != NULL && (((CvSeq*)(set))->flags & CV_MAGIC_MASK) == CV_SET_MAGIC_VAL)
-                                        // #define CV_SEQ_ELTYPE_PTR            CV_MAKE_TYPE(CV_8U, 8 (*sizeof(void*)*))
-                                        // #define CV_SEQ_ELTYPE_PPOINT         CV_SEQ_ELTYPE_PTR  (**< &(x,y) *)
-                                        //
-                                        // #define CV_SEQ_ELTYPE( seq )   ((seq)->flags & CV_SEQ_ELTYPE_MASK)
-                                        // #define CV_SEQ_KIND( seq )     ((seq)->flags & CV_SEQ_KIND_MASK )
-                                        //
-                                        // (** flag checking *)
-                                        // #define CV_IS_SEQ_INDEX( seq )      ((CV_SEQ_ELTYPE(seq) == CV_SEQ_ELTYPE_INDEX) && \
-                                        // (CV_SEQ_KIND(seq) == CV_SEQ_KIND_GENERIC))
-                                        //
-                                        // #define CV_IS_SEQ_CURVE( seq )      (CV_SEQ_KIND(seq) == CV_SEQ_KIND_CURVE)
-                                        // #define CV_IS_SEQ_CLOSED( seq )     (((seq)->flags & CV_SEQ_FLAG_CLOSED) != 0)
-                                        // #define CV_IS_SEQ_CONVEX( seq )     0
-                                        // #define CV_IS_SEQ_HOLE( seq )       (((seq)->flags & CV_SEQ_FLAG_HOLE) != 0)
-                                        // #define CV_IS_SEQ_SIMPLE( seq )     1
-                                        //
-                                        // (** type checking macros *)
-                                        // #define CV_IS_SEQ_POINT_SET( seq ) \
-                                        // ((CV_SEQ_ELTYPE(seq) == CV_32SC2 || CV_SEQ_ELTYPE(seq) == CV_32FC2))
-                                        //
-                                        // #define CV_IS_SEQ_POINT_SUBSET( seq ) \
-                                        // (CV_IS_SEQ_INDEX( seq ) || CV_SEQ_ELTYPE(seq) == CV_SEQ_ELTYPE_PPOINT)
-                                        //
-                                        // #define CV_IS_SEQ_POLYLINE( seq )   \
-                                        // (CV_SEQ_KIND(seq) == CV_SEQ_KIND_CURVE && CV_IS_SEQ_POINT_SET(seq))
-                                        //
-                                        // #define CV_IS_SEQ_POLYGON( seq )   \
-                                        // (CV_IS_SEQ_POLYLINE(seq) && CV_IS_SEQ_CLOSED(seq))
-                                        //
-                                        // #define CV_IS_SEQ_CHAIN( seq )   \
-                                        // (CV_SEQ_KIND(seq) == CV_SEQ_KIND_CURVE && (seq)->elem_size == 1)
-                                        //
-                                        // #define CV_IS_SEQ_CONTOUR( seq )   \
-                                        // (CV_IS_SEQ_CLOSED(seq) && (CV_IS_SEQ_POLYLINE(seq) || CV_IS_SEQ_CHAIN(seq)))
-                                        //
-                                        // #define CV_IS_SEQ_CHAIN_CONTOUR( seq ) \
-                                        // (CV_IS_SEQ_CHAIN( seq ) && CV_IS_SEQ_CLOSED( seq ))
-                                        //
-                                        // #define CV_IS_SEQ_POLYGON_TREE( seq ) \
-                                        // (CV_SEQ_ELTYPE (seq) ==  CV_SEQ_ELTYPE_TRIAN_ATR &&    \
-                                        // CV_SEQ_KIND( seq ) ==  CV_SEQ_KIND_BIN_TREE )
-                                        //
-                                        // #define CV_IS_GRAPH( seq )    \
-                                        // (CV_IS_SET(seq) && CV_SEQ_KIND((CvSet*)(seq)) == CV_SEQ_KIND_GRAPH)
-                                        //
-                                        // #define CV_IS_GRAPH_ORIENTED( seq )   \
-                                        // (((seq)->flags & CV_GRAPH_FLAG_ORIENTED) != 0)
-                                        //
-                                        // #define CV_IS_SUBDIV2D( seq )  \
-                                        // (CV_IS_SET(seq) && CV_SEQ_KIND((CvSet*)(seq)) == CV_SEQ_KIND_SUBDIV2D)
+// #define CV_IS_SEQ(seq) \
+// ((seq) != NULL && (((CvSeq*)(seq))->flags & CV_MAGIC_MASK) == CV_SEQ_MAGIC_VAL)
+// #define CV_IS_SET(set) \
+// ((set) != NULL && (((CvSeq*)(set))->flags & CV_MAGIC_MASK) == CV_SET_MAGIC_VAL)
+// #define CV_SEQ_ELTYPE_PTR  CV_MAKE_TYPE(CV_8U, 8 (*sizeof(void*)*))
+// #define CV_SEQ_ELTYPE_PPOINT         CV_SEQ_ELTYPE_PTR  (**< &(x,y) *)
+//
+// #define CV_SEQ_ELTYPE( seq )   ((seq)->flags & CV_SEQ_ELTYPE_MASK)
+// #define CV_SEQ_KIND( seq )     ((seq)->flags & CV_SEQ_KIND_MASK )
+//
+// (** flag checking *)
+// #define CV_IS_SEQ_INDEX( seq )      ((CV_SEQ_ELTYPE(seq) == CV_SEQ_ELTYPE_INDEX) && \
+// (CV_SEQ_KIND(seq) == CV_SEQ_KIND_GENERIC))
+//
+// #define CV_IS_SEQ_CURVE( seq )      (CV_SEQ_KIND(seq) == CV_SEQ_KIND_CURVE)
+// #define CV_IS_SEQ_CLOSED( seq )     (((seq)->flags & CV_SEQ_FLAG_CLOSED) != 0)
+// #define CV_IS_SEQ_CONVEX( seq )     0
+// #define CV_IS_SEQ_HOLE( seq )       (((seq)->flags & CV_SEQ_FLAG_HOLE) != 0)
+// #define CV_IS_SEQ_SIMPLE( seq )     1
+//
+// (** type checking macros *)
+// #define CV_IS_SEQ_POINT_SET( seq ) \
+// ((CV_SEQ_ELTYPE(seq) == CV_32SC2 || CV_SEQ_ELTYPE(seq) == CV_32FC2))
+//
+// #define CV_IS_SEQ_POINT_SUBSET( seq ) \
+// (CV_IS_SEQ_INDEX( seq ) || CV_SEQ_ELTYPE(seq) == CV_SEQ_ELTYPE_PPOINT)
+//
+// #define CV_IS_SEQ_POLYLINE( seq )   \
+// (CV_SEQ_KIND(seq) == CV_SEQ_KIND_CURVE && CV_IS_SEQ_POINT_SET(seq))
+//
+// #define CV_IS_SEQ_POLYGON( seq )   \
+// (CV_IS_SEQ_POLYLINE(seq) && CV_IS_SEQ_CLOSED(seq))
+//
+// #define CV_IS_SEQ_CHAIN( seq )   \
+// (CV_SEQ_KIND(seq) == CV_SEQ_KIND_CURVE && (seq)->elem_size == 1)
+//
+// #define CV_IS_SEQ_CONTOUR( seq )   \
+// (CV_IS_SEQ_CLOSED(seq) && (CV_IS_SEQ_POLYLINE(seq) || CV_IS_SEQ_CHAIN(seq)))
+//
+// #define CV_IS_SEQ_CHAIN_CONTOUR( seq ) \
+// (CV_IS_SEQ_CHAIN( seq ) && CV_IS_SEQ_CLOSED( seq ))
+//
+// #define CV_IS_SEQ_POLYGON_TREE( seq ) \
+// (CV_SEQ_ELTYPE (seq) ==  CV_SEQ_ELTYPE_TRIAN_ATR &&    \
+// CV_SEQ_KIND( seq ) ==  CV_SEQ_KIND_BIN_TREE )
+//
+// #define CV_IS_GRAPH( seq )    \
+// (CV_IS_SET(seq) && CV_SEQ_KIND((CvSet*)(seq)) == CV_SEQ_KIND_GRAPH)
+//
+// #define CV_IS_GRAPH_ORIENTED( seq )   \
+// (((seq)->flags & CV_GRAPH_FLAG_ORIENTED) != 0)
+//
+// #define CV_IS_SUBDIV2D( seq )  \
+// (CV_IS_SET(seq) && CV_SEQ_KIND((CvSet*)(seq)) == CV_SEQ_KIND_SUBDIV2D)
 
-                                        (* ************************************************************************************** *)
-                                        (* Operations on sequences *)
-                                        (* ************************************************************************************** *)
+(* ************************************************************************************** *)
+(* Operations on sequences *)
+(* ************************************************************************************** *)
 
-                                        // #define  CV_SEQ_ELEM( seq, elem_type, index )                    \
-                                        // (** assert gives some guarantee that <seq> parameter is valid *)  \
-                                        // (   assert(sizeof((seq)->first[0]) == sizeof(CvSeqBlock) &&      \
-                                        // (seq)->elem_size == sizeof(elem_type)),                      \
-                                        // (elem_type*)((seq)->first && (unsigned)index <               \
-                                        // (unsigned)((seq)->first->count) ?                            \
-                                        // (seq)->first->data + (index) * sizeof(elem_type) :           \
-                                        // cvGetSeqElem( (CvSeq*)(seq), (index) )))
-                                        // #define CV_GET_SEQ_ELEM( elem_type, seq, index ) CV_SEQ_ELEM( (seq), elem_type, (index) )
-                                        //
-                                        // (** Add element to sequence: *)
-                                        // #define CV_WRITE_SEQ_ELEM_VAR( elem_ptr, writer )     \
-                                        // {                                                     \
-                                        // if( (writer).ptr >= (writer).block_max )          \
-                                        // {                                                 \
-                                        // cvCreateSeqBlock( &writer);                   \
-                                        // }                                                 \
-                                        // memcpy((writer).ptr, elem_ptr, (writer).seq->elem_size);\
-                                        // (writer).ptr += (writer).seq->elem_size;          \
-                                        // }
-                                        //
-                                        // #define CV_WRITE_SEQ_ELEM( elem, writer )             \
-                                        // {                                                     \
-                                        // assert( (writer).seq->elem_size == sizeof(elem)); \
-                                        // if( (writer).ptr >= (writer).block_max )          \
-                                        // {                                                 \
-                                        // cvCreateSeqBlock( &writer);                   \
-                                        // }                                                 \
-                                        // assert( (writer).ptr <= (writer).block_max - sizeof(elem));\
-                                        // memcpy((writer).ptr, &(elem), sizeof(elem));      \
-                                        // (writer).ptr += sizeof(elem);                     \
-                                        // }
-                                        //
-                                        //
-                                        // (** Move reader position forward: *)
-                                        // #define CV_NEXT_SEQ_ELEM( elem_size, reader )                 \
-                                        // {                                                             \
-                                        // if( ((reader).ptr += (elem_size)) >= (reader).block_max ) \
-                                        // {                                                         \
-                                        // cvChangeSeqBlock( &(reader), 1 );                     \
-                                        // }                                                         \
-                                        // }
-                                        //
-                                        //
-                                        // (** Move reader position backward: *)
-                                        // #define CV_PREV_SEQ_ELEM( elem_size, reader )                \
-                                        // {                                                            \
-                                        // if( ((reader).ptr -= (elem_size)) < (reader).block_min ) \
-                                        // {                                                        \
-                                        // cvChangeSeqBlock( &(reader), -1 );                   \
-                                        // }                                                        \
-                                        // }
-                                        //
-                                        // (** Read element and move read position forward: *)
-                                        // #define CV_READ_SEQ_ELEM( elem, reader )                       \
-                                        // {                                                              \
-                                        // assert( (reader).seq->elem_size == sizeof(elem));          \
-                                        // memcpy( &(elem), (reader).ptr, sizeof((elem)));            \
-                                        // CV_NEXT_SEQ_ELEM( sizeof(elem), reader )                   \
-                                        // }
-                                        //
-                                        // (** Read element and move read position backward: *)
-                                        // #define CV_REV_READ_SEQ_ELEM( elem, reader )                     \
-                                        // {                                                                \
-                                        // assert( (reader).seq->elem_size == sizeof(elem));            \
-                                        // memcpy(&(elem), (reader).ptr, sizeof((elem)));               \
-                                        // CV_PREV_SEQ_ELEM( sizeof(elem), reader )                     \
-                                        // }
-                                        //
-                                        //
-                                        // #define CV_READ_CHAIN_POINT( _pt, reader )                              \
-                                        // {                                                                       \
-                                        // (_pt) = (reader).pt;                                                \
-                                        // if( (reader).ptr )                                                  \
-                                        // {                                                                   \
-                                        // CV_READ_SEQ_ELEM( (reader).code, (reader));                     \
-                                        // assert( ((reader).code & ~7) == 0 );                            \
-                                        // (reader).pt.x += (reader).deltas[(int)(reader).code][0];        \
-                                        // (reader).pt.y += (reader).deltas[(int)(reader).code][1];        \
-                                        // }                                                                   \
-                                        // }
-                                        //
-                                        // #define CV_CURRENT_POINT( reader )  (*((CvPoint*)((reader).ptr)))
-                                        // #define CV_PREV_POINT( reader )     (*((CvPoint*)((reader).prev_elem)))
-                                        //
-                                        // #define CV_READ_EDGE( pt1, pt2, reader )               \
-                                        // {                                                      \
-                                        // assert( sizeof(pt1) == sizeof(CvPoint) &&          \
-                                        // sizeof(pt2) == sizeof(CvPoint) &&          \
-                                        // reader.seq->elem_size == sizeof(CvPoint)); \
-                                        // (pt1) = CV_PREV_POINT( reader );                   \
-                                        // (pt2) = CV_CURRENT_POINT( reader );                \
-                                        // (reader).prev_elem = (reader).ptr;                 \
-                                        // CV_NEXT_SEQ_ELEM( sizeof(CvPoint), (reader));      \
-                                        // }
+// #define  CV_SEQ_ELEM( seq, elem_type, index )\
+// (** assert gives some guarantee that <seq> parameter is valid *)  \
+// (   assert(sizeof((seq)->first[0]) == sizeof(CvSeqBlock) &&      \
+// (seq)->elem_size == sizeof(elem_type)),  \
+// (elem_type*)((seq)->first && (unsigned)index <     \
+// (unsigned)((seq)->first->count) ?        \
+// (seq)->first->data + (index) * sizeof(elem_type) : \
+// cvGetSeqElem( (CvSeq*)(seq), (index) )))
+// #define CV_GET_SEQ_ELEM( elem_type, seq, index ) CV_SEQ_ELEM( (seq), elem_type, (index) )
+//
+// (** Add element to sequence: *)
+// #define CV_WRITE_SEQ_ELEM_VAR( elem_ptr, writer )     \
+// {   \
+// if( (writer).ptr >= (writer).block_max )\
+// {         \
+// cvCreateSeqBlock( &writer);         \
+// }         \
+// memcpy((writer).ptr, elem_ptr, (writer).seq->elem_size);\
+// (writer).ptr += (writer).seq->elem_size;\
+// }
+//
+// #define CV_WRITE_SEQ_ELEM( elem, writer )   \
+// {   \
+// assert( (writer).seq->elem_size == sizeof(elem)); \
+// if( (writer).ptr >= (writer).block_max )\
+// {         \
+// cvCreateSeqBlock( &writer);         \
+// }         \
+// assert( (writer).ptr <= (writer).block_max - sizeof(elem));\
+// memcpy((writer).ptr, &(elem), sizeof(elem));      \
+// (writer).ptr += sizeof(elem); \
+// }
+//
+//
+// (** Move reader position forward: *)
+// #define CV_NEXT_SEQ_ELEM( elem_size, reader )       \
+// { \
+// if( ((reader).ptr += (elem_size)) >= (reader).block_max ) \
+// {       \
+// cvChangeSeqBlock( &(reader), 1 ); \
+// }       \
+// }
+//
+//
+// (** Move reader position backward: *)
+// #define CV_PREV_SEQ_ELEM( elem_size, reader )      \
+// {\
+// if( ((reader).ptr -= (elem_size)) < (reader).block_min ) \
+// {      \
+// cvChangeSeqBlock( &(reader), -1 );         \
+// }      \
+// }
+//
+// (** Read element and move read position forward: *)
+// #define CV_READ_SEQ_ELEM( elem, reader )   \
+// {  \
+// assert( (reader).seq->elem_size == sizeof(elem));\
+// memcpy( &(elem), (reader).ptr, sizeof((elem)));  \
+// CV_NEXT_SEQ_ELEM( sizeof(elem), reader )         \
+// }
+//
+// (** Read element and move read position backward: *)
+// #define CV_REV_READ_SEQ_ELEM( elem, reader ) \
+// {    \
+// assert( (reader).seq->elem_size == sizeof(elem));  \
+// memcpy(&(elem), (reader).ptr, sizeof((elem)));     \
+// CV_PREV_SEQ_ELEM( sizeof(elem), reader ) \
+// }
+//
+//
+// #define CV_READ_CHAIN_POINT( _pt, reader )\
+// { \
+// (_pt) = (reader).pt;        \
+// if( (reader).ptr )\
+// {       \
+// CV_READ_SEQ_ELEM( (reader).code, (reader)); \
+// assert( ((reader).code & ~7) == 0 );        \
+// (reader).pt.x += (reader).deltas[(int)(reader).code][0];        \
+// (reader).pt.y += (reader).deltas[(int)(reader).code][1];        \
+// }       \
+// }
+//
+// #define CV_CURRENT_POINT( reader )  (*((CvPoint*)((reader).ptr)))
+// #define CV_PREV_POINT( reader )     (*((CvPoint*)((reader).prev_elem)))
+//
+// #define CV_READ_EDGE( pt1, pt2, reader )     \
+// {    \
+// assert( sizeof(pt1) == sizeof(CvPoint) &&\
+// sizeof(pt2) == sizeof(CvPoint) &&\
+// reader.seq->elem_size == sizeof(CvPoint)); \
+// (pt1) = CV_PREV_POINT( reader );         \
+// (pt2) = CV_CURRENT_POINT( reader );      \
+// (reader).prev_elem = (reader).ptr;       \
+// CV_NEXT_SEQ_ELEM( sizeof(CvPoint), (reader));      \
+// }
 
-                                        (* *********** Graph macros *********** *)
+(* *********** Graph macros *********** *)
 
-                                        (* * Return next graph edge for given vertex: *)
-                                        // #define  CV_NEXT_GRAPH_EDGE( edge, vertex )                              \
-                                        // (assert((edge)->vtx[0] == (vertex) || (edge)->vtx[1] == (vertex)),  \
-                                        // (edge)->next[(edge)->vtx[1] == (vertex)])
+(* * Return next graph edge for given vertex: *)
+// #define  CV_NEXT_GRAPH_EDGE( edge, vertex )\
+// (assert((edge)->vtx[0] == (vertex) || (edge)->vtx[1] == (vertex)),  \
+// (edge)->next[(edge)->vtx[1] == (vertex)])
 
-                                        (* ***************************************************************************************\
-                                        *             Data structures for persistence (a.k.a serialization) functionality        *
-                                        \*************************************************************************************** *)
-                                        (* * initializes CvAttrList structure *)
-                                        // CV_INLINE CvAttrList cvAttrList( const char** attr CV_DEFAULT(NULL),
-                                        // CvAttrList* next CV_DEFAULT(NULL) )
-                                        // {
-                                        // CvAttrList l;
-                                        // l.attr = attr;
-                                        // l.next = next;
-                                        //
-                                        // return l;
-                                        // }
+(* ***************************************************************************************\
+*   Data structures for persistence (a.k.a serialization) functionality        *
+\*************************************************************************************** *)
+(* * initializes CvAttrList structure *)
+// CV_INLINE CvAttrList cvAttrList( const char** attr CV_DEFAULT(NULL),
+// CvAttrList* next CV_DEFAULT(NULL) )
+// {
+// CvAttrList l;
+// l.attr = attr;
+// l.next = next;
+//
+// return l;
+// }
 
-                                        (* * @} *)
+(* * @} *)
 
 {$IFEND} (* OPENCV_CORE_TYPES_H *)
-                                        (* End of file. *)
+(* End of file. *)
+
+{$ENDIF INTERFACE}
+
+// ===========================================================================
+
+{$IFDEF IMPLEMENTATION}
+
+{$IF defined(OPENCV_CORE_TYPES_H) and (not defined(OPENCV_CORE_TYPES_H_IMPL))}
+{$DEFINE OPENCV_CORE_TYPES_H_IMPL}
+{$IF not defined(OPENCV_CORE_CVDEF_H_IMPL)}{$INCLUDE 'core/cvdef.impl.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_HPP_IMPL)}{$INCLUDE 'core.impl.inc'}{$IFEND}
+
+function cvRNG(const seed: Int64 = -1): TCvRNG;
+begin
+  if seed <> 0 then
+    Result := TCvRNG(seed)
+  else
+    Result := TCvRNG(-1);
+end;
+
+function cvRandInt(Var rng: TCvRNG): unsigned;
+begin
+  Var
+    temp: uint64 := rng;
+  temp := uint64(unsigned(temp) * CV_RNG_COEFF) + (temp shl 32);
+  rng := temp;
+  Result := unsigned(temp);
+end;
+
+function cvRandReal(Var rng: TCvRNG): double; inline;
+begin
+  Result := cvRandInt(rng) * 2.3283064365386962890625E-10; (* 2^-32 *)
+end;
+
+function cvIplImage(): TIplImage;
+begin
+  Result := default (TIplImage);
+end;
+
+function CV_IS_MAT_HDR(const mat: pCvArr): Boolean;
+begin
+  // #define CV_IS_MAT_HDR(mat) \
+  // ((mat) != NULL && \
+  // (((const CvMat*)(mat))->type & CV_MAGIC_MASK) == CV_MAT_MAGIC_VAL && \
+  // ((const CvMat*)(mat))->cols > 0 && ((const CvMat*)(mat))->rows > 0)
+  Result :=//
+    (mat <> nil) and //
+    ((pCvMat(mat)^.&type and CV_MAGIC_MASK) = CV_MAT_MAGIC_VAL) and //
+    ((pCvMat(mat)^.cols > 0) and (pCvMat(mat)^.rows > 0));
+end;
+
+function CV_IS_MAT(const mat: pCvArr): Boolean;
+begin
+  // #define CV_IS_MAT(mat) \
+  // (CV_IS_MAT_HDR(mat) && ((const CvMat*)(mat))->data.ptr != NULL)
+  Result := CV_IS_MAT_HDR(mat) and (pCvMat(mat)^.data.ptr <> nil);
+end;
+
+function CV_IS_MATND_HDR(const mat: pCvArr): Boolean;
+begin
+  // #define CV_IS_MATND_HDR(mat) \
+  // ((mat) != NULL && (((const CvMatND*)(mat))->type & CV_MAGIC_MASK) == CV_MATND_MAGIC_VAL)
+  Result :=//
+    (mat <> nil) and //
+    ((pCvMatND(mat)^.&type and CV_MAGIC_MASK) = CV_MATND_MAGIC_VAL);
+end;
+
+function CV_IS_MATND(const mat: pCvArr): Boolean;
+begin
+  // #define CV_IS_MATND(mat) \
+  // (CV_IS_MATND_HDR(mat) && ((const CvMatND*)(mat))->data.ptr != NULL)
+  Result := CV_IS_MATND_HDR(mat) and (pCvMatND(mat)^.data.ptr <> nil);
+end;
+
+function cvRealScalar(val0: double): TCvScalar;
+begin
+  Result.val[0] := val0;
+  Result.val[1] := 0;
+  Result.val[2] := 0;
+  Result.val[3] := 0;
+end;
+
+function CV_IS_SET_ELEM(const ptr: pCvArr): Boolean;
+begin
+  // #define CV_IS_SET_ELEM( ptr )  (((CvSetElem*)(ptr))->flags >= 0)
+  Result := pCvSetElem(ptr)^.flags >= 0;
+end;
+
+(* ************************************ CvSlice ***************************************** *)
+
+function cvSlice(start: int; &end: int): TCvSlice;
+begin
+  Result := _cvSlice.cvSlice(start, &end);
+end;
+
+class function _cvSlice.cvSlice(start: int = 0; &end: int = 0): _cvSlice;
+begin
+  Result.start_index := start;
+  Result.end_index := &end;
+end;
+
+{ _IplImage }
+
+class operator _IplImage.Initialize(out Dest: _IplImage);
+begin
+  // memset(this, 0, sizeof(*this));  // valid for POD structure
+  Dest.nSize := sizeof(TIplImage);
+end;
+
+class operator _IplImage.Explicit(const m: TMat): _IplImage;
+begin
+  Result := cvIplImage(m);
+end;
+
+{ _CvScalar }
+
+function cvScalar(val0: double; val1: double = 0; val2: double = 0; val3: double = 0): TCvScalar;
+begin
+  Result := _CvScalar.cvScalar(val0, val1, val2, val3);
+end;
+
+class function _CvScalar.cvScalar(d0: double; d1: double = 0; d2: double = 0; d3: double = 0): _CvScalar;
+begin
+  { val[0] = d0; val[1] = d1; val[2] = d2; val[3] = d3; }
+  With Result do
+  begin
+    val[0] := d0;
+    val[1] := d1;
+    val[2] := d2;
+    val[3] := d3;
+  end;
+end;
+
+(* ***************************************************************************************\
+  *    Matrix type (CvMat)     *
+  \*************************************************************************************** *)
+
+function cvMat(const m: TMat): TCvMat;
+begin
+  Assert(m.dims <= 2);
+  Result := cvMat(m.rows, ifthen(m.dims = 1, 1, m.cols), m.&type(), m.data);
+  Result.step := int(m.step[0]);
+  Result.&type := (Result.&type and (not TMat.CONTINUOUS_FLAG)) or (m.flags and TMat.CONTINUOUS_FLAG);
+end;
+
+function cvMat(): TCvMat;
+begin
+  Result := default (TCvMat);
+end;
+
+function cvMat(const m: TCvMat): TCvMat;
+begin
+  Result := TCvMat(m);
+end;
+
+function cvmGet(const mat: pCvMat; row, col: int): double;
+begin
+  var
+    &type: int;
+
+  &type := CV_MAT_TYPE(mat^.&type);
+  Assert((unsigned(row) < unsigned(mat^.rows)) and (unsigned(col) < unsigned(mat^.cols)));
+
+  if (&type = CV_32FC1) then
+    Result := pfloat(mat^.data.ptr + mat^.step * row)[col]
+  else
+  begin
+    Assert(&type = CV_64FC1);
+    Result := pdouble(mat^.data.ptr + mat^.step * row)[col];
+  end;
+end;
+
+procedure cvmSet(Var mat: TCvMat; row, col: int; value: double);
+begin
+  var
+    &type: int;
+  &type := CV_MAT_TYPE(mat.&type);
+  Assert((unsigned(row) < unsigned(mat.rows)) and (unsigned(col) < unsigned(mat.cols)));
+  if (&type = CV_32FC1) then
+    pfloat(mat.data.ptr + mat.step * row)[col] := float(value)
+  else
+  begin
+    Assert(&type = CV_64FC1);
+    pdouble(mat.data.ptr + mat.step * row)[col] := value;
+  end
+end;
+
+function cvIplDepth(&type: int): int;
+begin
+  Var
+    depth: int := CV_MAT_DEPTH(&type);
+  Result :=     //
+    (CV_ELEM_SIZE1(depth) * 8) or   //
+    (ifthen(depth = CV_8S, 1, 0) or //
+    ifthen(depth = CV_16S, 1, 0) or //
+    ifthen(depth = CV_32S, IPL_DEPTH_SIGN, 0));
+end;
+
+class operator _CvMat.Explicit(const m: TMat): _CvMat;
+begin
+  Result := cvMat(m);
+end;
+
+function TPointerHelper.get_puchar: puchar;
+begin
+  Result := puchar(self);
+end;
+
+procedure TPointerHelper.set_puchar(const value: puchar);
+begin
+  self := value;
+end;
+
+function TPointerHelper.get_pshort: pshort;
+begin
+  Result := pshort(self);
+end;
+
+procedure TPointerHelper.set_pshort(const value: pshort);
+begin
+  self := value;
+end;
+
+function TPointerHelper.get_pInt: pInt;
+begin
+  Result := pInt(self);
+end;
+
+procedure TPointerHelper.set_pInt(const value: pInt);
+begin
+  self := value;
+end;
+
+function TPointerHelper.get_pfloat: pfloat;
+begin
+  Result := pfloat(self);
+end;
+
+procedure TPointerHelper.set_pfloat(const value: pfloat);
+begin
+  self := value;
+end;
+
+function TPointerHelper.get_pdouble: pdouble;
+begin
+  Result := pdouble(self);
+end;
+
+procedure TPointerHelper.set_pdouble(const value: pdouble);
+begin
+  self := value;
+end;
+
+(* ***************************************************************************************\
+  *   Multi-dimensional dense array (CvMatND)      *
+  \*************************************************************************************** *)
+
+function cvMatND(const m: TMat): TCvMatND;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_cvMatND(m);
+{$IFEND}
+end;
+
+function cvMatND(): TCvMatND;
+begin
+  Result := default (TCvMatND);
+end;
+
+class operator _CvMatND.Explicit(const m: TMat): _CvMatND;
+begin
+  Result := cvMatND(m);
+end;
+
+(* ***************************************************************************************\
+  *    Image type (IplImage)   *
+  \*************************************************************************************** *)
+
+function cvIplImage(const m: TMat): TIplImage;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_cvIplImage(m);
+{$IFEND}
+end;
+
+function CV_IS_IMAGE_HDR(const img: pCvArr): Boolean;
+begin
+  // ((img) != NULL && ((const IplImage*)(img))->nSize == sizeof(IplImage))
+  Result := Assigned(img) and (pIplImage(img)^.nSize = sizeof(TIplImage));
+end;
+
+function CV_IS_IMAGE(const img: pCvArr): Boolean;
+begin
+  // (CV_IS_IMAGE_HDR(img) && ((IplImage*)img)->imageData != NULL)
+  Result := CV_IS_IMAGE_HDR(img) and (pIplImage(img)^.imageData <> nil);
+end;
+
+function cvMat(rows, cols, &type: int; const data: pointer = nil): TCvMat;
+begin
+  Assert(unsigned(CV_MAT_DEPTH(&type)) <= CV_64F);
+  &type := CV_MAT_TYPE(&type);
+  Result.&type := CV_MAT_MAGIC_VAL or CV_MAT_CONT_FLAG or &type;
+  Result.cols := cols;
+  Result.rows := rows;
+  Result.step := Result.cols * CV_ELEM_SIZE(&type);
+  Result.data.ptr := puchar(data);
+  Result.refcount := nil;
+  Result.hdr_refcount := 0;
+end;
+
+function cvScalarAll(val0123: double): TCvScalar;
+begin
+  Result.val[0] := val0123;
+  Result.val[1] := val0123;
+  Result.val[2] := val0123;
+  Result.val[3] := val0123;
+end;
+
+(* ****************************** CvPoint and variants ********************************** *)
+
+class function _CvPoint.CvPoint(const _x: int = 0; const _y: int = 0): _CvPoint;
+begin
+  Result.x := _x;
+  Result.y := _y;
+end;
+
+function CvPoint(x, y: int): TCvPoint;
+begin
+  Result := _CvPoint.CvPoint(x, y);
+end;
+
+function CvPoint(const pt: TPoint): TCvPoint;
+begin
+  Result := CvPoint(pt.x, pt.y);
+end;
+
+(* ********************************** CvTermCriteria ************************************ *)
+class function _CvTermCriteria.CvTermCriteria(_type: int = 0; _iter: int = 0; _eps: double = 0): _CvTermCriteria;
+begin
+  With Result do
+  begin
+    &type := _type;
+    max_iter := _iter;
+    epsilon := _eps;
+  end;
+end;
+
+function CvTermCriteria(&type: int; max_iter: int; epsilon: double): TcvTermCriteria;
+begin
+  Result := _CvTermCriteria.CvTermCriteria(&type, max_iter, epsilon);
+end;
+
+function CvTermCriteria(const t: TTermCriteria): TcvTermCriteria;
+begin
+  Result := CvTermCriteria(t.&type, t.maxCount, t.epsilon);
+end;
+
+(* ******************************* CvSize's & CvBox ************************************* *)
+
+function cvSize(const w: int = 0; const h: int = 0): _CvSize;
+begin
+  Result := _CvSize.cvSize(w, h);
+end;
+
+class function _CvSize.cvSize(const w: int = 0; const h: int = 0): _CvSize;
+begin
+  Result.width := w;
+  Result.height := h;
+end;
+
+function cvPointFrom32f(const point: TCvPoint2D32f): TCvPoint;
+begin
+  Result := CvPoint(cvRound(point.x), cvRound(point.y));
+end;
+
+{$IFEND}
+
+
+{$ENDIF IMPLEMENTATION}
+
+// ============================================================================
+
+{$IFDEF INITIALIZATION}
+
+
+{$ENDIF IINITIALIZATION}

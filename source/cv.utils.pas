@@ -63,16 +63,16 @@ var
   Default256Palette: array [0 .. 255] of TRGBQuad;
 
 function ipDraw(const dc: HDC; const img: TMat; const rect: System.Types.TRect; const Stretch: Boolean = True): Boolean;
-Type
+type
   pBitmapInfoHeader = ^TBitmapInfoHeader;
-  pBitmapInfo = ^TBitmapInfo;
+  pBitmapInfo       = ^TBitmapInfo;
 var
   BitmapInfo: pBitmapInfo;
-  DIBHdr: pBitmapInfoHeader;
+/  DIBHdr: pBitmapInfoHeader;
   wimg: TMat;
 begin
   if img.empty then
-    Exit(False);
+    Exit(false);
 
   if (img.cols mod 4) <> 0 then
     resize(img, wimg, size((img.cols div 4) * 4, img.rows))
@@ -122,31 +122,31 @@ begin
 end;
 
 function GetDIBits(const Bitmap: TBitmap; out Bits: Pointer; out _Width: DWord): Boolean;
-Var
+var
   BitsSize: DWord;
 begin
   Result := GetDIBits(Bitmap, Bits, BitsSize, _Width);
 end;
 
 function GetDIBits(const Bitmap: TBitmap; out Bits: Pointer; out BitsSize, _Width: DWord): Boolean;
-Var
+var
   BitmapInfo: pBitmapInfo;
   InfoSize: DWord;
 begin
   if Bitmap.empty then
-    Exit(False);
+    Exit(false);
   BitmapInfo := nil;
   Result     := True;
   try
     GetDIBSizes(Bitmap.Handle, InfoSize, BitsSize);
     BitmapInfo := AllocMem(InfoSize);
     if BitmapInfo = nil then
-      Exit(False);
+      Exit(false);
     Bits := AllocMem(BitsSize);
     if Bits = nil then
-      Exit(False);
+      Exit(false);
     if not GetDIB(Bitmap.Handle, Bitmap.Palette, BitmapInfo^, Bits^) then
-      Exit(False);
+      Exit(false);
 
     if (BitmapInfo.bmiHeader.biBitCount <> 32) and ((Bitmap.Width mod 4) <> 0) then
       _Width := ((Bitmap.Width div 4) + 1) * 4
@@ -162,7 +162,7 @@ begin
 end;
 
 function BmpToMat(const Bitmap: TBitmap; out M: TMat): Boolean;
-Var
+var
   BitmapInfo: pBitmapInfo;
   InfoSize: DWord;
   Bits: Pointer;
@@ -171,7 +171,7 @@ Var
 begin
 
   if Bitmap.empty then
-    Exit(False);
+    Exit(false);
 
   BitmapInfo := nil;
   InfoSize   := 0;
@@ -182,12 +182,12 @@ begin
     GetDIBSizes(Bitmap.Handle, InfoSize, BitsSize);
     BitmapInfo := AllocMem(InfoSize);
     if BitmapInfo = nil then
-      Exit(False);
+      Exit(false);
     Bits := AllocMem(BitsSize);
     if Bits = nil then
-      Exit(False);
+      Exit(false);
     if not GetDIB(Bitmap.Handle, Bitmap.Palette, BitmapInfo^, Bits^) then
-      Exit(False);
+      Exit(false);
     case Bitmap.PixelFormat of
       pf8bit:
         img_type := CV_8UC1;
@@ -201,7 +201,7 @@ begin
       if BitmapInfo.bmiHeader.biBitCount = 32 then
         img_type := CV_8UC4
       else
-        Exit(False);
+        Exit(false);
     end;
 
     if (BitmapInfo.bmiHeader.biBitCount <> 32) and ((Bitmap.Width mod 4) <> 0) then
@@ -224,7 +224,7 @@ function MatToBmp(const M: TMat; out Bitmap: TBitmap; const PixelFormat: TPixelF
 begin
   Bitmap             := TBitmap.Create(M.cols, M.rows);
   Bitmap.PixelFormat := PixelFormat;
-  ipDraw(Bitmap.Canvas.Handle, M, System.Types.rect(0, 0, M.cols, M.rows), False);
+  ipDraw(Bitmap.Canvas.Handle, M, System.Types.rect(0, 0, M.cols, M.rows), false);
   Result := True;
 end;
 

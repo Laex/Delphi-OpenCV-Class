@@ -1141,7 +1141,7 @@ begin
 {$IFEND}
 end;
 
-{$I 'highgui/highgui_c.impl.inc'}
+{$I 'highgui/highgui_c.inc'}
 
 {$IFEND}
 
