@@ -10,7 +10,7 @@
 ### What is completed (approximately)
 - [ ] **10%** - core. [Core functionality](https://docs.opencv.org/4.x/d0/de1/group__core.html)
 - [ ] **50%** - imgproc. [Image Processing](https://docs.opencv.org/4.x/d7/dbd/group__imgproc.html)
-- [x] **100%** - imgcodecs. [Image file reading and writing](https://docs.opencv.org/4.x/d4/da8/group__imgcodecs.html) ✅ 2024-10-26
+- [x] **100%** - imgcodecs. [Image file reading and writing](https://docs.opencv.org/4.x/d4/da8/group__imgcodecs.html)
 - [ ] videoio. [Video I/O](https://docs.opencv.org/4.x/dd/de7/group__videoio.html)
 - [x] **100%** - highgui. [High-level GUI](https://docs.opencv.org/4.x/d7/dfc/group__highgui.html) 
 - [ ] **10%** - video. [Video Analysis](https://docs.opencv.org/4.x/d7/de9/group__video.html)
