@@ -1,12 +1,22 @@
 # Delphi binding for OpenCV
----
+
+<p align="center">    
+	<img src="https://tokei.rs/b1/github/Laex/Delphi-OpenCV-Class" />
+    <a href="https://github.com/Laex/Delphi-OpenCV-Class/graphs/contributors">
+      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/Laex/Delphi-OpenCV-Class" />
+    </a>    
+    <a href="https://github.com/Laex/Delphi-OpenCV-Class/issues">
+      <img alt="Issues" src="https://img.shields.io/github/issues/Laex/Delphi-OpenCV-Class?color=0088ff" />
+    </a>
+    <a href="https://github.com/Laex/Delphi-OpenCV-Class/pulls">
+      <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/Laex/Delphi-OpenCV-Class?color=0088ff" />
+    </a>    
+</p>
+
 * Experimental Delphi binding for OpenCV 4.10.0
 * Development environment - Delphi 10.4, 11, 12
 * x64 platform only
-
-![](https://tokei.rs/b1/github/Laex/Delphi-OpenCV-Class)
-<img src="https://img.shields.io/liberapay/patrons/Laex.svg?logo=liberapay">
-
+  
 ###### Contributors:
 * Laentir Valetov (email: laex@bk.ru)
 ### What is completed (approximately)
