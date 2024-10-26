@@ -2,6 +2,7 @@
 * Experimental Delphi binding for OpenCV 4.10.0
 * Development environment - Delphi 10.4, 11, 12
 * x64 platform only
+<img src="https://img.shields.io/liberapay/patrons/Laex.svg?logo=liberapay">
 ###### Contributors:
 * Laentir Valetov (email: laex@bk.ru)
 #### Usage:
@@ -42,6 +43,7 @@ The following DLLs are required to work properly
 
 ---------------------------
 ###### Donate
+* <a href="https://liberapay.com/Laex/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>
 * [Boosty](https://boosty.to/laex/donate)
 * [Patreon](https://patreon.com/laentir?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink)
 * BTC: 3MTXVtRgQnA22EtBxP97Nws6GS8autp38s
