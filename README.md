@@ -1,4 +1,5 @@
 # Delphi binding for OpenCV
+---
 * Experimental Delphi binding for OpenCV 4.10.0
 * Development environment - Delphi 10.4, 11, 12
 * x64 platform only
@@ -6,8 +7,8 @@
 
 ###### Contributors:
 * Laentir Valetov (email: laex@bk.ru)
-
 ### What is completed (approximately)
+---
 - [ ] **10%** - core. [Core functionality](https://docs.opencv.org/4.x/d0/de1/group__core.html)
 - [ ] **50%** - imgproc. [Image Processing](https://docs.opencv.org/4.x/d7/dbd/group__imgproc.html)
 - [x] **100%** - imgcodecs. [Image file reading and writing](https://docs.opencv.org/4.x/d4/da8/group__imgcodecs.html)
@@ -23,15 +24,14 @@
 - [ ] **10%** - photo. [Computational Photography](https://docs.opencv.org/4.x/d1/d0d/group__photo.html)
 - [ ] **30%** - stitching. [Images stitching](https://docs.opencv.org/4.x/d1/d46/group__stitching.html)
 - [ ] **0%** - gapi. [Graph API](https://docs.opencv.org/4.x/d0/d1e/gapi.html)
-=======
-
 ### Usage:
+---
 1. Download the current state of the project in [zip][1] format or via [git][2]
 2. Download [OpenCV 4.10.0][3], run and unpack to the selected directory \(for example in `<opencv>`).
 
 The following DLLs are required to work properly
 
-- **from** `<opencv>\build\x64\vc16\bin\` or from `<delphi-opencv>\redist\opencv_delphi4100.zip`
+- **from** `<opencv>\build\x64\vc16\bin\` or **from** `<delphi-opencv>\redist\opencv_delphi4100.zip`
   * opencv_videoio_ffmpeg4100_64.dll - `release`
   * opencv_videoio_msmf4100_64.dll   - `release`
   * opencv_videoio_msmf4100_64d.dll  - `debug`
@@ -61,12 +61,14 @@ Add the Library path for the modules of the project in Delphi IDE:<br>
 `Tools-Options` -> `Language-Delphi-Library-"Windows 64-bit"-Library path` add path `<delphi-opencv>\source\` and `<delphi-opencv>\packages`
 
 ### To run demo examples
+---
 1. Change the path in the `OpenCVRootPath` variable in the `<delphi-opencv>\source\CVResource.pas` module to the path to the unpacked [OpenCV 4.10.0][3] library. This is only needed to run examples from samples.
 2. Open `<delphi-opencv>\samples\Samples.groupproj`
+
 ### To instal components
+---
 1. For components, install the packages from `<delphi-opencv>\packages\<Delphi Version>\CVClassGroup.groupproj`
 1. Run demo from `<delphi-opencv>\samples\Samples.groupproj`
-
 ---------------------------
 ###### Donate
 * <a href="https://liberapay.com/Laex/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>
