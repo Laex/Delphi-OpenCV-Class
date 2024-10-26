@@ -3,6 +3,7 @@
 * Experimental Delphi binding for OpenCV 4.10.0
 * Development environment - Delphi 10.4, 11, 12
 * x64 platform only
+
 ![](https://tokei.rs/b1/github/Laex/Delphi-OpenCV-Class)
 <img src="https://img.shields.io/liberapay/patrons/Laex.svg?logo=liberapay">
 
