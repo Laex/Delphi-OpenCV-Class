@@ -6,7 +6,7 @@
 
 ###### Contributors:
 * Laentir Valetov (email: laex@bk.ru)
-<<<<<<< HEAD
+
 ### What is completed (approximately)
 - [ ] **10%** - core. [Core functionality](https://docs.opencv.org/4.x/d0/de1/group__core.html)
 - [ ] **50%** - imgproc. [Image Processing](https://docs.opencv.org/4.x/d7/dbd/group__imgproc.html)
@@ -24,7 +24,7 @@
 - [ ] **30%** - stitching. [Images stitching](https://docs.opencv.org/4.x/d1/d46/group__stitching.html)
 - [ ] **0%** - gapi. [Graph API](https://docs.opencv.org/4.x/d0/d1e/gapi.html)
 =======
->>>>>>> cd8b5f1aa83720e25c2adea0bbccef7bea3080ff
+
 ### Usage:
 1. Download the current state of the project in [zip][1] format or via [git][2]
 2. Download [OpenCV 4.10.0][3], run and unpack to the selected directory \(for example in `<opencv>`).
