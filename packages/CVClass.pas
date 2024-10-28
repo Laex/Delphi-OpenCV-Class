@@ -37,6 +37,8 @@ uses
   VCL.Controls,
   VCL.Graphics,
   VCL.Themes,
+  VCL.Direct2D,
+  D2D1,
   cpp.utils,
   cv.opencv;
 
@@ -73,10 +75,10 @@ type
     // property FPS: double read GetFPS;
   end;
 
-  TCVReceiverList = TThreadList<ICVDataReceiver>;
-  TOnCVNotify = procedure(Sender: TObject; const AMat: TMat) of object;
-  TOnCVNotifyVar = procedure(Sender: TObject; var AMat: TMat) of object;
-  TOnCVAfterPaint = TOnCVNotify;
+  TCVReceiverList         = TThreadList<ICVDataReceiver>;
+  TOnCVNotify             = procedure(Sender: TObject; const AMat: TMat) of object;
+  TOnCVNotifyVar          = procedure(Sender: TObject; var AMat: TMat) of object;
+  TOnCVAfterPaint         = TOnCVNotify;
   TOnBeforeNotifyReceiver = TOnCVNotifyVar;
 
   TCVDataSource = class(TComponent, ICVDataSource)
@@ -130,6 +132,8 @@ type
     property Source: ICVDataSource read FCVSource write SetCVSource;
   end;
 
+  TCVViewPaintEngine = (peGDI, peD2D);
+
   [ComponentPlatformsAttribute(pidWin64)]
   TCVView = class(TCustomControl, ICVDataReceiver)
   private
@@ -141,8 +145,11 @@ type
     FOnBeforePaint: TOnCVNotify;
     FCenter: Boolean;
     FProportional: Boolean;
+    FPaintEngine: TCVViewPaintEngine;
+    FD2DCanvas: TDirect2DCanvas;
     procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    procedure WMSize(var Message: TWMSize); message WM_SIZE;
     procedure TakeMat(const AMat: TMat);
     procedure SetSource(const Value: TObject);
     function getMat: TMat;
@@ -151,6 +158,8 @@ type
     procedure SetCVSource(const Value: ICVDataSource);
     procedure PaintDisignInfo;
     procedure PaintInRunTime;
+    procedure SetPaintEngine(const Value: TCVViewPaintEngine);
+    function D2DDraw(const dc: HDC; const img: TMat; const rect: System.Types.TRect): Boolean;
   protected
   public
     constructor Create(AOwner: TComponent); override;
@@ -164,6 +173,7 @@ type
     property Proportional: Boolean read FProportional write FProportional default False;
     property Stretch: Boolean read FStretch write FStretch default True;
     property Center: Boolean read FCenter write FCenter default False;
+    property PaintEngine: TCVViewPaintEngine read FPaintEngine write SetPaintEngine;
     property Align;
     property OnAfterPaint: TOnCVAfterPaint read FOnAfterPaint write FOnAfterPaint;
     property OnBeforePaint: TOnCVNotify read FOnBeforePaint write FOnBeforePaint;
@@ -183,7 +193,7 @@ type
     property Enabled;
   end;
 
-  TOCVLock = TLightweightMREW;
+  TOCVLock                   = TLightweightMREW;
   TPersistentAccessProtected = class(TPersistent);
 
   TCVCaptureThread = class(TThread)
@@ -226,7 +236,7 @@ type
 
   {
     Является родителем для источников внутри TCVCaptureSource
-  }
+ }
   TCVVideoCaptureAPIs = ( //
     ANY,                  // !< Auto detect == 0
     VFW,                  // !< Video For Windows (obsolete, removed)
@@ -283,7 +293,7 @@ type
   public
     constructor Create(AOwner: TPersistent); reintroduce; virtual;
     function GetNamePath: string; override;
-    property Name;
+    property name;
   published
     property Delay: Cardinal read FThreadDelay write setThreadDelay default 0;
     property CaptureAPIs: TCVVideoCaptureAPIs read FCaptureAPIs write setCaptureAPIs default ANY;
@@ -462,6 +472,7 @@ implementation
 
 uses
   System.UITypes,
+  WinApi.DxgiFormat,
   cv.utils;
 
 var
@@ -495,7 +506,7 @@ end;
 
 function TCVDataSource.getObjectName: string;
 begin
-  Result := Name;
+  Result := name;
 end;
 
 procedure TCVDataSource.NotifyReceiver(const AMat: TMat);
@@ -601,6 +612,8 @@ begin
     Dispose(FMat);
     FMat := nil;
   end;
+  if Assigned(FD2DCanvas) then
+    FreeAndNil(FD2DCanvas);
   inherited;
 end;
 
@@ -635,7 +648,7 @@ begin
   try
     Canvas.Font.Color := clWindowText;
     var
-      Text: string := Name + ': ' + ClassName;
+      Text: string := name + ': ' + ClassName;
     var
       TextOneHeight: Integer := Canvas.TextHeight(Text) + 5;
     var
@@ -666,8 +679,49 @@ begin
     x := (ClientWidth - Canvas.TextWidth(Text)) div 2;
     y := y + TextOneHeight;
     Canvas.TextOut(x, y, Text);
+
+    Text := 'Paint engine: ';
+    if PaintEngine = peGDI then
+      Text := Text + 'GDI'
+    else
+      Text            := Text + 'Direct2D';
+    x                 := (ClientWidth - Canvas.TextWidth(Text)) div 2;
+    y                 := y + TextOneHeight;
+    Canvas.Font.Color := clBlack;
+    Canvas.TextOut(x, y, Text);
   finally
     Canvas.Unlock;
+  end;
+end;
+
+function TCVView.D2DDraw(const dc: HDC; const img: TMat; const rect: System.Types.TRect): Boolean;
+var
+  BitmapProperties: TD2D1BitmapProperties;
+  D2DBitmap: ID2D1Bitmap;
+  D2DRect: TD2DRectF;
+// M: TMat;
+begin
+  if not Assigned(FD2DCanvas) then
+    FD2DCanvas := TDirect2DCanvas.Create(dc, rect);
+
+// M := TMat.Mat(img.rows, img.cols, cv_8uc4, img.cols * 4);
+// img.copyTo(M);
+
+  FD2DCanvas.BeginDraw;
+  try
+    BitmapProperties.dpiX                  := 0;
+    BitmapProperties.dpiY                  := 0;
+    BitmapProperties.pixelFormat.format    := DXGI_FORMAT_R8G8B8A8_UNORM;
+    BitmapProperties.pixelFormat.alphaMode := D2D1_ALPHA_MODE_IGNORE;
+// FD2DCanvas.RenderTarget.CreateBitmap(D2D1SizeU(M.cols, M.rows), M.Data, M.channels * M.cols, BitmapProperties, D2DBitmap);
+    FD2DCanvas.RenderTarget.CreateBitmap(D2D1SizeU(img.cols, img.rows), img.Data, img.channels * img.cols, BitmapProperties, D2DBitmap);
+    D2DRect.Left   := rect.Left;
+    D2DRect.Right  := rect.Right;
+    D2DRect.Top    := rect.Top;
+    D2DRect.Bottom := rect.Bottom;
+    FD2DCanvas.RenderTarget.DrawBitmap(D2DBitmap, @D2DRect, 1);
+  finally
+    FD2DCanvas.EndDraw;
   end;
 end;
 
@@ -675,14 +729,18 @@ procedure TCVView.PaintInRunTime;
 var
   dc: HDC;
   ps: TPaintStruct;
+  R: Boolean;
 begin
   dc := BeginPaint(Handle, ps);
   try
     if Assigned(OnBeforePaint) then
       OnBeforePaint(Self, FMat^);
-    if ipDraw(dc, FMat^, PaintRect) then
-      if Assigned(OnAfterPaint) then
-        OnAfterPaint(Self, FMat^);
+    if PaintEngine = peGDI then
+      R := ipDraw(dc, FMat^, PaintRect)
+    else
+      R := D2DDraw(dc, FMat^, PaintRect);
+    if R and Assigned(OnAfterPaint) then
+      OnAfterPaint(Self, FMat^);
   finally
     EndPaint(Handle, ps);
   end;
@@ -764,6 +822,17 @@ begin
   FMat^ := Value;
 end;
 
+procedure TCVView.SetPaintEngine(const Value: TCVViewPaintEngine);
+begin
+  if FPaintEngine <> Value then
+  begin
+    if TDirect2DCanvas.Supported or (Value <> peD2D) then
+      FPaintEngine := Value;
+    if (csDesigning in ComponentState) then
+      Invalidate;
+  end;
+end;
+
 procedure TCVView.SetSource(const Value: TObject);
 begin
   Source := Value as TCVDataSource;
@@ -790,6 +859,18 @@ begin
   end
   else if not MatIsEmpty then
     PaintInRunTime
+  else
+    inherited;
+end;
+
+procedure TCVView.WMSize(var Message: TWMSize);
+begin
+  if (not(csDesigning in ComponentState)) and Assigned(FD2DCanvas) then
+  begin
+    var
+      pixelSize: D2D1_SIZE_U := D2D1SizeU(Width, Height);
+    ID2D1HwndRenderTarget(FD2DCanvas.RenderTarget).Resize(pixelSize);
+  end
   else
     inherited;
 end;
@@ -940,8 +1021,8 @@ end;
 
 procedure TCVCaptureSource.OnTerminateCaptureThread(Sender: TObject);
 begin
-  FreeAndNil(FSourceThread);
-  FEnabled := False;
+  FSourceThread := nil;
+  FEnabled      := False;
 end;
 
 procedure TCVCaptureSource.RecreateProperties;
@@ -1044,7 +1125,7 @@ function TRegisteredCaptureSource.FindByName(const Name: string): TCVSourceTypeC
 var
   i: Integer;
 begin
-  i := IndexOf(Name);
+  i := IndexOf(name);
   if i <> -1 then
     Result := TCVSourceTypeClass(Objects[i])
   else
@@ -1193,19 +1274,21 @@ end;
 constructor TCVCaptureThread.Create(const AFileName: string; const AThreadDelay: Cardinal; const VideoAPIs: TVideoCaptureAPIs);
 begin
   inherited Create(True);
-  FThreadDelay := AThreadDelay;
-  FSourceType  := stFile;
-  FFileName    := AFileName;
-  FVideoAPIs   := VideoAPIs;
+  FThreadDelay    := AThreadDelay;
+  FSourceType     := stFile;
+  FFileName       := AFileName;
+  FVideoAPIs      := VideoAPIs;
+  FreeOnTerminate := True;
 end;
 
 constructor TCVCaptureThread.Create(const ACameraIndex: Integer; const AThreadDelay: Cardinal; const VideoAPIs: TVideoCaptureAPIs);
 begin
   inherited Create(True);
-  FThreadDelay := AThreadDelay;
-  FSourceType  := stStream;
-  FCameraIndex := ACameraIndex;
-  FVideoAPIs   := VideoAPIs;
+  FThreadDelay    := AThreadDelay;
+  FSourceType     := stStream;
+  FCameraIndex    := ACameraIndex;
+  FVideoAPIs      := VideoAPIs;
+  FreeOnTerminate := True;
 end;
 
 procedure TCVCaptureThread.Execute;

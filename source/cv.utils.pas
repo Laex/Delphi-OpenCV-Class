@@ -68,7 +68,7 @@ type
   pBitmapInfo       = ^TBitmapInfo;
 var
   BitmapInfo: pBitmapInfo;
-/  DIBHdr: pBitmapInfoHeader;
+  DIBHdr: pBitmapInfoHeader;
   wimg: TMat;
 begin
   if img.empty then
