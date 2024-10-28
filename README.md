@@ -6,14 +6,14 @@
       <img alt="Repo Size" src="https://img.shields.io/github/repo-size/Laex/Delphi-OpenCV-Class?style=flat&logo=github&logoColor=whitesmoke&label=Repo%20Size" />
     </a>
     <a href="https://github.com/Laex/Delphi-OpenCV-Class/graphs/contributors">
-      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/Laex/Delphi-OpenCV-Class" /> </a>    
+      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/Laex/Delphi-OpenCV-Class" /> 
+    </a>
     <a href="https://github.com/Laex/Delphi-OpenCV-Class/issues">
       <img alt="Issues" src="https://img.shields.io/github/issues/Laex/Delphi-OpenCV-Class?color=0088ff" />
     </a>
     <a href="https://github.com/Laex/Delphi-OpenCV-Class/pulls">
       <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/Laex/Delphi-OpenCV-Class?color=0088ff" />
     </a>    
-    
     <a href="https://img.shields.io/github/commit-activity/m/Laex/Delphi-OpenCV-Class">
       <img alt="commit activity" src="https://img.shields.io/github/commit-activity/m/Laex/Delphi-OpenCV-Class" />
     </a>    
