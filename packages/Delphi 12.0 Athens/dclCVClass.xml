@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<namespace name=".dclCVClass" platform="Win32">
+  <contains name="cv.external" />
+  <contains name="cv.utils" />
+  <contains name="cpp.utils" />
+  <contains name="cv.opencv" />
+  <contains name="CVRegVCL" />
+  <contains name="CVProp" />
+  <contains name="CVClass" />
+</namespace>
