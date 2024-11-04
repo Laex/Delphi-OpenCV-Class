@@ -695,33 +695,28 @@ begin
 end;
 
 function TCVView.D2DDraw(const dc: HDC; const img: TMat; const rect: System.Types.TRect): Boolean;
-var
-  BitmapProperties: TD2D1BitmapProperties;
-  D2DBitmap: ID2D1Bitmap;
-  D2DRect: TD2DRectF;
-// M: TMat;
 begin
-  if not Assigned(FD2DCanvas) then
-    FD2DCanvas := TDirect2DCanvas.Create(dc, rect);
-
-// M := TMat.Mat(img.rows, img.cols, cv_8uc4, img.cols * 4);
-// img.copyTo(M);
-
-  FD2DCanvas.BeginDraw;
-  try
-    BitmapProperties.dpiX                  := 0;
-    BitmapProperties.dpiY                  := 0;
-    BitmapProperties.pixelFormat.format    := DXGI_FORMAT_R8G8B8A8_UNORM;
-    BitmapProperties.pixelFormat.alphaMode := D2D1_ALPHA_MODE_IGNORE;
-// FD2DCanvas.RenderTarget.CreateBitmap(D2D1SizeU(M.cols, M.rows), M.Data, M.channels * M.cols, BitmapProperties, D2DBitmap);
-    FD2DCanvas.RenderTarget.CreateBitmap(D2D1SizeU(img.cols, img.rows), img.Data, img.channels * img.cols, BitmapProperties, D2DBitmap);
-    D2DRect.Left   := rect.Left;
-    D2DRect.Right  := rect.Right;
-    D2DRect.Top    := rect.Top;
-    D2DRect.Bottom := rect.Bottom;
-    FD2DCanvas.RenderTarget.DrawBitmap(D2DBitmap, @D2DRect, 1);
-  finally
-    FD2DCanvas.EndDraw;
+  Result := not img.empty;
+  if Result then
+  begin
+    if not Assigned(FD2DCanvas) then
+      FD2DCanvas := TDirect2DCanvas.Create(dc, rect);
+    FD2DCanvas.BeginDraw;
+    try
+      var
+        B: TBitmap;
+      try
+        MatToBmp(img, B, TPixelFormat.pf24bit);
+        if Self.Stretch then
+          FD2DCanvas.StretchDraw(rect, B)
+        else
+          FD2DCanvas.Draw(0, 0, B);
+      finally
+        B.Free;
+      end;
+    finally
+      FD2DCanvas.EndDraw;
+    end;
   end;
 end;
 
@@ -1105,7 +1100,9 @@ begin
     FSourceThread.OnNoData     := nil;
     FSourceThread.OnNotifyData := nil;
     FSourceThread.OnTerminate  := nil;
-    FreeAndNil(FSourceThread);
+    FSourceThread.Terminate;
+    FSourceThread := nil;
+    FEnabled      := False;
   end;
 end;
 
