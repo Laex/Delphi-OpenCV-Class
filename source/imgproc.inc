@@ -2695,6 +2695,17 @@ function morphologyDefaultBorderValue(): TScalar; {$IFDEF USE_INLINE}inline; {$E
  // int borderMode = BORDER_CONSTANT,
  // const Scalar& borderValue = Scalar());
 
+ procedure warpAffine(const src:TInputArray; const dst:TOutputArray;
+  const M:TInputArray; dsize:TSize;
+  flags:int;
+  borderMode:int;
+  const borderValue:TScalar{ = Scalar()}); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+ procedure warpAffine(const src:TInputArray; const dst:TOutputArray;
+  const M:TInputArray; dsize:TSize;
+  flags:int = INTER_LINEAR;
+  borderMode:int = BORDER_CONSTANT); overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
  (* * @example samples/cpp/warpPerspective_demo.cpp
  An example program shows using cv::getPerspectiveTransform and cv::warpPerspective for image warping
  *)
@@ -2818,6 +2829,7 @@ function morphologyDefaultBorderValue(): TScalar; {$IFDEF USE_INLINE}inline; {$E
  @sa  getAffineTransform, warpAffine, transform
  *)
  // CV_EXPORTS_W Mat getRotationMatrix2D(Point2f center, double angle, double scale);
+ function getRotationMatrix2D(center:TPoint2f; angle, scale:double):TMat; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
  (* * @sa getRotationMatrix2D *)
  // CV_EXPORTS Matx23d getRotationMatrix2D_(Point2f center, double angle, double scale);
@@ -2844,6 +2856,12 @@ function morphologyDefaultBorderValue(): TScalar; {$IFDEF USE_INLINE}inline; {$E
  @sa  warpAffine, transform
  *)
  // CV_EXPORTS Mat getAffineTransform( const Point2f src[], const Point2f dst[] );
+function getAffineTransform(const src,dst:TArray<TPoint2f>):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+Type
+  TAffineTransformPoints = array[0..2] of TPoint2f;
+  pPoint2f = TPoint2f;
+function getAffineTransform(const src,dst:TAffineTransformPoints):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+function getAffineTransform(const src,dst:pPoint2f):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 
  (* * @brief Inverts an affine transformation.
 
@@ -6521,6 +6539,51 @@ function morphologyDefaultBorderValue(): TScalar; {$IFDEF USE_INLINE}inline; {$E
  destructor_CV_CLAHE(Dest);
 {$IFEND}
  end;
+
+//Type
+//  TAffineTransformPoints = array[0..2] of TPoint2f;
+function getAffineTransform(const src,dst:TArray<TPoint2f>):TMat;
+begin
+  Result := getAffineTransform(pPoint2f(@src[0]),pPoint2f(@dst[0]));
+end;
+function getAffineTransform(const src,dst:TAffineTransformPoints):TMat;
+begin
+  Result := getAffineTransform(pPoint2f(@src[0]),pPoint2f(@dst[0]));
+end;
+function getAffineTransform(const src,dst:pPoint2f):TMat;
+begin
+{$IF not defined(PACKAGE)}
+ Result := func_getAffineTransform_1(puint64(src),puint64(dst));
+{$IFEND}
+end;
+
+
+ procedure warpAffine(const src:TInputArray; const dst:TOutputArray;
+  const M:TInputArray; dsize:TSize;
+  flags:int;
+  borderMode:int;
+  const borderValue:TScalar{ = Scalar()});
+begin
+{$IF not defined(PACKAGE)}
+  proc_warpAffine(src,dst,m,dsize,flags,borderMode,borderValue);
+{$IFEND}
+end;
+
+procedure warpAffine(const src:TInputArray; const dst:TOutputArray;
+  const M:TInputArray; dsize:TSize;
+  flags:int = INTER_LINEAR;
+  borderMode:int = BORDER_CONSTANT);
+begin
+  warpAffine(src,dst,m,dsize,flags,borderMode,Scalar());
+end;
+
+function getRotationMatrix2D(center:TPoint2f; angle, scale:double):TMat;
+begin
+{$IF not defined(PACKAGE)}
+  Result := func_getRotationMatrix2D(center,angle, scale);
+{$IFEND}
+end;
+
 
 {$I 'imgproc/segmentation.impl.inc'}
 

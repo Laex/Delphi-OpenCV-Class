@@ -20,29 +20,27 @@
   limitations under the License.
 *)
 
-{$if not defined(OPENCV_CORE_TYPES_HPP)}
-{$define OPENCV_CORE_TYPES_HPP}
+{$IFDEF INTERFACE}
+{$IF not defined(OPENCV_CORE_TYPES_HPP)}
+{$DEFINE OPENCV_CORE_TYPES_HPP}
+{$IF (not defined(WIN64)) and (CompilerVersion < 34.0)}
+# error types.inc header must be compiled as Delphi 10.4 Sydney WIN64
+{$IFEND}
+// #include <climits>
+// #include <cfloat>
+// #include <vector>
+// #include <limits>
 
-{$if (not defined(WIN64)) and (CompilerVersion < 34.0)}
-#  error types.inc header must be compiled as Delphi 10.4 Sydney WIN64
-{$ifend}
+{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_CVSTD_HPP)}{$I 'core/cvstd.inc'}{$IFEND}
+{$IF not defined(OPENCV_CORE_MATX_HPP)}{$I 'core/matx.inc'}{$IFEND}
+// namespace cv
+// {
 
-//#include <climits>
-//#include <cfloat>
-//#include <vector>
-//#include <limits>
+// ! @addtogroup core_basic
+// ! @{
 
-{$IF not defined(OPENCV_CORE_CVDEF_H)}{$I 'core/cvdef.inc'}{$ifend}
-{$IF not defined(OPENCV_CORE_CVSTD_HPP)}{$I 'core/cvstd.inc'}{$ifend}
-{$if not defined(OPENCV_CORE_MATX_HPP)}{$I 'core/matx.inc'}{$ifend}
-
-//namespace cv
-//{
-
-//! @addtogroup core_basic
-//! @{
-
-//////////////////////////////// Complex //////////////////////////////
+/// ///////////////////////////// Complex //////////////////////////////
 (*
 /** @brief  A complex number class.
 
@@ -97,10 +95,10 @@ struct Type< Complex<_Tp> > { enum { value = CV_MAKETYPE(Depth<_Tp>::value, 2) }
 } // namespace
 *)
 
-//////////////////////////////// Point_ ////////////////////////////////
+/// ///////////////////////////// Point_ ////////////////////////////////
 
-Type
-(** @brief Template class for 2D points specified by its coordinates `x` and `y`.
+  type
+(* * @brief Template class for 2D points specified by its coordinates `x` and `y`.
 
 An instance of the class is interchangeable with C structures, CvPoint and CvPoint2D32f . There is
 also a cast operator to convert point coordinates to the specified type. The conversion from
@@ -135,13 +133,16 @@ Example:
     cout << pt.x << ', ' << pt.y << endl;
 @endcode
 *)
-  TPoint_<T> = record
-  public
+  TPoint_<T> = record public
     // ! default constructor
     // Point_();
-    class function Point(): TPoint_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    // Point_(_Tp _x, _Tp _y);
-    class function Point(_x, _y: T): TPoint_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  class
+function Point(): TPoint_<T>;
+overload;
+static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+
+// Point_(_Tp _x, _Tp _y);
+class function Point(_x, _y: T): TPoint_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // #if (defined(__GNUC__) && __GNUC__ < 5)  // GCC 4.x bug. Details: https://github.com/opencv/opencv/pull/20837
     // Point_(const Point_& pt);
     // Point_(Point_&& pt) CV_NOEXCEPT = default;
@@ -173,27 +174,27 @@ Example:
     // double cross(const Point_& pt) const;
     // ! checks whether the point is inside the specified rectangle
     // bool inside(const Rect_<_Tp>& r) const;
-    class operator Implicit(const m: TPoint_<T>): UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+  class operator Implicit(const m: TPoint_<T>): UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
     class operator Implicit(const p: TPoint_<T>): TPoint_<Int>; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Subtract(const a: TPoint_<T>; const b: TPoint_<T>) : TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Add(const a: TPoint_<T>; const b: TPoint_<T>) : TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Multiply(const a: TPoint_<T>; const b: float) : TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Multiply(const a: TPoint_<T>; const b: double) : TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  public
-    x: T; // !< x coordinate of the point
-    y: T; // !< y coordinate of the point
-  end;
+      class operator Implicit(const p: TPoint_<T>): TPoint_<Float>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+        class operator Subtract(const a: TPoint_<T>; const b: TPoint_<T>): TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+          class operator Add(const a: TPoint_<T>; const b: TPoint_<T>): TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+            class operator Multiply(const a: TPoint_<T>; const b: Float): TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+              class operator Multiply(const a: TPoint_<T>; const b: double): TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+              public
+                x: T; // !< x coordinate of the point
+                y: T; // !< y coordinate of the point
+                end;
 
-  TPoint2i =TPoint_<int>   ;
-  TPoint2l =TPoint_<int64> ;
-  TPoint2f =TPoint_<float> ;
-  TPoint2d =TPoint_<double>;
-  TPoint   =TPoint2i       ;
-  pPoint = ^TPoint;
+                TPoint2i = TPoint_<Int>;
+                TPoint2l = TPoint_<int64>;
+                TPoint2f = TPoint_<Float>;
+                TPoint2d = TPoint_<double>;
+                TPoint = TPoint2i;
+                pPoint = ^TPoint;
 
-function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
-function Point2f(const _x, _y: float): TPoint2f; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
+                function Point(const _x, _y: Int): TPoint; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                function Point2f(const _x, _y: Float): TPoint2f; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (*
 template<typename _Tp> class DataType< Point_<_Tp> >
 {
@@ -222,9 +223,9 @@ struct Type< Point_<_Tp> > { enum { value = CV_MAKETYPE(Depth<_Tp>::value, 2) };
 } // namespace
 *)
 
-//////////////////////////////// Point3_ ////////////////////////////////
+/// ///////////////////////////// Point3_ ////////////////////////////////
 
-(** @brief Template class for 3D points specified by its coordinates `x`, `y` and `z`.
+(* * @brief Template class for 3D points specified by its coordinates `x`, `y` and `z`.
 
 An instance of the class is interchangeable with the C structure CvPoint2D32f . Similarly to
 Point_ , the coordinates of 3D points can be converted to another type. The vector arithmetic and
@@ -304,9 +305,9 @@ template<typename _Tp>
 struct Type< Point3_<_Tp> > { enum { value = CV_MAKETYPE(Depth<_Tp>::value, 3) }; };
 } // namespace
 *)
-//////////////////////////////// Size_ ////////////////////////////////
-Type
-(** @brief Template class for specifying the size of an image or rectangle.
+/// ///////////////////////////// Size_ ////////////////////////////////
+              type
+(* * @brief Template class for specifying the size of an image or rectangle.
 
 The class includes two members called width and height. The structure can be converted to and from
 the old OpenCV structures CvSize and CvSize2D32f . The same set of arithmetic and comparison
@@ -319,12 +320,12 @@ OpenCV defines the following Size_\<\> aliases:
     typedef Size_<float> Size2f;
 @endcode
 *)
-TSize_<T> = record
-  public
+                TSize_<T> = record
+                public
     // //! default constructor
     // Size_();
-    class function size(const _width, _height: T): TSize_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Size_(_Tp _width, _Tp _height);
-    class function size(): TSize_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                  class function size(const _width, _height: T): TSize_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Size_(_Tp _width, _Tp _height);
+                  class function size(): TSize_<T>; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // #if OPENCV_ABI_COMPATIBILITY < 500
     // Size_(const Size_& sz) = default;
     // Size_(Size_&& sz) CV_NOEXCEPT = default;
@@ -345,21 +346,20 @@ TSize_<T> = record
     // //! conversion of another data type.
     // template<typename _Tp2> operator Size_<_Tp2>() const;
     //
-    class operator Implicit(const m: TSize_<T>): UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const m: UInt64): TSize_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  public
-    width: T;  // _Tp width;  // !< the width
-    height: T; // _Tp height; // !< the height
-  end;
+                  class operator Implicit(const m: TSize_<T>): UInt64; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                  class operator Implicit(const m: UInt64): TSize_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                public
+                  width: T;  // _Tp width;  // !< the width
+                  height: T; // _Tp height; // !< the height
+                end;
 
-  TSize2i =TSize_<int>   ;
-  TSize2l =TSize_<int64> ;
-  TSize2f =TSize_<float> ;
-  TSize2d =TSize_<double>;
-  TSize   =TSize2i       ;
+                TSize2i = TSize_<Int>;
+                TSize2l = TSize_<int64>;
+                TSize2f = TSize_<Float>;
+                TSize2d = TSize_<double>;
+                TSize   = TSize2i;
 
-function size(const _width:Int=0;const _height: Int=0): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
+                function size(const _width: Int = 0; const _height: Int = 0): TSize; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (*
 template<typename _Tp> class DataType< Size_<_Tp> >
 {
@@ -388,9 +388,9 @@ struct Type< Size_<_Tp> > { enum { value = CV_MAKETYPE(Depth<_Tp>::value, 2) }; 
 } // namespace
 *)
 
-//////////////////////////////// Rect_ ////////////////////////////////
-Type
-(** @brief Template class for 2D rectangles
+/// ///////////////////////////// Rect_ ////////////////////////////////
+                type
+(* * @brief Template class for 2D rectangles
 
 described by the following parameters:
 -   Coordinates of the top-left corner. This is a default interpretation of Rect_::x and Rect_::y
@@ -433,10 +433,10 @@ rect2):
 @endcode
 For your convenience, the Rect_\<\> alias is available: cv::Rect
 *)
-TRect_<T: record > = record
-  public type
-    pT = ^T;
-  public
+                  TRect_<T: record > = record
+                  public type
+                    pT = ^T;
+                  public
     // ! default constructor
     // Rect_();
     // Rect_(_Tp _x, _Tp _y, _Tp _width, _Tp _height);
@@ -453,17 +453,16 @@ TRect_<T: record > = record
     // #endif
     // ! the top-left corner
     // Point_<_Tp> tl() const;
-    function tl:TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                    function tl: TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! the bottom-right corner
     // Point_<_Tp> br() const;
-    function br:TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
-    // ! size (width, height) of the rectangle
+                    function br: TPoint_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+// ! size (width, height) of the rectangle
     // Size_<_Tp> size() const;
-    function size:TSize_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                    function size: TSize_<T>; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! area (width*height) of the rectangle
     // _Tp area() const;
-    function area: T; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                    function area: T; {$IFDEF USE_INLINE}inline; {$ENDIF}
     // ! true if empty
     // bool empty() const;
 
@@ -473,25 +472,24 @@ TRect_<T: record > = record
     // ! checks whether the rectangle contains the point
     // bool contains(const Point_<_Tp>& pt) const;
 
-    class function Rect(const _x: T; _y: T; _width: T; _height: T): TRect_<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator BitwiseAnd(const a, b: TRect_<T>): TRect_<T>;
-    class operator Implicit(const a: TArray<T>): TRect_<T>;
-//    class operator Implicit(const r: TRect): TRect_<T>;
-  public
-    x: T;      // !< x coordinate of the top-left corner
-    y: T;      // !< y coordinate of the top-left corner
-    width: T;  // !< width of the rectangle
-    height: T; // !< height of the rectangle
-  end;
+                    class function Rect(const _x: T; _y: T; _width: T; _height: T): TRect_<T>; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                    class operator BitwiseAnd(const a, b: TRect_<T>): TRect_<T>;
+                    class operator Implicit(const a: TArray<T>): TRect_<T>;
+// class operator Implicit(const r: TRect): TRect_<T>;
+                  public
+                    x: T;      // !< x coordinate of the top-left corner
+                    y: T;      // !< y coordinate of the top-left corner
+                    width: T;  // !< width of the rectangle
+                    height: T; // !< height of the rectangle
+                  end;
 
-  TRect2i     = TRect_<int>   ;
-  TRect2f     = TRect_<float> ;
-  TRect2d     = TRect_<double>;
-  TRect       = TRect2i       ;
+                  TRect2i = TRect_<Int>;
+                  TRect2f = TRect_<Float>;
+                  TRect2d = TRect_<double>;
+                  TRect   = TRect2i;
 
-function Rect(const _x: Int; _y: Int; _width: Int; _height: Int): TRect; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-function Rect(const pt1,pt2:TPoint): TRect; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
+                  function Rect(const _x: Int; _y: Int; _width: Int; _height: Int): TRect; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                    function Rect(const pt1, pt2: TPoint): TRect; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (*
 template<typename _Tp> class DataType< Rect_<_Tp> >
 {
@@ -519,9 +517,9 @@ template<typename _Tp>
 struct Type< Rect_<_Tp> > { enum { value = CV_MAKETYPE(Depth<_Tp>::value, 4) }; };
 } // namespace
 *)
-///////////////////////////// RotatedRect /////////////////////////////
-Type
-(** @brief The class represents rotated (i.e. not up-right) rectangles on a plane.
+/// ////////////////////////// RotatedRect /////////////////////////////
+                    type
+(* * @brief The class represents rotated (i.e. not up-right) rectangles on a plane.
 
 Each rectangle is specified by the center point (mass center), length of each side (represented by
 #Size2f structure) and the rotation angle in degrees.
@@ -532,8 +530,8 @@ The sample below demonstrates how to use RotatedRect:
 
 @sa CamShift, fitEllipse, minAreaRect, CvBox2D
 *)
-TRotatedRect = record
-  public
+                      TRotatedRect = record
+                      public
     // ! default constructor
     // RotatedRect();
     (* * full constructor
@@ -541,30 +539,30 @@ TRotatedRect = record
       @param size Width and height of the rectangle.
       @param angle The rotation angle in a clockwise direction. When the angle is 0, 90, 180, 270 etc.,
       the rectangle becomes an up-right rectangle.
-    *)
+ *)
     // RotatedRect(const Point2f& center, const Size2f& size, float angle);
     (* *
       Any 3 end points of the RotatedRect. They must be given in order (either clockwise or
       anticlockwise).
-    *)
+ *)
     // RotatedRect(const Point2f& point1, const Point2f& point2, const Point2f& point3);
 
     (* * returns 4 vertices of the rectangle
       @param pts The points array for storing rectangle vertices. The order is bottomLeft, topLeft, topRight, bottomRight.
-    *)
+ *)
     // void points(Point2f pts[]) const;
     // ! returns the minimal up-right integer rectangle containing the rotated rectangle
     // Rect boundingRect() const;
     // ! returns the minimal (exact) floating point rectangle containing the rotated rectangle, not intended for use with images
     // Rect_<float> boundingRect2f() const;
-  public
+                      public
     // ! returns the rectangle mass center
-    center: TPoint2f;
+                        center: TPoint2f;
     // ! returns width and height of the rectangle
-    size: TSize2f;
+                        size: TSize2f;
     // ! returns the rotation angle. When the angle is 0, 90, 180, 270 etc., the rectangle becomes an up-right rectangle.
-    angle: float;
-  end;
+                        angle: Float;
+                      end;
 (*
 template<> class DataType< RotatedRect >
 {
@@ -593,9 +591,9 @@ struct Type< RotatedRect > { enum { value = CV_MAKETYPE(Depth<float>::value, (in
 } // namespace
 *)
 
-//////////////////////////////// Range /////////////////////////////////
+/// ///////////////////////////// Range /////////////////////////////////
 
-(** @brief Template class specifying a continuous subsequence (slice) of a sequence.
+(* * @brief Template class specifying a continuous subsequence (slice) of a sequence.
 
 The class is used to specify a row or a column span in a matrix ( Mat ) and for many other purposes.
 Range(a,b) is basically the same as a:b in Matlab or a..b in Python. As in Python, start is an
@@ -619,20 +617,19 @@ custom processing, you will probably have to check and handle it explicitly:
 @endcode
 *)
 
-   TRange = record
-   public
-//    Range();
-//    Range(int _start, int _end);
-//    int size() const;
-//    bool empty() const;
-//    static Range all();
-    class function all:TRange; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-   private
-    start, &end:int;
-end;
-function Range(_start:int; _end:int):TRange; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                      TRange = record
+                      public
+// Range();
+// Range(int _start, int _end);
+// int size() const;
+// bool empty() const;
+// static Range all();
+                        class function all: TRange; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                      private
+                        start, &end: Int;
+                      end;
 
-
+                      function Range(_start: Int; _end: Int): TRange; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (*
 template<> class DataType<Range>
 {
@@ -661,51 +658,52 @@ struct Type< Range > { enum { value = CV_MAKETYPE(Depth<int>::value, 2) }; };
 } // namespace
 *)
 
-//////////////////////////////// Scalar_ ///////////////////////////////
-Type
-(** @brief Template class for a 4-element vector derived from Vec.
+/// ///////////////////////////// Scalar_ ///////////////////////////////
+                      type
+(* * @brief Template class for a 4-element vector derived from Vec.
 
 Being derived from Vec\<_Tp, 4\> , Scalar\_ and Scalar can be used just as typical 4-element
 vectors. In addition, they can be converted to/from CvScalar . The type Scalar is widely used in
 OpenCV to pass pixel values.
 *)
 
-//template<typename _Tp> class Scalar_ : public Vec<_Tp, 4>
+// template<typename _Tp> class Scalar_ : public Vec<_Tp, 4>
 
-TScalar = record
-  private
+                        TScalar = record
+                        private
 {$HINTS OFF}
-    v: array [0 .. 3] of double;
-    function getval(const index: integer): double;
-    procedure setval(const index: integer; const Value: double);
+                          v: array [0 .. 3] of double;
+                          function getval(const index: integer): double;
+                          procedure setval(const index: integer; const Value: double);
 {$HINTS ON}
-  public
-    class operator Initialize(out Dest: TScalar); // Scalar_();
-    class function Scalar():TScalar; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class function Create(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // Scalar_(_Tp v0, _Tp v1, _Tp v2=0, _Tp v3=0);
-    class function Create(const v0: double): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Scalar_(_Tp v0);
+                        public
+                          class operator Initialize(out Dest: TScalar); // Scalar_();
+                          class function Scalar(): TScalar; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                          class function Create(const v0, v1: double; const v2: double = 0; const v3: double = 0): TScalar; overload; static;
+                          {$IFDEF USE_INLINE}inline; {$ENDIF} // Scalar_(_Tp v0, _Tp v1, _Tp v2=0, _Tp v3=0);
+                          class function Create(const v0: double): TScalar; overload; static; {$IFDEF USE_INLINE}inline; {$ENDIF}// Scalar_(_Tp v0);
     // Scalar_(const Scalar_& s);
     // Scalar_(Scalar_&& s) CV_NOEXCEPT;
     // Scalar_& operator=(const Scalar_& s);
     // Scalar_& operator=(Scalar_&& s) CV_NOEXCEPT;
     // Scalar_(const Vec<_Tp2, cn>& v);
     // //! returns a scalar with all elements set to v0
-    class function all(const v0: double): TScalar; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // static Scalar_<_Tp> all(_Tp v0);
+                          class function all(const v0: double): TScalar; static; {$IFDEF USE_INLINE}inline; {$ENDIF} // static Scalar_<_Tp> all(_Tp v0);
     // //! per-element product
     // Scalar_<_Tp> mul(const Scalar_<_Tp>& a, double scale=1 ) const;
     // //! returns (v0, -v1, -v2, -v3)
     // Scalar_<_Tp> conj() const;
     // //! returns true iff v1 == v2 == v3 == 0
     // bool isReal() const;
-    class operator Implicit(const v0: double): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    class operator Implicit(const a: TArray<double>): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
-    property val[const index: integer]: double read getval write setval; default;
-  end;
+                          class operator Implicit(const v0: double): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                          class operator Implicit(const a: TArray<double>): TScalar; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                          property val[const index: integer]: double read getval write setval; default;
+                        end;
 
-function Scalar(const v0: double; const v1: double = 0; const v2: double = 0; const v3: double = 0): TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-function Scalar(const v: TVec3b): TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-function Scalar: TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
+                        function Scalar(const v0: double; const v1: double = 0; const v2: double = 0; const v3: double = 0): TScalar; overload;
+                        {$IFDEF USE_INLINE}inline; {$ENDIF}
+                          function Scalar(const v: TVec3b): TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                            function Scalar: TScalar; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (*
 template<typename _Tp> class DataType< Scalar_<_Tp> >
 {
@@ -734,9 +732,9 @@ struct Type< Scalar_<_Tp> > { enum { value = CV_MAKETYPE(Depth<_Tp>::value, 4) }
 } // namespace
 *)
 
-/////////////////////////////// KeyPoint ////////////////////////////////
+/// //////////////////////////// KeyPoint ////////////////////////////////
 
-(** @brief Data structure for salient point detectors.
+(* * @brief Data structure for salient point detectors.
 
 The class instance stores a keypoint, i.e. a point feature found by one of many available keypoint
 detectors, such as Harris corner detector, #FAST, %StarDetector, %SURF, %SIFT etc.
@@ -838,9 +836,9 @@ public:
 #endif
 *)
 
-//////////////////////////////// DMatch /////////////////////////////////
+/// ///////////////////////////// DMatch /////////////////////////////////
 
-(** @brief Class for matching keypoint descriptors
+(* * @brief Class for matching keypoint descriptors
 
 query descriptor index, train descriptor index, train image index, and distance between
 descriptors.
@@ -883,54 +881,55 @@ public:
 #endif
 *)
 
-///////////////////////////// TermCriteria //////////////////////////////
-Type
-(** @brief The class defining termination criteria for iterative algorithms.
+/// ////////////////////////// TermCriteria //////////////////////////////
+                            type
+(* * @brief The class defining termination criteria for iterative algorithms.
 
 You can initialize it by default constructor and then override any parameters, or the structure may
 be fully initialized using the advanced variant of the constructor.
 *)
-TTermCriteria = record
-  public const
+                              TTermCriteria = record
+                              public const
     (*
       Criteria type, can be one of: COUNT, EPS or COUNT + EPS
-    *)
+ *)
 
-    COUNT    = 1;     // !< the maximum number of iterations or elements to compute
-    MAX_ITER = COUNT; // !< ditto
-    EPS      = 2;     // !< the desired accuracy or change in parameters at which the iterative algorithm stops
-  public
+                                COUNT    = 1;     // !< the maximum number of iterations or elements to compute
+                                MAX_ITER = COUNT; // !< ditto
+                                EPS      = 2;     // !< the desired accuracy or change in parameters at which the iterative algorithm stops
+                              public
     // ! default constructor
     // TermCriteria();
     (*
       @param type The type of termination criteria, one of TermCriteria::Type
       @param maxCount The maximum number of iterations or elements to compute.
       @param epsilon The desired accuracy or change in parameters at which the iterative algorithm stops.
-    *)
+ *)
     // TermCriteria(int &type, int maxCount, double epsilon);
-    class function TermCriteria(const &type, maxCount: Int; const epsilon: double): TTermCriteria; static; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                                class function TermCriteria(const &type, maxCount: Int; const epsilon: double): TTermCriteria; static;
+                                {$IFDEF USE_INLINE}inline; {$ENDIF}
     // inline bool isValid() const
     {
       const bool isCount = (type & COUNT) && maxCount > 0;
       const bool isEps = (type & EPS) && !cvIsNaN(epsilon);
       return isCount || isEps;
-    }
-    function isValid(): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
-  public
-    &type: Int;      // !< the type of termination criteria: COUNT, EPS or COUNT + EPS
-    maxCount: Int;   // !< the maximum number of iterations/elements
-    epsilon: double; // !< the desired accuracy
-  end;
+ }
+                                function isValid(): BOOL; {$IFDEF USE_INLINE}inline; {$ENDIF}
+                              public
+                                &type: Int;      // !< the type of termination criteria: COUNT, EPS or COUNT + EPS
+                                maxCount: Int;   // !< the maximum number of iterations/elements
+                                epsilon: double; // !< the desired accuracy
+                              end;
 
 
-//! @} core_basic
+// ! @} core_basic
 
-///////////////////////// raster image moments //////////////////////////
+/// ////////////////////// raster image moments //////////////////////////
 
-//! @addtogroup imgproc_shape
-//! @{
+// ! @addtogroup imgproc_shape
+// ! @{
 
-(** @brief struct returned by cv::moments
+(* * @brief struct returned by cv::moments
 
 The spatial moments \f$\texttt{Moments::m}_{ji}\f$ are computed as:
 
@@ -1329,13 +1328,12 @@ Point_<_Tp>& operator /= (Point_<_Tp>& a, double b)
     return a;
 }
 *)
-//template<typename _Tp> static inline
-//double norm(const Point_<_Tp>& pt)
-//{
-//    return std::sqrt((double)pt.x*pt.x + (double)pt.y*pt.y);
-//}
-function norm(const pt:TPoint):double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
-
+// template<typename _Tp> static inline
+// double norm(const Point_<_Tp>& pt)
+// {
+// return std::sqrt((double)pt.x*pt.x + (double)pt.y*pt.y);
+// }
+                              function norm(const pT: TPoint): double; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 (*
 template<typename _Tp> static inline
 bool operator == (const Point_<_Tp>& a, const Point_<_Tp>& b)
@@ -2440,5 +2438,438 @@ TermCriteria::TermCriteria(int _type, int _maxCount, double _epsilon)
 
 {$ELSE}
 {$MESSAGE FATAL 'Duplicate included file - core/types.inc'}
+{$IFEND OPENCV_CORE_TYPES_HPP}
+{$ENDIF INTERFACE}
+// ==============================================================================
 
-{$ifend OPENCV_CORE_TYPES_HPP}
+{$IFDEF IMPLEMENTATION}
+{$IF defined(OPENCV_CORE_TYPES_HPP) and (not defined(OPENCV_CORE_TYPES_HPP_IMPL))}
+{$DEFINE OPENCV_CORE_TYPES_HPP_IMPL}
+{ TPoint_<T> }
+
+class operator TPoint_<T>.Implicit(const m: TPoint_<T>): UInt64;
+begin
+  Assert(SizeOf(m) = 8);
+  Move(m, Result, 8);
+end;
+
+class operator TPoint_<T>.Implicit(const p: TPoint_<T>): TPoint_<Int>;
+begin
+  // Result.x := TValue.From<T>(p.x).AsType<Int>;
+  // Result.y := TValue.From<T>(p.y).AsType<Int>;
+
+  if TypeInfo(T) = TypeInfo(Float) then
+  begin
+    Result.x := Trunc(pFloat(@p.x)^); // TValue.From<T>(p.x).AsType<Int>;
+    Result.y := Trunc(pFloat(@p.y)^); // TValue.From<T>(p.y).AsType<Int>
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    Result.x := Trunc(System.pDouble(@p.x)^);
+    Result.y := Trunc(System.pDouble(@p.y)^);
+  end
+  else
+    Assert(false, 'Point type must be Single(Float) or Double');
+end;
+
+class operator TPoint_<T>.Implicit(const p: TPoint_<T>): TPoint_<Float>;
+begin
+  if TypeInfo(T) = TypeInfo(integer) then
+  begin
+    Result.x := Float(pInt(@p.x)^);
+    Result.y := Float(pInt(@p.y)^);
+  end
+  else
+    Assert(false, 'Point type must be Int(Integer)');
+end;
+
+class operator TPoint_<T>.Subtract(const a: TPoint_<T>; const b: TPoint_<T>): TPoint_<T>;
+begin
+  // Result.x := TValue(TValue.From<T>(a.x).AsType<double> - TValue.From<T>(b.x).AsType<double>).AsType<T>;
+  // Result.y := TValue(TValue.From<T>(a.y).AsType<double> - TValue.From<T>(b.y).AsType<double>).AsType<T>;
+  if TypeInfo(T) = TypeInfo(Float) then
+  begin
+    pFloat(@Result.x)^ := pFloat(@a.x)^ - pFloat(@b.x)^;
+    pFloat(@Result.y)^ := pFloat(@a.y)^ - pFloat(@b.y)^;
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    System.pDouble(@Result.x)^ := System.pDouble(@a.x)^ - System.pDouble(@b.x)^;
+    System.pDouble(@Result.y)^ := System.pDouble(@a.y)^ - System.pDouble(@b.y)^;
+  end
+  else if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    pInt(@Result.x)^ := saturate_cast<Int>.cast(pInt(@a.x)^ - pInt(@b.x)^);
+    pInt(@Result.y)^ := saturate_cast<Int>.cast(pInt(@a.y)^ - pInt(@b.y)^);
+  end
+  else
+    Assert(false, 'Point type must be Integer, Single(Float) or Double');
+end;
+
+class operator TPoint_<T>.Add(const a: TPoint_<T>; const b: TPoint_<T>): TPoint_<T>;
+begin
+  if TypeInfo(T) = TypeInfo(Float) then
+  begin
+    pFloat(@Result.x)^ := pFloat(@a.x)^ + pFloat(@b.x)^;
+    pFloat(@Result.y)^ := pFloat(@a.y)^ + pFloat(@b.y)^;
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    pDouble(@Result.x)^ := pDouble(@a.x)^ + pDouble(@b.x)^;
+    pDouble(@Result.y)^ := pDouble(@a.y)^ + pDouble(@b.y)^;
+  end
+  else if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    pInt(@Result.x)^ := saturate_cast<Int>.cast(pInt(@a.x)^ + pInt(@b.x)^);
+    pInt(@Result.y)^ := saturate_cast<Int>.cast(pInt(@a.y)^ + pInt(@b.y)^);
+  end
+  else
+    Assert(false, 'Point type must be Integer, Single(Float) or Double');
+end;
+
+class operator TPoint_<T>.Multiply(const a: TPoint_<T>; const b: Float): TPoint_<T>;
+begin
+  if TypeInfo(T) = TypeInfo(Float) then
+  begin
+    pFloat(@Result.x)^ := pFloat(@a.x)^ * b;
+    pFloat(@Result.y)^ := pFloat(@a.y)^ * b;
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    pDouble(@Result.x)^ := pDouble(@a.x)^ * b;
+    pDouble(@Result.y)^ := pDouble(@a.y)^ * b;
+  end
+  else if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    pInt(@Result.x)^ := saturate_cast<Int>.cast(pInt(@a.x)^ * b);
+    pInt(@Result.y)^ := saturate_cast<Int>.cast(pInt(@a.y)^ * b);
+  end
+  else
+    Assert(false, 'Point type must be Integer, Single(Float) or Double');
+end;
+
+class operator TPoint_<T>.Multiply(const a: TPoint_<T>; const b: double): TPoint_<T>;
+begin
+  Result := a * Float(b);
+end;
+
+class function TPoint_<T>.Point(_x, _y: T): TPoint_<T>;
+begin
+  Result.x := _x;
+  Result.y := _y;
+end;
+
+class function TPoint_<T>.Point(): TPoint_<T>;
+begin
+  Result.x := default (T);
+  Result.y := default (T);
+end;
+
+function Point(const _x, _y: Int): TPoint;
+begin
+  Result := TPoint.Point(_x, _y);
+end;
+
+function Point2f(const _x, _y: Float): TPoint2f;
+begin
+  Result := TPoint_<Float>.Point(_x, _y);
+end;
+
+{ TSize_<T> }
+
+class operator TSize_<T>.Implicit(const m: TSize_<T>): UInt64;
+begin
+  Assert(SizeOf(m) = 8);
+  Move(m, Result, 8);
+end;
+
+class function TSize_<T>.size(const _width, _height: T): TSize_<T>;
+begin
+  Result.width  := _width;
+  Result.height := _height;
+end;
+
+function size(const _width, _height: Int): TSize;
+begin
+  Result := TSize.size(_width, _height);
+end;
+
+class operator TSize_<T>.Implicit(const m: UInt64): TSize_<T>;
+begin
+  Assert(SizeOf(Result) = 8);
+  Move(m, Result, 8);
+end;
+
+class function TSize_<T>.size: TSize_<T>;
+begin
+  Result.width  := default (T);
+  Result.height := default (T);
+end;
+
+{ TRect_<T> }
+
+function TRect_<T>.area: T;
+begin
+  (*
+    Var
+    p: pTypeInfo := TypeInfo(T);
+    if Assigned(p) then
+    begin
+    Var
+    vH := TValue.From<T>(height);
+    Var
+    vW := TValue.From<T>(width);
+    Case p^.Kind of
+    tkInteger, tkChar, tkInt64:
+    Result := vW.AsOrdinal * vH.AsOrdinal;
+    tkFloat:
+    Result := vW.AsExtended * vH.AsExtended;
+    else
+    Assert(false, 'Point type must be numeric');
+    end
+    end
+    else
+    Assert(false, 'Unknown type T');
+ *)
+
+  if TypeInfo(T) = TypeInfo(Float) then
+    pFloat(@Result)^ := (pFloat(@Self.width)^) * (pFloat(@Self.height)^)
+  else if TypeInfo(T) = TypeInfo(double) then
+    pDouble(@Result)^ := (pDouble(@Self.width)^) * (pDouble(@Self.height)^)
+  else if TypeInfo(T) = TypeInfo(Int) then
+    pInt(@Result)^ := (pInt(@Self.width)^) * (pInt(@Self.height)^)
+  else
+    Assert(false, 'Point type must be numeric');
+
+  // Result := TValue(TValue.From<T>(width).AsType<Double> * TValue.From<T>(height).AsType<Double>).AsType<T>;
+end;
+
+class operator TRect_<T>.BitwiseAnd(const a, b: TRect_<T>): TRect_<T>;
+begin
+
+  Result := default (TRect_<T>);
+  if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    var
+      x1, y1, a_x, a_y, b_x, b_y, a_width, a_height, b_width, b_height: Int;
+
+    a_x := TValue.From<T>(a.x).AsType<Int>; // a_x := pInt(@a.x)^;
+    a_y := TValue.From<T>(a.y).AsType<Int>; // a_y := pInt(@a.y)^;
+    b_x := TValue.From<T>(b.x).AsType<Int>; // b_x := pInt(@b.x)^;
+    b_y := TValue.From<T>(b.y).AsType<Int>; // b_y := pInt(@b.y)^;
+
+    a_width  := TValue.From<T>(a.width).AsType<Int>;  // a_width := pInt(@a.width)^;
+    a_height := TValue.From<T>(a.height).AsType<Int>; // a_height := pInt(@a.height)^;
+    b_width  := TValue.From<T>(b.width).AsType<Int>;  // b_width := pInt(@b.width)^;
+    b_height := TValue.From<T>(b.height).AsType<Int>; // b_height := pInt(@b.height)^;
+
+    x1       := System.Math.MAX(a_x, b_x);
+    y1       := System.Math.MAX(a_y, b_y);
+    a_width  := System.Math.MIN(a_x + a_width, b_x + b_width) - x1;
+    a_height := System.Math.MIN(a_y + a_height, b_y + b_height) - y1;
+    if (a_width > 0) and (a_height > 0) then
+    begin
+      Result.x      := TValue(x1).AsType<T>;       // pInt(@Result.x)^ := x1;
+      Result.y      := TValue(y1).AsType<T>;       // pInt(@Result.y)^ := y1;
+      Result.width  := TValue(a_width).AsType<T>;  // pInt(@Result.width)^ := a_width;
+      Result.height := TValue(a_height).AsType<T>; // pInt(@Result.height)^ := a_height;
+    end;
+  end
+  else
+    Assert(false, 'Point type must be numeric');
+
+end;
+
+class function TRect_<T>.Rect(const _x: T; _y, _width, _height: T): TRect_<T>;
+begin
+  Result.x      := _x;
+  Result.y      := _y;
+  Result.width  := _width;
+  Result.height := _height;
+end;
+
+class operator TRect_<T>.Implicit(const a: TArray<T>): TRect_<T>;
+begin
+  Assert(Length(a) = 4);
+  Result.x      := a[0];
+  Result.y      := a[1];
+  Result.width  := a[2];
+  Result.height := a[3];
+end;
+
+function TRect_<T>.size: TSize_<T>;
+begin
+  Result.width  := width;
+  Result.height := height;
+end;
+
+function TRect_<T>.tl: TPoint_<T>;
+begin
+  Result.x := x;
+  Result.y := y;
+end;
+
+function TRect_<T>.br: TPoint_<T>;
+begin
+  // Result.x := TValue(TValue.From<T>(x).AsType<Double> + TValue.From<T>(width).AsType<Double>).AsType<T>;
+  // Result.y := TValue(TValue.From<T>(y).AsType<Double> + TValue.From<T>(height).AsType<Double>).AsType<T>;
+  if TypeInfo(T) = TypeInfo(Float) then
+  begin
+    pFloat(@Result.x)^ := pFloat(@x)^ + pFloat(@width)^;
+    pFloat(@Result.y)^ := pFloat(@y)^ + pFloat(@height)^;
+  end
+  else if TypeInfo(T) = TypeInfo(double) then
+  begin
+    pDouble(@Result.x)^ := pDouble(@x)^ + pDouble(@width)^;
+    pDouble(@Result.y)^ := pDouble(@y)^ + pDouble(@height)^;
+  end
+  else if TypeInfo(T) = TypeInfo(Int) then
+  begin
+    pInt(@Result.x)^ := pInt(@x)^ + pInt(@width)^;
+    pInt(@Result.y)^ := pInt(@y)^ + pInt(@height)^;
+  end
+  else
+    Assert(false, 'Point type must be numeric');
+end;
+
+function Rect(const _x: Int; _y: Int; _width: Int; _height: Int): TRect;
+begin
+  Result := TRect_<Int>.Rect(_x, _y, _width, _height);
+end;
+
+function Rect(const pt1, pt2: TPoint): TRect;
+begin
+  Result.x      := System.Math.MIN(pt1.x, pt2.x);
+  Result.y      := System.Math.MIN(pt1.y, pt2.y);
+  Result.width  := System.Math.MAX(pt1.x, pt2.x) - Result.x;
+  Result.height := System.Math.MAX(pt1.y, pt2.y) - Result.y;
+end;
+
+{ TScalar }
+
+class function TScalar.Create(const v0, v1, v2, v3: double): TScalar;
+begin
+{$IF not defined(PACKAGE)}
+  constructor_CV_GAPI_OWN_SCALAR_1(Result, v0, v1, v2, v3);
+{$IFEND}
+end;
+
+class function TScalar.all(const v0: double): TScalar;
+begin
+  Result := TScalar.Create(v0, v0, v0, v0);
+end;
+
+class function TScalar.Create(const v0: double): TScalar;
+begin
+{$IF not defined(PACKAGE)}
+  constructor_CV_GAPI_OWN_SCALAR(Result, v0);
+{$IFEND}
+end;
+
+function TScalar.getval(const index: integer): double;
+begin
+  Assert((index >= 0) and (index < 4));
+  Result := v[index];
+end;
+
+class operator TScalar.Implicit(const v0: double): TScalar;
+begin
+  Result := TScalar.Create(v0);
+end;
+
+class operator TScalar.Initialize(out Dest: TScalar);
+begin
+{$IF not defined(PACKAGE)}
+  constructor_CV_GAPI_OWN_SCALAR_2(Dest);
+{$IFEND}
+end;
+
+procedure TScalar.setval(const index: integer; const Value: double);
+begin
+  Assert((index >= 0) and (index < 4));
+  v[index] := Value;
+end;
+
+class function TScalar.Scalar: TScalar;
+begin
+  Initialize(Result);
+end;
+
+class operator TScalar.Implicit(const a: TArray<double>): TScalar;
+begin
+  for var i     := 0 to System.Math.MIN(high(a), high(Result.v)) do
+    Result.v[i] := a[i];
+end;
+
+function Scalar(const v0, v1, v2, v3: double): TScalar;
+begin
+  Result := TScalar.Create(v0, v1, v2, v3);
+end;
+
+function Scalar(const v: TVec3b): TScalar;
+begin
+  Result := Scalar(v[0], v[1], v[2]);
+end;
+
+function Scalar: TScalar;
+begin
+  Result := TScalar.Scalar();
+end;
+
+{ TTermCriteria }
+
+function TTermCriteria.isValid: BOOL;
+begin
+  var
+    isCount: BOOL := ((&type and COUNT) <> 0) and (maxCount > 0);
+  var
+    isEps: BOOL := ((&type and EPS) <> 0) and (not IsNaN(epsilon));
+  Result        := isCount or isEps;
+end;
+
+class function TTermCriteria.TermCriteria(const &type, maxCount: Int; const epsilon: double): TTermCriteria;
+begin
+  Result.&type    := &type;
+  Result.maxCount := maxCount;
+  Result.epsilon  := epsilon;
+end;
+
+// function norm(const pt: TPoint_<T>): Double;
+// begin
+// Result := Sqrt(Sqr(TValue.From<T>(a.x).AsType<Double> - TValue.From<T>(b.x).AsType<Double>) + //
+// Sqr(TValue.From<T>(a.y).AsType<Double> - TValue.From<T>(b.y).AsType<Double>));
+
+// if TypeInfo(T) = TypeInfo(float) then
+// Result := Sqrt(Sqr(pFloat(@a.x)^ - pFloat(@b.x)^) + Sqr(pFloat(@a.y)^ - pFloat(@b.y)^))
+// else if TypeInfo(T) = TypeInfo(double) then
+// Result := Sqrt(Sqr(pDouble(@a.x)^ - pDouble(@b.x)^) + Sqr(pDouble(@a.y)^ - pDouble(@b.y)^))
+// else if TypeInfo(T) = TypeInfo(Int) then
+// Result := Sqrt(Sqr(pInt(@a.x)^ - pInt(@b.x)^) + Sqr(pInt(@a.y)^ - pInt(@b.y)^))
+// else
+// Assert(false, 'Point type must be Integer, Single(Float) or Double');
+// end;
+
+function norm(const pT: TPoint): double;
+begin
+  Result := System.Sqrt(System.Sqr(pT.x) + System.Sqr(pT.y));
+end;
+
+{ TRange }
+
+function Range(_start: Int; _end: Int): TRange;
+begin
+  Result.start := _start;
+  Result.&end  := _end;
+end;
+
+class function TRange.all: TRange;
+begin
+  Result := Range(INT_MIN, INT_MAX);
+end;
+
+{$IFEND}
+{$ENDIF IMPLEMENTATION}
+// ============================================================================
+
+{$IFDEF INITIALIZATION}
+{$ENDIF IINITIALIZATION}
