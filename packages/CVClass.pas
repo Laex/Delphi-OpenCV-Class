@@ -36,7 +36,6 @@ uses
   System.SyncObjs,
   VCL.Controls,
   VCL.Graphics,
-  VCL.Themes,
   VCL.Direct2D,
   D2D1,
   cpp.utils,
@@ -472,7 +471,7 @@ implementation
 
 uses
   System.UITypes,
-  WinApi.DxgiFormat,
+
   cv.utils;
 
 var

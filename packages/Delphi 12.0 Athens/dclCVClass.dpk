@@ -39,6 +39,10 @@ requires
 contains
   CVClass in '..\CVClass.pas',
   CVProp in '..\CVProp.pas',
-  CVRegVCL in '..\CVRegVCL.pas';
+  CVRegVCL in '..\CVRegVCL.pas',
+  cpp.utils in '..\..\source\cpp.utils.pas',
+  cv.external in '..\..\source\cv.external.pas',
+  cv.opencv in '..\..\source\cv.opencv.pas',
+  cv.utils in '..\..\source\cv.utils.pas';
 
 end.

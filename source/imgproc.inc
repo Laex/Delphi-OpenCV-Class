@@ -2859,7 +2859,7 @@ function morphologyDefaultBorderValue(): TScalar; {$IFDEF USE_INLINE}inline; {$E
 function getAffineTransform(const src,dst:TArray<TPoint2f>):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 Type
   TAffineTransformPoints = array[0..2] of TPoint2f;
-  pPoint2f = TPoint2f;
+  pPoint2f = ^TPoint2f;
 function getAffineTransform(const src,dst:TAffineTransformPoints):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 function getAffineTransform(const src,dst:pPoint2f):TMat; overload; {$IFDEF USE_INLINE}inline; {$ENDIF}
 

@@ -84,6 +84,7 @@
         <DCC_UnitSearchPath>..\..\source\;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_Define>PACKAGE;$(DCC_Define)</DCC_Define>
         <DCC_OutputXMLDocumentation>true</DCC_OutputXMLDocumentation>
+        <DCC_NO_RETVAL>false</DCC_NO_RETVAL>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <VerInfo_Keys>package=com.embarcadero.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=1;versionName=1.0.0;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>
@@ -145,6 +146,10 @@
         <DCCReference Include="..\CVClass.pas"/>
         <DCCReference Include="..\CVProp.pas"/>
         <DCCReference Include="..\CVRegVCL.pas"/>
+        <DCCReference Include="..\..\source\cpp.utils.pas"/>
+        <DCCReference Include="..\..\source\cv.external.pas"/>
+        <DCCReference Include="..\..\source\cv.opencv.pas"/>
+        <DCCReference Include="..\..\source\cv.utils.pas"/>
         <RcItem Include="..\resource\DCV32x32.bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>DOCVSPLASH</ResourceId>
