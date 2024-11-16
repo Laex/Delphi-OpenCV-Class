@@ -24,21 +24,21 @@
 {$IF not defined(OPENCV_CORE_C_H)}
 {$DEFINE OPENCV_CORE_C_H}
 {$IF not defined(OPENCV_CORE_TYPES_H)}{$I 'core/types_c.inc'}{$IFEND}
-(* * @addtogroup core_c
+(* @addtogroup core_c
     @{
 *)
 
-(* ***************************************************************************************\
+(*  **************************************************************************************\
 *          Array allocation, deallocation, initialization and access to elements         *
 \*************************************************************************************** *)
 
-(* * `malloc` wrapper.
+(* `malloc` wrapper.
    If there is no enough memory, the function
    (as well as other OpenCV functions that call cvAlloc)
    raises an error. *)
 // CVAPI(void*)  cvAlloc( size_t size );
 function cvAlloc(size: size_t): pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * `free` wrapper.
+(* `free` wrapper.
    Here and further all the memory releasing functions
    (that all call cvFree) take double pointer in order to
    to clear pointer to the data after releasing it.
@@ -47,14 +47,14 @@ function cvAlloc(size: size_t): pointer; {$IFDEF USE_INLINE}inline; {$ENDIF}
 // CVAPI(void)   cvFree_( void* ptr );
 // #define cvFree(ptr) (cvFree_(*(ptr)), *(ptr)=0)
   procedure cvFree(ptr: pointer); {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Creates an image header but does not allocate the image data.
+(* @brief Creates an image header but does not allocate the image data.
 @param size Image width and height
 @param depth Image depth (see cvCreateImage )
 @param channels Number of channels (see cvCreateImage )
  *)
 // CVAPI(IplImage*)  cvCreateImageHeader( CvSize size, int depth, int channels );
     function cvCreateImageHeader(size: TCvSize; depth, channels: int): pIplImage; {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Initializes an image header that was previously allocated.
+(* @brief Initializes an image header that was previously allocated.
 The returned IplImage\* points to the initialized header.
 @param image Image header to initialize
 @param size Image width and height
@@ -68,7 +68,7 @@ The returned IplImage\* points to the initialized header.
 // int align CV_DEFAULT(4));
       function cvInitImageHeader(var image: TIplImage; size: TCvSize; depth: int; channels: int; origin: int = 0; align: int = 4): pIplImage;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Creates an image header and allocates the image data.
+(* @brief Creates an image header and allocates the image data.
 
 This function call is equivalent to the following code:
 @code
@@ -83,7 +83,7 @@ images with interleaved channels.
 // CVAPI(IplImage*)  cvCreateImage( CvSize size, int depth, int channels );
         function cvCreateImage(size: TCvSize; depth, channels: int): pIplImage;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Deallocates an image header.
+(* @brief Deallocates an image header.
 
 This call is an analogue of :
 @code
@@ -99,7 +99,7 @@ but it does not use IPL functions by default (see the CV_TURN_ON_IPL_COMPATIBILI
 // CVAPI(void)  cvReleaseImageHeader( IplImage** image );
           procedure cvReleaseImageHeader(var image: pIplImage);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Deallocates the image header and the image data.
+(* @brief Deallocates the image header and the image data.
 
 This call is a shortened form of :
 @code
@@ -114,11 +114,11 @@ This call is a shortened form of :
 // CVAPI(void)  cvReleaseImage( IplImage** image );
             procedure cvReleaseImage(var image: pIplImage);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * Creates a copy of IPL image (widthStep may differ) *)
+(* Creates a copy of IPL image (widthStep may differ) *)
 // CVAPI(IplImage*) cvCloneImage( const IplImage* image );
               function cvCloneImage(const image: pIplImage): pIplImage;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Sets the channel of interest in an IplImage.
+(* @brief Sets the channel of interest in an IplImage.
 
 If the ROI is set to NULL and the coi is *not* 0, the ROI is allocated. Most OpenCV functions do
 *not* support the COI setting, so to process an individual image/matrix channel one may copy (via
@@ -131,7 +131,7 @@ etc. Note that the channel indices become 1-based.
 // CVAPI(void)  cvSetImageCOI( IplImage* image, int coi );
                 procedure cvSetImageCOI(var image: TIplImage; coi: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Returns the index of the channel of interest.
+(* @brief Returns the index of the channel of interest.
 
 Returns the channel of interest of in an IplImage. Returned values correspond to the coi in
 cvSetImageCOI.
@@ -140,7 +140,7 @@ cvSetImageCOI.
 // CVAPI(int)  cvGetImageCOI( const IplImage* image );
                   function cvGetImageCOI(const image: pIplImage): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Sets an image Region Of Interest (ROI) for a given rectangle.
+(* @brief Sets an image Region Of Interest (ROI) for a given rectangle.
 
 If the original image ROI was NULL and the rect is not the whole image, the ROI structure is
 allocated.
@@ -154,7 +154,7 @@ ROI, not the original image.
 // CVAPI(void)  cvSetImageROI( IplImage* image, CvRect rect );
                     procedure cvSetImageROI(var image: TIplImage; rect: TCvRect);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Resets the image ROI to include the entire image and releases the ROI structure.
+(* @brief Resets the image ROI to include the entire image and releases the ROI structure.
 
 This produces a similar result to the following, but in addition it releases the ROI structure. :
 @code
@@ -166,7 +166,7 @@ This produces a similar result to the following, but in addition it releases the
 // CVAPI(void)  cvResetImageROI( IplImage* image );
                       procedure cvResetImageROI(var image: TIplImage);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Returns the image ROI.
+(* @brief Returns the image ROI.
 
 If there is no ROI set, cvRect(0,0,image-\>width,image-\>height) is returned.
 @param image A pointer to the image header
@@ -174,7 +174,7 @@ If there is no ROI set, cvRect(0,0,image-\>width,image-\>height) is returned.
 // CVAPI(CvRect) cvGetImageROI( const IplImage* image );
                         function cvGetImageROI(const image: pIplImage): TCvRect;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Creates a matrix header but does not allocate the matrix data.
+(* @brief Creates a matrix header but does not allocate the matrix data.
 
 The function allocates a new matrix header and returns a pointer to it. The matrix data can then be
 allocated using cvCreateData or set explicitly to user-allocated data via cvSetData.
@@ -188,7 +188,7 @@ allocated using cvCreateData or set explicitly to user-allocated data via cvSetD
                           const
                             CV_AUTOSTEP = $7FFFFFFF;
 
-(* * @brief Initializes a pre-allocated matrix header.
+(* @brief Initializes a pre-allocated matrix header.
 
 This function is often used to process raw data with OpenCV matrix functions. For example, the
 following code computes the matrix product of two matrices, stored as ordinary arrays:
@@ -225,7 +225,7 @@ possible step is used which assumes there are no gaps between subsequent rows of
 // int step CV_DEFAULT(CV_AUTOSTEP) );
                             function cvInitMatHeader(var mat: TCvMat; rows, cols, &type: int; data: pointer = nil; step: int = CV_AUTOSTEP): pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Creates a matrix header and allocates the matrix data.
+(* @brief Creates a matrix header and allocates the matrix data.
 
 The function call is equivalent to the following code:
 @code
@@ -242,7 +242,7 @@ example, CV _ 8UC1 means the elements are 8-bit unsigned and the there is 1 chan
 // CVAPI(CvMat*)  cvCreateMat( int rows, int cols, int type );
                               function cvCreateMat(rows, cols, &type: int): pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Deallocates a matrix.
+(* @brief Deallocates a matrix.
 
 The function decrements the matrix data reference counter and deallocates matrix header. If the data
 reference counter is 0, it also deallocates the data. :
@@ -256,7 +256,7 @@ reference counter is 0, it also deallocates the data. :
 // CVAPI(void)  cvReleaseMat( CvMat** mat );
                                 procedure cvReleaseMat(var mat: pCvMat);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Decrements an array data reference counter.
+(* @brief Decrements an array data reference counter.
 
 The function decrements the data reference counter in a CvMat or CvMatND if the reference counter
 
@@ -288,7 +288,7 @@ converted from an image or n-dimensional matrix header.
 // }
                                   procedure cvDecRefData(arr: pCvArr); inline;
 
-(* * @brief Increments array data reference counter.
+(* @brief Increments array data reference counter.
 
 The function increments CvMat or CvMatND data reference counter and returns the new counter value if
 the reference counter pointer is not NULL, otherwise it returns zero.
@@ -313,11 +313,11 @@ the reference counter pointer is not NULL, otherwise it returns zero.
 // }
                                     function cvIncRefData(arr: pCvArr): int; inline;
 
-(* * Creates an exact copy of the input matrix (except, may be, step value) *)
+(* Creates an exact copy of the input matrix (except, may be, step value) *)
 // CVAPI(CvMat*) cvCloneMat( const CvMat* mat );
                                       function cvCloneMat(const mat: pCvMat): pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Returns matrix header corresponding to the rectangular sub-array of input image or matrix.
+(* @brief Returns matrix header corresponding to the rectangular sub-array of input image or matrix.
 
 The function returns header, corresponding to a specified rectangle of the input array. In other
 
@@ -332,7 +332,7 @@ taken into account by the function so the sub-array of ROI is actually extracted
 {$IFDEF USE_INLINE}inline; {$ENDIF}
  function cvGetSubArr(const arr: pCvArr; submat: pCvMat; rect: TCvRect): pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Returns array row or row span.
+(* @brief Returns array row or row span.
 
 The function returns the header, corresponding to a specified row/row span of the input array.
 cvGetRow(arr, submat, row) is a shortcut for cvGetRows(arr, submat, row, row+1).
@@ -348,7 +348,7 @@ row from start_row and up to (but not including) end_row .
 // int delta_row CV_DEFAULT(1));
  function cvGetRows(const arr: pCvArr; submat: pCvMat; start_row, end_row: int; delta_row: int = 1): pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @overload
+(* @overload
 @param arr Input array
 @param submat Pointer to the resulting sub-array header
 @param row Zero-based index of the selected row
@@ -359,7 +359,7 @@ row from start_row and up to (but not including) end_row .
 // }
  function cvGetRow(const arr: pCvArr; submat: pCvMat; row: int): pCvMat; inline;
 
-(* * @brief Returns one of more array columns.
+(* @brief Returns one of more array columns.
 
 The function returns the header, corresponding to a specified column span of the input array. That
 
@@ -375,7 +375,7 @@ cvGetCols(arr, submat, col, col+1).
 // int start_col, int end_col );
  function cvGetCols(const arr: pCvArr; submat: pCvMat; start_col, end_col: int): pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @overload
+(* @overload
 @param arr Input array
 @param submat Pointer to the resulting sub-array header
 @param col Zero-based index of the selected column
@@ -386,7 +386,7 @@ cvGetCols(arr, submat, col, col+1).
 // }
  function cvGetCol(const arr: pCvArr; submat: pCvMat; col: int): pCvMat; inline;
 
-(* * @brief Returns one of array diagonals.
+(* @brief Returns one of array diagonals.
 
 The function returns the header, corresponding to a specified diagonal of the input array.
 @param arr Input array
@@ -399,7 +399,7 @@ forth.
 // int diag CV_DEFAULT(0));
  function cvGetDiag(const arr: pCvArr; submat: pCvMat; diag: int = 0): pCvMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * low-level scalar <-> raw data conversion functions *)
+(* low-level scalar <-> raw data conversion functions *)
 // CVAPI(void) cvScalarToRawData( const CvScalar* scalar, void* data, int type,
 // int extend_to_12 CV_DEFAULT(0) );
  procedure cvScalarToRawData(const scalar: pCvScalar; data: pointer; &type: int; extend_to_12: int = 0);
@@ -407,7 +407,7 @@ forth.
 // CVAPI(void) cvRawDataToScalar( const void* data, int type, CvScalar* scalar );
  procedure cvRawDataToScalar(const data: pointer; &type: int; scalar: pCvScalar);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Creates a new matrix header but does not allocate the matrix data.
+(* @brief Creates a new matrix header but does not allocate the matrix data.
 
 The function allocates a header for a multi-dimensional dense array. The array data can further be
 allocated using cvCreateData or set explicitly to user-allocated data via cvSetData.
@@ -418,7 +418,7 @@ allocated using cvCreateData or set explicitly to user-allocated data via cvSetD
 // CVAPI(CvMatND*)  cvCreateMatNDHeader( int dims, const int* sizes, int type );
  function cvCreateMatNDHeader(dims: int; const sizes: pint; &type: int): pCvMatND;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Creates the header and allocates the data for a multi-dimensional dense array.
+(* @brief Creates the header and allocates the data for a multi-dimensional dense array.
 
 This function call is equivalent to the following code:
 @code
@@ -433,7 +433,7 @@ changed at build time).
 // CVAPI(CvMatND*)  cvCreateMatND( int dims, const int* sizes, int type );
  function cvCreateMatND(dims: int; const sizes: pint; &type: int): pCvMatND;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Initializes a pre-allocated multi-dimensional array header.
+(* @brief Initializes a pre-allocated multi-dimensional array header.
 
 @param mat A pointer to the array header to be initialized
 @param dims The number of array dimensions
@@ -446,7 +446,7 @@ changed at build time).
  function cvInitMatNDHeader(mat: pCvMatND; dims: int; const sizes: pint; &type: int; data: pointer = nil)
  : pCvMatND;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Deallocates a multi-dimensional array.
+(* @brief Deallocates a multi-dimensional array.
 
 The function decrements the array data reference counter and releases the array header. If the
 reference counter reaches 0, it also deallocates the data. :
@@ -463,11 +463,11 @@ reference counter reaches 0, it also deallocates the data. :
 // }
  procedure cvReleaseMatND(var mat: pCvMatND); inline;
 
-(* * Creates a copy of CvMatND (except, may be, steps) *)
+(* Creates a copy of CvMatND (except, may be, steps) *)
 // CVAPI(CvMatND*) cvCloneMatND( const CvMatND* mat );
  function cvCloneMatND(const mat: pCvMatND): pCvMatND;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Creates sparse array.
+(* @brief Creates sparse array.
 
 The function allocates a multi-dimensional sparse array. Initially the array contain no elements,
 that is PtrND and other related functions will return 0 for every index.
@@ -479,7 +479,7 @@ practically unlimited (up to \f$2^{16}\f$ ).
 // CVAPI(CvSparseMat*)  cvCreateSparseMat( int dims, const int* sizes, int type );
  function cvCreateSparseMat(dims: int; const sizes: pint; &type: int): pCvSparseMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Deallocates sparse array.
+(* @brief Deallocates sparse array.
 
 The function releases the sparse array and clears the array pointer upon exit.
 @param mat Double pointer to the array
@@ -487,11 +487,11 @@ The function releases the sparse array and clears the array pointer upon exit.
 // CVAPI(void)  cvReleaseSparseMat( CvSparseMat** mat );
  procedure cvReleaseSparseMat(var mat: pCvSparseMat);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * Creates a copy of CvSparseMat (except, may be, zero items) *)
+(* Creates a copy of CvSparseMat (except, may be, zero items) *)
 // CVAPI(CvSparseMat*) cvCloneSparseMat( const CvSparseMat* mat );
  function cvCloneSparseMat(const mat: pCvSparseMat): pCvSparseMat;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Initializes sparse array elements iterator.
+(* @brief Initializes sparse array elements iterator.
 
 The function initializes iterator of sparse array elements and returns pointer to the first element,
 or NULL if the array is empty.
@@ -502,7 +502,7 @@ or NULL if the array is empty.
 // CvSparseMatIterator* mat_iterator );
  function cvInitSparseMatIterator(const mat: pCvSparseMat; mat_iterator: pCvSparseMatIterator): pCvSparseNode;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Returns the next sparse matrix element
+(* @brief Returns the next sparse matrix element
 
 The function moves iterator to the next sparse matrix element and returns pointer to it. In the
 current version there is no any particular order of the elements, because they are stored in the
@@ -556,16 +556,16 @@ hash table. The sample below demonstrates how to iterate through the sparse matr
  CV_MAX_ARR = 10;
 
  type
-(* * matrix iterator: used for n-ary operations on dense arrays *)
+(* matrix iterator: used for n-ary operations on dense arrays *)
  pCvNArrayIterator = ^_CvNArrayIterator;
 
  _CvNArrayIterator = record
- count: int;    (* *< number of arrays *)
- dims: int;     (* *< number of dimensions to iterate *)
- size: TCvSize; (* *< maximal common linear size: { width = size, height = 1 } *)
- ptr: array [0 .. CV_MAX_ARR - 1] of puchar; (* *< pointers to the array slices *)
- stack: array [0 .. CV_MAX_DIM - 1] of int; (* *< for internal use *)
- hdr: array [0 .. CV_MAX_ARR - 1] of pCvMatND; (* *< pointers to the headers of the
+ count: int;    (*  < number of arrays *)
+ dims: int;     (*  < number of dimensions to iterate *)
+ size: TCvSize; (*  < maximal common linear size: { width = size, height = 1 } *)
+ ptr: array [0 .. CV_MAX_ARR - 1] of puchar; (*  < pointers to the array slices *)
+ stack: array [0 .. CV_MAX_DIM - 1] of int; (*  < for internal use *)
+ hdr: array [0 .. CV_MAX_ARR - 1] of pCvMatND; (*  < pointers to the headers of the
                                  matrices that are processed *)
  end;
 
@@ -576,7 +576,7 @@ hash table. The sample below demonstrates how to iterate through the sparse matr
  CV_NO_CN_CHECK    = 2;
  CV_NO_SIZE_CHECK  = 4;
 
-(* * initializes iterator that traverses through several arrays simultaneously
+(* initializes iterator that traverses through several arrays simultaneously
    (the function together with cvNextArraySlice is used for
     N-ari element-wise operations) *)
 // CVAPI(int) cvInitNArrayIterator( int count, CvArr** arrs,
@@ -586,11 +586,11 @@ hash table. The sample below demonstrates how to iterate through the sparse matr
  function cvInitNArrayIterator(count: int; var arrs: pCvArr; const mask: pCvArr; stubs: pCvMatND;
  array_iterator: pCvNArrayIterator; flags: int = 0): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * returns zero value if iteration is finished, non-zero (slice length) otherwise *)
+(* returns zero value if iteration is finished, non-zero (slice length) otherwise *)
 // CVAPI(int) cvNextNArraySlice( CvNArrayIterator* array_iterator );
  function cvNextNArraySlice(array_iterator: pCvNArrayIterator): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Returns type of array elements.
+(* @brief Returns type of array elements.
 
 The function returns type of the array elements. In the case of IplImage the type is converted to
 CvMat-like representation. For example, if the image has been created as:
@@ -603,7 +603,7 @@ The code cvGetElemType(img) will return CV_8UC3.
 // CVAPI(int) cvGetElemType( const CvArr* arr );
  function cvGetElemType(const arr: pCvArr): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Return number of array dimensions
+(* @brief Return number of array dimensions
 
 The function returns the array dimensionality and the array of dimension sizes. In the case of
 IplImage or CvMat it always returns 2 regardless of number of image/matrix rows. For example, the
@@ -622,7 +622,7 @@ following code calculates total number of array elements:
 // CVAPI(int) cvGetDims( const CvArr* arr, int* sizes CV_DEFAULT(NULL) );
  function cvGetDims(const arr: pCvArr; sizes: pint = nil): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Returns array size along the specified dimension.
+(* @brief Returns array size along the specified dimension.
 
 @param arr Input array
 @param index Zero-based dimension index (for matrices 0 means number of rows, 1 means number of
@@ -631,7 +631,7 @@ columns; for images 0 means height, 1 means width)
 // CVAPI(int) cvGetDimSize( const CvArr* arr, int index );
  function cvGetDimSize(const arr: pCvArr; index: int): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Return pointer to a particular array element.
+(* @brief Return pointer to a particular array element.
 
 The functions return a pointer to a specific array element. Number of array dimension should match
 to the number of indices passed to the function except for cvPtr1D function that can be used for
@@ -649,16 +649,16 @@ All these as well as other functions accessing array elements ( cvGetND , cvGetR
 // CVAPI(uchar*) cvPtr1D( const CvArr* arr, int idx0, int* type CV_DEFAULT(NULL));
  function cvPtr1D(const arr: pCvArr; idx0: int; &type: pint = nil): puchar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @overload *)
+(* @overload *)
 // CVAPI(uchar*) cvPtr2D( const CvArr* arr, int idx0, int idx1, int* type CV_DEFAULT(NULL) );
  function cvPtr2D(const arr: pCvArr; idx0, idx1: int; &type: pint = nil): puchar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @overload *)
+(* @overload *)
 // CVAPI(uchar*) cvPtr3D( const CvArr* arr, int idx0, int idx1, int idx2,
 // int* type CV_DEFAULT(NULL));
  function cvPtr3D(const arr: pCvArr; idx0, idx1, idx2: int; &type: pint = nil): puchar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @overload
+(* @overload
 @param arr Input array
 @param idx Array of the element indices
 @param type Optional output parameter: type of matrix elements
@@ -674,7 +674,7 @@ It is useful for speeding up pair-wise operations (TODO: provide an example)
  function cvPtrND(const arr: pCvArr; const idx: pint; &type: pint = nil; create_node: int = 1;
  precalc_hashval: punsigned = nil): puchar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @brief Return a specific array element.
+(* @brief Return a specific array element.
 
 The functions return a specific array element. In the case of a sparse array the functions return 0
 if the requested node does not exist (no new node is created by the functions).
@@ -684,11 +684,11 @@ if the requested node does not exist (no new node is created by the functions).
 // CVAPI(CvScalar) cvGet1D( const CvArr* arr, int idx0 );
  function cvGet1D(const arr: pCvArr; idx0: int): TCvScalar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @overload *)
+(* @overload *)
 // CVAPI(CvScalar) cvGet2D( const CvArr* arr, int idx0, int idx1 );
  function cvGet2D(const arr: pCvArr; idx0, idx1: int): TCvScalar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
-(* * @overload *)
+(* @overload *)
 // CVAPI(CvScalar) cvGet3D( const CvArr* arr, int idx0, int idx1, int idx2 );
  function cvGet3D(const arr: pCvArr; idx0, idx1, idx2: int): TCvScalar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -700,7 +700,7 @@ if the requested node does not exist (no new node is created by the functions).
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload
+(* @overload
 @param arr Input array
 @param idx Array of the element indices
 *)
@@ -715,7 +715,7 @@ if the requested node does not exist (no new node is created by the functions).
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Return a specific element of single-channel 1D, 2D, 3D or nD array.
+(* @brief Return a specific element of single-channel 1D, 2D, 3D or nD array.
 
 Returns a specific element of a single-channel array. If the array has multiple channels, a runtime
 error is raised. Note that Get?D functions can be used safely for both single-channel and
@@ -737,7 +737,7 @@ node is created by the functions).
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload *)
+(* @overload *)
 // CVAPI(double) cvGetReal2D( const CvArr* arr, int idx0, int idx1 );
  function cvGetReal2D(const arr: pCvArr; idx0, idx1: int): double;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -749,7 +749,7 @@ node is created by the functions).
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload *)
+(* @overload *)
 // CVAPI(double) cvGetReal3D( const CvArr* arr, int idx0, int idx1, int idx2 );
  function cvGetReal3D(const arr: pCvArr; idx0, idx1, idx2: int): double;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -761,7 +761,7 @@ node is created by the functions).
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload
+(* @overload
 @param arr Input array. Must have a single channel.
 @param idx Array of the element indices
 *)
@@ -776,7 +776,7 @@ node is created by the functions).
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Change the particular array element.
+(* @brief Change the particular array element.
 
 The functions assign the new value to a particular array element. In the case of a sparse array the
 functions create the node if it does not exist yet.
@@ -795,7 +795,7 @@ functions create the node if it does not exist yet.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload *)
+(* @overload *)
 // CVAPI(void) cvSet2D( CvArr* arr, int idx0, int idx1, CvScalar value );
  procedure cvSet2D(arr: pCvArr; idx0, idx1: int; value: TCvScalar);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -807,7 +807,7 @@ functions create the node if it does not exist yet.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload *)
+(* @overload *)
 // CVAPI(void) cvSet3D( CvArr* arr, int idx0, int idx1, int idx2, CvScalar value );
  procedure cvSet3D(arr: pCvArr; idx0, idx1, idx2: int; value: TCvScalar);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -819,7 +819,7 @@ functions create the node if it does not exist yet.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload
+(* @overload
 @param arr Input array
 @param idx Array of the element indices
 @param value The assigned value
@@ -835,7 +835,7 @@ functions create the node if it does not exist yet.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Change a specific array element.
+(* @brief Change a specific array element.
 
 The functions assign a new value to a specific element of a single-channel array. If the array has
 multiple channels, a runtime error is raised. Note that the Set\*D function can be used safely for
@@ -857,7 +857,7 @@ In the case of a sparse array the functions create the node if it does not yet e
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload *)
+(* @overload *)
 // CVAPI(void) cvSetReal2D( CvArr* arr, int idx0, int idx1, double value );
  procedure cvSetReal2D(arr: pCvArr; idx0, idx1: int; value: double);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -869,7 +869,7 @@ In the case of a sparse array the functions create the node if it does not yet e
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload *)
+(* @overload *)
 // CVAPI(void) cvSetReal3D( CvArr* arr, int idx0,
 // int idx1, int idx2, double value );
  procedure cvSetReal3D(arr: pCvArr; idx0, idx1, idx2: int; value: double);
@@ -882,7 +882,7 @@ In the case of a sparse array the functions create the node if it does not yet e
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @overload
+(* @overload
 @param arr Input array
 @param idx Array of the element indices
 @param value The assigned value
@@ -898,7 +898,7 @@ In the case of a sparse array the functions create the node if it does not yet e
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * clears element of ND dense array,
+(* clears element of ND dense array,
    in case of sparse arrays it deletes the specified node *)
 // CVAPI(void) cvClearND( CvArr* arr, const int* idx );
  procedure cvClearND(arr: pCvArr; const idx: pint);
@@ -911,7 +911,7 @@ In the case of a sparse array the functions create the node if it does not yet e
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Returns matrix header for arbitrary array.
+(* @brief Returns matrix header for arbitrary array.
 
 The function returns a matrix header for the input array that can be a matrix - CvMat, an image -
 IplImage, or a multi-dimensional dense array - CvMatND (the third option is allowed only if
@@ -946,7 +946,7 @@ more than 2 dimensions). The CvMatND array must be continuous.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Returns image header for arbitrary array.
+(* @brief Returns image header for arbitrary array.
 
 The function returns the image header for the input array that can be a matrix (CvMat) or image
 (IplImage). In the case of an image the function simply returns the input pointer. In the case of
@@ -967,7 +967,7 @@ this function, we will get different headers if the ROI is set in the original i
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Changes the shape of a multi-dimensional array without copying the data.
+(* @brief Changes the shape of a multi-dimensional array without copying the data.
 
 The function is an advanced version of cvReshape that can work with multi-dimensional arrays as
 well (though it can work with ordinary images and matrices) and change the number of dimensions.
@@ -1023,7 +1023,7 @@ used.
  function cvReshapeND(const arr: pCvArr; header: pCvArr; new_cn, new_dims: int; new_sizes: pint)
  : pCvArr; inline;
 
-(* * @brief Changes shape of matrix/image without copying data.
+(* @brief Changes shape of matrix/image without copying data.
 
 The function initializes the CvMat header so that it points to the same data as the original array
 but has a different shape - different number of channels, different number of rows, or both.
@@ -1062,7 +1062,7 @@ unchanged unless it needs to be changed according to new_cn value.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Repeats source 2d array several times in both horizontal and
+(* Repeats source 2d array several times in both horizontal and
    vertical direction to fill destination array *)
 // CVAPI(void) cvRepeat( const CvArr* src, CvArr* dst );
  procedure cvRepeat(const src: pCvArr; dst: pCvArr);
@@ -1075,7 +1075,7 @@ unchanged unless it needs to be changed according to new_cn value.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Allocates array data
+(* @brief Allocates array data
 
 The function allocates image, matrix or multi-dimensional dense array data. Note that in the case of
 matrix types OpenCV allocation functions are used. In the case of IplImage they are used unless
@@ -1094,7 +1094,7 @@ to allocate the data.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Releases array data.
+(* @brief Releases array data.
 
 The function releases the array data. In the case of CvMat or CvMatND it simply calls
 cvDecRefData(), that is the function can not deallocate external data. See also the note to
@@ -1112,7 +1112,7 @@ cvCreateData .
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Assigns user data to the array header.
+(* @brief Assigns user data to the array header.
 
 The function assigns user data to the array header. Header should be initialized before using
 cvCreateMatHeader, cvCreateImageHeader, cvCreateMatNDHeader, cvInitMatHeader,
@@ -1132,7 +1132,7 @@ cvInitImageHeader or cvInitMatNDHeader.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Retrieves low-level information about the array.
+(* @brief Retrieves low-level information about the array.
 
 The function fills output variables with low-level information about the array data. All output
 
@@ -1171,7 +1171,7 @@ array elements :
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Returns size of matrix or image ROI.
+(* @brief Returns size of matrix or image ROI.
 
 The function returns number of rows (CvSize::height) and number of columns (CvSize::width) of the
 input matrix or image. In the case of image the size of ROI is returned.
@@ -1188,7 +1188,7 @@ input matrix or image. In the case of image the size of ROI is returned.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Copies one array to another.
+(* @brief Copies one array to another.
 
 The function copies selected elements from an input array to an output array:
 
@@ -1214,7 +1214,7 @@ to be changed
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Sets every element of an array to a given value.
+(* @brief Sets every element of an array to a given value.
 
 The function copies the scalar value to every selected element of the destination array:
 \f[\texttt{arr} (I)= \texttt{value} \quad \text{if} \quad \texttt{mask} (I)  \ne 0\f]
@@ -1236,7 +1236,7 @@ array to be changed
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Clears the array.
+(* @brief Clears the array.
 
 The function clears the array. In the case of dense arrays (CvMat, CvMatND or IplImage),
 cvZero(array) is equivalent to cvSet(array,cvScalarAll(0),0). In the case of sparse arrays all the
@@ -1265,7 +1265,7 @@ elements are removed.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Splits a multi-channel array into the set of single-channel arrays or
+(* Splits a multi-channel array into the set of single-channel arrays or
    extracts particular [color] plane *)
 // CVAPI(void)  cvSplit( const CvArr* src, CvArr* dst0, CvArr* dst1,
 // CvArr* dst2, CvArr* dst3 );
@@ -1279,7 +1279,7 @@ elements are removed.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Merges a set of single-channel arrays into the single multi-channel array
+(* Merges a set of single-channel arrays into the single multi-channel array
    or inserts one particular [color] plane to the array *)
 // CVAPI(void)  cvMerge( const CvArr* src0, const CvArr* src1,
 // const CvArr* src2, const CvArr* src3,
@@ -1295,7 +1295,7 @@ elements are removed.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Copies several channels from input arrays to
+(* Copies several channels from input arrays to
    certain channels of output arrays *)
 // CVAPI(void)  cvMixChannels( const CvArr** src, int src_count,
 // CvArr** dst, int dst_count,
@@ -1311,7 +1311,7 @@ elements are removed.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Converts one array to another with optional linear transformation.
+(* @brief Converts one array to another with optional linear transformation.
 
 The function has several different purposes, and thus has several different names. It copies one
 array to another with optional scaling, which is performed first, and/or optional type conversion,
@@ -1367,7 +1367,7 @@ set to the nearest representable value on the real axis.
 // #define cvConvert( src, dst )  cvConvertScale( (src), (dst), 1, 0 )
  procedure cvConvert(const src: pCvArr; dst: pCvArr); inline;
 
-(* * Performs linear transformation on every source array element,
+(* Performs linear transformation on every source array element,
    stores absolute value of the result:
    dst(x,y,c) = abs(scale*src(x,y,c)+shift).
    destination array must have 8u type.
@@ -1396,7 +1396,7 @@ set to the nearest representable value on the real axis.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * checks termination criteria validity and
+(* checks termination criteria validity and
    sets eps to default_eps (if it is not set),
    max_iter to default_max_iters (if it is not set)
 *)
@@ -1414,11 +1414,11 @@ set to the nearest representable value on the real axis.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ***************************************************************************************\
+(*  **************************************************************************************\
 *                   Arithmetic, logic and comparison operations                          *
 \*************************************************************************************** *)
 
-(* * dst(mask) = src1(mask) + src2(mask) *)
+(* dst(mask) = src1(mask) + src2(mask) *)
 // CVAPI(void)  cvAdd( const CvArr* src1, const CvArr* src2, CvArr* dst,
 // const CvArr* mask CV_DEFAULT(NULL));
  procedure cvAdd(const src1: pCvArr; const src2: pCvArr; dst: pCvArr; const mask: pCvArr = nil);
@@ -1431,7 +1431,7 @@ set to the nearest representable value on the real axis.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(mask) = src(mask) + value *)
+(* dst(mask) = src(mask) + value *)
 // CVAPI(void)  cvAddS( const CvArr* src, CvScalar value, CvArr* dst,
 // const CvArr* mask CV_DEFAULT(NULL));
  procedure cvAddS(const src: pCvArr; value: TCvScalar; dst: pCvArr; const mask: pCvArr = nil);
@@ -1444,7 +1444,7 @@ set to the nearest representable value on the real axis.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(mask) = src1(mask) - src2(mask) *)
+(* dst(mask) = src1(mask) - src2(mask) *)
 // CVAPI(void)  cvSub( const CvArr* src1, const CvArr* src2, CvArr* dst,
 // const CvArr* mask CV_DEFAULT(NULL));
  procedure cvSub(const src1: pCvArr; const src2: pCvArr; dst: pCvArr; const mask: pCvArr = nil);
@@ -1457,7 +1457,7 @@ set to the nearest representable value on the real axis.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(mask) = src(mask) - value = src(mask) + (-value) *)
+(* dst(mask) = src(mask) - value = src(mask) + (-value) *)
 // CV_INLINE  void  cvSubS( const CvArr* src, CvScalar value, CvArr* dst,
 // const CvArr* mask CV_DEFAULT(NULL))
 // {
@@ -1466,7 +1466,7 @@ set to the nearest representable value on the real axis.
 // }
  procedure cvSubS(const src: pCvArr; value: TCvScalar; dst: pCvArr; const mask: pCvArr = nil); inline;
 
-(* * dst(mask) = value - src(mask) *)
+(* dst(mask) = value - src(mask) *)
 // CVAPI(void)  cvSubRS( const CvArr* src, CvScalar value, CvArr* dst,
 // const CvArr* mask CV_DEFAULT(NULL));
  procedure cvSubRS(const src: pCvArr; value: TCvScalar; dst: pCvArr; const mask: pCvArr = nil);
@@ -1479,7 +1479,7 @@ set to the nearest representable value on the real axis.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = src1(idx) * src2(idx) * scale
+(* dst(idx) = src1(idx) * src2(idx) * scale
    (scaled element-wise multiplication of 2 arrays) *)
 // CVAPI(void)  cvMul( const CvArr* src1, const CvArr* src2,
 // CvArr* dst, double scale CV_DEFAULT(1) );
@@ -1493,7 +1493,7 @@ set to the nearest representable value on the real axis.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * element-wise division/inversion with scaling:
+(* element-wise division/inversion with scaling:
     dst(idx) = src1(idx) * scale / src2(idx)
     or dst(idx) = scale / src2(idx) if src1 == 0 *)
 // CVAPI(void)  cvDiv( const CvArr* src1, const CvArr* src2,
@@ -1508,7 +1508,7 @@ set to the nearest representable value on the real axis.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst = src1 * scale + src2 *)
+(* dst = src1 * scale + src2 *)
 // CVAPI(void)  cvScaleAdd( const CvArr* src1, CvScalar scale,
 // const CvArr* src2, CvArr* dst );
  procedure cvScaleAdd(const src1: pCvArr; scale: TCvScalar; const src2: pCvArr; dst: pCvArr);
@@ -1524,7 +1524,7 @@ set to the nearest representable value on the real axis.
 { TODO:cvAXPY }
 // #define cvAXPY( A, real_scalar, B, C ) cvScaleAdd(A, cvRealScalar(real_scalar), B, C)
 
-(* * dst = src1 * alpha + src2 * beta + gamma *)
+(* dst = src1 * alpha + src2 * beta + gamma *)
 // CVAPI(void)  cvAddWeighted( const CvArr* src1, double alpha,
 // const CvArr* src2, double beta,
 // double gamma, CvArr* dst );
@@ -1539,7 +1539,7 @@ set to the nearest representable value on the real axis.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Calculates the dot product of two arrays in Euclidean metrics.
+(* @brief Calculates the dot product of two arrays in Euclidean metrics.
 
 The function calculates and returns the Euclidean dot product of two arrays.
 
@@ -1562,7 +1562,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = src1(idx) & src2(idx) *)
+(* dst(idx) = src1(idx) & src2(idx) *)
 // CVAPI(void) cvAnd( const CvArr* src1, const CvArr* src2,
 // CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
  procedure cvAnd(const src1: pCvArr; const src2: pCvArr; dst: pCvArr; const mask: pCvArr = nil);
@@ -1575,7 +1575,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = src(idx) & value *)
+(* dst(idx) = src(idx) & value *)
 // CVAPI(void) cvAndS( const CvArr* src, CvScalar value,
 // CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
  procedure cvAndS(const src: pCvArr; value: TCvScalar; dst: pCvArr; const mask: pCvArr = nil);
@@ -1588,7 +1588,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = src1(idx) | src2(idx) *)
+(* dst(idx) = src1(idx) | src2(idx) *)
 // CVAPI(void) cvOr( const CvArr* src1, const CvArr* src2,
 // CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
  procedure cvOr(const src1: pCvArr; const src2: pCvArr; dst: pCvArr; const mask: pCvArr = nil);
@@ -1601,7 +1601,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = src(idx) | value *)
+(* dst(idx) = src(idx) | value *)
 // CVAPI(void) cvOrS( const CvArr* src, CvScalar value,
 // CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
  procedure cvOrS(const src: pCvArr; value: TCvScalar; dst: pCvArr; const mask: pCvArr = nil);
@@ -1614,7 +1614,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = src1(idx) ^ src2(idx) *)
+(* dst(idx) = src1(idx) ^ src2(idx) *)
 // CVAPI(void) cvXor( const CvArr* src1, const CvArr* src2,
 // CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
  procedure cvXor(const src1: pCvArr; const src2: pCvArr; dst: pCvArr; const mask: pCvArr = nil);
@@ -1627,7 +1627,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = src(idx) ^ value *)
+(* dst(idx) = src(idx) ^ value *)
 // CVAPI(void) cvXorS( const CvArr* src, CvScalar value,
 // CvArr* dst, const CvArr* mask CV_DEFAULT(NULL));
  procedure cvXorS(const src: pCvArr; value: TCvScalar; dst: pCvArr; const mask: pCvArr = nil);
@@ -1640,7 +1640,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = ~src(idx) *)
+(* dst(idx) = ~src(idx) *)
 // CVAPI(void) cvNot( const CvArr* src, CvArr* dst );
  procedure cvNot(const src: pCvArr; dst: pCvArr);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1652,7 +1652,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = lower(idx) <= src(idx) < upper(idx) *)
+(* dst(idx) = lower(idx) <= src(idx) < upper(idx) *)
 // CVAPI(void) cvInRange( const CvArr* src, const CvArr* lower,
 // const CvArr* upper, CvArr* dst );
  procedure cvInRange(const src: pCvArr; const lower: pCvArr; const upper: pCvArr; dst: pCvArr);
@@ -1665,7 +1665,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = lower <= src(idx) < upper *)
+(* dst(idx) = lower <= src(idx) < upper *)
 // CVAPI(void) cvInRangeS( const CvArr* src, CvScalar lower,
 // CvScalar upper, CvArr* dst );
  procedure cvInRangeS(const src: pCvArr; lower: TCvScalar; upper: TCvScalar; dst: pCvArr);
@@ -1686,10 +1686,10 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
  CV_CMP_LE = 4;
  CV_CMP_NE = 5;
 
-(* * The comparison operation support single-channel arrays only.
+(* The comparison operation support single-channel arrays only.
    Destination image should be 8uC1 or 8sC1 *)
 
-(* * dst(idx) = src1(idx) _cmp_op_ src2(idx) *)
+(* dst(idx) = src1(idx) _cmp_op_ src2(idx) *)
 // CVAPI(void) cvCmp( const CvArr* src1, const CvArr* src2, CvArr* dst, int cmp_op );
  procedure cvCmp(const src1: pCvArr; const src2: pCvArr; dst: pCvArr; cmp_op: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1701,7 +1701,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = src1(idx) _cmp_op_ value *)
+(* dst(idx) = src1(idx) _cmp_op_ value *)
 // CVAPI(void) cvCmpS( const CvArr* src, double value, CvArr* dst, int cmp_op );
  procedure cvCmpS(const src: pCvArr; value: double; dst: pCvArr; cmp_op: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1713,7 +1713,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = min(src1(idx),src2(idx)) *)
+(* dst(idx) = min(src1(idx),src2(idx)) *)
 // CVAPI(void) cvMin( const CvArr* src1, const CvArr* src2, CvArr* dst );
  procedure cvMin(const src1: pCvArr; const src2: pCvArr; dst: pCvArr); overload; {$IFDEF USE_INLINE}inline;
  {$ENDIF}
@@ -1725,7 +1725,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = max(src1(idx),src2(idx)) *)
+(* dst(idx) = max(src1(idx),src2(idx)) *)
 // CVAPI(void) cvMax( const CvArr* src1, const CvArr* src2, CvArr* dst );
  procedure cvMax(const src1: pCvArr; const src2: pCvArr; dst: pCvArr); overload; {$IFDEF USE_INLINE}inline;
  {$ENDIF}
@@ -1737,7 +1737,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = min(src(idx),value) *)
+(* dst(idx) = min(src(idx),value) *)
 // CVAPI(void) cvMinS( const CvArr* src, double value, CvArr* dst );
  procedure cvMinS(const src: pCvArr; value: double; dst: pCvArr);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1749,7 +1749,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(idx) = max(src(idx),value) *)
+(* dst(idx) = max(src(idx),value) *)
 // CVAPI(void) cvMaxS( const CvArr* src, double value, CvArr* dst );
  procedure cvMaxS(const src: pCvArr; value: double; dst: pCvArr);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1761,7 +1761,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(x,y,c) = abs(src1(x,y,c) - src2(x,y,c)) *)
+(* dst(x,y,c) = abs(src1(x,y,c) - src2(x,y,c)) *)
 // CVAPI(void) cvAbsDiff( const CvArr* src1, const CvArr* src2, CvArr* dst );
  procedure cvAbsDiff(const src1: pCvArr; const src2: pCvArr; dst: pCvArr);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1773,7 +1773,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * dst(x,y,c) = abs(src(x,y,c) - value(c)) *)
+(* dst(x,y,c) = abs(src(x,y,c) - value(c)) *)
 // CVAPI(void) cvAbsDiffS( const CvArr* src, CvArr* dst, CvScalar value );
  procedure cvAbsDiffS(const src: pCvArr; dst: pCvArr; value: TCvScalar);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1788,11 +1788,11 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 { TODO:cvAbs }
 // #define cvAbs( src, dst ) cvAbsDiffS( (src), (dst), cvScalarAll(0))
 
-(* ***************************************************************************************\
+(*  **************************************************************************************\
 *                                Math operations  *
 \*************************************************************************************** *)
 
-(* * Does cartesian->polar coordinates conversion.
+(* Does cartesian->polar coordinates conversion.
    Either of output components (magnitude or angle) is optional *)
 // CVAPI(void)  cvCartToPolar( const CvArr* x, const CvArr* y,
 // CvArr* magnitude, CvArr* angle CV_DEFAULT(NULL),
@@ -1808,7 +1808,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Does polar->cartesian coordinates conversion.
+(* Does polar->cartesian coordinates conversion.
    Either of output components (magnitude or angle) is optional.
    If magnitude is missing it is assumed to be all 1's *)
 // CVAPI(void)  cvPolarToCart( const CvArr* magnitude, const CvArr* angle,
@@ -1825,7 +1825,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Does powering: dst(idx) = src(idx)^power *)
+(* Does powering: dst(idx) = src(idx)^power *)
 // CVAPI(void)  cvPow( const CvArr* src, CvArr* dst, double power );
  procedure cvPow(const src: pCvArr; dst: pCvArr; power: double);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1837,7 +1837,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Does exponention: dst(idx) = exp(src(idx)).
+(* Does exponention: dst(idx) = exp(src(idx)).
    Overflow is not handled yet. Underflow is handled.
    Maximal relative error is ~7e-6 for single-precision input *)
 // CVAPI(void)  cvExp( const CvArr* src, CvArr* dst );
@@ -1851,7 +1851,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Calculates natural logarithms: dst(idx) = log(abs(src(idx))).
+(* Calculates natural logarithms: dst(idx) = log(abs(src(idx))).
    Logarithm of 0 gives large negative number(~-700)
    Maximal relative error is ~3e-7 for single-precision output
 *)
@@ -1866,7 +1866,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Fast arctangent calculation *)
+(* Fast arctangent calculation *)
 // CVAPI(float) cvFastArctan( float y, float x );
  function cvFastArctan(y: float; x: float): float;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1878,7 +1878,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Fast cubic root calculation *)
+(* Fast cubic root calculation *)
 // CVAPI(float)  cvCbrt( float value );
  function cvCbrt(value: float): float;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1893,7 +1893,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
  const
  CV_CHECK_RANGE = 1;
  CV_CHECK_QUIET = 2;
-(* * Checks array values for NaNs, Infs or simply for too large numbers
+(* Checks array values for NaNs, Infs or simply for too large numbers
    (if CV_CHECK_RANGE is set). If CV_CHECK_QUIET is set,
    no runtime errors is raised (function returns zero value in case of "bad" values).
    Otherwise cvError is called *)
@@ -1924,7 +1924,7 @@ process multi-dimensional arrays, row by row, layer by layer, and so on.
  CV_RAND_UNI    = 0;
  CV_RAND_NORMAL = 1;
 
-(* * @brief Fills an array with random numbers and updates the RNG state.
+(* @brief Fills an array with random numbers and updates the RNG state.
 
 The function fills the destination array with uniformly or normally distributed random numbers.
 @param rng CvRNG state initialized by cvRNG
@@ -1983,7 +1983,7 @@ it is the standard deviation of the random numbers.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Finds real roots of a cubic equation *)
+(* Finds real roots of a cubic equation *)
 // CVAPI(int) cvSolveCubic( const CvMat* coeffs, CvMat* roots );
  function cvSolveCubic(const coeffs: pCvMat; roots: pCvMat): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -1995,7 +1995,7 @@ it is the standard deviation of the random numbers.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Finds all real and complex roots of a polynomial equation *)
+(* Finds all real and complex roots of a polynomial equation *)
 // CVAPI(void) cvSolvePoly(const CvMat* coeffs, CvMat *roots2,
 // int maxiter CV_DEFAULT(20), int fig CV_DEFAULT(100));
  procedure cvSolvePoly(const coeffs: pCvMat; roots2: pCvMat; maxiter: int = 20; fig: int = 100);
@@ -2008,11 +2008,11 @@ it is the standard deviation of the random numbers.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ***************************************************************************************\
+(*  **************************************************************************************\
 *                                Matrix operations*
 \*************************************************************************************** *)
 
-(* * @brief Calculates the cross product of two 3D vectors.
+(* @brief Calculates the cross product of two 3D vectors.
 
 The function calculates the cross product of two 3D vectors:
 \f[\texttt{dst} =  \texttt{src1} \times \texttt{src2}\f]
@@ -2034,7 +2034,7 @@ or:
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
 { TODO: cvMatMulAdd and cvMatMul }
-(* * Matrix transform: dst = A*B + C, C is optional *)
+(* Matrix transform: dst = A*B + C, C is optional *)
 // #define cvMatMulAdd( src1, src2, src3, dst ) cvGEMM( (src1), (src2), 1., (src3), 1., (dst), 0 )
 // #define cvMatMul( src1, src2, dst )  cvMatMulAdd( (src1), (src2), NULL, (dst))
 
@@ -2042,7 +2042,7 @@ or:
  CV_GEMM_A_T = 1;
  CV_GEMM_B_T = 2;
  CV_GEMM_C_T = 4;
-(* * Extended matrix transform:
+(* Extended matrix transform:
    dst = alpha*op(A)*op(B) + beta*op(C), where op(X) is X or X^T *)
 // CVAPI(void)  cvGEMM( const CvArr* src1, const CvArr* src2, double alpha,
 // const CvArr* src3, double beta, CvArr* dst,
@@ -2070,7 +2070,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Transforms each element of source array and stores
+(* Transforms each element of source array and stores
    resultant vectors in destination array *)
 // CVAPI(void)  cvTransform( const CvArr* src, CvArr* dst,
 // const CvMat* transmat,
@@ -2096,7 +2096,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Does perspective transform on every element of input array *)
+(* Does perspective transform on every element of input array *)
 // CVAPI(void)  cvPerspectiveTransform( const CvArr* src, CvArr* dst,
 // const CvMat* mat );
  procedure cvPerspectiveTransform(const src: pCvArr; dst: pCvArr; const mat: pCvMat);
@@ -2109,7 +2109,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Calculates (A-delta)*(A-delta)^T (order=0) or (A-delta)^T*(A-delta) (order=1) *)
+(* Calculates (A-delta)*(A-delta)^T (order=0) or (A-delta)^T*(A-delta) (order=1) *)
 // CVAPI(void) cvMulTransposed( const CvArr* src, CvArr* dst, int order,
 // const CvArr* delta CV_DEFAULT(NULL),
 // double scale CV_DEFAULT(1.) );
@@ -2124,7 +2124,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Transposes matrix. Square matrices can be transposed in-place *)
+(* Transposes matrix. Square matrices can be transposed in-place *)
 // CVAPI(void)  cvTranspose( const CvArr* src, CvArr* dst );
  procedure cvTranspose(const src: pCvArr; dst: pCvArr);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2147,7 +2147,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Completes the symmetric matrix from the lower (LtoR=0) or from the upper (LtoR!=0) part *)
+(* Completes the symmetric matrix from the lower (LtoR=0) or from the upper (LtoR!=0) part *)
 // CVAPI(void)  cvCompleteSymm( CvMat* matrix, int LtoR CV_DEFAULT(0) );
  procedure cvCompleteSymm(matrix: pCvMat; LtoR: int = 0);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2159,7 +2159,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Mirror array data around horizontal (flip=0),
+(* Mirror array data around horizontal (flip=0),
    vertical (flip=1) or both(flip=-1) axises:
    cvFlip(src) flips images vertically and sequences horizontally (inplace) *)
 // CVAPI(void)  cvFlip( const CvArr* src, CvArr* dst CV_DEFAULT(NULL),
@@ -2190,7 +2190,7 @@ or:
  CV_SVD_U_T      = 2;
  CV_SVD_V_T      = 4;
 
-(* * Performs Singular Value Decomposition of a matrix *)
+(* Performs Singular Value Decomposition of a matrix *)
 // CVAPI(void)   cvSVD( CvArr* A, CvArr* W, CvArr* U CV_DEFAULT(NULL),
 // CvArr* V CV_DEFAULT(NULL), int flags CV_DEFAULT(0));
  procedure cvSVD(A: pCvArr; W: pCvArr; U: pCvArr = nil; V: pCvArr = nil; flags: int = 0);
@@ -2203,7 +2203,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Performs Singular Value Back Substitution (solves A*X = B):
+(* Performs Singular Value Back Substitution (solves A*X = B):
    flags must be the same as in cvSVD *)
 // CVAPI(void)   cvSVBkSb( const CvArr* W, const CvArr* U,
 // const CvArr* V, const CvArr* B,
@@ -2226,7 +2226,7 @@ or:
  CV_QR       = 4;
  CV_NORMAL   = 16;
 
-(* * Inverts matrix *)
+(* Inverts matrix *)
 // CVAPI(double)  cvInvert( const CvArr* src, CvArr* dst,
 // int method CV_DEFAULT(CV_LU));
  function cvInvert(const src: pCvArr; dst: pCvArr; method: int = CV_LU): double;
@@ -2250,7 +2250,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Solves linear system (src1)*(dst) = (src2)
+(* Solves linear system (src1)*(dst) = (src2)
    (returns 0 if src1 is a singular and CV_LU method is used) *)
 // CVAPI(int)  cvSolve( const CvArr* src1, const CvArr* src2, CvArr* dst,
 // int method CV_DEFAULT(CV_LU));
@@ -2264,7 +2264,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Calculates determinant of input matrix *)
+(* Calculates determinant of input matrix *)
 // CVAPI(double) cvDet( const CvArr* mat );
  function cvDet(const mat: pCvArr): double;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2276,7 +2276,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Calculates trace of the matrix (sum of elements on the main diagonal) *)
+(* Calculates trace of the matrix (sum of elements on the main diagonal) *)
 // CVAPI(CvScalar) cvTrace( const CvArr* mat );
  function cvTrace(const mat: pCvArr): TCvScalar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2288,7 +2288,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Finds eigen values and vectors of a symmetric matrix *)
+(* Finds eigen values and vectors of a symmetric matrix *)
 // CVAPI(void)  cvEigenVV( CvArr* mat, CvArr* evects, CvArr* evals,
 // double eps CV_DEFAULT(0),
 // int lowindex CV_DEFAULT(-1),
@@ -2308,7 +2308,7 @@ or:
 // CVAPI(void)  cvSelectedEigenVV( CvArr* mat, CvArr* evects, CvArr* evals,
 // int lowindex, int highindex );
 
-(* * Makes an identity matrix (mat_ij = i == j) *)
+(* Makes an identity matrix (mat_ij = i == j) *)
 // CVAPI(void)  cvSetIdentity( CvArr* mat, CvScalar value CV_DEFAULT(cvRealScalar(1)) );
  procedure cvSetIdentity(mat: pCvArr; value: TCvScalar); overload;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2321,7 +2321,7 @@ or:
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
  procedure cvSetIdentity(mat: pCvArr); overload;
 
-(* * Fills matrix with given range of numbers *)
+(* Fills matrix with given range of numbers *)
 // CVAPI(CvArr*)  cvRange( CvArr* mat, double start, double end );
  function cvRange(mat: pCvArr; start: double; &end: double): pCvArr;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2333,35 +2333,35 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* *   @anchor core_c_CovarFlags
+(*   @anchor core_c_CovarFlags
 @name Flags for cvCalcCovarMatrix
 @see cvCalcCovarMatrix
   @{
 *)
 
  const
-(* * flag for cvCalcCovarMatrix, transpose([v1-avg, v2-avg,...]) * [v1-avg,v2-avg,...] *)
+(* flag for cvCalcCovarMatrix, transpose([v1-avg, v2-avg,...]) * [v1-avg,v2-avg,...] *)
  CV_COVAR_SCRAMBLED = 0;
 
-(* * flag for cvCalcCovarMatrix, [v1-avg, v2-avg,...] * transpose([v1-avg,v2-avg,...]) *)
+(* flag for cvCalcCovarMatrix, [v1-avg, v2-avg,...] * transpose([v1-avg,v2-avg,...]) *)
  CV_COVAR_NORMAL = 1;
 
-(* * flag for cvCalcCovarMatrix, do not calc average (i.e. mean vector) - use the input vector instead
+(* flag for cvCalcCovarMatrix, do not calc average (i.e. mean vector) - use the input vector instead
    (useful for calculating covariance matrix by parts) *)
  CV_COVAR_USE_AVG = 2;
 
-(* * flag for cvCalcCovarMatrix, scale the covariance matrix coefficients by number of the vectors *)
+(* flag for cvCalcCovarMatrix, scale the covariance matrix coefficients by number of the vectors *)
  CV_COVAR_SCALE = 4;
 
-(* * flag for cvCalcCovarMatrix, all the input vectors are stored in a single matrix, as its rows *)
+(* flag for cvCalcCovarMatrix, all the input vectors are stored in a single matrix, as its rows *)
  CV_COVAR_ROWS = 8;
 
-(* * flag for cvCalcCovarMatrix, all the input vectors are stored in a single matrix, as its columns *)
+(* flag for cvCalcCovarMatrix, all the input vectors are stored in a single matrix, as its columns *)
  CV_COVAR_COLS = 16;
 
-(* * @} *)
+(* @} *)
 
-(* * Calculates covariation matrix for a set of vectors
+(* Calculates covariation matrix for a set of vectors
 @see @ref core_c_CovarFlags "flags"
 *)
 // CVAPI(void)  cvCalcCovarMatrix( const CvArr** vects, int count,
@@ -2417,7 +2417,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Calculates Mahalanobis(weighted) distance *)
+(* Calculates Mahalanobis(weighted) distance *)
 // CVAPI(double)  cvMahalanobis( const CvArr* vec1, const CvArr* vec2, const CvArr* mat );
  function cvMahalanobis(const vec1: pCvArr; const vec2: pCvArr; const mat: pCvArr): double;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2440,11 +2440,11 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ***************************************************************************************\
+(*  **************************************************************************************\
 *                                    Array Statistics                                    *
 \*************************************************************************************** *)
 
-(* * Finds sum of array elements *)
+(* Finds sum of array elements *)
 // CVAPI(CvScalar)  cvSum( const CvArr* arr );
  function cvSum(const arr: pCvArr): TCvScalar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2456,7 +2456,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Calculates number of non-zero pixels *)
+(* Calculates number of non-zero pixels *)
 // CVAPI(int)  cvCountNonZero( const CvArr* arr );
  function cvCountNonZero(const arr: pCvArr): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2468,7 +2468,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Calculates mean value of array elements *)
+(* Calculates mean value of array elements *)
 // CVAPI(CvScalar)  cvAvg( const CvArr* arr, const CvArr* mask CV_DEFAULT(NULL) );
  function cvAvg(const arr: pCvArr; const mask: pCvArr = nil): TCvScalar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2480,7 +2480,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Calculates mean and standard deviation of pixel values *)
+(* Calculates mean and standard deviation of pixel values *)
 // CVAPI(void)  cvAvgSdv( const CvArr* arr, CvScalar* mean, CvScalar* std_dev,
 // const CvArr* mask CV_DEFAULT(NULL) );
  procedure cvAvgSdv(const arr: pCvArr; mean: pCvScalar; std_dev: pCvScalar; const mask: pCvArr = nil);
@@ -2493,7 +2493,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Finds global minimum, maximum and their positions *)
+(* Finds global minimum, maximum and their positions *)
 // CVAPI(void)  cvMinMaxLoc( const CvArr* arr, double* min_val, double* max_val,
 // CvPoint* min_loc CV_DEFAULT(NULL),
 // CvPoint* max_loc CV_DEFAULT(NULL),
@@ -2509,7 +2509,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @anchor core_c_NormFlags
+(* @anchor core_c_NormFlags
   @name Flags for cvNorm and cvNormalize
   @{
 *)
@@ -2528,9 +2528,9 @@ or:
  CV_RELATIVE_C  = (CV_RELATIVE or CV_C);
  CV_RELATIVE_L1 = (CV_RELATIVE or CV_L1);
  CV_RELATIVE_L2 = (CV_RELATIVE or CV_L2);
-(* * @} *)
+(* @} *)
 
-(* * Finds norm, difference norm or relative difference norm for an array (or two arrays)
+(* Finds norm, difference norm or relative difference norm for an array (or two arrays)
 @see ref core_c_NormFlags "flags"
 *)
 // CVAPI(double)  cvNorm( const CvArr* arr1, const CvArr* arr2 CV_DEFAULT(NULL),
@@ -2547,7 +2547,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @see ref core_c_NormFlags "flags" *)
+(* @see ref core_c_NormFlags "flags" *)
 // CVAPI(void)  cvNormalize( const CvArr* src, CvArr* dst,
 // double a CV_DEFAULT(1.), double b CV_DEFAULT(0.),
 // int norm_type CV_DEFAULT(CV_L2),
@@ -2563,7 +2563,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @anchor core_c_ReduceFlags
+(* @anchor core_c_ReduceFlags
   @name Flags for cvReduce
   @{
 *)
@@ -2572,9 +2572,9 @@ or:
  CV_REDUCE_AVG = 1;
  CV_REDUCE_MAX = 2;
  CV_REDUCE_MIN = 3;
-(* * @} *)
+(* @} *)
 
-(* * @see @ref core_c_ReduceFlags "flags" *)
+(* @see @ref core_c_ReduceFlags "flags" *)
 // CVAPI(void)  cvReduce( const CvArr* src, CvArr* dst, int dim CV_DEFAULT(-1),
 // int op CV_DEFAULT(CV_REDUCE_SUM) );
  procedure cvReduce(const src: pCvArr; dst: pCvArr; dim: int = -1; op: int = CV_REDUCE_SUM);
@@ -2587,25 +2587,25 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ***************************************************************************************\
+(*  **************************************************************************************\
 *                      Discrete Linear Transforms and Related Functions                  *
 \*************************************************************************************** *)
 
-(* * @anchor core_c_DftFlags
+(* @anchor core_c_DftFlags
   @name Flags for cvDFT, cvDCT and cvMulSpectrums
   @{
  *)
  const
  CV_DXT_FORWARD   = 0;
  CV_DXT_INVERSE   = 1;
- CV_DXT_SCALE     = 2; (* *< divide result by size of array *)
+ CV_DXT_SCALE     = 2; (*  < divide result by size of array *)
  CV_DXT_INV_SCALE = (CV_DXT_INVERSE + CV_DXT_SCALE);
  CV_DXT_INVERSE_SCALE = CV_DXT_INV_SCALE;
- CV_DXT_ROWS     = 4; (* *< transform each row individually *)
- CV_DXT_MUL_CONJ = 8; (* *< conjugate the second argument of cvMulSpectrums *)
-(* * @} *)
+ CV_DXT_ROWS     = 4; (*  < transform each row individually *)
+ CV_DXT_MUL_CONJ = 8; (*  < conjugate the second argument of cvMulSpectrums *)
+(* @} *)
 
-(* * Discrete Fourier Transform:
+(* Discrete Fourier Transform:
     complex->complex,
     real->ccs (forward),
     ccs->real (inverse)
@@ -2634,7 +2634,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Multiply results of DFTs: DFT(X)*DFT(Y) or DFT(X)*conj(DFT(Y))
+(* Multiply results of DFTs: DFT(X)*DFT(Y) or DFT(X)*conj(DFT(Y))
 @see core_c_DftFlags "flags"
 *)
 // CVAPI(void)  cvMulSpectrums( const CvArr* src1, const CvArr* src2,
@@ -2649,7 +2649,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Finds optimal DFT vector size >= size0 *)
+(* Finds optimal DFT vector size >= size0 *)
 // CVAPI(int)  cvGetOptimalDFTSize( int size0 );
  function cvGetOptimalDFTSize(size0: int): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2661,7 +2661,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Discrete Cosine Transform
+(* Discrete Cosine Transform
 @see core_c_DftFlags "flags"
 *)
 // CVAPI(void)  cvDCT( const CvArr* src, CvArr* dst, int flags );
@@ -2675,11 +2675,11 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ***************************************************************************************\
+(*  **************************************************************************************\
 *                              Dynamic data structures                                   *
 \*************************************************************************************** *)
 
-(* * Calculates length of sequence slice (with support of negative indices). *)
+(* Calculates length of sequence slice (with support of negative indices). *)
 // CVAPI(int) cvSliceLength( CvSlice slice, const CvSeq* seq );
  function cvSliceLength(slice: TCvSlice; const seq: pCvSeq): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2691,7 +2691,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Creates new memory storage.
+(* Creates new memory storage.
    block_size == 0 means that default,
    somewhat optimal size, is used (currently, it is 64K) *)
 // CVAPI(CvMemStorage*)  cvCreateMemStorage( int block_size CV_DEFAULT(0));
@@ -2705,7 +2705,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Creates a memory storage that will borrow memory blocks from parent storage *)
+(* Creates a memory storage that will borrow memory blocks from parent storage *)
 // CVAPI(CvMemStorage*)  cvCreateChildMemStorage( CvMemStorage* parent );
  function cvCreateChildMemStorage(parent: pCvMemStorage): pCvMemStorage;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2717,7 +2717,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Releases memory storage. All the children of a parent must be released before
+(* Releases memory storage. All the children of a parent must be released before
    the parent. A child storage returns all the blocks to parent when it is released *)
 // CVAPI(void)  cvReleaseMemStorage( CvMemStorage** storage );
  procedure cvReleaseMemStorage(storage: pCvMemStorage);
@@ -2730,7 +2730,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Clears memory storage. This is the only way(!!!) (besides cvRestoreMemStoragePos)
+(* Clears memory storage. This is the only way(!!!) (besides cvRestoreMemStoragePos)
    to reuse memory allocated for the storage - cvClearSeq,cvClearSet ...
    do not free any memory.
    A child storage returns all the blocks to the parent when it is cleared *)
@@ -2745,7 +2745,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Remember a storage "free memory" position *)
+(* Remember a storage "free memory" position *)
 // CVAPI(void)  cvSaveMemStoragePos( const CvMemStorage* storage, CvMemStoragePos* pos );
  procedure cvSaveMemStoragePos(const storage: pCvMemStorage; pos: pCvMemStoragePos);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2757,7 +2757,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Restore a storage "free memory" position *)
+(* Restore a storage "free memory" position *)
 // CVAPI(void)  cvRestoreMemStoragePos( CvMemStorage* storage, CvMemStoragePos* pos );
  procedure cvRestoreMemStoragePos(storage: pCvMemStorage; pos: pCvMemStoragePos);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2769,7 +2769,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Allocates continuous buffer of the specified size in the storage *)
+(* Allocates continuous buffer of the specified size in the storage *)
 // CVAPI(void*) cvMemStorageAlloc( CvMemStorage* storage, size_t size );
  function cvMemStorageAlloc(storage: pCvMemStorage; size: size_t): pointer;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2781,12 +2781,12 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Allocates string in memory storage *)
+(* Allocates string in memory storage *)
 // CVAPI(CvString) cvMemStorageAllocString( CvMemStorage* storage, const char* ptr,
 // int len CV_DEFAULT(-1) );
 // function cvMemStorageAllocString(storage:pCvMemStorage; const ptr:pcvchar; len:int=-1):TCvString;
 
-(* * Creates new empty sequence that will reside in the specified storage *)
+(* Creates new empty sequence that will reside in the specified storage *)
 // CVAPI(CvSeq*)  cvCreateSeq( int seq_flags, size_t header_size,
 // size_t elem_size, CvMemStorage* storage );
  function cvCreateSeq(seq_flags: int; header_size: size_t; elem_size: size_t; storage: pCvMemStorage): pCvSeq;
@@ -2799,7 +2799,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Changes default size (granularity) of sequence blocks.
+(* Changes default size (granularity) of sequence blocks.
    The default size is ~1Kbyte *)
 // CVAPI(void)  cvSetSeqBlockSize( CvSeq* seq, int delta_elems );
  procedure cvSetSeqBlockSize(seq: pCvSeq; delta_elems: int);
@@ -2812,7 +2812,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Adds new element to the end of sequence. Returns pointer to the element *)
+(* Adds new element to the end of sequence. Returns pointer to the element *)
 // CVAPI(schar*)  cvSeqPush( CvSeq* seq, const void* element CV_DEFAULT(NULL));
  function cvSeqPush(seq: pCvSeq; const element: pvoid = nil): pschar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2824,7 +2824,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Adds new element to the beginning of sequence. Returns pointer to it *)
+(* Adds new element to the beginning of sequence. Returns pointer to it *)
 // CVAPI(schar*)  cvSeqPushFront( CvSeq* seq, const void* element CV_DEFAULT(NULL));
  function cvSeqPushFront(seq: pCvSeq; const element: pvoid = nil): pschar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2836,7 +2836,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Removes the last element from sequence and optionally saves it *)
+(* Removes the last element from sequence and optionally saves it *)
 // CVAPI(void)  cvSeqPop( CvSeq* seq, void* element CV_DEFAULT(NULL));
  procedure cvSeqPop(seq: pCvSeq; element: pvoid = nil);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2848,7 +2848,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Removes the first element from sequence and optioanally saves it *)
+(* Removes the first element from sequence and optioanally saves it *)
 // CVAPI(void)  cvSeqPopFront( CvSeq* seq, void* element CV_DEFAULT(NULL));
  procedure cvSeqPopFront(seq: pCvSeq; element: pvoid = nil);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2863,7 +2863,7 @@ or:
  const
  CV_FRONT = 1;
  CV_BACK  = 0;
-(* * Adds several new elements to the end of sequence *)
+(* Adds several new elements to the end of sequence *)
 // CVAPI(void)  cvSeqPushMulti( CvSeq* seq, const void* elements,
 // int count, int in_front CV_DEFAULT(0) );
  procedure cvSeqPushMulti(seq: pCvSeq; const elements: pvoid; count: int; in_front: int = 0);
@@ -2876,7 +2876,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Removes several elements from the end of sequence and optionally saves them *)
+(* Removes several elements from the end of sequence and optionally saves them *)
 // CVAPI(void)  cvSeqPopMulti( CvSeq* seq, void* elements,
 // int count, int in_front CV_DEFAULT(0) );
  procedure cvSeqPopMulti(seq: pCvSeq; elements: pvoid; count: int; in_front: int = 0);
@@ -2889,7 +2889,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Inserts a new element in the middle of sequence.
+(* Inserts a new element in the middle of sequence.
    cvSeqInsert(seq,0,elem) == cvSeqPushFront(seq,elem) *)
 // CVAPI(schar*)  cvSeqInsert( CvSeq* seq, int before_index,
 // const void* element CV_DEFAULT(NULL));
@@ -2903,7 +2903,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Removes specified sequence element *)
+(* Removes specified sequence element *)
 // CVAPI(void)  cvSeqRemove( CvSeq* seq, int index );
  procedure cvSeqRemove(seq: pCvSeq; index: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2915,7 +2915,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Removes all the elements from the sequence. The freed memory
+(* Removes all the elements from the sequence. The freed memory
    can be reused later only by the same sequence unless cvClearMemStorage
    or cvRestoreMemStoragePos is called *)
 // CVAPI(void)  cvClearSeq( CvSeq* seq );
@@ -2929,7 +2929,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Retrieves pointer to specified sequence element.
+(* Retrieves pointer to specified sequence element.
    Negative indices are supported and mean counting from the end
    (e.g -1 means the last sequence element) *)
 // CVAPI(schar*)  cvGetSeqElem( const CvSeq* seq, int index );
@@ -2943,7 +2943,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Calculates index of the specified sequence element.
+(* Calculates index of the specified sequence element.
    Returns -1 if element does not belong to the sequence *)
 // CVAPI(int)  cvSeqElemIdx( const CvSeq* seq, const void* element,
 // CvSeqBlock** block CV_DEFAULT(NULL) );
@@ -2957,7 +2957,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Initializes sequence writer. The new elements will be added to the end of sequence *)
+(* Initializes sequence writer. The new elements will be added to the end of sequence *)
 // CVAPI(void)  cvStartAppendToSeq( CvSeq* seq, CvSeqWriter* writer );
  procedure cvStartAppendToSeq(seq: pCvSeq; writer: pCvSeqWriter);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -2969,7 +2969,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Combination of cvCreateSeq and cvStartAppendToSeq *)
+(* Combination of cvCreateSeq and cvStartAppendToSeq *)
 // CVAPI(void)  cvStartWriteSeq( int seq_flags, int header_size,
 // int elem_size, CvMemStorage* storage,
 // CvSeqWriter* writer );
@@ -2984,7 +2984,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Closes sequence writer, updates sequence header and returns pointer
+(* Closes sequence writer, updates sequence header and returns pointer
    to the resultant sequence
    (which may be useful if the sequence was created using cvStartWriteSeq))
 *)
@@ -2999,7 +2999,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Updates sequence header. May be useful to get access to some of previously
+(* Updates sequence header. May be useful to get access to some of previously
    written elements via cvGetSeqElem or sequence reader *)
 // CVAPI(void)   cvFlushSeqWriter( CvSeqWriter* writer );
  procedure cvFlushSeqWriter(writer: pCvSeqWriter);
@@ -3012,7 +3012,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Initializes sequence reader.
+(* Initializes sequence reader.
    The sequence can be read in forward or backward direction *)
 // CVAPI(void) cvStartReadSeq( const CvSeq* seq, CvSeqReader* reader,
 // int reverse CV_DEFAULT(0) );
@@ -3026,7 +3026,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Returns current sequence reader position (currently observed sequence element) *)
+(* Returns current sequence reader position (currently observed sequence element) *)
 // CVAPI(int)  cvGetSeqReaderPos( CvSeqReader* reader );
  function cvGetSeqReaderPos(reader: pCvSeqReader): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3038,7 +3038,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Changes sequence reader position. It may seek to an absolute or
+(* Changes sequence reader position. It may seek to an absolute or
    to relative to the current position *)
 // CVAPI(void)   cvSetSeqReaderPos( CvSeqReader* reader, int index,
 // int is_relative CV_DEFAULT(0));
@@ -3052,7 +3052,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Copies sequence content to a continuous piece of memory *)
+(* Copies sequence content to a continuous piece of memory *)
 // CVAPI(void*)  cvCvtSeqToArray( const CvSeq* seq, void* elements,
 // CvSlice slice CV_DEFAULT(CV_WHOLE_SEQ) );
  function cvCvtSeqToArray(const seq: pCvSeq; elements: pvoid; slice: TCvSlice): pointer; overload;
@@ -3066,7 +3066,7 @@ or:
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
  function cvCvtSeqToArray(const seq: pCvSeq; elements: pvoid): pointer; overload; inline;
 
-(* * Creates sequence header for array.
+(* Creates sequence header for array.
    After that all the operations on sequences that do not alter the content
    can be applied to the resultant sequence *)
 // CVAPI(CvSeq*) cvMakeSeqHeaderForArray( int seq_type, int header_size,
@@ -3083,7 +3083,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Extracts sequence slice (with or without copying sequence elements) *)
+(* Extracts sequence slice (with or without copying sequence elements) *)
 // CVAPI(CvSeq*) cvSeqSlice( const CvSeq* seq, CvSlice slice,
 // CvMemStorage* storage CV_DEFAULT(NULL),
 // int copy_data CV_DEFAULT(0));
@@ -3104,7 +3104,7 @@ or:
 // }
  function cvCloneSeq(const seq: pCvSeq; storage: pCvMemStorage = nil): pCvSeq; inline;
 
-(* * Removes sequence slice *)
+(* Removes sequence slice *)
 // CVAPI(void)  cvSeqRemoveSlice( CvSeq* seq, CvSlice slice );
  procedure cvSeqRemoveSlice(seq: pCvSeq; slice: TCvSlice);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3116,7 +3116,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Inserts a sequence or array into another sequence *)
+(* Inserts a sequence or array into another sequence *)
 // CVAPI(void)  cvSeqInsertSlice( CvSeq* seq, int before_index, const CvArr* from_arr );
  procedure cvSeqInsertSlice(seq: pCvSeq; before_index: int; const from_arr: pCvArr);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3128,12 +3128,12 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * a < b ? -1 : a > b ? 1 : 0 *)
+(* a < b ? -1 : a > b ? 1 : 0 *)
 // typedef int (CV_CDECL* CvCmpFunc)(const void* a, const void* b, void* userdata );
  type
  TCvCmpFunc = function(const A: pointer; const B: pointer; userdata: pointer): int;
 
-(* * Sorts sequence in-place given element comparison function *)
+(* Sorts sequence in-place given element comparison function *)
 // CVAPI(void) cvSeqSort( CvSeq* seq, CvCmpFunc func, void* userdata CV_DEFAULT(NULL) );
  procedure cvSeqSort(seq: pCvSeq; func: TCvCmpFunc; userdata: pvoid = nil);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3145,7 +3145,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Finds element in a [sorted] sequence *)
+(* Finds element in a [sorted] sequence *)
 // CVAPI(schar*) cvSeqSearch( CvSeq* seq, const void* elem, CvCmpFunc func,
 // int is_sorted, int* elem_idx,
 // void* userdata CV_DEFAULT(NULL) );
@@ -3160,7 +3160,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Reverses order of sequence elements in-place *)
+(* Reverses order of sequence elements in-place *)
 // CVAPI(void) cvSeqInvert( CvSeq* seq );
  procedure cvSeqInvert(seq: pCvSeq);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3172,7 +3172,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Splits sequence into one or more equivalence classes using the specified criteria *)
+(* Splits sequence into one or more equivalence classes using the specified criteria *)
 // CVAPI(int)  cvSeqPartition( const CvSeq* seq, CvMemStorage* storage,
 // CvSeq** labels, CvCmpFunc is_equal, void* userdata );
  function cvSeqPartition(const seq: pCvSeq; storage: pCvMemStorage; labels: pCvSeq; is_equal: TCvCmpFunc;
@@ -3186,7 +3186,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* *********** Internal sequence functions *********** *)
+(*  ********** Internal sequence functions *********** *)
 // CVAPI(void)  cvChangeSeqBlock( void* reader, int direction );
  procedure cvChangeSeqBlock(reader: pvoid; direction: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3209,7 +3209,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Creates a new set *)
+(* Creates a new set *)
 // CVAPI(CvSet*)  cvCreateSet( int set_flags, int header_size,
 // int elem_size, CvMemStorage* storage );
  function cvCreateSet(set_flags: int; header_size: int; elem_size: int; storage: pCvMemStorage): pCvSet;
@@ -3222,7 +3222,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Adds new element to the set and returns pointer to it *)
+(* Adds new element to the set and returns pointer to it *)
 // CVAPI(int)  cvSetAdd( CvSet* set_header, CvSetElem* elem CV_DEFAULT(NULL),
 // CvSetElem** inserted_elem CV_DEFAULT(NULL) );
  function cvSetAdd(set_header: pCvSet; elem: pCvSetElem = nil; inserted_elem: pCvSetElem = nil): int;
@@ -3235,7 +3235,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Fast variant of cvSetAdd *)
+(* Fast variant of cvSetAdd *)
 // CV_INLINE  CvSetElem* cvSetNew( CvSet* set_header )
 // {
 // CvSetElem* elem = set_header->free_elems;
@@ -3251,7 +3251,7 @@ or:
 // }
  function cvSetNew(set_header: pCvSet): pCvSetElem; inline;
 
-(* * Removes set element given its pointer *)
+(* Removes set element given its pointer *)
 // CV_INLINE  void cvSetRemoveByPtr( CvSet* set_header, void* elem )
 // {
 // CvSetElem* _elem = (CvSetElem*)elem;
@@ -3263,7 +3263,7 @@ or:
 // }
  procedure cvSetRemoveByPtr(set_header: pCvSet; elem: pvoid); inline;
 
-(* * Removes element from the set by its index *)
+(* Removes element from the set by its index *)
 // CVAPI(void)   cvSetRemove( CvSet* set_header, int index );
  procedure cvSetRemove(set_header: pCvSet; index: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3275,7 +3275,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Returns a set element by index. If the element doesn't belong to the set,
+(* Returns a set element by index. If the element doesn't belong to the set,
    NULL is returned *)
 // CV_INLINE CvSetElem* cvGetSetElem( const CvSet* set_header, int idx )
 // {
@@ -3284,7 +3284,7 @@ or:
 // }
  function cvGetSetElem(const set_header: pCvSet; idx: int): pCvSetElem; inline;
 
-(* * Removes all the elements from the set *)
+(* Removes all the elements from the set *)
 // CVAPI(void)  cvClearSet( CvSet* set_header );
  procedure cvClearSet(set_header: pCvSet);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3296,7 +3296,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Creates new graph *)
+(* Creates new graph *)
 // CVAPI(CvGraph*)  cvCreateGraph( int graph_flags, int header_size,
 // int vtx_size, int edge_size,
 // CvMemStorage* storage );
@@ -3311,7 +3311,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Adds new vertex to the graph *)
+(* Adds new vertex to the graph *)
 // CVAPI(int)  cvGraphAddVtx( CvGraph* graph, const CvGraphVtx* vtx CV_DEFAULT(NULL),
 // CvGraphVtx** inserted_vtx CV_DEFAULT(NULL) );
  function cvGraphAddVtx(graph: pCvGraph; const vtx: pCvGraphVtx = nil; inserted_vtx: pCvGraphVtx = nil): int;
@@ -3324,7 +3324,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Removes vertex from the graph together with all incident edges *)
+(* Removes vertex from the graph together with all incident edges *)
 // CVAPI(int)  cvGraphRemoveVtx( CvGraph* graph, int index );
  function cvGraphRemoveVtx(graph: pCvGraph; index: int): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3347,7 +3347,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Link two vertices specified by indices or pointers if they
+(* Link two vertices specified by indices or pointers if they
    are not connected or return pointer to already existing edge
    connecting the vertices.
    Functions return 1 if a new edge was created, 0 otherwise *)
@@ -3381,7 +3381,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Remove edge connecting two vertices *)
+(* Remove edge connecting two vertices *)
 // CVAPI(void)  cvGraphRemoveEdge( CvGraph* graph, int start_idx, int end_idx );
  procedure cvGraphRemoveEdge(graph: pCvGraph; start_idx: int; end_idx: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3405,7 +3405,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Find edge connecting two vertices *)
+(* Find edge connecting two vertices *)
 // CVAPI(CvGraphEdge*)  cvFindGraphEdge( const CvGraph* graph, int start_idx, int end_idx );
  function cvFindGraphEdge(const graph: pCvGraph; start_idx: int; end_idx: int): pCvGraphEdge;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3454,7 +3454,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Remove all vertices and edges from the graph *)
+(* Remove all vertices and edges from the graph *)
 // CVAPI(void)  cvClearGraph( CvGraph* graph );
  procedure cvClearGraph(graph: pCvGraph);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3466,7 +3466,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Count number of edges incident to the vertex *)
+(* Count number of edges incident to the vertex *)
 // CVAPI(int)  cvGraphVtxDegree( const CvGraph* graph, int vtx_idx );
  function cvGraphVtxDegree(const graph: pCvGraph; vtx_idx: int): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3489,15 +3489,15 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Retrieves graph vertex by given index *)
+(* Retrieves graph vertex by given index *)
 { TODO:cvGetGraphVtx }
 // #define cvGetGraphVtx( graph, idx ) (CvGraphVtx*)cvGetSetElem((CvSet*)(graph), (idx))
 
-(* * Retrieves index of a graph vertex given its pointer *)
+(* Retrieves index of a graph vertex given its pointer *)
 { TODO:cvGraphVtxIdx }
 // #define cvGraphVtxIdx( graph, vtx ) ((vtx)->flags & CV_SET_ELEM_IDX_MASK)
 
-(* * Retrieves index of a graph edge given its pointer *)
+(* Retrieves index of a graph edge given its pointer *)
 { TODO:cvGraphEdgeIdx }
 // #define cvGraphEdgeIdx( graph, edge ) ((edge)->flags & CV_SET_ELEM_IDX_MASK)
 
@@ -3519,7 +3519,7 @@ or:
 
  CV_GRAPH_ALL_ITEMS = -1;
 
-(* * flags for graph vertices and edges *)
+(* flags for graph vertices and edges *)
  CV_GRAPH_ITEM_VISITED_FLAG = (1 shl 30);
 
 { TODO:CV_IS_GRAPH_VERTEX_VISITED }
@@ -3547,7 +3547,7 @@ or:
 
  TCvGraphScanner = _CvGraphScanner;
 
-(* * Creates new graph scanner. *)
+(* Creates new graph scanner. *)
 // CVAPI(CvGraphScanner*)  cvCreateGraphScanner( CvGraph* graph,
 // CvGraphVtx* vtx CV_DEFAULT(NULL),
 // int mask CV_DEFAULT(CV_GRAPH_ALL_ITEMS));
@@ -3562,7 +3562,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Releases graph scanner. *)
+(* Releases graph scanner. *)
 // CVAPI(void) cvReleaseGraphScanner( CvGraphScanner** scanner );
  procedure cvReleaseGraphScanner(scanner: pCvGraphScanner);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3574,7 +3574,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Get next graph element *)
+(* Get next graph element *)
 // CVAPI(int)  cvNextGraphItem( CvGraphScanner* scanner );
  function cvNextGraphItem(scanner: pCvGraphScanner): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3586,7 +3586,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Creates a copy of graph *)
+(* Creates a copy of graph *)
 // CVAPI(CvGraph*) cvCloneGraph( const CvGraph* graph, CvMemStorage* storage );
  function cvCloneGraph(const graph: pCvGraph; storage: pCvMemStorage): pCvGraph;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3598,7 +3598,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Does look-up transformation. Elements of the source array
+(* Does look-up transformation. Elements of the source array
    (that should be 8uC1 or 8sC1) are used as indexes in lutarr 256-element table *)
 // CVAPI(void) cvLUT( const CvArr* src, CvArr* dst, const CvArr* lut );
  procedure cvLUT(const src: pCvArr; dst: pCvArr; const lut: pCvArr);
@@ -3611,7 +3611,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ****************** Iteration through the sequence tree **************** *)
+(*  ***************** Iteration through the sequence tree **************** *)
  type
  pCvTreeNodeIterator = ^_CvTreeNodeIterator;
 
@@ -3657,7 +3657,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Inserts sequence into tree with specified "parent" sequence.
+(* Inserts sequence into tree with specified "parent" sequence.
    If parent is equal to frame (e.g. the most external contour),
    then added contour will have null pointer to parent. *)
 // CVAPI(void) cvInsertNodeIntoTree( void* node, void* parent, void* frame );
@@ -3671,7 +3671,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Removes contour from tree (together with the contour children). *)
+(* Removes contour from tree (together with the contour children). *)
 // CVAPI(void) cvRemoveNodeFromTree( void* node, void* frame );
  procedure cvRemoveNodeFromTree(node: pvoid; frame: pvoid);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3683,7 +3683,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Gathers pointers to all the sequences,
+(* Gathers pointers to all the sequences,
    accessible from the `first`, to the single sequence *)
 // CVAPI(CvSeq*) cvTreeToNodeSeq( const void* first, int header_size,
 // CvMemStorage* storage );
@@ -3697,7 +3697,7 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * The function implements the K-means algorithm for clustering an array of sample
+(* The function implements the K-means algorithm for clustering an array of sample
    vectors in a specified number of classes *)
  const
  CV_KMEANS_USE_INITIAL_LABELS = 1;
@@ -3718,11 +3718,11 @@ or:
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ***************************************************************************************\
+(*  **************************************************************************************\
 *                                    System functions                                    *
 \*************************************************************************************** *)
 
-(* * Loads optimized functions from IPP, MKL etc. or switches back to pure C code *)
+(* Loads optimized functions from IPP, MKL etc. or switches back to pure C code *)
 // CVAPI(int)  cvUseOptimized( int on_off );
  function cvUseOptimized(on_off: int): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3749,7 +3749,7 @@ or:
 // IplImage* (CV_STDCALL* Cv_iplCloneImage)(const IplImage*);
  TCv_iplCloneImage = function(const A: pIplImage): pIplImage;
 
-(* * @brief Makes OpenCV use IPL functions for allocating IplImage and IplROI structures.
+(* @brief Makes OpenCV use IPL functions for allocating IplImage and IplROI structures.
 
 Normally, the function is not called directly. Instead, a simple macro
 CV_TURN_ON_IPL_COMPATIBILITY() is used that calls cvSetIPLAllocators and passes there pointers
@@ -3786,11 +3786,11 @@ to IPL allocation functions. :
 // cvSetIPLAllocators( iplCreateImageHeader, iplAllocateImage,         \
 // iplDeallocate, iplCreateROI, iplCloneImage )
 
-(* ***************************************************************************************\
+(*  **************************************************************************************\
 *                                    Data Persistence                                    *
 \*************************************************************************************** *)
 
-(* * @brief Releases an object.
+(* @brief Releases an object.
 
  The function finds the type of a given object and calls release with the double pointer.
  @param struct_ptr Double pointer to the object
@@ -3806,7 +3806,7 @@ to IPL allocation functions. :
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * @brief Makes a clone of an object.
+(* @brief Makes a clone of an object.
 
 The function finds the type of a given object and calls clone with the passed object. Of course, if
 you know the object type, for example, struct_ptr is CvMat\*, it is faster to call the specific
@@ -3824,9 +3824,9 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ********************************** Measuring Execution Time ************************** *)
+(*  ********************************* Measuring Execution Time ************************** *)
 
-(* * helper functions for RNG initialization and accurate time measurement:
+(* helper functions for RNG initialization and accurate time measurement:
    uses internal clock counter on x86 *)
 // CVAPI(int64)  cvGetTickCount( void );
  function cvGetTickCount(): int64;
@@ -3850,7 +3850,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ********************************** CPU capabilities ********************************** *)
+(*  ********************************* CPU capabilities ********************************** *)
 
 // CVAPI(int) cvCheckHardwareSupport(int feature);
  function cvCheckHardwareSupport(feature: int): int;
@@ -3863,9 +3863,9 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ********************************** Multi-Threading *********************************** *)
+(*  ********************************* Multi-Threading *********************************** *)
 
-(* * retrieve/set the number of threads used in OpenMP implementations *)
+(* retrieve/set the number of threads used in OpenMP implementations *)
 // CVAPI(int)  cvGetNumThreads( void );
  function cvGetNumThreads(): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3888,7 +3888,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * get index of the thread being executed *)
+(* get index of the thread being executed *)
 // CVAPI(int)  cvGetThreadNum( void );
  function cvGetThreadNum(): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3900,9 +3900,9 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* ********************************* Error Handling ************************************* *)
+(*  ******************************** Error Handling ************************************* *)
 
-(* * Get current OpenCV error status *)
+(* Get current OpenCV error status *)
 // CVAPI(int) cvGetErrStatus( void );
  function cvGetErrStatus(): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3914,7 +3914,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Sets error status silently *)
+(* Sets error status silently *)
 // CVAPI(void) cvSetErrStatus( int status );
  procedure cvSetErrStatus(status: int);
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3931,7 +3931,7 @@ function, like cvCloneMat.
  CV_ErrModeParent = 1; (* Print error and continue *)
  CV_ErrModeSilent = 2; (* Don't print and continue *)
 
-(* * Retrieves current error processing mode *)
+(* Retrieves current error processing mode *)
 // CVAPI(int)  cvGetErrMode( void );
  function cvGetErrMode(): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3943,7 +3943,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Sets error processing mode, returns previously used mode *)
+(* Sets error processing mode, returns previously used mode *)
 // CVAPI(int) cvSetErrMode( int mode );
  function cvSetErrMode(mode: int): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3955,7 +3955,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Sets error status and performs some additional actions (displaying message box,
+(* Sets error status and performs some additional actions (displaying message box,
  writing message to stderr, terminating application etc.)
  depending on the current error mode *)
 // CVAPI(void) cvError( int status, const char* func_name,
@@ -3971,7 +3971,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Retrieves textual description of the error given its code *)
+(* Retrieves textual description of the error given its code *)
 // CVAPI(const char*) cvErrorStr( int status );
  function cvErrorStr(status: int): pcvchar;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -3983,7 +3983,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Retrieves detailed information about the last error occurred *)
+(* Retrieves detailed information about the last error occurred *)
 // CVAPI(int) cvGetErrInfo( const char** errcode_desc, const char** description,
 // const char** filename, int* line );
  function cvGetErrInfo(const errcode_desc: pcvchar; const description: pcvchar; const filename: pcvchar;
@@ -3997,7 +3997,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Maps IPP error codes to the counterparts from OpenCV *)
+(* Maps IPP error codes to the counterparts from OpenCV *)
 // CVAPI(int) cvErrorFromIppStatus( int ipp_status );
  function cvErrorFromIppStatus(ipp_status: int): int;
 {$IFDEF USE_INLINE}inline; {$ENDIF}
@@ -4015,13 +4015,20 @@ function, like cvCloneMat.
  TCvErrorCallback = function(status: int; const func_name: pcvchar; const err_msg: pcvchar;
  const file_name: pcvchar; line: int; userdata: pointer): int;
 
-(* * Assigns a new error-handling function *)
-// CVAPI(CvErrorCallback) cvRedirectError( CvErrorCallback error_handler,
-// void* userdata CV_DEFAULT(NULL),
-// void** prev_userdata CV_DEFAULT(NULL) );
- function cvRedirectError(error_handler: TCvErrorCallback; userdata: pvoid = nil; prev_userdata: pvoid = nil)
- : TCvErrorCallback;
-{$IFDEF USE_INLINE}inline; {$ENDIF}
+(* Assigns a new error-handling function *)
+{
+ CVAPI(CvErrorCallback) cvRedirectError
+	(
+	CvErrorCallback error_handler,
+	void* userdata CV_DEFAULT(NULL),
+	void** prev_userdata CV_DEFAULT(NULL)
+	);
+}
+function cvRedirectError(
+		error_handler: TCvErrorCallback; 
+		userdata: pvoid = nil; 
+		prev_userdata: pvoid = nil
+		): TCvErrorCallback; {$IFDEF USE_INLINE}inline; {$ENDIF}
 // external opencv_world_dll
 // {$IFDEF CALL_BY_FNC_NUM}
 // index 7896
@@ -4030,7 +4037,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Output nothing *)
+(* Output nothing *)
 // CVAPI(int) cvNulDevReport( int status, const char* func_name, const char* err_msg,
 // const char* file_name, int line, void* userdata );
  function cvNulDevReport(status: int; const func_name: pcvchar; const err_msg: pcvchar;
@@ -4044,7 +4051,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Output to console(fprintf(stderr,...)) *)
+(* Output to console(fprintf(stderr,...)) *)
 // CVAPI(int) cvStdErrReport( int status, const char* func_name, const char* err_msg,
 // const char* file_name, int line, void* userdata );
  function cvStdErrReport(status: int; const func_name: pcvchar; const err_msg: pcvchar;
@@ -4058,7 +4065,7 @@ function, like cvCloneMat.
 // {$ENDIF}
 // {$IFDEF DELAYED_LOAD_DLL} delayed{$ENDIF};
 
-(* * Output to MessageBox(WIN32) *)
+(* Output to MessageBox(WIN32) *)
 // CVAPI(int) cvGuiBoxReport( int status, const char* func_name, const char* err_msg,
 // const char* file_name, int line, void* userdata );
  function cvGuiBoxReport(status: int; const func_name: pcvchar; const err_msg: pcvchar;
@@ -4087,7 +4094,7 @@ function, like cvCloneMat.
 // Func;                    \
 // }
 
-(* * CV_FUNCNAME macro defines icvFuncName constant which is used by CV_ERROR macro *)
+(* CV_FUNCNAME macro defines icvFuncName constant which is used by CV_ERROR macro *)
 // #ifdef CV_NO_FUNC_NAMES
 // #define CV_FUNCNAME( Name )
 // #define cvFuncName ""
@@ -4096,7 +4103,7 @@ function, like cvCloneMat.
 // static char cvFuncName[] = Name
 // #endif
 
-(* *
+(*  
  CV_ERROR macro unconditionally raises error with passed code and message.
  After raising error, control will be transferred to the exit label.
  *)
@@ -4107,7 +4114,7 @@ function, like cvCloneMat.
 // __CV_EXIT__;            \
 // }
 
-(* *
+(*  
  CV_CHECK macro checks error status after CV (or IPL)
  function call. If error detected, control will be transferred to the exit
  label.
@@ -4119,7 +4126,7 @@ function, like cvCloneMat.
 // CV_ERROR( CV_StsBackTrace, "Inner function failed." );      \
 // }
 
-(* *
+(*  
  CV_CALL macro calls CV (or IPL) function, checks error status and
  signals a error if the function failed. Useful in "parent node"
  error processing mode
@@ -4131,7 +4138,7 @@ function, like cvCloneMat.
 // CV_CHECK();              \
 // }
 
-(* * Runtime assertion macro *)
+(* Runtime assertion macro *)
 { TODO:CV_ASSERT }
 // #define CV_ASSERT( Condition )   \
 // {                                \
@@ -4143,7 +4150,7 @@ function, like cvCloneMat.
 // #define __CV_END__         goto exit; exit: ; }
 // #define __CV_EXIT__        goto exit
 
-(* * @} core_c *)
+(* @} core_c *)
 
 {$IF not defined(OPENCV_CORE_UTILITY_H)}{$I 'core/utility.inc'}{$IFEND}
 // namespace cv

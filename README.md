@@ -6,15 +6,14 @@
       <img alt="Repo Size" src="https://img.shields.io/github/repo-size/Laex/Delphi-OpenCV-Class?style=flat&logo=github&logoColor=whitesmoke&label=Repo%20Size" />
     </a>
     <a href="https://github.com/Laex/Delphi-OpenCV-Class/graphs/contributors">
-      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/Laex/Delphi-OpenCV-Class" /> 
-    </a>
+      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/Laex/Delphi-OpenCV-Class" /> </a>  
     <a href="https://github.com/Laex/Delphi-OpenCV-Class/issues">
       <img alt="Issues" src="https://img.shields.io/github/issues/Laex/Delphi-OpenCV-Class?color=0088ff" />
     </a>
     <a href="https://github.com/Laex/Delphi-OpenCV-Class/pulls">
       <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/Laex/Delphi-OpenCV-Class?color=0088ff" />
     </a>    
-    <a href="https://img.shields.io/github/commit-activity/m/Laex/Delphi-OpenCV-Class">
+       <a href="https://img.shields.io/github/commit-activity/m/Laex/Delphi-OpenCV-Class">
       <img alt="commit activity" src="https://img.shields.io/github/commit-activity/m/Laex/Delphi-OpenCV-Class" />
     </a>    
 	<a href="https://img.shields.io/github/license/Laex/Delphi-OpenCV-Class">
@@ -53,7 +52,7 @@
 The following DLLs are required to work properly
 
 - **from** `<opencv>\build\x64\vc16\bin\` or **from** `<delphi-opencv>\redist\opencv_delphi4100.zip`
-  * opencv_videoio_ffmpeg4100_64.dll - `release`
+  * opencv_videoio_ffmpeg4100_64.dll - `release/debug`
   * opencv_videoio_msmf4100_64.dll   - `release`
   * opencv_videoio_msmf4100_64d.dll  - `debug`
   * opencv_world4100.dll             - `release`
@@ -86,17 +85,31 @@ Add the Library path for the modules of the project in Delphi IDE:<br>
 1. Change the path in the `OpenCVRootPath` variable in the `<delphi-opencv>\source\CVResource.pas` module to the path to the unpacked [OpenCV 4.10.0][3] library. This is only needed to run examples from samples.
 2. Open `<delphi-opencv>\samples\Samples.groupproj`
 
-### To instal components
+### To install components
 ---
 1. For components, install the packages from `<delphi-opencv>\packages\<Delphi Version>\CVClassGroup.groupproj`
 1. Run demo from `<delphi-opencv>\samples\Samples.groupproj`
----------------------------
-###### Donate
+### Questions / Ideas / Help
+---
+Go to the [discussions](https://github.com/Laex/Delphi-OpenCV-Class/discussions) tab to ask and find this kind of things.
+
+### Contributing
+---
+Feel free to contribute
+
+You can create an [issue](https://github.com/Laex/Delphi-OpenCV-Class/issues) to report a bug, suggest an improvement for this plugin, ask a question, etc.
+
+You can make a [pull request](https://github.com/Laex/Delphi-OpenCV-Class/pulls) to contribute to this plugin development.
+
+---
+###### Support
+If you want to support me and my work, you can:
+* [Sponsor me on GitHub](https://github.com/sponsors/Laex)
 * <a href="https://liberapay.com/Laex/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>
 * [Boosty](https://boosty.to/laex/donate)
 * [Patreon](https://patreon.com/laentir?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink)
-* BTC: 3MTXVtRgQnA22EtBxP97Nws6GS8autp38s
-
+* BTC: [3MTXVtRgQnA22EtBxP97Nws6GS8autp38s](bitcoin:3MTXVtRgQnA22EtBxP97Nws6GS8autp38s) 
+---
 [1]: https://github.com/Laex/Delphi-OpenCV-Class/archive/refs/heads/main.zip
 [2]: https://github.com/Laex/Delphi-OpenCV-Class.git
 [3]: https://opencv.org/releases/
